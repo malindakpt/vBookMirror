@@ -1,0 +1,9 @@
+@import '../../../mixins.scss';
+
+.container {
+  min-height: calc(100vh - 94px);
+
+  @include mobile {
+    min-height: calc(100vh - 76px);
+  }
+}

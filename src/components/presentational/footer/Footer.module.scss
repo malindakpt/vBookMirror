@@ -1,0 +1,15 @@
+@import '../../../mixins.scss';
+
+.container {
+    display: grid;
+    place-items: center;
+    background: #eae4e4;
+    font-size: 11px;
+    height: 30px;
+
+    @include mobile {
+        height: 20px;
+        font-size: 10px;
+    }
+
+}
