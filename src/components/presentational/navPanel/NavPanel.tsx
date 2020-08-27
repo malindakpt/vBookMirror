@@ -18,7 +18,7 @@ interface NavLink{
   url: string;
 }
 
-const commonLinks: NavLink[] = [{ label: 'Pay fees', url: '/pay' }, { label: 'Register Student', url: '/regStudent' }];
+const commonLinks: NavLink[] = [{ label: 'Contents', url: '/contents' }, { label: 'Register Student', url: '/regStudent' }];
 const adminLinks: NavLink[] = [{ label: 'Register Teacher', url: '/regTeacher' }, { label: 'Revenue Reports', url: '/revenue' }, { label: 'Settings', url: '/settings' }];
 
 const useStyles = makeStyles({

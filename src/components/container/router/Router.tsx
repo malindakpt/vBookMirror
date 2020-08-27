@@ -4,27 +4,33 @@ import {
   Route,
 } from 'react-router-dom';
 import classes from './Router.module.scss';
+import { Contents } from '../contents/Contents';
+import { BreadcrumbBar } from '../breadcrumbs/BreadcrumbBar';
 
 const Router: React.FC = () => (
-  <div className={classes.container}>
+  <>
+    <BreadcrumbBar />
+    <div className={classes.container}>
 
-    <div>
-      {/* A <Switch> looks through its children <Route>s and
+      <div>
+        {/* A <Switch> looks through its children <Route>s and
       renders the first one that matches the current URL. */}
-      <Switch>
-        <Route path="/about">
-          <div>About Page</div>
-        </Route>
-        <Route path="/users">
-          <div>Users</div>
-        </Route>
-        <Route path="/">
-          <div>Home</div>
-        </Route>
-      </Switch>
+        <Switch>
+          <Route path="/contents">
+            <Contents />
+          </Route>
+          <Route path="/users">
+            <div>Users</div>
+          </Route>
+          <Route path="/">
+            <Contents />
+          </Route>
+        </Switch>
+      </div>
+
     </div>
 
-  </div>
+  </>
 );
 
 export default Router;
