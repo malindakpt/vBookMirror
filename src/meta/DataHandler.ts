@@ -15,6 +15,11 @@ export const getCourses = (examId: string, subjectId: string): ICourse[] => {
   return filtered;
 };
 
+export const getExam = (examId: string): IExam|null => {
+  const filtered = exams.filter((exam) => exam.id === examId);
+  return filtered.length > 0 ? filtered[0] : null;
+};
+
 export const getCourse = (courseId: string): ICourse|null => {
   const filtered = courses.filter((course) => course.id === courseId);
   return filtered.length > 0 ? filtered[0] : null;

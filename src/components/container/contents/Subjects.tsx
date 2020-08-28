@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { getSubjects } from '../../../meta/DataHandler';
+import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 
 interface Props {
   // match?: any;
@@ -10,6 +11,8 @@ interface Props {
 export const Subjects: React.FC<Props> = () => {
   const { examId } = useParams();
   const subjectList = getSubjects(examId);
+
+  useBreadcrumb();
 
   return (
     <div className={classes.root}>
@@ -19,7 +22,7 @@ export const Subjects: React.FC<Props> = () => {
           title1=""
           title2={subject.name}
           title3=""
-          navURL={`subjects/${subject.id}`}
+          navURL={`${examId}/${subject.id}`}
         />
       ))}
     </div>

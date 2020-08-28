@@ -5,8 +5,10 @@ import classes from './Contents.module.scss';
 import {
   getCourses, getTeacher, getSubject,
 } from '../../../meta/DataHandler';
+import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 
 export const Courses: React.FC = () => {
+  useBreadcrumb();
   const { subjectId, examId } = useParams();
   const coursesList = getCourses(examId, subjectId);
 
@@ -18,8 +20,8 @@ export const Courses: React.FC = () => {
         return (
           <Category
             key={course.id}
-            title1={subject?.name}
-            title2={teacher?.name}
+            title1={teacher?.name}
+            title2={subject?.name}
             title3={course.examId}
             navURL={`${subjectId}/${course.id}`}
           />
