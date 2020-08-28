@@ -3,13 +3,10 @@ import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import {
-  getCourses, getTeacher, getSubjects, getSubject,
+  getCourses, getTeacher, getSubject,
 } from '../../../meta/DataHandler';
 
-interface Props {
-  // match?: any;
-}
-export const Courses: React.FC<Props> = () => {
+export const Courses: React.FC = () => {
   const { subjectId, examId } = useParams();
   const coursesList = getCourses(examId, subjectId);
 

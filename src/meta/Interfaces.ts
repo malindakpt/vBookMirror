@@ -18,9 +18,8 @@ export interface ISubject {
 }
 
 export interface ILesson {
-  examId: string;
-  subjectId: string;
-  teacherId: string;
+  id: string;
+  courseId: string;
   week: number;
   videoURL: string;
   attachments: [],

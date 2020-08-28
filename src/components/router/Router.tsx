@@ -6,10 +6,9 @@ import {
 } from 'react-router-dom';
 import classes from './Router.module.scss';
 import { Exams } from '../container/contents/Exams';
-import { BreadcrumbBar } from '../container/breadcrumbs/BreadcrumbBar';
 import { Subjects } from '../container/contents/Subjects';
 import { Courses } from '../container/contents/Courses';
-import { Course } from '../presentational/course/Course';
+import { Course } from '../container/contents/Course';
 
 const Router: React.FC = () => (
   <>

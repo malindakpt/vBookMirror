@@ -73,7 +73,7 @@ export const courses: ICourse[] = [
   },
   {
     id: 'C2',
-    examId: 'AL2020T',
+    examId: 'AL2020R',
     subjectId: 'COMBINDED_MATHS',
     teacherId: 'T2',
   },
@@ -81,30 +81,26 @@ export const courses: ICourse[] = [
 
 export const lessons: ILesson[] = [
   {
-    examId: 'AL2020T',
-    subjectId: 'maths',
-    teacherId: '001',
+    id: 'L1',
+    courseId: 'C1',
     week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
   }, {
-    examId: 'AL2020R',
-    subjectId: 'maths',
-    teacherId: '001',
+    id: 'L2',
+    courseId: 'C1',
     week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
   }, {
-    examId: 'AL2021T',
-    subjectId: 'maths',
-    teacherId: '001',
+    id: 'L3',
+    courseId: 'C2',
     week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
   }, {
-    examId: 'AL2021R',
-    subjectId: 'maths',
-    teacherId: '001',
+    id: 'L4',
+    courseId: 'C3',
     week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
