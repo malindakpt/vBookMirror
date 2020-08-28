@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Switch,
   Route,
+  Redirect,
 } from 'react-router-dom';
 import classes from './Router.module.scss';
 import { Exams } from '../container/contents/Exams';
@@ -12,7 +13,7 @@ import { Course } from '../presentational/course/Course';
 
 const Router: React.FC = () => (
   <>
-    <BreadcrumbBar />
+    {/* <BreadcrumbBar /> */}
     <div className={classes.container}>
 
       <div>
@@ -21,7 +22,7 @@ const Router: React.FC = () => (
         <Switch>
           <Route
             exact
-            path="/exams"
+            path="/home"
           >
             <Exams />
           </Route>
@@ -44,7 +45,7 @@ const Router: React.FC = () => (
             <Course />
           </Route>
           <Route path="/">
-            <h4>Not Found</h4>
+            <Redirect to="home" />
 
           </Route>
         </Switch>

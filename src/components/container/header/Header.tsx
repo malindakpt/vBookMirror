@@ -7,14 +7,13 @@ import 'firebase/auth';
 import classes from './Header.module.scss';
 import { getDoc } from '../../../data/Store';
 import { NavPanel } from '../../presentational/navPanel/NavPanel';
-import { User } from '../../../interfaces/Entity';
 
 export const Header:React.FC = () => {
   useEffect(() => {
     getDoc('school', '3jfPL8tdayJTjDSzf2O9').then((data) => console.log(data));
   }, []);
 
-  const [user, setUser] = useState < User | null >(null);
+  const [user, setUser] = useState < any | null >(null);
   const signInwithToken = () => {
     console.log(user?.token);
     firebase.auth().signInWithCustomToken(user?.token || '').then((result: any) => {

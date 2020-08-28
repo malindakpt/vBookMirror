@@ -1,20 +1,22 @@
 import {
   IExam, ISubject, ICourse,
-} from './interfaces';
+} from './Interfaces';
 import {
   exams, subjects, courses, lessons,
-} from './config';
+} from './TuitionData';
 
 export const getAvailableExams = (): IExam[] => {
-  const examList:IExam[] = [];
   for (const lesson of lessons) {
-    examList.push(exams[lesson.examId]);
+    const examOfLessonIdx = exams.findIndex((ex) => ex.id === lesson.examId);
+    if (examOfLessonIdx > -1) {
+      exams[examOfLessonIdx].enabled = true;
+    }
   }
-  return examList;
+  return exams;
 };
 
 export const getSubjects = (examId: string): ISubject[] => {
-  const filtered = subjects.filter((subj) => subj.examId === examId);
+  const filtered = subjects.filter((subj) => subj.examIds.includes(examId));
   return filtered;
 };
 

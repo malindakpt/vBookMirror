@@ -1,12 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { getCourse } from '../../util';
+import { getCourse } from '../../../meta/DataHandler';
 
-interface Props {
-    // teacherName: string;
-    // subjectName: string;
-}
-export const Course: React.FC<Props> = () => {
+export const Course: React.FC = () => {
   const { courseId } = useParams();
   const course = getCourse(courseId);
   return (

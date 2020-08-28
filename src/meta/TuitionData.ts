@@ -1,0 +1,115 @@
+import {
+  IExam, ISubject, ITeacher, ILesson, ICourse,
+} from './Interfaces';
+
+export const teachers: ITeacher[] = [
+  {
+    id: 'T1',
+    name: 'Malinda Kumarasinghe',
+  }, {
+    id: 'T2',
+    name: 'Sumudu Herath',
+  },
+];
+
+export const exams: IExam[] = [
+  {
+    id: 'AL2020T',
+    name: 'Advanced Level',
+    batch: '2020 Batch',
+    type: 'Theory',
+  },
+  {
+    id: 'AL2020R',
+    name: 'Advanced Level',
+    batch: '2020 Batch',
+    type: 'Revision',
+  },
+  {
+    id: 'AL2021T',
+    name: 'Advanced Level',
+    batch: '2021 Batch',
+    type: 'Theory',
+  },
+  {
+    id: 'AL2021R',
+    name: 'Advanced Level',
+    batch: '2021 Batch',
+    type: 'Revision',
+  },
+];
+
+export const subjects: ISubject[] = [
+  {
+    id: 'COMBINDED_MATHS',
+    name: 'Combined Maths',
+    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
+  },
+
+  {
+    id: 'BIOLOGY',
+    name: 'Biology',
+    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
+  },
+
+  {
+    id: 'PHYSICS',
+    name: 'Physics',
+    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
+  },
+  {
+    id: 'CHEMISTRY',
+    name: 'Chemistry',
+    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
+  },
+];
+
+export const courses: ICourse[] = [
+  {
+    id: 'C1',
+    examId: 'AL2020T',
+    subjectId: 'COMBINDED_MATHS',
+    teacherId: 'T1',
+  },
+];
+
+export const lesson = {
+  batchId: '',
+  subjectId: '',
+  teacherId: '',
+  week: '',
+  videoURL: '',
+  attachments: [],
+};
+
+export const lessons: ILesson[] = [
+  {
+    examId: 'AL2020T',
+    subjectId: 'maths',
+    teacherId: '001',
+    week: 1,
+    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+    attachments: [],
+  }, {
+    examId: 'AL2020R',
+    subjectId: 'maths',
+    teacherId: '001',
+    week: 1,
+    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+    attachments: [],
+  }, {
+    examId: 'AL2021T',
+    subjectId: 'maths',
+    teacherId: '001',
+    week: 1,
+    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+    attachments: [],
+  }, {
+    examId: 'AL2021R',
+    subjectId: 'maths',
+    teacherId: '001',
+    week: 1,
+    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+    attachments: [],
+  },
+];

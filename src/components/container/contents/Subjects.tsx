@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { getSubjects } from '../../util';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
+import { getSubjects } from '../../../meta/DataHandler';
 
 interface Props {
   // match?: any;
@@ -16,9 +16,9 @@ export const Subjects: React.FC<Props> = () => {
       {subjectList.map((subject) => (
         <Category
           key={subject.id}
-          title1={subject.name}
-          title2={subject.id}
-          title3="temp title"
+          title1=""
+          title2={subject.name}
+          title3=""
           navURL={`subjects/${subject.id}`}
         />
       ))}

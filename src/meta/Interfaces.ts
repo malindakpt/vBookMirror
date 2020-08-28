@@ -1,7 +1,6 @@
 export interface ITeacher {
   id: string;
   name: string;
-  subjectIds: string[];
 }
 
 export interface IExam {
@@ -15,18 +14,11 @@ export interface IExam {
 export interface ISubject {
   id: string;
   name: string;
-  examId: string;
+  examIds: string[];
 }
-
-export const streams = {
-  science: {},
-  commerce: {},
-  art: {},
-};
 
 export interface ILesson {
   examId: string;
-  batchId: string;
   subjectId: string;
   teacherId: string;
   week: number;
@@ -39,5 +31,4 @@ export interface ICourse {
   subjectId: string;
   examId: string;
   teacherId: string;
-  lessons: ILesson[];
 }

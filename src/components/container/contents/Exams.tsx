@@ -1,7 +1,7 @@
 import React from 'react';
-import { getAvailableExams } from '../../util';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
+import { getAvailableExams } from '../../../meta/DataHandler';
 
 export const Exams = () => {
   const exams = getAvailableExams();
@@ -9,6 +9,8 @@ export const Exams = () => {
   return (
     <div className={classes.root}>
       {exams.map((ex) => (
+        ex.enabled
+        && (
         <Category
           key={ex.id}
           title1={ex.name}
@@ -16,6 +18,7 @@ export const Exams = () => {
           title3={ex.type}
           navURL={`exams/${ex.id}/subjects`}
         />
+        )
       ))}
     </div>
   );

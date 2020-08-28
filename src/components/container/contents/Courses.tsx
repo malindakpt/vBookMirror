@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { getCourses } from '../../util';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
+import { getCourses } from '../../../meta/DataHandler';
 
 interface Props {
   // match?: any;
