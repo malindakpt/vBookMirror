@@ -1,8 +1,8 @@
 import {
-  IExam, ISubject, ITeacher,
+  IExam, ISubject, ICourse,
 } from './interfaces';
 import {
-  exams, subjects, teachers, lessons,
+  exams, subjects, courses, lessons,
 } from './config';
 
 export const getAvailableExams = (): IExam[] => {
@@ -18,7 +18,12 @@ export const getSubjects = (examId: string): ISubject[] => {
   return filtered;
 };
 
-export const getTeachers = (subjectId: string): ITeacher[] => {
-  const filtered = teachers.filter((teacher) => teacher.subjectIds.includes(subjectId));
+export const getCourses = (examId: string, subjectId: string): ICourse[] => {
+  const filtered = courses.filter((course) => course.examId === examId && course.subjectId === subjectId);
   return filtered;
+};
+
+export const getCourse = (courseId: string): ICourse|null => {
+  const filtered = courses.filter((course) => course.id === courseId);
+  return filtered.length > 0 ? filtered[0] : null;
 };

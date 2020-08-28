@@ -1,5 +1,5 @@
 import {
-  IExam, ISubject, ITeacher, ILesson,
+  IExam, ISubject, ITeacher, ILesson, ICourse,
 } from './interfaces';
 
 export const teachers: ITeacher[] = [
@@ -58,11 +58,21 @@ export const subjects: ISubject[] = [
   },
 ];
 
-export const streams = {
-  science: {},
-  commerce: {},
-  art: {},
-};
+export const courses: ICourse[] = [
+  {
+    id: 'c0',
+    examId: 'AL1',
+    subjectId: 'maths',
+    teacherId: 'tid1',
+    lessons: [],
+  },
+];
+
+// export const streams = {
+//   science: {},
+//   commerce: {},
+//   art: {},
+// };
 
 export const lesson = {
   batchId: '',

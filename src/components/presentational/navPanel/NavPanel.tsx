@@ -18,7 +18,7 @@ interface NavLink{
   url: string;
 }
 
-const commonLinks: NavLink[] = [{ label: 'Contents', url: '/contents' }, { label: 'Register Student', url: '/regStudent' }];
+const commonLinks: NavLink[] = [{ label: 'Home', url: '/exams' }, { label: 'Register Student', url: '/regStudent' }];
 const adminLinks: NavLink[] = [{ label: 'Register Teacher', url: '/regTeacher' }, { label: 'Revenue Reports', url: '/revenue' }, { label: 'Settings', url: '/settings' }];
 
 const useStyles = makeStyles({
@@ -45,7 +45,11 @@ export const NavPanel = () => {
   const linkSegment = (links: NavLink[]) => (
     <List>
       {links.map((item, index) => (
-        <Link to={item.url} key={item.label} style={{ textDecoration: 'none', color: '#5d5d5d' }}>
+        <Link
+          to={item.url}
+          key={item.label}
+          style={{ textDecoration: 'none', color: '#5d5d5d' }}
+        >
           <ListItem button>
             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
             <ListItemText primary={item.label} />
@@ -75,7 +79,11 @@ export const NavPanel = () => {
           <MenuIcon htmlColor="white" />
         </Button>
 
-        <Drawer anchor="left" open={show} onClose={toggleDrawer(false)}>
+        <Drawer
+          anchor="left"
+          open={show}
+          onClose={toggleDrawer(false)}
+        >
           {list()}
         </Drawer>
       </>

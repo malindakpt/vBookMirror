@@ -1,6 +1,6 @@
 import React from 'react';
 import { getAvailableExams } from '../../util';
-import { Category } from '../category/Category';
+import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 
 export const Exams = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { getSubjects } from '../../util';
-import { Category } from '../category/Category';
+import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 
 interface Props {

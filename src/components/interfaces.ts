@@ -33,3 +33,11 @@ export interface ILesson {
   videoURL: string;
   attachments: [],
 }
+
+export interface ICourse {
+  id: string;
+  subjectId: string;
+  examId: string;
+  teacherId: string;
+  lessons: ILesson[];
+}
