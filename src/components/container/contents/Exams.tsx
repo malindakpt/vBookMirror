@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { getAvailableExams } from '../../../meta/DataHandler';
