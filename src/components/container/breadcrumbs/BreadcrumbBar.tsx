@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Link from '@material-ui/core/Link';
+import { Link } from 'react-router-dom';
 import { AppContext } from '../../../App';
 
 export const BreadcrumbBar = () => {
@@ -10,9 +10,10 @@ export const BreadcrumbBar = () => {
     <Breadcrumbs aria-label="breadcrumb">
       {breadcrumbs.map((bc) => (
         <Link
+          style={{ textDecoration: 'none', color: 'grey' }}
           key={bc[0]}
           color="inherit"
-          href={bc[1]}
+          to={bc[1]}
         >
           {bc[0]}
         </Link>
