@@ -71,16 +71,13 @@ export const courses: ICourse[] = [
     subjectId: 'COMBINDED_MATHS',
     teacherId: 'T1',
   },
+  {
+    id: 'C2',
+    examId: 'AL2020T',
+    subjectId: 'COMBINDED_MATHS',
+    teacherId: 'T2',
+  },
 ];
-
-export const lesson = {
-  batchId: '',
-  subjectId: '',
-  teacherId: '',
-  week: '',
-  videoURL: '',
-  attachments: [],
-};
 
 export const lessons: ILesson[] = [
   {

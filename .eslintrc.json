@@ -22,6 +22,7 @@
     "rules": {
         "no-restricted-syntax":"off",
         "no-console":"off",
+        "max-len": ["error", { "code": 110 }],
         "import/extensions":"off",
         "import/no-unresolved": "off",
         "no-unused-vars":"off",

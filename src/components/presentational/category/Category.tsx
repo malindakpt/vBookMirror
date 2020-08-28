@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import classes from './Category.module.scss';
 
 interface Props {
-    title1: string;
-    title2: string;
-    title3: string;
+    title1?: string;
+    title2?: string;
+    title3?: string;
     navURL: string;
 }
 export const Category:React.FC<Props> = ({
-  title1, title2, title3, navURL,
+  title1 = '', title2 = '', title3 = '', navURL,
 }) => (
   <Link
     className={classes.root}

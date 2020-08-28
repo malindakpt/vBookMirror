@@ -1,8 +1,8 @@
 import {
-  IExam, ISubject, ICourse,
+  IExam, ISubject, ICourse, ITeacher,
 } from './Interfaces';
 import {
-  exams, subjects, courses, lessons,
+  exams, subjects, courses, lessons, teachers,
 } from './TuitionData';
 
 export const getAvailableExams = (): IExam[] => {
@@ -27,5 +27,15 @@ export const getCourses = (examId: string, subjectId: string): ICourse[] => {
 
 export const getCourse = (courseId: string): ICourse|null => {
   const filtered = courses.filter((course) => course.id === courseId);
+  return filtered.length > 0 ? filtered[0] : null;
+};
+
+export const getTeacher = (teacherId: string): ITeacher|null => {
+  const filtered = teachers.filter((teacher) => teacher.id === teacherId);
+  return filtered.length > 0 ? filtered[0] : null;
+};
+
+export const getSubject = (subjectId: string): ISubject|null => {
+  const filtered = subjects.filter((subject) => subject.id === subjectId);
   return filtered.length > 0 ? filtered[0] : null;
 };
