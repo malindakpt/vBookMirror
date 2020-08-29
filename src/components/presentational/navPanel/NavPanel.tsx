@@ -18,8 +18,14 @@ interface NavLink{
   url: string;
 }
 
-const commonLinks: NavLink[] = [{ label: 'Home', url: '/' }, { label: 'Register Student', url: '/regStudent' }];
-const adminLinks: NavLink[] = [{ label: 'Register Teacher', url: '/regTeacher' }, { label: 'Revenue Reports', url: '/revenue' }, { label: 'Settings', url: '/settings' }];
+const commonLinks: NavLink[] = [
+  { label: 'Home', url: '/' },
+  { label: 'Manage', url: '/manage' }];
+
+const adminLinks: NavLink[] = [
+  { label: 'Register Teacher', url: '/regTeacher' },
+  { label: 'Revenue Reports', url: '/revenue' },
+  { label: 'Settings', url: '/settings' }];
 
 const useStyles = makeStyles({
   list: {

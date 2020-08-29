@@ -16,7 +16,12 @@ export const useBreadcrumb = () => {
 
     if (examId) {
       const exam = getExam(examId);
-      bcs.push([`${exam?.name}-${exam?.batch}-${exam?.type}` || '', `/${examId}`]);
+      if (exam) {
+        bcs.push([`${exam.name}-${exam.batch}-${exam.type}` || '', `/${examId}`]);
+      } else {
+        updateBreadcrumbs(bcs);
+        return;
+      }
     }
     if (subjectId) {
       bcs.push([getSubject(subjectId)?.name || '', `/${examId}/${subjectId}`]);
