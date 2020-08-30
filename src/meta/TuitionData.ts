@@ -74,34 +74,34 @@ export const courses: ICourse[] = [
   {
     id: 'C2',
     examId: 'AL2020R',
-    subjectId: 'COMBINDED_MATHS',
+    subjectId: 'PHYSICS',
     teacherId: 'T2',
   },
 ];
 
 export const lessons: ILesson[] = [
   {
-    id: 'L1',
+    // id: 'L1',
     courseId: 'C1',
-    week: 1,
+    // week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
   }, {
-    id: 'L2',
+    // id: 'L2',
     courseId: 'C1',
-    week: 1,
+    // week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
   }, {
-    id: 'L3',
+    // id: 'L3',
     courseId: 'C2',
-    week: 1,
+    // week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
   }, {
-    id: 'L4',
+    // id: 'L4',
     courseId: 'C3',
-    week: 1,
+    // week: 1,
     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
     attachments: [],
   },

@@ -18,11 +18,11 @@ export interface ISubject {
 }
 
 export interface ILesson {
-  id: string;
+  // id: string;
   courseId: string;
-  week: number;
+  description?: string;
   videoURL: string;
-  attachments: [],
+  attachments?: [],
 }
 
 export interface ICourse {

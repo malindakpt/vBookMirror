@@ -9,7 +9,7 @@ import { Subjects } from '../container/contents/Subjects';
 import { Courses } from '../container/contents/Courses';
 import { Course } from '../container/contents/Course';
 import { BreadcrumbBar } from '../container/breadcrumbs/BreadcrumbBar';
-import { ManageCourse } from '../container/manageCourse/ManageCourse';
+import { AddLesson } from '../container/manageCourse/addLesson/AddLesson';
 
 const Router: React.FC = () => (
   <>
@@ -30,7 +30,7 @@ const Router: React.FC = () => (
             exact
             path="/manage"
           >
-            <ManageCourse />
+            <AddLesson />
           </Route>
           <Route
             exact

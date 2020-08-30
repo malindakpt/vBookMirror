@@ -10,7 +10,10 @@ export const getSubjects = (examId: string): ISubject[] => {
   return filtered;
 };
 
-export const getCourses = (examId: string, subjectId: string): ICourse[] => {
+export const getCourses = (examId?: string, subjectId?: string): ICourse[] => {
+  if (!examId || !subjectId) {
+    return courses;
+  }
   const filtered = courses.filter((course) => course.examId === examId && course.subjectId === subjectId);
   return filtered;
 };

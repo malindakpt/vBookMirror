@@ -19,7 +19,7 @@ export const Course: React.FC = () => {
       {
         lessons.map((lesson) => (
           <Category
-            key={lesson.id}
+            key={lesson.videoURL}
             title1={lesson.videoURL}
             navURL="NO"
           />
