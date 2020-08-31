@@ -27,3 +27,56 @@ export const addDoc = (entity: string, obj: any) => new Promise((resolve) => {
     resolve(false);
   });
 });
+
+export const getDocsWithProps = (
+  entityName: string,
+  conditions: any,
+  orderBy: any,
+  skipBusy?: boolean,
+): Promise<any> => {
+  console.log(`Requesting entity: ${entityName}`, conditions);
+  const requestStatus = { isCompleted: false };
+
+  return new Promise((resolves, reject) => {
+    const ref = db.collection(entityName);
+    let query: any;
+
+    Object.keys(conditions).forEach((key, index) => {
+      if (
+        typeof conditions[key] === 'string'
+        && (conditions[key].includes('>') || conditions[key].includes('<'))
+      ) {
+        query = (query ?? ref).where(
+          key,
+          conditions[key].charAt(0),
+          conditions[key].substring(1),
+        );
+      } else if (key === 'limit') {
+        query = (query ?? ref).limit(conditions[key]);
+      } else if (Array.isArray(conditions[key])) {
+        query = (query ?? ref).where(key, 'array-contains', conditions[key][0]);
+      } else {
+        query = (query ?? ref).where(key, '==', conditions[key]);
+      }
+    });
+
+    Object.keys(orderBy).forEach((key, index) => {
+      query = (query ?? ref).orderBy(key, orderBy[key]);
+    });
+
+    const results: any = [];
+    (query ?? ref)
+      .get()
+      .then((querySnapshot: any) => {
+        querySnapshot.forEach((doc: any) => {
+          const v = doc.data();
+          v.id = doc.id;
+          results.push(v);
+        });
+        resolves(results);
+      })
+      .catch((error: any) => {
+        resolves(null);
+      });
+  });
+};

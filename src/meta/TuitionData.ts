@@ -79,30 +79,30 @@ export const courses: ICourse[] = [
   },
 ];
 
-export const lessons: ILesson[] = [
-  {
-    // id: 'L1',
-    courseId: 'C1',
-    // week: 1,
-    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-    attachments: [],
-  }, {
-    // id: 'L2',
-    courseId: 'C1',
-    // week: 1,
-    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-    attachments: [],
-  }, {
-    // id: 'L3',
-    courseId: 'C2',
-    // week: 1,
-    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-    attachments: [],
-  }, {
-    // id: 'L4',
-    courseId: 'C3',
-    // week: 1,
-    videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-    attachments: [],
-  },
-];
+// export const lessons: ILesson[] = [
+//   {
+//     // id: 'L1',
+//     courseId: 'C1',
+//     // week: 1,
+//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+//     attachments: [],
+//   }, {
+//     // id: 'L2',
+//     courseId: 'C1',
+//     // week: 1,
+//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+//     attachments: [],
+//   }, {
+//     // id: 'L3',
+//     courseId: 'C2',
+//     // week: 1,
+//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+//     attachments: [],
+//   }, {
+//     // id: 'L4',
+//     courseId: 'C3',
+//     // week: 1,
+//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
+//     attachments: [],
+//   },
+// ];

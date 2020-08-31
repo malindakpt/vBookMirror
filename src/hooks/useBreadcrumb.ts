@@ -27,7 +27,7 @@ export const useBreadcrumb = () => {
       bcs.push([getSubject(subjectId)?.name || '', `/${examId}/${subjectId}`]);
     }
     if (courseId) {
-      bcs.push([getTeacher(getCourse(courseId)?.teacherId || '')?.name || '',
+      bcs.push(['Contents',
         `/${examId}/${subjectId}/${courseId}`]);
     }
     updateBreadcrumbs(bcs);

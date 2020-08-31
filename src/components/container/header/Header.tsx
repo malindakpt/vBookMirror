@@ -10,7 +10,7 @@ import { NavPanel } from '../../presentational/navPanel/NavPanel';
 
 export const Header:React.FC = () => {
   useEffect(() => {
-    getDoc('school', '3jfPL8tdayJTjDSzf2O9').then((data) => console.log(data));
+    // getDoc('school', '3jfPL8tdayJTjDSzf2O9').then((data) => console.log(data));
   }, []);
 
   const [user, setUser] = useState < any | null >(null);

@@ -50,6 +50,9 @@ const Router: React.FC = () => (
           >
             <Course />
           </Route>
+          <Route path="">
+            <h3>404</h3>
+          </Route>
         </Switch>
       </div>
 
