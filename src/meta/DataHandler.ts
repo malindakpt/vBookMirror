@@ -5,10 +5,10 @@ import {
   exams, subjects, courses, teachers,
 } from './TuitionData';
 
-export const getSubjects = (examId: string): ISubject[] => {
-  const filtered = subjects.filter((subj) => subj.examIds.includes(examId));
-  return filtered;
-};
+// export const getSubjects = (examId: string): ISubject[] => {
+//   const filtered = subjects.filter((subj) => subj.examIds.includes(examId));
+//   return filtered;
+// };
 
 export const getCourses = (examId?: string, subjectId?: string): ICourse[] => {
   if (!examId || !subjectId) {
@@ -35,6 +35,10 @@ export const getTeacher = (teacherId: string): ITeacher|null => {
 
 export const getSubject = (subjectId: string): ISubject|null => {
   const filtered = subjects.filter((subject) => subject.id === subjectId);
+  return filtered.length > 0 ? filtered[0] : null;
+};
+export const getSubjectFromSubjects = (subjectList: ISubject[], subjectId: string): ISubject|null => {
+  const filtered = subjectList.filter((subject) => subject.id === subjectId);
   return filtered.length > 0 ? filtered[0] : null;
 };
 

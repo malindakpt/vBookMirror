@@ -1,28 +1,28 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
-import { getSubjects } from '../../../meta/DataHandler';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
+import { AppContext } from '../../../App';
 
 interface Props {
   // match?: any;
 }
 export const Subjects: React.FC<Props> = () => {
   const { examId } = useParams();
-  const subjectList = getSubjects(examId);
+  const { exams = [] } = useContext(AppContext);
 
   useBreadcrumb();
 
   return (
     <div className={classes.root}>
-      {subjectList.map((subject) => (
+      {exams[examId].subjectIds.map((subjectId) => (
         <Category
-          key={subject.id}
+          key={subjectId}
           title1=""
-          title2={subject.name}
+          title2={subjectId}
           title3=""
-          navURL={`${examId}/${subject.id}`}
+          navURL={`${examId}/${subjectId}`}
         />
       ))}
     </div>

@@ -6,15 +6,14 @@ export interface ITeacher {
 export interface IExam {
   id: string;
   name: string;
-  batch: string;
-  type: string;
-  enabled?: boolean;
+  batch: string; // Focused year of exam
+  type: string; // special batches/ theory or revison
+  subjectIds: string[];
 }
 
 export interface ISubject {
   id: string;
   name: string;
-  examIds: string[];
 }
 
 export interface ILesson {

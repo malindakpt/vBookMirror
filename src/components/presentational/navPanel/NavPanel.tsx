@@ -20,7 +20,8 @@ interface NavLink{
 
 const commonLinks: NavLink[] = [
   { label: 'Home', url: '/' },
-  { label: 'Manage', url: '/manage' }];
+  { label: 'Edit Exam', url: '/editExam' },
+  { label: 'Manage Courses', url: '/manage' }];
 
 const adminLinks: NavLink[] = [
   { label: 'Register Teacher', url: '/regTeacher' },

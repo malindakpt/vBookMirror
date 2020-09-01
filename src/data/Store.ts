@@ -28,6 +28,17 @@ export const addDoc = (entity: string, obj: any) => new Promise((resolve) => {
   });
 });
 
+export const updateDoc = (entity: string, id: string, obj: any) => new Promise((resolve) => {
+  db.collection(entity).doc(id).update(obj).then((data: any) => {
+    resolve(true);
+    alert(`${entity} is updated`);
+  })
+    .catch((err) => {
+      console.log(err);
+      resolve(false);
+    });
+});
+
 export const getDocsWithProps = (
   entityName: string,
   conditions: any,

@@ -53,8 +53,8 @@ export const AddLesson = () => {
           <InputLabel id="demo-simple-select-label">Select Teacher</InputLabel>
           <Select
             className={classes.input}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId="label1"
+            id="id1"
             value={selectedCourse || ''}
             onChange={onTeacherChange}
           >

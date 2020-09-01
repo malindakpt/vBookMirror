@@ -18,24 +18,14 @@ export const exams: IExam[] = [
     name: 'Advanced Level',
     batch: '2020 Batch',
     type: 'Theory',
+    subjectIds: [],
   },
   {
     id: 'AL2020R',
     name: 'Advanced Level',
     batch: '2020 Batch',
     type: 'Revision',
-  },
-  {
-    id: 'AL2021T',
-    name: 'Advanced Level',
-    batch: '2021 Batch',
-    type: 'Theory',
-  },
-  {
-    id: 'AL2021R',
-    name: 'Advanced Level',
-    batch: '2021 Batch',
-    type: 'Revision',
+    subjectIds: [],
   },
 ];
 
@@ -43,24 +33,20 @@ export const subjects: ISubject[] = [
   {
     id: 'COMBINDED_MATHS',
     name: 'Combined Maths',
-    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
   },
 
   {
     id: 'BIOLOGY',
     name: 'Biology',
-    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
   },
 
   {
     id: 'PHYSICS',
     name: 'Physics',
-    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
   },
   {
     id: 'CHEMISTRY',
     name: 'Chemistry',
-    examIds: ['AL2020T', 'AL2020R', 'AL2021T', 'AL2021R'],
   },
 ];
 
