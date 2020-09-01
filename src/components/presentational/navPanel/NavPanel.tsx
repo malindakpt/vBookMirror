@@ -20,13 +20,15 @@ interface NavLink{
 
 const commonLinks: NavLink[] = [
   { label: 'Home', url: '/' },
+  { label: 'Add Subject', url: '/addSubject' },
   { label: 'Edit Exam', url: '/editExam' },
   { label: 'Add Exam', url: '/addExam' }];
 
 const adminLinks: NavLink[] = [
-  { label: 'Register Teacher', url: '/regTeacher' },
-  { label: 'Revenue Reports', url: '/revenue' },
-  { label: 'Settings', url: '/settings' }];
+  // { label: 'Register Teacher', url: '/regTeacher' },
+  // { label: 'Revenue Reports', url: '/revenue' },
+  // { label: 'Settings', url: '/settings' }
+];
 
 const useStyles = makeStyles({
   list: {

@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  TextField, Button, Select, MenuItem, InputLabel, FormControl, FormControlLabel, Checkbox,
+  TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { addDoc, getDocsWithProps } from '../../../../data/Store';
-import {
-  ILesson, ICourse, ITeacher, IExam, ISubject,
-} from '../../../../meta/Interfaces';
-import { getCourses, getSubject, getExam } from '../../../../meta/DataHandler';
+import { ISubject } from '../../../../meta/Interfaces';
+import { addDoc } from '../../../../data/Store';
 
 export const AddSubject = () => {
-  const [exams, setExams] = useState<IExam[]>();
-  const [selectedExamIds, setSelectedExamIds] = useState<string[]>([]);
   const [subject, setSubject] = useState<ISubject>();
-  const [courses, setCourses] = useState<ICourse[]>([]);
-
-  useEffect(() => {
-    getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
-  }, []);
 
   const setSubjectProps = (obj: any) => {
     setSubject((prev) => {
@@ -26,30 +16,8 @@ export const AddSubject = () => {
     });
   };
 
-  const onExamChange = (e: any) => {
-    const { id } = e.target;
-    const { checked } = e.target;
-    const exists = selectedExamIds.findIndex((ex) => ex === id);
-    if (checked) {
-      if (exists === -1) {
-        setSelectedExamIds((prev) => [id, ...prev]);
-      }
-    } else if (exists >= 0) {
-      setSelectedExamIds((prev) => {
-        const next = [...prev];
-        next.splice(exists, 1);
-        return next;
-      });
-    }
-  };
-
   const onSave = () => {
-    console.log(selectedExamIds);
-    // if (!lesson || !lesson.courseId || !lesson.videoURL) {
-    //   alert('Invalid inputs');
-    // } else {
-    //   addDoc('lessons', lesson);
-    // }
+    addDoc('subjects', subject);
   };
 
   return (
@@ -68,22 +36,6 @@ export const AddSubject = () => {
           onChange={(e) => setSubjectProps({ name: e.target.value })}
         />
 
-        <div className={classes.twoColumn}>
-          {exams?.map((exam) => (
-            <FormControlLabel
-              key={exam.id}
-              control={(
-                <Checkbox
-                  id={exam.id}
-                  onChange={onExamChange}
-                  name="checkedB"
-                  color="primary"
-                />
-        )}
-              label={exam.name}
-            />
-          ))}
-        </div>
         <Button
           variant="contained"
           onClick={onSave}

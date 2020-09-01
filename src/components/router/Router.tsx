@@ -43,6 +43,12 @@ const Router: React.FC = () => (
           </Route>
           <Route
             exact
+            path="/addSubject"
+          >
+            <AddSubject />
+          </Route>
+          <Route
+            exact
             path="/addExam"
           >
             <AddExam />
