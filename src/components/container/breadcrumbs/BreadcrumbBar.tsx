@@ -8,7 +8,7 @@ export const BreadcrumbBar = () => {
 
   return (
     <Breadcrumbs aria-label="breadcrumb">
-      {breadcrumbs.map((bc) => (
+      {breadcrumbs?.map((bc) => (
         <Link
           style={{ textDecoration: 'none', color: 'grey' }}
           key={bc[0]}

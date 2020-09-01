@@ -105,7 +105,7 @@ export const AddLesson = () => {
           variant="contained"
           onClick={onSave}
         >
-          Save
+          Add
         </Button>
       </form>
     </>
