@@ -12,6 +12,7 @@ import { BreadcrumbBar } from '../container/breadcrumbs/BreadcrumbBar';
 import { AddLesson } from '../container/manageCourse/addLesson/AddLesson';
 import { AddSubject } from '../container/manageCourse/addSubject/AddSubject';
 import { EditExam } from '../container/manageCourse/editExam/EditExam';
+import { AddExam } from '../container/manageCourse/addExam/AddExam';
 
 const Router: React.FC = () => (
   <>
@@ -39,6 +40,12 @@ const Router: React.FC = () => (
             path="/editExam"
           >
             <EditExam />
+          </Route>
+          <Route
+            exact
+            path="/addExam"
+          >
+            <AddExam />
           </Route>
           <Route
             exact

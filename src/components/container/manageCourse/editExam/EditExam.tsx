@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  TextField, Button, Select, MenuItem, InputLabel, FormControl, FormControlLabel, Checkbox,
+  Button, Select, MenuItem, InputLabel, FormControl, FormControlLabel, Checkbox,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { addDoc, getDocsWithProps, updateDoc } from '../../../../data/Store';
-import {
-  ILesson, ICourse, ITeacher, IExam, ISubject,
-} from '../../../../meta/Interfaces';
-import {
-  getCourses, getSubject, getExam, getSubjectFromSubjects,
-} from '../../../../meta/DataHandler';
+import { getDocsWithProps, updateDoc } from '../../../../data/Store';
+import { IExam, ISubject } from '../../../../meta/Interfaces';
+import { getSubjectFromSubjects } from '../../../../meta/DataHandler';
 
 export const EditExam = () => {
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
-  // const [selectedSubjectIds, setSelectedSubjectIds] = useState<string[]>([]);
   const [selectedExamIdx, setSelectedExamIdx] = useState<number>(-1);
 
   useEffect(() => {
@@ -23,7 +18,6 @@ export const EditExam = () => {
   }, []);
 
   const onSelectedExamChange = (e: any) => {
-    // getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
     console.log(exams);
     setSelectedExamIdx(e.target.value);
   };
@@ -38,34 +32,22 @@ export const EditExam = () => {
 
   const onSubjectChange = (e: any) => {
     const { id: subjectId, checked } = e.target;
-    const exists = exams[selectedExamIdx].subjectIds.findIndex((id) => id === subjectId);
+    const subjecList = exams[selectedExamIdx].subjectIds ?? [];
+    const exists = subjecList.findIndex((id) => id === subjectId);
 
     if (checked) {
       if (exists === -1) {
-        // setSelectedSubjectIds((prev) => [id, ...prev]);
-        setSubjectIds([subjectId, ...exams[selectedExamIdx].subjectIds]);
+        setSubjectIds([subjectId, ...subjecList]);
       }
     } else if (exists >= 0) {
-      // setSelectedSubjectIds((prev) => {
-      //   const next = [...prev];
-      //   next.splice(exists, 1);
-      //   return next;
-      // });
-      exams[selectedExamIdx].subjectIds.splice(exists, 1);
-      setSubjectIds(exams[selectedExamIdx].subjectIds);
+      subjecList.splice(exists, 1);
+      setSubjectIds(subjecList);
     }
   };
 
   const onSave = () => {
     console.log(exams);
     updateDoc('exams', exams[selectedExamIdx].id, { subjectIds: exams[selectedExamIdx].subjectIds });
-    // setExams((prev) => {
-    //   const next = [...prev];
-    //   next[selectedExamIdx].subjectIds = selectedSubjectIds;
-    //   console.log(next);
-    //   updateDoc('exams', next[selectedExamIdx].id, { subjectIds: selectedSubjectIds });
-    //   return next;
-    // });
   };
 
   return (
@@ -103,7 +85,7 @@ export const EditExam = () => {
               control={(
                 <Checkbox
                   id={subject.id}
-                  checked={exams[selectedExamIdx].subjectIds.includes(subject.id)}
+                  checked={(exams[selectedExamIdx].subjectIds ?? [])?.includes(subject.id)}
                   onChange={onSubjectChange}
                   name="checkedB"
                   color="primary"

@@ -21,7 +21,7 @@ interface NavLink{
 const commonLinks: NavLink[] = [
   { label: 'Home', url: '/' },
   { label: 'Edit Exam', url: '/editExam' },
-  { label: 'Manage Courses', url: '/manage' }];
+  { label: 'Add Exam', url: '/addExam' }];
 
 const adminLinks: NavLink[] = [
   { label: 'Register Teacher', url: '/regTeacher' },
