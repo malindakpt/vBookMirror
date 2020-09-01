@@ -5,7 +5,7 @@ import {
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import { ILesson, ICourse, ITeacher } from '../../../../meta/Interfaces';
-import { getCourses, getSubject, getExam } from '../../../../meta/DataHandler';
+import { getSubject, getExam } from '../../../../meta/DataHandler';
 
 export const AddLesson = () => {
   const [lesson, setLesson] = useState<ILesson>();

@@ -1,5 +1,4 @@
 import firebase from 'firebase/app';
-// import 'firebase/auth';
 import 'firebase/firestore';
 import firebaseConfig from './Config';
 
@@ -43,10 +42,8 @@ export const getDocsWithProps = (
   entityName: string,
   conditions: any,
   orderBy: any,
-  skipBusy?: boolean,
 ): Promise<any> => {
   console.log(`Requesting entity: ${entityName}`, conditions);
-  const requestStatus = { isCompleted: false };
 
   return new Promise((resolves, reject) => {
     const ref = db.collection(entityName);

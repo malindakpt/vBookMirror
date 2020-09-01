@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   AppBar, Toolbar, Typography, Button,
 } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import classes from './Header.module.scss';
-import { getDoc } from '../../../data/Store';
 import { NavPanel } from '../../presentational/navPanel/NavPanel';
 
 export const Header:React.FC = () => {
-  useEffect(() => {
-    // getDoc('school', '3jfPL8tdayJTjDSzf2O9').then((data) => console.log(data));
-  }, []);
-
   const [user, setUser] = useState < any | null >(null);
   const signInwithToken = () => {
     console.log(user?.token);

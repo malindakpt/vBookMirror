@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import {
-  getCourses, getTeacher, getSubject,
+  getSubject,
 } from '../../../meta/DataHandler';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
@@ -15,14 +15,12 @@ export const Courses: React.FC = () => {
   useEffect(() => {
     getDocsWithProps('courses', {}, {}).then((data: ICourse[]) => setCourses(data));
   }, []);
-  const { subjectId, examId } = useParams();
-  // const coursesList = getCourses(examId, subjectId);
+  const { subjectId } = useParams();
 
   return (
     <div className={classes.root}>
       <h3>Courses</h3>
       {courses.map((course) => {
-        const teacher = getTeacher(course.teacherId);
         const subject = getSubject(course.subjectId);
         console.log(`${subjectId}/${course.id}`);
         return (

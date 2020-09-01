@@ -1,8 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  getTeacher, getCourse, getExam, getSubject,
-} from '../meta/DataHandler';
+import { getExam, getSubject } from '../meta/DataHandler';
 import { AppContext } from '../App';
 
 export const useBreadcrumb = () => {
@@ -32,5 +30,5 @@ export const useBreadcrumb = () => {
     }
     updateBreadcrumbs(bcs);
   },
-  []);
+  [examId, subjectId, courseId, updateBreadcrumbs]);
 };

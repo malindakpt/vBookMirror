@@ -1,5 +1,5 @@
 import {
-  IExam, ISubject, ITeacher, ILesson, ICourse,
+  IExam, ISubject, ITeacher, ICourse,
 } from './Interfaces';
 
 export const teachers: ITeacher[] = [

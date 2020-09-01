@@ -1,13 +1,11 @@
 import React, { useContext } from 'react';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
-import { getExams } from '../../../meta/DataHandler';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { AppContext } from '../../../App';
 
 export const Exams = () => {
   useBreadcrumb();
-  // const exams = getExams();
   const { exams } = useContext(AppContext);
 
   console.log(exams);

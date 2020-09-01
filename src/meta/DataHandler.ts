@@ -1,14 +1,9 @@
 import {
-  IExam, ISubject, ICourse, ITeacher, ILesson,
+  IExam, ISubject, ICourse, ITeacher,
 } from './Interfaces';
 import {
   exams, subjects, courses, teachers,
 } from './TuitionData';
-
-// export const getSubjects = (examId: string): ISubject[] => {
-//   const filtered = subjects.filter((subj) => subj.examIds.includes(examId));
-//   return filtered;
-// };
 
 export const getCourses = (examId?: string, subjectId?: string): ICourse[] => {
   if (!examId || !subjectId) {

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getCourse } from '../../../meta/DataHandler';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDoc, getDocsWithProps } from '../../../data/Store';
+import { getDocsWithProps } from '../../../data/Store';
 import { ILesson } from '../../../meta/Interfaces';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
 
   const { courseId } = useParams();
-  const course = getCourse(courseId);
   const [lessons, setLessons] = useState<ILesson[]>();
 
   useEffect(() => {
