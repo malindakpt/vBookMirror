@@ -1,42 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Header from './components/container/header/Header';
 import Footer from './components/presentational/footer/Footer';
 import Router from './components/router/Router';
-import { getDocsWithProps } from './data/Store';
-import { IExam } from './meta/Interfaces';
-import { Snack } from './components/presentational/snackbar/Snack';
+import { Snack, State } from './components/presentational/snackbar/Snack';
 
-export interface IState {
-  exams?: IExam[];
+export interface IContext {
+
   breadcrumbs?: any[];
-  updateBreadcrumbs: (bcrumbs: any) => void
+  updateBreadcrumbs: (bcrumbs: any) => void;
+  showSnackbar:(message: string) => void;
 }
 
-const initialState = { exams: [], breadcrumbs: [], updateBreadcrumbs: (bcrumbs: any) => {} };
-export const AppContext = React.createContext<IState>(
+const initialState = {
+  breadcrumbs: [],
+  updateBreadcrumbs: (bcrumbs: any) => {},
+  showSnackbar: (message: string) => {},
+};
+export const AppContext = React.createContext<IContext>(
   initialState,
 );
 
 const App: React.FC = () => {
-  const [state, setState] = useState<IState>(initialState);
+  const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
+  const [snackText, setSnackText] = useState<string>('');
 
-  const updateState = (obj: any) => {
-    setState((prev: any) => {
-      const next = { ...prev, ...obj };
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+
+  const showSnackbar = (text: string) => {
+    setSnackText(text);
+    setState((prev) => {
+      const next = { ...prev, open: true };
       return next;
     });
   };
 
-  useEffect(() => {
-    getDocsWithProps('exams', {}, {}).then((exams) => {
-      updateState({ exams });
+  const hideSnackbar = () => {
+    setState((prev) => {
+      const next = { ...prev, open: false };
+      return next;
     });
-  }, []);
+  };
+
+  const updateBreadcrumbs = (obj: any) => {
+    setBreadcrumbs(obj);
+  };
+
   return (
     <BrowserRouter>
-      <AppContext.Provider value={{ ...state }}>
-        <Snack />
+      <AppContext.Provider value={{ breadcrumbs, showSnackbar, updateBreadcrumbs }}>
+        <Snack
+          text={snackText}
+          state={state}
+          handleClose={hideSnackbar}
+        />
         <Header />
         <Router />
         <Footer />

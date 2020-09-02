@@ -1,12 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
+import { IExam } from '../../../meta/Interfaces';
+import { getDocsWithProps } from '../../../data/Store';
 import { AppContext } from '../../../App';
 
 export const Exams = () => {
   useBreadcrumb();
-  const { exams } = useContext(AppContext);
+  const [exams, setExams] = useState<IExam[]>([]);
+
+  const { showSnackbar, breadcrumbs, updateBreadcrumbs } = useContext(AppContext);
+
+  console.log(breadcrumbs);
+  useEffect(() => {
+    getDocsWithProps('exams', {}, {}).then((data) => { setExams(data); });
+  }, []);
 
   console.log(exams);
   return (

@@ -5,12 +5,13 @@ import {
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import {
-  ILesson, ICourse, ITeacher, ISubject,
+  ILesson, ICourse, ITeacher, ISubject, IExam,
 } from '../../../../meta/Interfaces';
 import { getSubject, getExam } from '../../../../meta/DataHandler';
 
 export const AddLesson = () => {
   const [lesson, setLesson] = useState<ILesson>();
+  const [exams, setExams] = useState<IExam[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<ICourse>();
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
@@ -19,6 +20,7 @@ export const AddLesson = () => {
   useEffect(() => {
     getDocsWithProps('teachers', {}, {}).then((data:ITeacher[]) => setTeachers(data));
     getDocsWithProps('subjects', {}, {}).then((data:ISubject[]) => setSubjects(data));
+    getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
   }, []);
 
   const setLessonProp = (obj: any) => {
@@ -82,14 +84,18 @@ export const AddLesson = () => {
             value={lesson?.courseId || ''}
             onChange={(e) => setLessonProp({ courseId: e.target.value })}
           >
-            {courses.map((course) => (
-              <MenuItem
-                value={course.id}
-                key={course.id}
-              >
-                {`${getExam(course.examId)?.type}-${getExam(course.examId)?.batch}-${getSubject(subjects, course.subjectId)?.name}-${getExam(course.examId)?.name}`}
-              </MenuItem>
-            ))}
+            {courses.map((course) => {
+              const exam = getExam(exams, course.examId);
+              return (
+                <MenuItem
+                  value={course.id}
+                  key={course.id}
+                >
+                  {`${exam?.type}-${exam?.batch}-
+                  ${getSubject(subjects, course.subjectId)?.name}-${exam?.name}`}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
 
