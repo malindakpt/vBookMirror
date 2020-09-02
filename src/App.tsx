@@ -5,6 +5,7 @@ import Footer from './components/presentational/footer/Footer';
 import Router from './components/router/Router';
 import { getDocsWithProps } from './data/Store';
 import { IExam } from './meta/Interfaces';
+import { Snack } from './components/presentational/snackbar/Snack';
 
 export interface IState {
   exams?: IExam[];
@@ -18,7 +19,6 @@ export const AppContext = React.createContext<IState>(
 );
 
 const App: React.FC = () => {
-
   const [state, setState] = useState<IState>(initialState);
 
   const updateState = (obj: any) => {
@@ -36,6 +36,7 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AppContext.Provider value={{ ...state }}>
+        <Snack />
         <Header />
         <Router />
         <Footer />
