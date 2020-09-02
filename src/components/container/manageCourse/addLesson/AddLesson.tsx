@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   TextField, Button, Select, MenuItem, InputLabel, FormControl,
 } from '@material-ui/core';
@@ -7,48 +7,35 @@ import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import {
   ILesson, ICourse, ITeacher, ISubject, IExam,
 } from '../../../../meta/Interfaces';
-import { getSubject, getExam } from '../../../../meta/DataHandler';
+import { getSubject } from '../../../../meta/DataHandler';
+import { AppContext } from '../../../../App';
 
 export const AddLesson = () => {
-  const [lesson, setLesson] = useState<ILesson>();
-  const [exams, setExams] = useState<IExam[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<ICourse>();
-  const [teachers, setTeachers] = useState<ITeacher[]>([]);
+  const { showSnackbar } = useContext(AppContext);
+
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
+  const [teachers, setTeachers] = useState<ITeacher[]>([]);
+
+  const [videoURL, setVideoURL] = useState<string>('');
+  const [courseId, setCourseId] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
 
   useEffect(() => {
-    getDocsWithProps('teachers', {}, {}).then((data:ITeacher[]) => setTeachers(data));
+    getDocsWithProps('courses', {}, {}).then((data:ICourse[]) => setCourses(data));
     getDocsWithProps('subjects', {}, {}).then((data:ISubject[]) => setSubjects(data));
     getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
+    getDocsWithProps('teachers', {}, {}).then((data:ITeacher[]) => setTeachers(data));
   }, []);
 
-  const setLessonProp = (obj: any) => {
-    setLesson((prev) => {
-      const newObj = { ...prev, ...obj };
-      return newObj;
-    });
-  };
-
-  const onTeacherChange = (e: any) => {
-    setSelectedCourse(e.target.value);
-    getDocsWithProps('courses', { teacherId: e.target.value }, {}).then((data: ICourse[]) => {
-      setCourses(data);
-    });
-  };
-
   const onSave = () => {
-    console.log(lesson);
-    if (!lesson || !lesson.courseId || !lesson.videoURL) {
-      alert('Invalid inputs');
-    } else {
-      addDoc('lessons', lesson);
-    }
+    addDoc('lessons', { courseId, videoURL, description }).then(() => showSnackbar('New lesson added'));
   };
 
   return (
     <>
-      <h3>Manage Courses</h3>
+      <h3>Add Lesson</h3>
       <form
         className={classes.root}
         noValidate
@@ -56,43 +43,25 @@ export const AddLesson = () => {
       >
 
         <FormControl className={classes.input}>
-          <InputLabel id="demo-simple-select-label">Select Teacher</InputLabel>
+          <InputLabel id="demo-simple-select-label">Select Course</InputLabel>
           <Select
             className={classes.input}
             labelId="label1"
             id="id1"
-            value={selectedCourse || ''}
-            onChange={onTeacherChange}
+            value={courseId}
+            onChange={(e: any) => setCourseId(e.target.value)}
           >
-            {teachers.map((teacher) => (
-              <MenuItem
-                value={teacher.id}
-                key={teacher.id}
-              >
-                {`${teacher.name}`}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            {courses.map((t) => {
+              const subject = getSubject(subjects, t.subjectId);
+              const teacher = getSubject(teachers, t.teacherId);
+              const exam = getSubject(exams, t.examId);
 
-        <FormControl className={classes.input}>
-          <InputLabel id="demo-simple-select-label">Select Course</InputLabel>
-          <Select
-            className={classes.input}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={lesson?.courseId || ''}
-            onChange={(e) => setLessonProp({ courseId: e.target.value })}
-          >
-            {courses.map((course) => {
-              const exam = getExam(exams, course.examId);
               return (
                 <MenuItem
-                  value={course.id}
-                  key={course.id}
+                  value={t.id}
+                  key={t.id}
                 >
-                  {`${exam?.type}-${exam?.batch}-
-                  ${getSubject(subjects, course.subjectId)?.name}-${exam?.name}`}
+                  {`${exam?.name} ${subject?.name} ${teacher?.name}`}
                 </MenuItem>
               );
             })}
@@ -103,13 +72,15 @@ export const AddLesson = () => {
           className={classes.input}
           id="standard-basic"
           label="Video URL"
-          onChange={(e) => setLessonProp({ videoURL: e.target.value })}
+          value={videoURL}
+          onChange={(e) => setVideoURL(e.target.value)}
         />
         <TextField
           className={classes.input}
           id="filled-basic"
           label="Description"
-          onChange={(e) => setLessonProp({ description: e.target.value })}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <Button
           variant="contained"

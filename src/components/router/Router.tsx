@@ -33,7 +33,7 @@ const Router: React.FC = () => (
           </Route>
           <Route
             exact
-            path="/manage"
+            path="/addLesson"
           >
             <AddLesson />
           </Route>

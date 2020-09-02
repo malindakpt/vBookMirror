@@ -17,7 +17,7 @@ export interface ISubject {
 }
 
 export interface ILesson {
-  // id: string;
+  id: string;
   courseId: string;
   description?: string;
   videoURL: string;
