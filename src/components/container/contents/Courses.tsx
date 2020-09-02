@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import {
-  getSubject, getCourse, getTeacher, getExam,
+  getSubject, getTeacher, getExam,
 } from '../../../meta/DataHandler';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';

@@ -5,7 +5,7 @@ import {
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import {
-  ILesson, ICourse, ITeacher, ISubject, IExam,
+  ICourse, ITeacher, ISubject, IExam,
 } from '../../../../meta/Interfaces';
 import { getSubject } from '../../../../meta/DataHandler';
 import { AppContext } from '../../../../App';

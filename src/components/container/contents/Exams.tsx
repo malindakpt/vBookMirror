@@ -10,7 +10,7 @@ export const Exams = () => {
   useBreadcrumb();
   const [exams, setExams] = useState<IExam[]>([]);
 
-  const { showSnackbar, breadcrumbs, updateBreadcrumbs } = useContext(AppContext);
+  const { breadcrumbs } = useContext(AppContext);
 
   console.log(breadcrumbs);
   useEffect(() => {

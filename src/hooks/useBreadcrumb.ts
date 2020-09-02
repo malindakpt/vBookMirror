@@ -15,7 +15,6 @@ export const useBreadcrumb = () => {
       return;
     }
     updateBreadcrumbs(bcs);
-
     setBreadcrumbs(bcs);
   }, []);
 
