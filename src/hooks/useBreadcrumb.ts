@@ -2,7 +2,6 @@ import {
   useEffect, useContext, useState, useCallback,
 } from 'react';
 import { useParams } from 'react-router-dom';
-import { getExam } from '../meta/DataHandler';
 import { AppContext } from '../App';
 
 export const useBreadcrumb = () => {
@@ -28,7 +27,7 @@ export const useBreadcrumb = () => {
     if (examId) {
       // const exam = getExam(examId);
       // if (exam) {
-      bcs.push(['Exam', `/${examId}`]);
+      bcs.push(['Subjects', `/${examId}`]);
       // bcs.push([`${exam.name}-${exam.batch}-${exam.type}` || '', `/${examId}`]);
       // } else {
       //   sendBreadcrumbs(bcs);
@@ -36,7 +35,7 @@ export const useBreadcrumb = () => {
       // }
     }
     if (subjectId) {
-      bcs.push([subjectId || '', `/${examId}/${subjectId}`]);
+      bcs.push(['Courses', `/${examId}/${subjectId}`]);
     }
     if (courseId) {
       bcs.push(['Contents',
