@@ -72,7 +72,7 @@ export const EditExam = () => {
                 value={idx}
                 key={exam.id}
               >
-                {`${exam.name}`}
+                {`${exam.name} ${exam.batch} ${exam.type}`}
               </MenuItem>
             ))}
           </Select>
@@ -91,7 +91,7 @@ export const EditExam = () => {
                   color="primary"
                 />
         )}
-              label={getSubjectFromSubjects(subjects, subject.id)?.id}
+              label={getSubjectFromSubjects(subjects, subject.id)?.name}
             />
           ))}
         </div>
