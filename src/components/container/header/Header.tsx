@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   AppBar, Toolbar, Typography, Button,
 } from '@material-ui/core';
@@ -6,32 +6,34 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import classes from './Header.module.scss';
 import { NavPanel } from '../../presentational/navPanel/NavPanel';
+import { AppContext } from '../../../App';
 
 export const Header:React.FC = () => {
-  const [user, setUser] = useState < any | null >(null);
-  const signInwithToken = () => {
-    console.log(user?.token);
-    firebase.auth().signInWithCustomToken(user?.token || '').then((result: any) => {
-      console.log(result);
+  const [user, setUser] = useState <{name: '', photo: ''} | null>(null);
+  const { setEmail } = useContext(AppContext);
+
+  useEffect(() => {
+    console.log('Check Prev user');
+    firebase.auth().onAuthStateChanged((u: any) => {
+      setEmail(u.email);
+      setUser({
+        name: u.displayName,
+        photo: u.photoURL,
+      });
     });
-  };
+  }, []);
+
   const handleLogin = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then((result:any) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      const token = result.credential.accessToken;
-      console.log(token);
-      // The signed-in user info.
-      const user2 = result.user;
+      // const token = result.credential.accessToken;
+      // const user2 = result.user;
+      setEmail(result.user.email);
       setUser({
-        displayName: result.displayName,
-        email: result.email,
-        photoURL: result.photoURL,
-        token: result.credential.idToken,
+        name: result.displayName,
+        photo: result.photoURL,
       });
-
-      console.log(user2);
-      console.log(result.credential);
 
       // setName(user.displayName);
       // ...
@@ -47,14 +49,15 @@ export const Header:React.FC = () => {
     });
   };
 
-  // const handleLogout = () => {
-  //   firebase.auth().signOut().then(() => {
-  //     // Sign-out successful.
-  //     // setName(null);
-  //   }).catch((error) => {
-  //     // An error happened.
-  //   });
-  // };
+  const handleLogout = () => {
+    firebase.auth().signOut().then(() => {
+      // Sign-out successful.
+      setEmail(null);
+      setUser(null);
+    }).catch((error) => {
+      // An error happened.
+    });
+  };
 
   return (
     <AppBar position="static">
@@ -70,15 +73,23 @@ export const Header:React.FC = () => {
           color="inherit"
           onClick={handleLogin}
         >
-          New Login
+          {user?.name ?? 'Login'}
         </Button>
+        { user && user.photo && (
+          <img
+            alt={user?.name}
+            src={user?.photo}
+          />
+        )}
+        { user && (
         <Button
           color="inherit"
-          onClick={signInwithToken}
+          onClick={handleLogout}
         >
-          Re login
+          Logout
         </Button>
-        {/* <img src */}
+        )}
+
       </Toolbar>
 
     </AppBar>

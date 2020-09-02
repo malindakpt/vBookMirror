@@ -6,14 +6,17 @@ import Router from './components/router/Router';
 import { Snack, State } from './components/presentational/snackbar/Snack';
 
 export interface IContext {
-
+  email: string | null;
   breadcrumbs?: any[];
+  setEmail: (email: string|null) => void,
   updateBreadcrumbs: (bcrumbs: any) => void;
   showSnackbar:(message: string) => void;
 }
 
 const initialState = {
+  email: null,
   breadcrumbs: [],
+  setEmail: (email: string|null) => {},
   updateBreadcrumbs: (bcrumbs: any) => {},
   showSnackbar: (message: string) => {},
 };
@@ -24,6 +27,7 @@ export const AppContext = React.createContext<IContext>(
 const App: React.FC = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
   const [snackText, setSnackText] = useState<string>('');
+  const [email, setEmail] = useState<string|null>(null);
 
   const [state, setState] = React.useState<State>({
     open: false,
@@ -52,7 +56,10 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <AppContext.Provider value={{ breadcrumbs, showSnackbar, updateBreadcrumbs }}>
+      <AppContext.Provider value={{
+        email, breadcrumbs, showSnackbar, setEmail, updateBreadcrumbs,
+      }}
+      >
         <Snack
           text={snackText}
           state={state}

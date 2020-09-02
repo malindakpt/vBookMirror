@@ -12,12 +12,10 @@ export const Exams = () => {
 
   const { breadcrumbs } = useContext(AppContext);
 
-  console.log(breadcrumbs);
   useEffect(() => {
     getDocsWithProps('exams', {}, {}).then((data) => { setExams(data); });
   }, []);
 
-  console.log(exams);
   return (
     <div className={classes.root}>
       {exams?.map((ex) => (
