@@ -23,7 +23,8 @@ const commonLinks: NavLink[] = [
   { label: 'Add Subject', url: '/addSubject' },
   { label: 'Add Teacher', url: '/addTeacher' },
   { label: 'Edit Exam', url: '/editExam' },
-  { label: 'Add Exam', url: '/addExam' }];
+  { label: 'Add Exam', url: '/addExam' },
+  { label: 'Add Course', url: '/addCourse' }];
 
 const adminLinks: NavLink[] = [
   // { label: 'Register Teacher', url: '/regTeacher' },

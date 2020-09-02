@@ -20,7 +20,6 @@ export const getDoc = (entity: string, id: string) => new Promise((resolve) => {
 export const addDoc = (entity: string, obj: any) => new Promise((resolve) => {
   db.collection(entity).add(obj).then((data: any) => {
     resolve(true);
-    alert(`${entity} is added`);
   }).catch((err) => {
     console.log(err);
     resolve(false);

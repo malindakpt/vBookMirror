@@ -21,7 +21,7 @@ export const useBreadcrumb = () => {
 
   useEffect(() => {
     const bcs = [
-      ['Home', '/'],
+      ['Exams', '/'],
     ];
 
     if (examId) {
@@ -38,7 +38,7 @@ export const useBreadcrumb = () => {
       bcs.push(['Courses', `/${examId}/${subjectId}`]);
     }
     if (courseId) {
-      bcs.push(['Contents',
+      bcs.push(['Lessons',
         `/${examId}/${subjectId}/${courseId}`]);
     }
     sendBreadcrumbs(bcs);
