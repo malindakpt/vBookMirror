@@ -13,6 +13,7 @@ import { AddLesson } from '../container/manageCourse/addLesson/AddLesson';
 import { AddSubject } from '../container/manageCourse/addSubject/AddSubject';
 import { EditExam } from '../container/manageCourse/editExam/EditExam';
 import { AddExam } from '../container/manageCourse/addExam/AddExam';
+import { AddTeacher } from '../container/manageCourse/addTeacher/AddTeacher';
 
 const Router: React.FC = () => (
   <>
@@ -40,6 +41,12 @@ const Router: React.FC = () => (
             path="/editExam"
           >
             <EditExam />
+          </Route>
+          <Route
+            exact
+            path="/addTeacher"
+          >
+            <AddTeacher />
           </Route>
           <Route
             exact
