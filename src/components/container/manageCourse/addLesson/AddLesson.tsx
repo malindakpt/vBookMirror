@@ -4,7 +4,9 @@ import {
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
-import { ILesson, ICourse, ITeacher } from '../../../../meta/Interfaces';
+import {
+  ILesson, ICourse, ITeacher, ISubject,
+} from '../../../../meta/Interfaces';
 import { getSubject, getExam } from '../../../../meta/DataHandler';
 
 export const AddLesson = () => {
@@ -12,9 +14,11 @@ export const AddLesson = () => {
   const [selectedCourse, setSelectedCourse] = useState<ICourse>();
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [subjects, setSubjects] = useState<ISubject[]>([]);
 
   useEffect(() => {
     getDocsWithProps('teachers', {}, {}).then((data:ITeacher[]) => setTeachers(data));
+    getDocsWithProps('subjects', {}, {}).then((data:ISubject[]) => setSubjects(data));
   }, []);
 
   const setLessonProp = (obj: any) => {
@@ -83,7 +87,7 @@ export const AddLesson = () => {
                 value={course.id}
                 key={course.id}
               >
-                {`${getExam(course.examId)?.type}-${getExam(course.examId)?.batch}-${getSubject(course.subjectId)?.name}-${getExam(course.examId)?.name}`}
+                {`${getExam(course.examId)?.type}-${getExam(course.examId)?.batch}-${getSubject(subjects, course.subjectId)?.name}-${getExam(course.examId)?.name}`}
               </MenuItem>
             ))}
           </Select>

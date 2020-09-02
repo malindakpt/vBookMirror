@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { getExam, getSubject } from '../meta/DataHandler';
+import { getExam } from '../meta/DataHandler';
 import { AppContext } from '../App';
 
 export const useBreadcrumb = () => {
@@ -22,7 +22,7 @@ export const useBreadcrumb = () => {
       }
     }
     if (subjectId) {
-      bcs.push([getSubject(subjectId)?.name || '', `/${examId}/${subjectId}`]);
+      bcs.push([subjectId || '', `/${examId}/${subjectId}`]);
     }
     if (courseId) {
       bcs.push(['Contents',

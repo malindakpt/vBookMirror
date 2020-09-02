@@ -2,7 +2,7 @@ import {
   IExam, ISubject, ICourse, ITeacher,
 } from './Interfaces';
 import {
-  exams, subjects, courses, teachers,
+  exams, courses,
 } from './TuitionData';
 
 export const getCourses = (examId?: string, subjectId?: string): ICourse[] => {
@@ -23,16 +23,16 @@ export const getCourse = (courseId: string): ICourse|null => {
   return filtered.length > 0 ? filtered[0] : null;
 };
 
-export const getTeacher = (teacherId: string): ITeacher|null => {
-  const filtered = teachers.filter((teacher) => teacher.id === teacherId);
+export const getTeacher = (teachersList: ITeacher[], teacherId: string): ITeacher|null => {
+  const filtered = teachersList.filter((teacher) => teacher.id === teacherId);
   return filtered.length > 0 ? filtered[0] : null;
 };
 
-export const getSubject = (subjectId: string): ISubject|null => {
-  const filtered = subjects.filter((subject) => subject.id === subjectId);
-  return filtered.length > 0 ? filtered[0] : null;
-};
-export const getSubjectFromSubjects = (subjectList: ISubject[], subjectId: string): ISubject|null => {
+// export const getSubject = (subjectId: string): ISubject|null => {
+//   const filtered = subjects.filter((subject) => subject.id === subjectId);
+//   return filtered.length > 0 ? filtered[0] : null;
+// };
+export const getSubject = (subjectList: ISubject[], subjectId: string): ISubject|null => {
   const filtered = subjectList.filter((subject) => subject.id === subjectId);
   return filtered.length > 0 ? filtered[0] : null;
 };

@@ -7,13 +7,15 @@ import {
 } from '../../../meta/DataHandler';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
-import { ICourse } from '../../../meta/Interfaces';
+import { ICourse, ISubject } from '../../../meta/Interfaces';
 
 export const Courses: React.FC = () => {
   useBreadcrumb();
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [subjects, setSubjects] = useState<ISubject[]>([]);
   useEffect(() => {
     getDocsWithProps('courses', {}, {}).then((data: ICourse[]) => setCourses(data));
+    getDocsWithProps('subjects', {}, {}).then((data: ISubject[]) => setSubjects(data));
   }, []);
   const { subjectId } = useParams();
 
@@ -21,7 +23,7 @@ export const Courses: React.FC = () => {
     <div className={classes.root}>
       <h3>Courses</h3>
       {courses.map((course) => {
-        const subject = getSubject(course.subjectId);
+        const subject = getSubject(subjects, course.subjectId);
         console.log(`${subjectId}/${course.id}`);
         return (
           <Category

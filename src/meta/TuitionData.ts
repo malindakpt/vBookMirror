@@ -1,16 +1,6 @@
 import {
-  IExam, ISubject, ITeacher, ICourse,
+  IExam, ISubject, ICourse,
 } from './Interfaces';
-
-export const teachers: ITeacher[] = [
-  {
-    id: 'T1',
-    name: 'Malinda Kumarasinghe',
-  }, {
-    id: 'T2',
-    name: 'Sumudu Herath',
-  },
-];
 
 export const exams: IExam[] = [
   {
@@ -34,12 +24,10 @@ export const subjects: ISubject[] = [
     id: 'COMBINDED_MATHS',
     name: 'Combined Maths',
   },
-
   {
     id: 'BIOLOGY',
     name: 'Biology',
   },
-
   {
     id: 'PHYSICS',
     name: 'Physics',
@@ -64,31 +52,3 @@ export const courses: ICourse[] = [
     teacherId: 'T2',
   },
 ];
-
-// export const lessons: ILesson[] = [
-//   {
-//     // id: 'L1',
-//     courseId: 'C1',
-//     // week: 1,
-//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-//     attachments: [],
-//   }, {
-//     // id: 'L2',
-//     courseId: 'C1',
-//     // week: 1,
-//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-//     attachments: [],
-//   }, {
-//     // id: 'L3',
-//     courseId: 'C2',
-//     // week: 1,
-//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-//     attachments: [],
-//   }, {
-//     // id: 'L4',
-//     courseId: 'C3',
-//     // week: 1,
-//     videoURL: 'https://www.youtube.com/watch?v=ZIAwhGgFrhA',
-//     attachments: [],
-//   },
-// ];

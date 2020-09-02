@@ -5,7 +5,7 @@ import {
 import classes from '../ManageCourse.module.scss';
 import { getDocsWithProps, updateDoc } from '../../../../data/Store';
 import { IExam, ISubject } from '../../../../meta/Interfaces';
-import { getSubjectFromSubjects } from '../../../../meta/DataHandler';
+import { getSubject } from '../../../../meta/DataHandler';
 
 export const EditExam = () => {
   const [exams, setExams] = useState<IExam[]>([]);
@@ -91,7 +91,7 @@ export const EditExam = () => {
                   color="primary"
                 />
         )}
-              label={getSubjectFromSubjects(subjects, subject.id)?.name}
+              label={getSubject(subjects, subject.id)?.name}
             />
           ))}
         </div>
