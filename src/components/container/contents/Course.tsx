@@ -32,9 +32,10 @@ export const Course: React.FC = () => {
       {
         lessons?.map((lesson, idx) => (
           <Category
-            key={lesson.videoURL}
+            key={idx}
             title1={`Week ${idx}`}
             title2={lesson.description}
+            title3={lesson.price ? `Rs: ${lesson.price}` : ''}
             navURL="NO"
           />
         ))

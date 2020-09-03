@@ -20,6 +20,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-shadow":"off",
         "no-alert":"off",
         "no-restricted-syntax":"off",
         "object-property-newline":"error",

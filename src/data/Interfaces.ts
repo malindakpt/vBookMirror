@@ -3,6 +3,11 @@ export interface ITeacher {
   name: string;
 }
 
+export interface IUser {
+  email: string;
+  lessons: [];
+}
+
 export interface IExam {
   id: string;
   name: string;
@@ -21,6 +26,7 @@ export interface ILesson {
   courseId: string;
   description?: string;
   videoURL: string;
+  price: number;
   attachments?: [],
 }
 

@@ -5,10 +5,11 @@ import {
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import {
-  ICourse, ITeacher, ISubject, IExam,
+  ICourse, ITeacher, ISubject, IExam, ILesson,
 } from '../../../../data/Interfaces';
 import { getSubject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
+import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 
 export const AddLesson = () => {
   const { showSnackbar } = useContext(AppContext);
@@ -17,10 +18,12 @@ export const AddLesson = () => {
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
+  const [lessons, setLessons] = useState<ILesson[]>([]);
 
   const [videoURL, setVideoURL] = useState<string>('');
   const [courseId, setCourseId] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     getDocsWithProps('courses', {}, {}).then((data:ICourse[]) => setCourses(data));
@@ -30,7 +33,15 @@ export const AddLesson = () => {
   }, []);
 
   const onSave = () => {
-    addDoc('lessons', { courseId, videoURL, description }).then(() => showSnackbar('New lesson added'));
+    addDoc('lessons', {
+      courseId, videoURL, description, price,
+    }).then(() => showSnackbar('New lesson added'));
+  };
+
+  const onCourseChange = (e: any) => {
+    const courseId = e.target.value;
+    setCourseId(courseId);
+    getDocsWithProps('lessons', { courseId }, {}).then((data) => setLessons(data));
   };
 
   return (
@@ -49,7 +60,7 @@ export const AddLesson = () => {
             labelId="label1"
             id="id1"
             value={courseId}
-            onChange={(e: any) => setCourseId(e.target.value)}
+            onChange={onCourseChange}
           >
             {courses.map((t) => {
               const subject = getSubject(subjects, t.subjectId);
@@ -82,13 +93,24 @@ export const AddLesson = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <TextField
+          className={classes.input}
+          id="filled-basic"
+          type="number"
+          label="Price"
+          value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+        />
         <Button
           variant="contained"
           onClick={onSave}
         >
           Add
         </Button>
+
       </form>
+
+      <ListItems list={lessons} />
     </>
   );
 };
