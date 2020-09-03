@@ -91,7 +91,7 @@ export const Header:React.FC = () => {
           color="inherit"
           onClick={handleLogout}
         >
-          <PowerSettingsNewIcon style={{ fontSize: 40 }} />
+          <PowerSettingsNewIcon style={{ fontSize: 25 }} />
         </Button>
         )}
 

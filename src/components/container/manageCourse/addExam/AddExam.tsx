@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { addDoc } from '../../../../data/Store';
 import { IExam } from '../../../../data/Interfaces';
+import { AppContext } from '../../../../App';
 
 export const AddExam = () => {
   const [exam, setExam] = useState<IExam>();
+  const { showSnackbar } = useContext(AppContext);
 
   const setExamProps = (obj: any) => {
     setExam((prev) => {
@@ -17,8 +19,7 @@ export const AddExam = () => {
   };
 
   const onSave = () => {
-    console.log(exam);
-    addDoc('exams', exam);
+    addDoc('exams', exam).then(() => showSnackbar('Exam added'));
   };
 
   return (

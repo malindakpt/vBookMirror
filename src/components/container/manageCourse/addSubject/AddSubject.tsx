@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { ISubject } from '../../../../data/Interfaces';
-import { addDoc } from '../../../../data/Store';
+import { addDoc, getDocsWithProps } from '../../../../data/Store';
+import { AppContext } from '../../../../App';
+import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 
 export const AddSubject = () => {
+  const { showSnackbar } = useContext(AppContext);
   const [subject, setSubject] = useState<ISubject>();
+  const [subjects, setSubjects] = useState<ISubject[]>([]);
 
   const setSubjectProps = (obj: any) => {
     setSubject((prev) => {
@@ -16,8 +20,13 @@ export const AddSubject = () => {
     });
   };
 
+  useEffect(() => {
+    getDocsWithProps('subjects', {}, {}).then((data) => setSubjects(data));
+    // eslint-disable-next-line
+  },[])
+
   const onSave = () => {
-    addDoc('subjects', subject);
+    addDoc('subjects', subject).then(() => showSnackbar('Subject added'));
   };
 
   return (
@@ -43,6 +52,7 @@ export const AddSubject = () => {
           Add
         </Button>
       </form>
+      <ListItems list={subjects} />
     </>
   );
 };
