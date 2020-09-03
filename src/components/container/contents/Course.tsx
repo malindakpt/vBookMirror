@@ -4,7 +4,7 @@ import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
-import { ILesson } from '../../../meta/Interfaces';
+import { ILesson } from '../../../data/Interfaces';
 import { AppContext } from '../../../App';
 
 export const Course: React.FC = () => {

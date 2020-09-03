@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import ContactsIcon from '@material-ui/icons/Contacts';
 import classes from '../ManageCourse.module.scss';
-import { ITeacher } from '../../../../meta/Interfaces';
+import { ITeacher } from '../../../../data/Interfaces';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 
 export const AddTeacher = () => {

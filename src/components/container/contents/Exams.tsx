@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { IExam } from '../../../meta/Interfaces';
+import { IExam } from '../../../data/Interfaces';
 import { getDocsWithProps } from '../../../data/Store';
 
 export const Exams = () => {

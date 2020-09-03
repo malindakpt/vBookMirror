@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
-import { ITeacher, ISubject, IExam } from '../../../../meta/Interfaces';
+import { ITeacher, ISubject, IExam } from '../../../../data/Interfaces';
 import { AppContext } from '../../../../App';
 
 export const AddCourse = () => {

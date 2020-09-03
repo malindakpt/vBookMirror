@@ -3,7 +3,7 @@ import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { ISubject } from '../../../../meta/Interfaces';
+import { ISubject } from '../../../../data/Interfaces';
 import { addDoc } from '../../../../data/Store';
 
 export const AddSubject = () => {

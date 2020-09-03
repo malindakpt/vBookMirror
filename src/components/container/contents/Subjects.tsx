@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { IExam, ISubject } from '../../../meta/Interfaces';
+import { IExam, ISubject } from '../../../data/Interfaces';
 import { getDocsWithProps } from '../../../data/Store';
-import { getExam, getSubject } from '../../../meta/DataHandler';
+import { getExam, getSubject } from '../../../data/StoreHelper';
 
 export const Subjects = () => {
   const { examId } = useParams();

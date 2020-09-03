@@ -4,12 +4,12 @@ import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import {
   getSubject, getTeacher, getExam,
-} from '../../../meta/DataHandler';
+} from '../../../data/StoreHelper';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
 import {
   ICourse, ISubject, ITeacher, IExam,
-} from '../../../meta/Interfaces';
+} from '../../../data/Interfaces';
 
 export const Courses: React.FC = () => {
   const { subjectId, examId } = useParams();

@@ -4,8 +4,8 @@ import {
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { getDocsWithProps, updateDoc } from '../../../../data/Store';
-import { IExam, ISubject } from '../../../../meta/Interfaces';
-import { getSubject } from '../../../../meta/DataHandler';
+import { IExam, ISubject } from '../../../../data/Interfaces';
+import { getSubject } from '../../../../data/StoreHelper';
 
 export const EditExam = () => {
   const [exams, setExams] = useState<IExam[]>([]);

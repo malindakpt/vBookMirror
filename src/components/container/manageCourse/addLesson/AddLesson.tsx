@@ -6,8 +6,8 @@ import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import {
   ICourse, ITeacher, ISubject, IExam,
-} from '../../../../meta/Interfaces';
-import { getSubject } from '../../../../meta/DataHandler';
+} from '../../../../data/Interfaces';
+import { getSubject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 
 export const AddLesson = () => {
