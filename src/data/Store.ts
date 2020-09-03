@@ -42,7 +42,7 @@ export const getDocsWithProps = (
 ): Promise<any> => new Promise((resolves, reject) => {
   const cachedResponse = store[generateRequestKey(entityName, conditions, orderBy)];
   if (cachedResponse) {
-    console.log('Cached', cachedResponse);
+    // Resolve result from cache and skip network
     resolves(cachedResponse);
     return;
   }
@@ -50,7 +50,7 @@ export const getDocsWithProps = (
   const ref = db.collection(entityName);
   let query: any;
 
-  Object.keys(conditions).forEach((key, index) => {
+  Object.keys(conditions).forEach((key) => {
     if (
       typeof conditions[key] === 'string'
         && (conditions[key].includes('>') || conditions[key].includes('<'))
@@ -82,8 +82,8 @@ export const getDocsWithProps = (
         v.id = doc.id;
         results.push(v);
       });
+      // Store result in cache and resolve
       store[generateRequestKey(entityName, conditions, orderBy)] = results;
-      console.log('Network', store);
       resolves(results);
     })
     .catch((error: any) => {

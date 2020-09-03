@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import classes from './Header.module.scss';
 import { NavPanel } from '../../presentational/navPanel/NavPanel';
 import { AppContext } from '../../../App';
@@ -15,11 +16,15 @@ export const Header:React.FC = () => {
   useEffect(() => {
     console.log('Check Prev user');
     firebase.auth().onAuthStateChanged((u: any) => {
-      setEmail(u.email);
-      setUser({
-        name: u.displayName,
-        photo: u.photoURL,
-      });
+      if (u) {
+        setEmail(u.email);
+        setUser({
+          name: u?.displayName,
+          photo: u?.photoURL,
+        });
+      } else {
+        setEmail(null);
+      }
     });
   }, []);
 
@@ -61,7 +66,7 @@ export const Header:React.FC = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar className={classes.container}>
         <NavPanel />
         <Typography
           variant="h6"
@@ -86,7 +91,7 @@ export const Header:React.FC = () => {
           color="inherit"
           onClick={handleLogout}
         >
-          Logout
+          <PowerSettingsNewIcon style={{ fontSize: 40 }} />
         </Button>
         )}
 

@@ -30,3 +30,8 @@ export interface ICourse {
   examId: string;
   teacherId: string;
 }
+
+export interface ISubscription {
+  email: string;
+  lessonIds: string[]
+}

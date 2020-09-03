@@ -4,13 +4,10 @@ import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { IExam } from '../../../meta/Interfaces';
 import { getDocsWithProps } from '../../../data/Store';
-import { AppContext } from '../../../App';
 
 export const Exams = () => {
   useBreadcrumb();
   const [exams, setExams] = useState<IExam[]>([]);
-
-  const { breadcrumbs } = useContext(AppContext);
 
   useEffect(() => {
     getDocsWithProps('exams', {}, {}).then((data) => { setExams(data); });
