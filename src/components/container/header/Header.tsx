@@ -14,7 +14,6 @@ export const Header:React.FC = () => {
   const { setEmail } = useContext(AppContext);
 
   useEffect(() => {
-    console.log('Check Prev user');
     firebase.auth().onAuthStateChanged((u: any) => {
       if (u) {
         setEmail(u.email);
@@ -26,6 +25,7 @@ export const Header:React.FC = () => {
         setEmail(null);
       }
     });
+    // eslint-disable-next-line
   }, []);
 
   const handleLogin = () => {

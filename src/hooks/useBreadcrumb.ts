@@ -16,6 +16,7 @@ export const useBreadcrumb = () => {
     }
     updateBreadcrumbs(bcs);
     setBreadcrumbs(bcs);
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

@@ -25,6 +25,7 @@ export const Courses: React.FC = () => {
     getDocsWithProps('subjects', {}, {}).then((data: ISubject[]) => setSubjects(data));
     getDocsWithProps('teachers', {}, {}).then((data: ITeacher[]) => setTeachers(data));
     getDocsWithProps('exams', {}, {}).then((data: IExam[]) => setExams(data));
+    // eslint-disable-next-line
   }, []);
 
   return (

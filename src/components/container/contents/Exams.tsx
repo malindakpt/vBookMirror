@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
@@ -11,6 +11,7 @@ export const Exams = () => {
 
   useEffect(() => {
     getDocsWithProps('exams', {}, {}).then((data) => { setExams(data); });
+    // eslint-disable-next-line
   }, []);
 
   return (
