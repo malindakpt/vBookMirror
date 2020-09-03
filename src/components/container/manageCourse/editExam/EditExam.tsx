@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Button, Select, MenuItem, InputLabel, FormControl, FormControlLabel, Checkbox,
 } from '@material-ui/core';
@@ -6,8 +6,10 @@ import classes from '../ManageCourse.module.scss';
 import { getDocsWithProps, updateDoc } from '../../../../data/Store';
 import { IExam, ISubject } from '../../../../data/Interfaces';
 import { getSubject } from '../../../../data/StoreHelper';
+import { AppContext } from '../../../../App';
 
 export const EditExam = () => {
+  const { showSnackbar } = useContext(AppContext);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [selectedExamIdx, setSelectedExamIdx] = useState<number>(-1);
@@ -18,7 +20,6 @@ export const EditExam = () => {
   }, []);
 
   const onSelectedExamChange = (e: any) => {
-    console.log(exams);
     setSelectedExamIdx(e.target.value);
   };
 
@@ -46,8 +47,8 @@ export const EditExam = () => {
   };
 
   const onSave = () => {
-    console.log(exams);
-    updateDoc('exams', exams[selectedExamIdx].id, { subjectIds: exams[selectedExamIdx].subjectIds });
+    updateDoc('exams', exams[selectedExamIdx].id, { subjectIds: exams[selectedExamIdx].subjectIds })
+      .then(() => showSnackbar('Exam is updated'));
   };
 
   return (

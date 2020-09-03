@@ -28,9 +28,6 @@ export const Course: React.FC = () => {
     <div className={classes.root}>
       <h3>
         Course:
-        {courseId}
-        Email:
-        {email ?? 'Not logged in'}
       </h3>
       {
         lessons?.map((lesson, idx) => (

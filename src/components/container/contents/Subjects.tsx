@@ -6,7 +6,6 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { IExam, ISubject } from '../../../data/Interfaces';
 import { getDocsWithProps } from '../../../data/Store';
 import { getExam, getSubject } from '../../../data/StoreHelper';
-import { ListItems } from '../../presentational/ListItems/ListItemsComponent';
 
 export const Subjects = () => {
   const { examId } = useParams();
@@ -23,7 +22,7 @@ export const Subjects = () => {
 
   return (
     <div className={classes.root}>
-      {getExam(exams, examId)?.subjectIds.map((subjectId) => {
+      {getExam(exams, examId)?.subjectIds?.map((subjectId) => {
         const subject = getSubject(subjects, subjectId);
 
         return (

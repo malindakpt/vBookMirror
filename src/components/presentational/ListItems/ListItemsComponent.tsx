@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  ListItem, List, ListItemText, Divider,
+  ListItem, List, Divider,
 } from '@material-ui/core';
 import classes from './ListItems.module.scss';
 

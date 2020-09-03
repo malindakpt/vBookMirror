@@ -94,7 +94,7 @@ export const AddCourse = () => {
                 value={t.id}
                 key={t.id}
               >
-                {`${t.name}`}
+                {`${t.name} ${t.batch}  ${t.type}`}
               </MenuItem>
             ))}
           </Select>

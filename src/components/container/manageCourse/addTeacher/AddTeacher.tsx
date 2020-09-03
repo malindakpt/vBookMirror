@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   TextField, Button, List, ListItem, ListItemAvatar, Avatar, ListItemText,
 } from '@material-ui/core';
@@ -6,8 +6,11 @@ import ContactsIcon from '@material-ui/icons/Contacts';
 import classes from '../ManageCourse.module.scss';
 import { ITeacher } from '../../../../data/Interfaces';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
+import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
+import { AppContext } from '../../../../App';
 
 export const AddTeacher = () => {
+  const { showSnackbar } = useContext(AppContext);
   const [teacher, setTeacher] = useState<ITeacher>();
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
 
@@ -23,7 +26,7 @@ export const AddTeacher = () => {
   };
 
   const onSave = () => {
-    addDoc('teachers', teacher);
+    addDoc('teachers', teacher).then(() => showSnackbar('Teacher is added'));
   };
 
   return (
@@ -49,21 +52,7 @@ export const AddTeacher = () => {
           Add
         </Button>
 
-        <List className={classes.oneColumn}>
-          { teachers.map((teach) => (
-            <ListItem key={teach.id}>
-              <ListItemAvatar>
-                <Avatar>
-                  <ContactsIcon style={{ fontSize: 40 }} />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={teach.name}
-                secondary={teach.id}
-              />
-            </ListItem>
-          ))}
-        </List>
+        <ListItems list={teachers} />
       </form>
     </>
   );
