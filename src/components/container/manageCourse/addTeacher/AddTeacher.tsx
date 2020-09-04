@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  TextField, Button, List, ListItem, ListItemAvatar, Avatar, ListItemText,
+  TextField, Button,
 } from '@material-ui/core';
-import ContactsIcon from '@material-ui/icons/Contacts';
 import classes from '../ManageCourse.module.scss';
 import { ITeacher } from '../../../../data/Interfaces';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';

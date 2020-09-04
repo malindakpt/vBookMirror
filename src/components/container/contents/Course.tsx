@@ -11,19 +11,18 @@ export const Course: React.FC = () => {
   useBreadcrumb();
 
   const { email } = useContext(AppContext);
+  console.log(email);
 
   const { courseId } = useParams();
   const [lessons, setLessons] = useState<ILesson[]>();
 
   useEffect(() => {
-    getDocsWithProps('lessons', {}, {}).then((data: ILesson[]) => {
+    getDocsWithProps('lessons', { courseId }, {}).then((data: ILesson[]) => {
       setLessons(data);
     });
+    // eslint-disable-next-line
   }, []);
 
-  // if (!course) { return null; }
-
-  // const lessons = getLessons(course.id);
   return (
     <div className={classes.root}>
       <h3>
