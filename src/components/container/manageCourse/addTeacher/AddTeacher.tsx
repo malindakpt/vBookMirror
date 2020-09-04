@@ -8,15 +8,17 @@ import { ITeacher } from '../../../../data/Interfaces';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { AppContext } from '../../../../App';
+import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 
 export const AddTeacher = () => {
+  const [onUpdate, updateUI] = useForcedUpdate();
   const { showSnackbar } = useContext(AppContext);
   const [teacher, setTeacher] = useState<ITeacher>();
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
 
   useEffect(() => {
     getDocsWithProps('teachers', {}, {}).then((data) => setTeachers(data));
-  }, []);
+  }, [onUpdate]);
 
   const setSubjectProps = (obj: any) => {
     setTeacher((prev) => {
@@ -26,7 +28,10 @@ export const AddTeacher = () => {
   };
 
   const onSave = () => {
-    addDoc('teachers', teacher).then(() => showSnackbar('Teacher is added'));
+    addDoc('teachers', teacher).then(() => {
+      showSnackbar('Teacher is added');
+      updateUI();
+    });
   };
 
   return (

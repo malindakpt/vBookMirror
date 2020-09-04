@@ -1,6 +1,6 @@
 .root {
   display: grid;
-  grid-template-columns: 1fr 5fr;
+  grid-template-columns: 1fr 3fr 1fr;
   margin: auto;
   background: #f7f7f7;
 
@@ -15,5 +15,10 @@
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     padding: 20px;
+  }
+
+  .actions {
+    display: grid;
+    place-items: center;
   }
 }

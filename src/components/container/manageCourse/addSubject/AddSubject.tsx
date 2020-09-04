@@ -7,8 +7,10 @@ import { ISubject } from '../../../../data/Interfaces';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
+import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 
 export const AddSubject = () => {
+  const [onUpdate, updateUI] = useForcedUpdate();
   const { showSnackbar } = useContext(AppContext);
   const [subject, setSubject] = useState<ISubject>();
   const [subjects, setSubjects] = useState<ISubject[]>([]);
@@ -23,10 +25,13 @@ export const AddSubject = () => {
   useEffect(() => {
     getDocsWithProps('subjects', {}, {}).then((data) => setSubjects(data));
     // eslint-disable-next-line
-  },[])
+  },[onUpdate])
 
   const onSave = () => {
-    addDoc('subjects', subject).then(() => showSnackbar('Subject added'));
+    addDoc('subjects', subject).then(() => {
+      showSnackbar('Subject added');
+      updateUI();
+    });
   };
 
   return (

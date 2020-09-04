@@ -25,5 +25,8 @@ export const Category:React.FC<Props> = ({
       <div>{title2}</div>
       <div>{title3}</div>
     </div>
+    <div className={classes.actions}>
+      <ContactsIcon style={{ fontSize: 40 }} />
+    </div>
   </Link>
 );
