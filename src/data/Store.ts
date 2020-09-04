@@ -4,13 +4,20 @@ import firebaseConfig from './Config';
 
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(app);
-
+const store: {[key: string]: any} = {};
 console.log('firebase initialized');
 
-// const
+const clearStore = (entityName: string) => {
+  for (const key of Object.keys(store)) {
+    if (key.startsWith(entityName)) {
+      store[key] = null;
+    }
+  }
+};
 
-export const addDoc = (entity: string, obj: any) => new Promise((resolve) => {
-  db.collection(entity).add(obj).then((data: any) => {
+export const addDoc = (entityName: string, obj: any) => new Promise((resolve) => {
+  db.collection(entityName).add(obj).then((data: any) => {
+    clearStore(entityName);
     resolve(true);
   }).catch((err) => {
     console.log(err);
@@ -18,8 +25,9 @@ export const addDoc = (entity: string, obj: any) => new Promise((resolve) => {
   });
 });
 
-export const updateDoc = (entity: string, id: string, obj: any) => new Promise((resolve) => {
-  db.collection(entity).doc(id).update(obj).then((data: any) => {
+export const updateDoc = (entityName: string, id: string, obj: any) => new Promise((resolve) => {
+  db.collection(entityName).doc(id).update(obj).then((data: any) => {
+    clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
@@ -28,10 +36,7 @@ export const updateDoc = (entity: string, id: string, obj: any) => new Promise((
     });
 });
 
-const store: {[key: string]: any} = {};
-
-const generateRequestKey = (entityName: string,
-  conditions: any,
+const generateRequestKey = (entityName: string, conditions: any,
   orderBy: any) => `${entityName}-${JSON.stringify(conditions)}-${JSON.stringify(orderBy)}`;
 
 export const getDocsWithProps = (
