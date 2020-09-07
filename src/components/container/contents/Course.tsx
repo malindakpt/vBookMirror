@@ -27,7 +27,7 @@ export const Course: React.FC = () => {
       if (data[0]) { setSubcriptions(data[0].lessons); }
     });
     // eslint-disable-next-line
-  }, []);
+  }, [email]);
 
   const handleSelectLesson = (id: string, selected: boolean) => {
     let total = 0;
@@ -96,17 +96,31 @@ export const Course: React.FC = () => {
       </div>
       )}
       {
-        lessons?.map((lesson, idx) => (
-          <Category
-            id={lesson.id}
-            key={idx}
-            title1={`Week ${idx}`}
-            title2={lesson.description}
-            title3={lesson.price ? `Rs: ${lesson.price}` : ''}
-            navURL={subscriptions[lesson.id] ? `${courseId}/${lesson.id}` : `${courseId}`}
-            onSelect={handleSelectLesson}
-          />
-        ))
+        lessons?.map((lesson, idx) => {
+          let subsText;
+
+          if (lesson.price) {
+            if (subscriptions[lesson.id]) {
+              subsText = 'Paid';
+            } else {
+              subsText = `Rs: ${lesson.price}`;
+            }
+          } else {
+            subsText = 'Free';
+          }
+
+          return (
+            <Category
+              id={lesson.id}
+              key={idx}
+              title1={`Week ${idx}`}
+              title2={lesson.description}
+              title3={subsText}
+              navURL={!lesson.price || subscriptions[lesson.id] ? `${courseId}/${lesson.id}` : `${courseId}`}
+              onSelect={handleSelectLesson}
+            />
+          );
+        })
       }
     </div>
   );
