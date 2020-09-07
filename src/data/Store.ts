@@ -25,6 +25,17 @@ export const addDoc = (entityName: string, obj: any) => new Promise((resolve) =>
   });
 });
 
+export const addDocWithId = (entityName: string, id: string, obj: any) => new Promise((resolve) => {
+  db.collection(entityName).doc(id).set(obj).then((data: any) => {
+    clearStore(entityName);
+    resolve(true);
+  })
+    .catch((err) => {
+      console.log(err);
+      resolve(false);
+    });
+});
+
 export const updateDoc = (entityName: string, id: string, obj: any) => new Promise((resolve) => {
   db.collection(entityName).doc(id).update(obj).then((data: any) => {
     clearStore(entityName);

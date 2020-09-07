@@ -5,7 +5,9 @@ export interface ITeacher {
 
 export interface IUser {
   email: string;
-  lessons: [];
+  lessons: {
+    [id: string]: boolean;
+  };
 }
 
 export interface IExam {

@@ -4,6 +4,10 @@
   margin: auto;
   background: #f7f7f7;
 
+  &.selected {
+    background: #e0e0e0;
+  }
+
   .image {
     padding: 20px;
     display: grid;

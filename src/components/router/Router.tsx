@@ -15,6 +15,7 @@ import { EditExam } from '../container/manageCourse/editExam/EditExam';
 import { AddExam } from '../container/manageCourse/addExam/AddExam';
 import { AddTeacher } from '../container/manageCourse/addTeacher/AddTeacher';
 import { AddCourse } from '../container/manageCourse/addCourse/AddCourse';
+import { Lesson } from '../container/contents/lesson/Lesson';
 
 const routes = [
   ['/', Exams],
@@ -27,6 +28,7 @@ const routes = [
   ['/:examId', Subjects],
   ['/:examId/:subjectId', Courses],
   ['/:examId/:subjectId/:courseId', Course],
+  ['/:examId/:subjectId/:courseId/:lessonId', Lesson],
 ];
 
 const Router: React.FC = () => (
