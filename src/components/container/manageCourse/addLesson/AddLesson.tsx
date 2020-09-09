@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  TextField, Button, Select, MenuItem, InputLabel, FormControl,
+  TextField, Button, Select, MenuItem, InputLabel, FormControl, IconButton,
 } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import {
@@ -9,7 +10,6 @@ import {
 } from '../../../../data/Interfaces';
 import { getSubject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
-import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 
 export const AddLesson = () => {
   const { showSnackbar } = useContext(AppContext);
@@ -107,10 +107,25 @@ export const AddLesson = () => {
         >
           Add
         </Button>
-
       </form>
-
-      <ListItems list={lessons} />
+      <table className={classes.center}>
+        <tbody>
+          {lessons.map((les) => (
+            <tr key={les.id}>
+              <td>{les.description}</td>
+              <td>{les.videoURL}</td>
+              <td>
+                <IconButton
+                  aria-label="copy"
+                  onClick={() => setVideoURL(les.videoURL)}
+                >
+                  <FileCopyIcon />
+                </IconButton>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 };

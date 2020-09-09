@@ -16,6 +16,8 @@ const clearStore = (entityName: string) => {
 };
 
 export const addDoc = (entityName: string, obj: any) => new Promise((resolve) => {
+  delete obj.id; // Allow id auto generation
+
   db.collection(entityName).add(obj).then((data: any) => {
     clearStore(entityName);
     resolve(true);

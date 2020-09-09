@@ -12,7 +12,7 @@ export const Course: React.FC = () => {
   useBreadcrumb();
 
   const [selectedLessons, setSelectedLessons] = useState<{[key: string]: boolean}>({});
-  const [subscriptions, setSubcriptions] = useState<{[key: string]: boolean}>({});
+  const [user, setUser] = useState<IUser>();
   const [total, setTotal] = useState(0);
   const { email, showSnackbar } = useContext(AppContext);
 
@@ -24,10 +24,10 @@ export const Course: React.FC = () => {
       setLessons(data);
     });
     getDocsWithProps('users', { email }, {}).then((data: IUser[]) => {
-      if (data[0]) { setSubcriptions(data[0].lessons); }
+      setUser(data[0]);
     });
     // eslint-disable-next-line
-  }, [email]);
+  }, [email, selectedLessons]);
 
   const handleSelectLesson = (id: string, selected: boolean) => {
     let total = 0;
@@ -47,22 +47,23 @@ export const Course: React.FC = () => {
   const pay = async () => {
     if (!email) return;
 
-    const usersWithEmail: IUser[] = await getDocsWithProps('users', { email }, {});
-    if (usersWithEmail.length > 0) {
-      const { lessons } = usersWithEmail[0];
-
+    // const usersWithEmail: IUser[] = await getDocsWithProps('users', { email }, {});
+    if (user) {
       for (const [les, subscribed] of Object.entries(selectedLessons)) {
         if (subscribed) {
-          lessons[les] = true;
+          user.lessons[les] = true;
         }
       }
-      updateDoc('users', email, { lessons }).then(() => {
+      updateDoc('users', user.id, user).then(() => {
         showSnackbar('Subscribed to lessons');
-        console.log(selectedLessons);
+        setSelectedLessons({});
+        setTotal(0);
       });
     } else {
       const newUser: IUser = {
-        email, lessons: {},
+        id: '',
+        email,
+        lessons: {},
       };
       for (const [les, subscribed] of Object.entries(selectedLessons)) {
         if (subscribed) {
@@ -71,7 +72,8 @@ export const Course: React.FC = () => {
       }
       addDoc('users', newUser).then(() => {
         showSnackbar('Subscribed to lessons');
-        console.log(selectedLessons);
+        setSelectedLessons({});
+        setTotal(0);
       });
     }
   };
@@ -100,7 +102,7 @@ export const Course: React.FC = () => {
           let subsText;
 
           if (lesson.price) {
-            if (subscriptions[lesson.id]) {
+            if (user?.lessons[lesson.id]) {
               subsText = 'Paid';
             } else {
               subsText = `Rs: ${lesson.price}`;
@@ -116,7 +118,7 @@ export const Course: React.FC = () => {
               title1={`Week ${idx}`}
               title2={lesson.description}
               title3={subsText}
-              navURL={!lesson.price || subscriptions[lesson.id] ? `${courseId}/${lesson.id}` : `${courseId}`}
+              navURL={!lesson.price || user?.lessons[lesson.id] ? `${courseId}/${lesson.id}` : `${courseId}`}
               onSelect={handleSelectLesson}
             />
           );

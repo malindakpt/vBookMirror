@@ -21,6 +21,7 @@
     ],
     "rules": {
         "no-shadow":"off",
+        "no-param-reassign":"off",
         "no-alert":"off",
         "no-restricted-syntax":"off",
         "object-property-newline":"error",
