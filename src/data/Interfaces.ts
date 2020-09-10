@@ -26,11 +26,14 @@ export interface ISubject {
 
 export interface ILesson {
   id: string;
-  courseId: string;
-  description?: string;
+  topic: string;
+  partNo: string;
+  description: string;
   videoURL: string;
-  price: number;
+  keywords: string;
   attachments?: [],
+
+  price: number;
 }
 
 export interface ICourse {
@@ -38,6 +41,7 @@ export interface ICourse {
   subjectId: string;
   examId: string;
   teacherId: string;
+  lessons: string[];
 }
 
 export interface ISubscription {

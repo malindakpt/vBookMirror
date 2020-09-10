@@ -2,8 +2,10 @@
 
 .container {
   min-height: calc(100vh - 94px);
+  padding: 20px;
 
   @include mobile {
     min-height: calc(100vh - 76px);
+    padding: 10px;
   }
 }

@@ -15,16 +15,30 @@ const clearStore = (entityName: string) => {
   }
 };
 
-export const addDoc = (entityName: string, obj: any) => new Promise((resolve) => {
+// TODO: clear data store for all edit data queries
+
+export const addDoc = (entityName: string, obj: any) => new Promise<string>((resolve) => {
   delete obj.id; // Allow id auto generation
 
-  db.collection(entityName).add(obj).then((data: any) => {
+  db.collection(entityName).add(obj).then((docRef: any) => {
+    console.log(docRef.id);
     clearStore(entityName);
-    resolve(true);
+    resolve(docRef.id);
   }).catch((err) => {
     console.log(err);
-    resolve(false);
+    resolve(err);
   });
+});
+
+export const deleteDoc = (entityName: string, id: string) => new Promise<boolean>((resolve) => {
+  db.collection(entityName).doc(id).delete().then(() => {
+    clearStore(entityName);
+    resolve(true);
+  })
+    .catch((err) => {
+      console.log(err);
+      resolve(false);
+    });
 });
 
 export const addDocWithId = (entityName: string, id: string, obj: any) => new Promise((resolve) => {
