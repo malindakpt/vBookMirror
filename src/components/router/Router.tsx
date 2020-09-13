@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Switch,
   Route,
@@ -16,44 +16,72 @@ import { AddExam } from '../container/manageCourse/addExam/AddExam';
 import { AddTeacher } from '../container/manageCourse/addTeacher/AddTeacher';
 import { AddCourse } from '../container/manageCourse/addCourse/AddCourse';
 import { Lesson } from '../container/contents/lesson/Lesson';
+import { AppContext } from '../../App';
 
-const routes = [
-  ['/', Exams],
-  ['/addLesson', AddLesson],
-  ['/editExam', EditExam],
-  ['/addExam', AddExam],
-  ['/addCourse', AddCourse],
-  ['/addTeacher', AddTeacher],
-  ['/addSubject', AddSubject],
-  ['/:examId', Subjects],
-  ['/:examId/:subjectId', Courses],
-  ['/:examId/:subjectId/:courseId', Course],
-  ['/:examId/:subjectId/:courseId/:lessonId', Lesson],
+type routeConfig = [string, any, string, boolean][];
+
+export const routes: routeConfig = [
+  ['/', Exams, 'Exams', true],
 ];
 
-const Router: React.FC = () => (
-  <>
-    <BreadcrumbBar />
-    <div className={classes.container}>
-      <div>
-        {/* A <Switch> looks through its children <Route>s and
+export const teacherRoutes: routeConfig = [
+  ['/addLesson', AddLesson, 'Add Lesson', true],
+  ['/addCourse', AddCourse, 'Add Course', true],
+  ['/:examId', Subjects, 'Subjects', false],
+  ['/:examId/:subjectId', Courses, 'Courses', false],
+  ['/:examId/:subjectId/:courseId', Course, 'Course', false],
+  ['/:examId/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
+];
+
+export const adminRoutes: routeConfig = [
+  ['/editExam', EditExam, 'Edit Exam', true],
+  ['/addExam', AddExam, 'Add Exam', true],
+  ['/addTeacher', AddTeacher, 'Add Teacher', true],
+  ['/addSubject', AddSubject, 'Add Subject', true],
+];
+
+const Router: React.FC = () => {
+  const { isTeacher, isAdmin } = useContext(AppContext);
+  return (
+    <>
+      <BreadcrumbBar />
+      <div className={classes.container}>
+        <div>
+          {/* A <Switch> looks through its children <Route>s and
       renders the first one that matches the current URL. */}
-        <Switch>
-          {routes.map((r: any) => (
-            <Route
-              exact
-              key={r[0]}
-              path={r[0]}
-              component={r[1]}
-            />
-          ))}
-          <Route path="">
-            <h3>404</h3>
-          </Route>
-        </Switch>
+          <Switch>
+            {routes.map((r: any) => (
+              <Route
+                exact
+                key={r[0]}
+                path={r[0]}
+                component={r[1]}
+              />
+            ))}
+            {(isTeacher || isAdmin()) && teacherRoutes.map((r: any) => (
+              <Route
+                exact
+                key={r[0]}
+                path={r[0]}
+                component={r[1]}
+              />
+            ))}
+            {isAdmin() && adminRoutes.map((r: any) => (
+              <Route
+                exact
+                key={r[0]}
+                path={r[0]}
+                component={r[1]}
+              />
+            ))}
+            <Route path="">
+              <h3>404 Not found</h3>
+            </Route>
+          </Switch>
+        </div>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 export default Router;

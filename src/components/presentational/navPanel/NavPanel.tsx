@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,26 +12,19 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/BorderClear';
 import MailIcon from '@material-ui/icons/BlurOn';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../../../App';
+import { adminRoutes, teacherRoutes, routes } from '../../router/Router';
 
 interface NavLink{
   label: string;
   url: string;
 }
 
-const commonLinks: NavLink[] = [
-  { label: 'Home', url: '/' },
-  { label: 'Add Subject', url: '/addSubject' },
-  { label: 'Add Teacher', url: '/addTeacher' },
-  { label: 'Edit Exam', url: '/editExam' },
-  { label: 'Add Lesson', url: '/addLesson' },
-  { label: 'Add Exam', url: '/addExam' },
-  { label: 'Add Course', url: '/addCourse' }];
+const commonLinks: NavLink[] = routes.filter((r) => r[3]).map((r) => ({ url: r[0], label: r[2] }));
 
-const adminLinks: NavLink[] = [
-  // { label: 'Register Teacher', url: '/regTeacher' },
-  // { label: 'Revenue Reports', url: '/revenue' },
-  // { label: 'Settings', url: '/settings' }
-];
+const teacherLinks: NavLink[] = teacherRoutes.filter((r) => r[3]).map((r) => ({ url: r[0], label: r[2] }));
+
+const adminLinks: NavLink[] = adminRoutes.filter((r) => r[3]).map((r) => ({ url: r[0], label: r[2] }));
 
 const useStyles = makeStyles({
   list: {
@@ -46,6 +39,7 @@ const useStyles = makeStyles({
 export const NavPanel = () => {
   const classes = useStyles();
   const [show, setShow] = React.useState(false);
+  const { isTeacher, isAdmin } = useContext(AppContext);
 
   const toggleDrawer = (open: any) => (event: any) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -80,7 +74,9 @@ export const NavPanel = () => {
     >
       {linkSegment(commonLinks)}
       <Divider />
-      {linkSegment(adminLinks)}
+      {(isTeacher || isAdmin()) && linkSegment(teacherLinks)}
+      <Divider />
+      {isAdmin() && linkSegment(adminLinks)}
     </div>
   );
 
