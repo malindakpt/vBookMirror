@@ -9,6 +9,11 @@
     width: 100%;
   }
 
+  .saveOrder {
+    background: red !important;
+    color: white !important;
+  }
+
   button {
     min-width: 100px;
   }
@@ -23,9 +28,12 @@
     grid-template-columns: 1fr 1fr;
     width: 100%;
   }
+
+
 }
 
 .backlog {
     max-width: 700px;
     margin: auto;
 }
+

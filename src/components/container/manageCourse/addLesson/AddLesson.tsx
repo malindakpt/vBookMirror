@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  TextField, Button, Select, MenuItem, InputLabel, FormControl, IconButton, RadioGroup, FormControlLabel, Radio, List, ListItem, ListItemIcon, ListItemText, Divider,
+  TextField, Button, Select, MenuItem, InputLabel, FormControl, IconButton, RadioGroup, FormControlLabel, Radio, List, ListItem, ListItemText, Divider,
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import { addDoc, getDocsWithProps, updateDoc } from '../../../../data/Store';
 import {
@@ -17,15 +18,18 @@ export const AddLesson = () => {
   const { showSnackbar } = useContext(AppContext);
   const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
 
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
-  const [lessons, setLessons] = useState<ILesson[]>([]);
+  const [allLessons, setAllLessons] = useState<ILesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
+
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
   const [remainingLessons, setRemainingLessons] = useState<ILesson[]>([]);
+
   const [editingLesson, setEditingLesson] = useState<ILesson>();
 
   const [topic, setTopic] = useState<string>('');
@@ -40,8 +44,8 @@ export const AddLesson = () => {
     getDocsWithProps('subjects', {}, {}).then((data:ISubject[]) => setSubjects(data));
     getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
     getDocsWithProps('teachers', {}, {}).then((data:ITeacher[]) => setTeachers(data));
-    getDocsWithProps('lessons', {}, {}).then((data:ILesson[]) => setLessons(data));
-  }, []);
+    getDocsWithProps('lessons', {}, {}).then((data:ILesson[]) => setAllLessons(data));
+  }, [courses]);
 
   const onSave = async () => {
     if (editMode) {
@@ -75,17 +79,22 @@ export const AddLesson = () => {
     setCourseId(courseId);
 
     const selectedCourse = courses.filter((c) => c.id === courseId)[0];
-    // setLessons(courses.filter(c => ))
-    const lessons4Course = [];
+    const lessons4CourseMap: any = {};
     const remainingLessons = [];
-    for (const les of lessons) {
-      if (selectedCourse.lessons.includes(les.id)) {
-        lessons4Course.push(les);
+    for (const les of allLessons) {
+      if (selectedCourse.lessons?.includes(les.id)) {
+        lessons4CourseMap[les.id] = les;
       } else {
         remainingLessons.push(les);
       }
     }
-    setCourseLessons(lessons4Course);
+
+    const orderedLessons = [];
+    for (const less of selectedCourse.lessons) {
+      orderedLessons.push(lessons4CourseMap[less]);
+    }
+
+    setCourseLessons(orderedLessons);
     setRemainingLessons(remainingLessons);
     // getDocsWithProps('lessons', { }, {}).then((data) => setLessons(data));
   };
@@ -109,6 +118,31 @@ export const AddLesson = () => {
     setVideoURL('');
   };
 
+  const changeOrder = (index: number, isUp: boolean) => {
+    const clone = [...courseLessons];
+    const nextIdx = isUp ? index - 1 : index + 1;
+    if (nextIdx < 0 || nextIdx >= courseLessons.length) {
+      return;
+    }
+    const item1 = { ...clone[index] };
+    const item2 = { ...clone[nextIdx] };
+
+    clone[index] = item2;
+    clone[nextIdx] = item1;
+
+    setCourseOrderChaged(true);
+    setCourseLessons(clone);
+  };
+
+  const saveLessonsOrder = () => {
+    console.log(courseLessons);
+    updateDoc('courses', courseId, { lessons: courseLessons.map((less) => less.id) })
+      .then(() => {
+        showSnackbar('Lessons order updated');
+        setCourseOrderChaged(false);
+      });
+  };
+
   return (
     <>
       <h3>Add Lesson</h3>
@@ -118,7 +152,6 @@ export const AddLesson = () => {
         autoComplete="off"
       >
         <div>
-
           <FormControl className={classes.input}>
             <InputLabel id="demo-simple-select-label">Select Course</InputLabel>
             <Select
@@ -215,7 +248,7 @@ export const AddLesson = () => {
           </Button>
 
           <div className={classes.backlog}>
-            {lessons?.length > 0 && (
+            {allLessons?.length > 0 && (
             <TextField
               className={classes.input}
               id="filled-basic"
@@ -225,23 +258,14 @@ export const AddLesson = () => {
             />
         )}
             <table className="center">
-
               <tbody>
-
-                {courseLessons.map((les) => {
-                  if (searchText === '' || les.description?.toLowerCase()?.includes(searchText.toLocaleLowerCase())) {
+                {remainingLessons.map((les) => {
+                  if (searchText === ''
+                  || les.description?.toLowerCase()?.includes(searchText.toLocaleLowerCase())) {
                     return (
                       <tr key={les.id}>
                         <td>{les.description}</td>
                         <td>{les.videoURL}</td>
-                        {/* <td>
-                          <IconButton
-                            aria-label="copy"
-                            onClick={() => editLesson(les)}
-                          >
-                            <FileCopyIcon />
-                          </IconButton>
-                        </td> */}
                         <td>
                           <IconButton
                             aria-label="copy"
@@ -250,11 +274,6 @@ export const AddLesson = () => {
                             <FileCopyIcon />
                           </IconButton>
                         </td>
-                        {/* <td>
-                    <IconButton>
-                      <DeleteForeverIcon />
-                    </IconButton>
-                  </td> */}
                       </tr>
                     );
                   }
@@ -270,17 +289,32 @@ export const AddLesson = () => {
             component="nav"
             aria-label="main mailbox folders"
           >
-
+            {courseOrderChanged && (
+            <ListItem
+              button
+              onClick={saveLessonsOrder}
+              className={classes.saveOrder}
+            >
+              <ListItemText
+                primary="Save order"
+              />
+              <SaveIcon />
+            </ListItem>
+            )}
             {
-              courseLessons.map((c) => (
+              courseLessons.map((c, index) => (
                 <div
                   key={c.id}
                 >
                   <ListItem
                     button
-                    onClick={() => { setEditMode(true); copyLesson(c); }}
                   >
-                    <ListItemText primary={`${c.partNo}-${c.topic}`} />
+                    <ListItemText
+                      primary={`${c.partNo}-${c.topic}`}
+                      onClick={() => { setEditMode(true); copyLesson(c); }}
+                    />
+                    {index > 0 && <ArrowUpwardIcon onClick={(e) => { changeOrder(index, true); }} />}
+                    {index < courseLessons.length - 1 && <ArrowDownwardIcon onClick={(e) => { changeOrder(index, false); }} />}
                   </ListItem>
                   <Divider />
                 </div>
