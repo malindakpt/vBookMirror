@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {
+  useState, useEffect, useContext, useRef,
+} from 'react';
 import {
   TextField, Button, Select, MenuItem, InputLabel, FormControl, IconButton,
   RadioGroup, FormControlLabel, Radio, List, ListItem, ListItemText, Divider,
@@ -24,7 +26,7 @@ export const AddLesson = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
-  const [allLessons, setAllLessons] = useState<ILesson[]>([]);
+  const allLessons = useRef<ILesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
 
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
@@ -48,7 +50,7 @@ export const AddLesson = () => {
     const selectedCourse = courses.filter((c) => c.id === courseId)[0];
     const lessons4CourseMap: any = {};
     const remainingLessons = [];
-    for (const les of allLessons) {
+    for (const les of allLessons.current) {
       if (selectedCourse.lessons?.includes(les.id)) {
         lessons4CourseMap[les.id] = les;
       } else {
@@ -63,7 +65,6 @@ export const AddLesson = () => {
 
     setCourseLessons(orderedLessons);
     setRemainingLessons(remainingLessons);
-    // getDocsWithProps('lessons', { }, {}).then((data) => setLessons(data));
   };
 
   useEffect(() => {
@@ -76,15 +77,11 @@ export const AddLesson = () => {
       setCourses(courses);
       onCourseChange(courses, courseId);
 
-      setAllLessons(lessons);
-    });
-    getDocsWithProps<ICourse[]>('courses', {}, {}).then((data) => {
-      setCourses(data);
-      onCourseChange(data, courseId);
+      allLessons.current = lessons;
     });
     getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
-    // getDocsWithProps<ILesson[]>('lessons', {}, {}).then((data) => setAllLessons(data));
+    // eslint-disable-next-line
   }, [courses]);
 
   const onSave = async () => {
@@ -262,7 +259,7 @@ export const AddLesson = () => {
           </Button>
 
           <div className={classes.backlog}>
-            {allLessons?.length > 0 && (
+            {allLessons.current?.length > 0 && (
             <TextField
               className={classes.input}
               id="filled-basic"
