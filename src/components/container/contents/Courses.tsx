@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import {
-  getSubject, getTeacher, getExam,
+  filterId, getTeacher, getExam,
 } from '../../../data/StoreHelper';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
@@ -21,10 +21,10 @@ export const Courses: React.FC = () => {
   const [exams, setExams] = useState<IExam[]>([]);
 
   useEffect(() => {
-    getDocsWithProps('courses', { subjectId, examId }, {}).then((data: ICourse[]) => setCourses(data));
-    getDocsWithProps('subjects', {}, {}).then((data: ISubject[]) => setSubjects(data));
-    getDocsWithProps('teachers', {}, {}).then((data: ITeacher[]) => setTeachers(data));
-    getDocsWithProps('exams', {}, {}).then((data: IExam[]) => setExams(data));
+    getDocsWithProps<ICourse[]>('courses', { subjectId, examId }, {}).then((data) => setCourses(data));
+    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
+    getDocsWithProps<ITeacher[]>('teachers', {}, {}).then((data) => setTeachers(data));
+    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);
 
@@ -32,7 +32,7 @@ export const Courses: React.FC = () => {
     <div className={classes.root}>
       <h3>Courses</h3>
       {courses.map((course) => {
-        const subject = getSubject(subjects, course.subjectId);
+        const subject = filterId(subjects, course.subjectId);
         const teacher = getTeacher(teachers, course.teacherId);
         const exam = getExam(exams, course.examId);
 

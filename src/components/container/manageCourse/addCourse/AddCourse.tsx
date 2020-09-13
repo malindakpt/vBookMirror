@@ -18,9 +18,9 @@ export const AddCourse = () => {
   const [examId, setExamId] = useState('');
 
   useEffect(() => {
-    getDocsWithProps('teachers', {}, {}).then((data:ITeacher[]) => setTeachers(data));
-    getDocsWithProps('subjects', {}, {}).then((data:ISubject[]) => setSubjects(data));
-    getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
+    getDocsWithProps<ITeacher[]>('teachers', {}, {}).then((data) => setTeachers(data));
+    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
   }, []);
 
   const onSave = () => {

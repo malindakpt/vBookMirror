@@ -5,7 +5,7 @@ import {
 import classes from '../ManageCourse.module.scss';
 import { getDocsWithProps, updateDoc } from '../../../../data/Store';
 import { IExam, ISubject } from '../../../../data/Interfaces';
-import { getSubject } from '../../../../data/StoreHelper';
+import { filterId } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 
 export const EditExam = () => {
@@ -15,8 +15,8 @@ export const EditExam = () => {
   const [selectedExamIdx, setSelectedExamIdx] = useState<number>(-1);
 
   useEffect(() => {
-    getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
-    getDocsWithProps('subjects', {}, {}).then((data:IExam[]) => setSubjects(data));
+    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
   }, []);
 
   const onSelectedExamChange = (e: any) => {
@@ -92,7 +92,7 @@ export const EditExam = () => {
                   color="primary"
                 />
         )}
-              label={getSubject(subjects, subject.id)?.name}
+              label={filterId(subjects, subject.id)?.name}
             />
           ))}
         </div>

@@ -16,7 +16,7 @@ export const AddTeacher = () => {
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
 
   useEffect(() => {
-    getDocsWithProps('teachers', {}, {}).then((data) => setTeachers(data));
+    getDocsWithProps<ITeacher[]>('teachers', {}, {}).then((data) => setTeachers(data));
   }, [onUpdate]);
 
   const setSubjectProps = (obj: any) => {

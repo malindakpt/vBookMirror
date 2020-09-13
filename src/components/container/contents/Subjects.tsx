@@ -5,7 +5,7 @@ import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { IExam, ISubject } from '../../../data/Interfaces';
 import { getDocsWithProps } from '../../../data/Store';
-import { getExam, getSubject } from '../../../data/StoreHelper';
+import { getExam, filterId } from '../../../data/StoreHelper';
 
 export const Subjects = () => {
   const { examId } = useParams();
@@ -14,8 +14,8 @@ export const Subjects = () => {
   const [subjects, setSubjects] = useState<ISubject[]>([]);
 
   useEffect(() => {
-    getDocsWithProps('exams', {}, {}).then((data) => { setExams(data); });
-    getDocsWithProps('subjects', {}, {}).then((data) => { setSubjects(data); });
+    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => { setExams(data); });
+    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => { setSubjects(data); });
   }, []);
 
   useBreadcrumb();
@@ -23,7 +23,7 @@ export const Subjects = () => {
   return (
     <div className={classes.root}>
       {getExam(exams, examId)?.subjectIds?.map((subjectId) => {
-        const subject = getSubject(subjects, subjectId);
+        const subject = filterId(subjects, subjectId);
 
         return (
 

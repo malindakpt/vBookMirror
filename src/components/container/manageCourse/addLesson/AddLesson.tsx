@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  TextField, Button, Select, MenuItem, InputLabel, FormControl, IconButton, RadioGroup, FormControlLabel, Radio, List, ListItem, ListItemText, Divider,
+  TextField, Button, Select, MenuItem, InputLabel, FormControl, IconButton,
+  RadioGroup, FormControlLabel, Radio, List, ListItem, ListItemText, Divider,
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -9,9 +10,9 @@ import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import { addDoc, getDocsWithProps, updateDoc } from '../../../../data/Store';
 import {
-  ICourse, ITeacher, ISubject, IExam, ILesson,
+  ICourse, ISubject, IExam, ILesson,
 } from '../../../../data/Interfaces';
-import { getSubject } from '../../../../data/StoreHelper';
+import { filterId } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 
 export const AddLesson = () => {
@@ -23,7 +24,6 @@ export const AddLesson = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
-  const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [allLessons, setAllLessons] = useState<ILesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
 
@@ -31,6 +31,7 @@ export const AddLesson = () => {
   const [remainingLessons, setRemainingLessons] = useState<ILesson[]>([]);
 
   const [editingLesson, setEditingLesson] = useState<ILesson>();
+  const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
   const [topic, setTopic] = useState<string>('');
   const [partNo, setPartNo] = useState<string>('');
@@ -39,12 +40,51 @@ export const AddLesson = () => {
   const [videoURL, setVideoURL] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
+  const onCourseChange = (courses: ICourse[], courseId: string) => {
+    if (!courseId || courseId === '') { return; }
+
+    setCourseId(courseId);
+
+    const selectedCourse = courses.filter((c) => c.id === courseId)[0];
+    const lessons4CourseMap: any = {};
+    const remainingLessons = [];
+    for (const les of allLessons) {
+      if (selectedCourse.lessons?.includes(les.id)) {
+        lessons4CourseMap[les.id] = les;
+      } else {
+        remainingLessons.push(les);
+      }
+    }
+
+    const orderedLessons = [];
+    for (const less of selectedCourse.lessons) {
+      orderedLessons.push(lessons4CourseMap[less]);
+    }
+
+    setCourseLessons(orderedLessons);
+    setRemainingLessons(remainingLessons);
+    // getDocsWithProps('lessons', { }, {}).then((data) => setLessons(data));
+  };
+
   useEffect(() => {
-    getDocsWithProps('courses', {}, {}).then((data:ICourse[]) => setCourses(data));
-    getDocsWithProps('subjects', {}, {}).then((data:ISubject[]) => setSubjects(data));
-    getDocsWithProps('exams', {}, {}).then((data:IExam[]) => setExams(data));
-    getDocsWithProps('teachers', {}, {}).then((data:ITeacher[]) => setTeachers(data));
-    getDocsWithProps('lessons', {}, {}).then((data:ILesson[]) => setAllLessons(data));
+    Promise.all([
+      getDocsWithProps<ICourse[]>('courses', {}, {}),
+      getDocsWithProps<ILesson[]>('lessons', {}, {}),
+    ]).then((values) => {
+      const [courses, lessons] = values;
+
+      setCourses(courses);
+      onCourseChange(courses, courseId);
+
+      setAllLessons(lessons);
+    });
+    getDocsWithProps<ICourse[]>('courses', {}, {}).then((data) => {
+      setCourses(data);
+      onCourseChange(data, courseId);
+    });
+    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
+    // getDocsWithProps<ILesson[]>('lessons', {}, {}).then((data) => setAllLessons(data));
   }, [courses]);
 
   const onSave = async () => {
@@ -72,31 +112,6 @@ export const AddLesson = () => {
         setCourses([]); // force update
       });
     }
-  };
-
-  const onCourseChange = (e: any) => {
-    const courseId = e.target.value;
-    setCourseId(courseId);
-
-    const selectedCourse = courses.filter((c) => c.id === courseId)[0];
-    const lessons4CourseMap: any = {};
-    const remainingLessons = [];
-    for (const les of allLessons) {
-      if (selectedCourse.lessons?.includes(les.id)) {
-        lessons4CourseMap[les.id] = les;
-      } else {
-        remainingLessons.push(les);
-      }
-    }
-
-    const orderedLessons = [];
-    for (const less of selectedCourse.lessons) {
-      orderedLessons.push(lessons4CourseMap[less]);
-    }
-
-    setCourseLessons(orderedLessons);
-    setRemainingLessons(remainingLessons);
-    // getDocsWithProps('lessons', { }, {}).then((data) => setLessons(data));
   };
 
   const copyLesson = (les: ILesson) => {
@@ -145,7 +160,7 @@ export const AddLesson = () => {
 
   return (
     <>
-      <h3>Add Lesson</h3>
+      <h3>Manage Lessons</h3>
       <form
         className={classes.root}
         noValidate
@@ -159,19 +174,18 @@ export const AddLesson = () => {
               labelId="label1"
               id="id1"
               value={courseId}
-              onChange={onCourseChange}
+              onChange={(e) => onCourseChange(courses, e.target.value as string)}
             >
               {courses.map((t) => {
-                const subject = getSubject(subjects, t.subjectId);
-                const teacher = getSubject(teachers, t.teacherId);
-                const exam = getSubject(exams, t.examId);
+                const subject = filterId(subjects, t.subjectId);
+                const exam = filterId(exams, t.examId);
 
                 return (
                   <MenuItem
                     value={t.id}
                     key={t.id}
                   >
-                    {`${exam?.name} ${subject?.name} ${teacher?.name}`}
+                    {`${exam?.name}-${subject?.name}`}
                   </MenuItem>
                 );
               })}
@@ -252,11 +266,13 @@ export const AddLesson = () => {
             <TextField
               className={classes.input}
               id="filled-basic"
-              label="Search..."
+              label="Search previous lessons from all courses..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
+              onFocus={() => setDisplayBacklog(true)}
             />
         )}
+            { displayBacklog && (
             <table className="center">
               <tbody>
                 {remainingLessons.map((les) => {
@@ -281,7 +297,7 @@ export const AddLesson = () => {
                 })}
               </tbody>
             </table>
-
+            )}
           </div>
         </div>
         <div>
@@ -314,7 +330,11 @@ export const AddLesson = () => {
                       onClick={() => { setEditMode(true); copyLesson(c); }}
                     />
                     {index > 0 && <ArrowUpwardIcon onClick={(e) => { changeOrder(index, true); }} />}
-                    {index < courseLessons.length - 1 && <ArrowDownwardIcon onClick={(e) => { changeOrder(index, false); }} />}
+                    {index < courseLessons.length - 1 && (
+                    <ArrowDownwardIcon
+                      onClick={(e) => { changeOrder(index, false); }}
+                    />
+                    )}
                   </ListItem>
                   <Divider />
                 </div>

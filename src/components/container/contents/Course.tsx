@@ -20,10 +20,10 @@ export const Course: React.FC = () => {
   const [lessons, setLessons] = useState<ILesson[]>([]);
 
   useEffect(() => {
-    getDocsWithProps('lessons', { courseId }, {}).then((data: ILesson[]) => {
+    getDocsWithProps<ILesson[]>('lessons', { courseId }, {}).then((data) => {
       setLessons(data);
     });
-    getDocsWithProps('users', { email }, {}).then((data: IUser[]) => {
+    getDocsWithProps<IUser[]>('users', { email }, {}).then((data) => {
       setUser(data[0]);
     });
     // eslint-disable-next-line

@@ -1,5 +1,5 @@
 import {
-  IExam, ISubject, ICourse, ITeacher,
+  IExam, ICourse, ITeacher,
 } from './Interfaces';
 
 export const getExam = (exams: IExam[], examId: string): IExam|null => {
@@ -17,7 +17,7 @@ export const getTeacher = (teachers: ITeacher[], teacherId: string): ITeacher|nu
   return filtered.length > 0 ? filtered[0] : null;
 };
 
-export const getSubject = (subjects: ISubject[], subjectId: string): ISubject|null => {
+export const filterId = <T>(subjects: ({id: string} & T)[], subjectId: string): T|null => {
   const filtered = subjects.filter((subject) => subject.id === subjectId);
   return filtered.length > 0 ? filtered[0] : null;
 };
