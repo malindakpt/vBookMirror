@@ -16,10 +16,11 @@ export const AddTeacher = () => {
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
 
   useEffect(() => {
+    // display existing teachers
     getDocsWithProps<ITeacher[]>('teachers', {}, {}).then((data) => setTeachers(data));
   }, [onUpdate]);
 
-  const setSubjectProps = (obj: any) => {
+  const setTeacherProps = (obj: any) => {
     setTeacher((prev) => {
       const newObj = { ...prev, ...obj };
       return newObj;
@@ -46,7 +47,14 @@ export const AddTeacher = () => {
           className={classes.input}
           id="teacherName"
           label="Teacher Name"
-          onChange={(e) => setSubjectProps({ name: e.target.value })}
+          onChange={(e) => setTeacherProps({ name: e.target.value })}
+        />
+
+        <TextField
+          className={classes.input}
+          id="email"
+          label="Email Address"
+          onChange={(e) => setTeacherProps({ email: e.target.value })}
         />
 
         <Button

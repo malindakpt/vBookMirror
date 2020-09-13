@@ -8,19 +8,37 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import classes from './Header.module.scss';
 import { NavPanel } from '../../presentational/navPanel/NavPanel';
 import { AppContext } from '../../../App';
+import { getDocsWithProps } from '../../../data/Store';
+import { ITeacher } from '../../../data/Interfaces';
 
 export const Header:React.FC = () => {
   const [user, setUser] = useState <{name: '', photo: ''} | null>(null);
-  const { setEmail } = useContext(AppContext);
+  const { setEmail, setIsTeacher } = useContext(AppContext);
+
+  const setUserDetails = (result: any) => {
+    let email;
+    if (result.user) {
+      email = result.user.email;
+    } else {
+      email = result.email;
+    }
+    setEmail(email);
+    setUser({
+      name: result.displayName,
+      photo: result.photoURL,
+    });
+
+    getDocsWithProps<ITeacher[]>('teachers', { email }, {}).then((data) => {
+      if (data.length > 0) {
+        setIsTeacher(true);
+      }
+    });
+  };
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((u: any) => {
       if (u) {
-        setEmail(u.email);
-        setUser({
-          name: u?.displayName,
-          photo: u?.photoURL,
-        });
+        setUserDetails(u);
       } else {
         setEmail(null);
       }
@@ -34,11 +52,7 @@ export const Header:React.FC = () => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       // const token = result.credential.accessToken;
       // const user2 = result.user;
-      setEmail(result.user.email);
-      setUser({
-        name: result.displayName,
-        photo: result.photoURL,
-      });
+      setUserDetails(result);
 
       // setName(user.displayName);
       // ...

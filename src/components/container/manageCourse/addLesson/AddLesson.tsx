@@ -147,7 +147,6 @@ export const AddLesson = () => {
   };
 
   const saveLessonsOrder = () => {
-    console.log(courseLessons);
     updateDoc('courses', courseId, { lessons: courseLessons.map((less) => less.id) })
       .then(() => {
         showSnackbar('Lessons order updated');
