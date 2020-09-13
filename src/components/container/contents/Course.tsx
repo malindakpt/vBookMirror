@@ -4,8 +4,10 @@ import { Button } from '@material-ui/core';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps, addDoc, updateDoc } from '../../../data/Store';
-import { ILesson, IUser } from '../../../data/Interfaces';
+import {
+  getDocsWithProps, addDoc, updateDoc, getDocWithId,
+} from '../../../data/Store';
+import { ILesson, IUser, ICourse } from '../../../data/Interfaces';
 import { AppContext } from '../../../App';
 
 export const Course: React.FC = () => {
@@ -20,11 +22,16 @@ export const Course: React.FC = () => {
   const [lessons, setLessons] = useState<ILesson[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ILesson[]>('lessons', { courseId }, {}).then((data) => {
-      setLessons(data);
-    });
-    getDocsWithProps<IUser[]>('users', { email }, {}).then((data) => {
-      setUser(data[0]);
+    Promise.all([
+      getDocsWithProps<IUser[]>('users', { email }, {}),
+      getDocsWithProps<ILesson[]>('lessons', {}, {}),
+      getDocWithId<ICourse>('courses', courseId),
+    ]).then((result) => {
+      const [users, lessons, course] = result;
+      setUser(users[0]);
+
+      const lessons4Course = lessons.filter((less) => course.lessons.includes(less.id));
+      setLessons(lessons4Course);
     });
     // eslint-disable-next-line
   }, [email, selectedLessons]);
@@ -116,7 +123,7 @@ export const Course: React.FC = () => {
               id={lesson.id}
               key={idx}
               title1={`Week ${idx}`}
-              title2={lesson.description}
+              title2={`${lesson.topic}-${lesson.partNo}`}
               title3={subsText}
               navURL={!lesson.price || user?.lessons[lesson.id] ? `${courseId}/${lesson.id}` : `${courseId}`}
               onSelect={handleSelectLesson}

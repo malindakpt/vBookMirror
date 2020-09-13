@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import { resolve } from 'dns';
 import firebaseConfig from './Config';
 
 const app = firebase.initializeApp(firebaseConfig);
@@ -121,3 +122,17 @@ export const getDocsWithProps = <T>(
         resolves(undefined);
       });
   });
+
+export const getDocWithId = <T>(entityName: string, id: string): Promise<T> => new Promise(
+  (resolves, reject) => {
+    db.collection(entityName).doc(id).get().then((doc: any) => {
+      if (doc.exists) {
+        resolves(doc.data());
+      } else {
+      // doc.data() will be undefined in this case
+        reject();
+        console.log('getDocWithId: No such document!');
+      }
+    });
+  },
+);
