@@ -32,6 +32,7 @@ export interface ILesson {
   description: string;
   videoURL: string;
   keywords: string;
+  date: number;
   attachments?: [],
 
   price: number;

@@ -1,6 +1,5 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { resolve } from 'dns';
 import firebaseConfig from './Config';
 
 const app = firebase.initializeApp(firebaseConfig);

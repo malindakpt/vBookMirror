@@ -99,7 +99,7 @@ export const AddLesson = () => {
       });
     } else {
       const lesson: ILesson = {
-        id: '', topic, partNo, description, keywords, videoURL, price,
+        id: '', date: new Date().getTime(), topic, partNo, description, keywords, videoURL, price,
       };
       const lessonId = await addDoc('lessons', lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
@@ -276,6 +276,7 @@ export const AddLesson = () => {
                   || les.description?.toLowerCase()?.includes(searchText.toLocaleLowerCase())) {
                     return (
                       <tr key={les.id}>
+                        <td>{les.date ? new Date(les.date) : 'N/A'}</td>
                         <td>{les.description}</td>
                         <td>{les.videoURL}</td>
                         <td>
