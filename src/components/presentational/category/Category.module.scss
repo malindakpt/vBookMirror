@@ -25,4 +25,10 @@
     display: grid;
     place-items: center;
   }
+
+  .iconTitle {
+    display: grid;
+    place-items: center start;
+    grid-template-columns: 27px auto;
+  }
 }

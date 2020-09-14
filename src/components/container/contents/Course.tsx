@@ -109,12 +109,14 @@ export const Course: React.FC = () => {
       {
         lessons?.map((lesson, idx) => {
           let subsText;
-
+          let status: 'yes'|'no'|undefined;
           if (lesson.price) {
             if (user?.lessons[lesson.id]) {
               subsText = 'Paid';
+              status = 'yes';
             } else {
               subsText = `Rs: ${lesson.price}`;
+              status = 'no';
             }
           } else {
             subsText = 'Free';
@@ -129,6 +131,7 @@ export const Course: React.FC = () => {
               title3={subsText}
               navURL={!lesson.price || user?.lessons[lesson.id] ? `${courseId}/${lesson.id}` : `${courseId}`}
               onSelect={handleSelectLesson}
+              status={status}
             />
           );
         })
