@@ -2,17 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
-import {
-  filterId, getTeacher, getExam,
-} from '../../../data/StoreHelper';
+import { filterId } from '../../../data/StoreHelper';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
-import {
-  ICourse, ISubject, ITeacher, IExam,
-} from '../../../data/Interfaces';
+import { ICourse } from '../../../interfaces/ICourse';
+import { ISubject } from '../../../interfaces/ISubject';
+import { ITeacher } from '../../../interfaces/ITeacher';
+import { IExam } from '../../../interfaces/IExam';
 
 export const Courses: React.FC = () => {
-  const { subjectId, examId } = useParams();
+  const { subjectId, examId } = useParams<any>();
 
   useBreadcrumb();
   const [courses, setCourses] = useState<ICourse[]>([]);
@@ -33,8 +32,8 @@ export const Courses: React.FC = () => {
       <h3>Courses</h3>
       {courses.map((course) => {
         const subject = filterId(subjects, course.subjectId);
-        const teacher = getTeacher(teachers, course.teacherId);
-        const exam = getExam(exams, course.examId);
+        const teacher = filterId(teachers, course.teacherId);
+        const exam = filterId(exams, course.examId);
 
         return (
           <Category

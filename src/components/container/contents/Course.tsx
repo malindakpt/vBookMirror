@@ -7,9 +7,10 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
   getDocsWithProps, addDoc, updateDoc, getDocWithId,
 } from '../../../data/Store';
-import { IUser, ICourse } from '../../../data/Interfaces';
 import { AppContext } from '../../../App';
 import { ILesson } from '../../../interfaces/ILesson';
+import { IUser } from '../../../interfaces/IUser';
+import { ICourse } from '../../../interfaces/ICourse';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -19,7 +20,7 @@ export const Course: React.FC = () => {
   const [total, setTotal] = useState(0);
   const { email, showSnackbar } = useContext(AppContext);
 
-  const { courseId } = useParams();
+  const { courseId } = useParams<any>();
   const [lessons, setLessons] = useState<ILesson[]>([]);
 
   useEffect(() => {

@@ -3,12 +3,13 @@ import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { IExam, ISubject } from '../../../data/Interfaces';
 import { getDocsWithProps } from '../../../data/Store';
-import { getExam, filterId } from '../../../data/StoreHelper';
+import { filterId } from '../../../data/StoreHelper';
+import { IExam } from '../../../interfaces/IExam';
+import { ISubject } from '../../../interfaces/ISubject';
 
 export const Subjects = () => {
-  const { examId } = useParams();
+  const { examId } = useParams<any>();
 
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
@@ -22,7 +23,7 @@ export const Subjects = () => {
 
   return (
     <div className={classes.root}>
-      {getExam(exams, examId)?.subjectIds?.map((subjectId) => {
+      {filterId(exams, examId)?.subjectIds?.map((subjectId: string) => {
         const subject = filterId(subjects, subjectId);
 
         return (

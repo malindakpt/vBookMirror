@@ -4,9 +4,10 @@ import {
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { getDocsWithProps, updateDoc } from '../../../../data/Store';
-import { IExam, ISubject } from '../../../../data/Interfaces';
 import { filterId } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
+import { IExam } from '../../../../interfaces/IExam';
+import { ISubject } from '../../../../interfaces/ISubject';
 
 export const EditExam = () => {
   const { showSnackbar } = useContext(AppContext);

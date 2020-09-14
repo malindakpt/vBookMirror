@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { IExam } from '../../../data/Interfaces';
 import { getDocsWithProps } from '../../../data/Store';
+import { IExam } from '../../../interfaces/IExam';
 
 export const Exams = () => {
   useBreadcrumb();

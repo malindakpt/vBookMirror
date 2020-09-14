@@ -9,7 +9,7 @@ import classes from './Header.module.scss';
 import { NavPanel } from '../../presentational/navPanel/NavPanel';
 import { AppContext } from '../../../App';
 import { getDocsWithProps } from '../../../data/Store';
-import { ITeacher } from '../../../data/Interfaces';
+import { ITeacher } from '../../../interfaces/ITeacher';
 
 export const Header:React.FC = () => {
   const [user, setUser] = useState <{name: '', photo: ''} | null>(null);

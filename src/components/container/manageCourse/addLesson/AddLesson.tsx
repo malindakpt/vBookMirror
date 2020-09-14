@@ -11,12 +11,12 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import { addDoc, getDocsWithProps, updateDoc } from '../../../../data/Store';
-import {
-  ICourse, ISubject, IExam,
-} from '../../../../data/Interfaces';
 import { filterId } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import { ILesson } from '../../../../interfaces/ILesson';
+import { ICourse } from '../../../../interfaces/ICourse';
+import { IExam } from '../../../../interfaces/IExam';
+import { ISubject } from '../../../../interfaces/ISubject';
 
 export const AddLesson = () => {
   const { showSnackbar, email } = useContext(AppContext);

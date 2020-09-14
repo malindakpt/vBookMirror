@@ -3,11 +3,11 @@ import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { ISubject } from '../../../../data/Interfaces';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
+import { ISubject } from '../../../../interfaces/ISubject';
 
 export const AddSubject = () => {
   const [onUpdate, updateUI] = useForcedUpdate();
