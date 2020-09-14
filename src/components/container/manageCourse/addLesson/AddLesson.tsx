@@ -12,13 +12,15 @@ import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import { addDoc, getDocsWithProps, updateDoc } from '../../../../data/Store';
 import {
-  ICourse, ISubject, IExam, ILesson,
+  ICourse, ISubject, IExam,
 } from '../../../../data/Interfaces';
 import { filterId } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
+import { ILesson } from '../../../../interfaces/ILesson';
 
 export const AddLesson = () => {
-  const { showSnackbar } = useContext(AppContext);
+  const { showSnackbar, email } = useContext(AppContext);
+
   const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
@@ -99,7 +101,15 @@ export const AddLesson = () => {
       });
     } else {
       const lesson: ILesson = {
-        id: '', date: new Date().getTime(), topic, partNo, description, keywords, videoURL, price,
+        id: '',
+        date: new Date().getTime(),
+        topic,
+        partNo,
+        description,
+        keywords,
+        videoURL,
+        price,
+        email: email as string,
       };
       const lessonId = await addDoc('lessons', lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
@@ -153,6 +163,8 @@ export const AddLesson = () => {
         setCourseOrderChaged(false);
       });
   };
+
+  if (!email) return <></>;
 
   return (
     <>

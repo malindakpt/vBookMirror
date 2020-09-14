@@ -25,19 +25,6 @@ export interface ISubject {
   name: string;
 }
 
-export interface ILesson {
-  id: string;
-  topic: string;
-  partNo: string;
-  description: string;
-  videoURL: string;
-  keywords: string;
-  date: number;
-  attachments?: [],
-
-  price: number;
-}
-
 export interface ICourse {
   id: string;
   subjectId: string;

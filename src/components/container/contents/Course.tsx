@@ -7,8 +7,9 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
   getDocsWithProps, addDoc, updateDoc, getDocWithId,
 } from '../../../data/Store';
-import { ILesson, IUser, ICourse } from '../../../data/Interfaces';
+import { IUser, ICourse } from '../../../data/Interfaces';
 import { AppContext } from '../../../App';
+import { ILesson } from '../../../interfaces/ILesson';
 
 export const Course: React.FC = () => {
   useBreadcrumb();

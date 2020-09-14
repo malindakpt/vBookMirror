@@ -11,4 +11,4 @@ const firebaseConfig = {
 
 export default firebaseConfig;
 
-export const adminEmail = 'malindakpt@gmail.com';
+export const adminEmail = 'rasikadri@gmail.com';
