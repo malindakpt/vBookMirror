@@ -20,7 +20,7 @@ export const Exams = () => {
         <Category
           key={ex.id}
           title1={ex.name}
-          title2={ex.batch}
+          title2={ex.year}
           title3={ex.type}
           navURL={`${ex.id}`}
         />

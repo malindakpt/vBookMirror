@@ -40,7 +40,7 @@ export const Courses: React.FC = () => {
             key={course.id}
             title1={teacher?.name}
             title2={subject?.name}
-            title3={` ${exam?.batch} ${exam?.type} [${exam?.name}]`}
+            title3={` ${exam?.year} ${exam?.type} [${exam?.name}]`}
             navURL={`${subjectId}/${course.id}`}
           />
         );

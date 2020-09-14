@@ -38,8 +38,10 @@ export const Category:React.FC<Props> = ({
         <div>{title1}</div>
         <div>{title2}</div>
         <div className={classes.iconTitle}>
-          {status === 'yes' && <CheckCircleOutlineIcon htmlColor="green" />}
-          {status === 'no' && <AddCircleOutlineIcon htmlColor="red" />}
+          <div>
+            {status === 'yes' && <CheckCircleOutlineIcon htmlColor="#00ff4e" />}
+            {status === 'no' && <AddCircleOutlineIcon htmlColor="red" />}
+          </div>
           {title3}
         </div>
       </div>

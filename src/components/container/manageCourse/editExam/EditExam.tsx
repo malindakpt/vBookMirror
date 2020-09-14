@@ -74,7 +74,7 @@ export const EditExam = () => {
                 value={idx}
                 key={exam.id}
               >
-                {`${exam.name} ${exam.batch} ${exam.type}`}
+                {`${exam.name} ${exam.year} ${exam.type}`}
               </MenuItem>
             ))}
           </Select>
