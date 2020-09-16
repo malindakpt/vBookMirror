@@ -8,12 +8,10 @@ import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ISubject } from '../../../../interfaces/ISubject';
-import { IBatch } from '../../../../interfaces/IBatch';
 
 export const AddCourse = () => {
   const { showSnackbar } = useContext(AppContext);
   const [exams, setExams] = useState<IExam[]>([]);
-  const [batches, setBatches] = useState<IBatch[]>([]);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
 
@@ -25,7 +23,6 @@ export const AddCourse = () => {
     getDocsWithProps<ITeacher[]>('teachers', {}, {}).then((data) => setTeachers(data));
     getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
-    getDocsWithProps<IBatch[]>('batches', {}, {}).then((data) => setBatches(data));
   }, []);
 
   const onSave = () => {

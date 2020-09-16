@@ -4,13 +4,10 @@ import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
 import { IExam } from '../../../interfaces/IExam';
-import { IBatch } from '../../../interfaces/IBatch';
-import { getObject } from '../../../data/StoreHelper';
 
 export const Exams = () => {
   useBreadcrumb();
   const [exams, setExams] = useState<IExam[]>([]);
-  // const [batches, setBatches] = useState<IBatch[]>([]);
 
   useEffect(() => {
     getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => { setExams(data); });

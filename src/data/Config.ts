@@ -12,4 +12,4 @@ const firebaseConfig = {
 export default firebaseConfig;
 
 export const adminEmail = 'rasikadri@gmail.com';
-export const examYears = ['2019', '2020', '2021'];
+export const examYears = ['2019', '2020', '2021', '2022'];
