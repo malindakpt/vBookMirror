@@ -7,7 +7,10 @@ export const BreadcrumbBar = () => {
   const { breadcrumbs } = useContext(AppContext);
 
   return (
-    <Breadcrumbs aria-label="breadcrumb">
+    <Breadcrumbs
+      aria-label="breadcrumb"
+      style={{ margin: '10px 20px' }}
+    >
       {breadcrumbs?.map((bc) => (
         <Link
           style={{ textDecoration: 'none', color: 'grey' }}
