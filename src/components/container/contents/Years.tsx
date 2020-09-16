@@ -10,12 +10,6 @@ import { examYears } from '../../../data/Config';
 export const Years = () => {
   const { examId } = useParams<any>();
   useBreadcrumb();
-  // const [exams, setExams] = useState<IExam[]>([]);
-
-  // useEffect(() => {
-  //   getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => { setExams(data); });
-  //   // eslint-disable-next-line
-  // }, []);
 
   return (
     <div className={classes.root}>

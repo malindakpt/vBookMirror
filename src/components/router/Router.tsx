@@ -54,14 +54,6 @@ const Router: React.FC = () => {
           {/* A <Switch> looks through its children <Route>s and
       renders the first one that matches the current URL. */}
           <Switch>
-            {routes.map((r: any) => (
-              <Route
-                exact
-                key={r[0]}
-                path={r[0]}
-                component={r[1]}
-              />
-            ))}
             {(isTeacher || isAdmin()) && teacherRoutes.map((r: any) => (
               <Route
                 exact
@@ -71,6 +63,14 @@ const Router: React.FC = () => {
               />
             ))}
             {isAdmin() && adminRoutes.map((r: any) => (
+              <Route
+                exact
+                key={r[0]}
+                path={r[0]}
+                component={r[1]}
+              />
+            ))}
+            {routes.map((r: any) => (
               <Route
                 exact
                 key={r[0]}

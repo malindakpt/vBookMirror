@@ -193,7 +193,7 @@ export const AddLesson = () => {
                     value={t.id}
                     key={t.id}
                   >
-                    {`${exam?.name}-${exam?.type}-${subject?.name}`}
+                    {`${t.examYear}-${exam?.name}-${exam?.type}-${subject?.name}`}
                   </MenuItem>
                 );
               })}
