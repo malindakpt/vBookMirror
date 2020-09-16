@@ -18,20 +18,22 @@ import { AddCourse } from '../container/manageCourse/addCourse/AddCourse';
 import { Lesson } from '../container/contents/lesson/Lesson';
 import { AppContext } from '../../App';
 import { UpgradeCourse } from '../container/manageCourse/upgradeCourse/UpgradeCourse';
+import { Years } from '../container/contents/Years';
 
 type routeConfig = [string, any, string, boolean][];
 
 export const routes: routeConfig = [
   ['/', Exams, 'Exams', true],
+  ['/:examId', Years, 'Years', false],
+  ['/:examId/:year', Subjects, 'Subjects', false],
+  ['/:examId/:year/:subjectId', Courses, 'Courses', false],
+  ['/:examId/:year/:subjectId/:courseId', Course, 'Course', false],
+  ['/:examId/:year/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
 ];
 
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddLesson, 'Add Lesson', true],
   ['/upgradeCourses', UpgradeCourse, 'Upgrade Courses', true],
-  ['/:examId', Subjects, 'Subjects', false],
-  ['/:examId/:subjectId', Courses, 'Courses', false],
-  ['/:examId/:subjectId/:courseId', Course, 'Course', false],
-  ['/:examId/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
 ];
 
 export const adminRoutes: routeConfig = [

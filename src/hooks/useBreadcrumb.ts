@@ -5,7 +5,9 @@ import { useParams } from 'react-router-dom';
 import { AppContext } from '../App';
 
 export const useBreadcrumb = () => {
-  const { examId, subjectId, courseId } = useParams();
+  const {
+    examId, year, subjectId, courseId,
+  } = useParams<any>();
   const { updateBreadcrumbs } = useContext(AppContext);
 
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
@@ -25,23 +27,19 @@ export const useBreadcrumb = () => {
     ];
 
     if (examId) {
-      // const exam = getExam(examId);
-      // if (exam) {
-      bcs.push(['Subjects', `/${examId}`]);
-      // bcs.push([`${exam.name}-${exam.batch}-${exam.type}` || '', `/${examId}`]);
-      // } else {
-      //   sendBreadcrumbs(bcs);
-      //   return;
-      // }
+      bcs.push(['Exam Year', `/${examId}`]);
+    }
+    if (year) {
+      bcs.push(['Subjects', `/${examId}/${year}`]);
     }
     if (subjectId) {
-      bcs.push(['Courses', `/${examId}/${subjectId}`]);
+      bcs.push(['Courses', `/${examId}/${year}/${subjectId}`]);
     }
     if (courseId) {
       bcs.push(['Lessons',
-        `/${examId}/${subjectId}/${courseId}`]);
+        `/${examId}/${year}/${subjectId}/${courseId}`]);
     }
     sendBreadcrumbs(bcs);
   },
-  [examId, subjectId, courseId, sendBreadcrumbs]);
+  [examId, subjectId, courseId, sendBreadcrumbs, year]);
 };
