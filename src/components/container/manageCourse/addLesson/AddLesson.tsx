@@ -62,9 +62,11 @@ export const AddLesson = () => {
 
     const orderedLessons = [];
     for (const less of selectedCourse.lessons) {
-      console.log(lessons4CourseMap[less]);
-      orderedLessons.push(lessons4CourseMap[less]);
+      const t = (lessons4CourseMap[less]);
+      t && orderedLessons.push(t);
     }
+
+    remainingLessons.sort((a, b) => (a.date > b.date ? -1 : 1));
 
     setCourseLessons(orderedLessons);
     setRemainingLessons(remainingLessons);
@@ -294,8 +296,8 @@ export const AddLesson = () => {
                     return (
                       <tr key={les.id}>
                         <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
+                        <td>{les.topic}</td>
                         <td>{les.description}</td>
-                        <td>{les.videoURL}</td>
                         <td>
                           <IconButton
                             aria-label="copy"

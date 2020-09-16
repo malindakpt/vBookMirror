@@ -29,12 +29,11 @@ export const UpgradeCourse = () => {
   const createCourse = (course: ICourse, year: string) => {
     const newCourse: ICourse = {
       id: '',
-      lessons: course.lessons,
+      lessons: [],
       examId: course.examId,
       examYear: year,
       subjectId: course.subjectId,
       teacherId: course.teacherId,
-      disabledLessons: course.lessons,
     };
     addDoc('courses', newCourse).then(() => {
       setCourses((prev) => {

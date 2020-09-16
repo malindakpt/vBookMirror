@@ -5,5 +5,4 @@ export interface ICourse {
     examId: string;
     teacherId: string;
     lessons: string[];
-    disabledLessons?: string[];
 }
