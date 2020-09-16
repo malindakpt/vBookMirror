@@ -17,6 +17,7 @@ import { AddTeacher } from '../container/manageCourse/addTeacher/AddTeacher';
 import { AddCourse } from '../container/manageCourse/addCourse/AddCourse';
 import { Lesson } from '../container/contents/lesson/Lesson';
 import { AppContext } from '../../App';
+import { UpgradeCourse } from '../container/manageCourse/upgradeCourse/UpgradeCourse';
 
 type routeConfig = [string, any, string, boolean][];
 
@@ -26,7 +27,7 @@ export const routes: routeConfig = [
 
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddLesson, 'Add Lesson', true],
-  ['/addCourse', AddCourse, 'Add Course', true],
+  ['/upgradeCourses', UpgradeCourse, 'Upgrade Courses', true],
   ['/:examId', Subjects, 'Subjects', false],
   ['/:examId/:subjectId', Courses, 'Courses', false],
   ['/:examId/:subjectId/:courseId', Course, 'Course', false],
@@ -38,6 +39,7 @@ export const adminRoutes: routeConfig = [
   ['/addExam', AddExam, 'Add Exam', true],
   ['/addTeacher', AddTeacher, 'Add Teacher', true],
   ['/addSubject', AddSubject, 'Add Subject', true],
+  ['/addCourse', AddCourse, 'Add Course', true],
 ];
 
 const Router: React.FC = () => {

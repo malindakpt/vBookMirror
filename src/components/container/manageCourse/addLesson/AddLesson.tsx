@@ -11,7 +11,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import { addDoc, getDocsWithProps, updateDoc } from '../../../../data/Store';
-import { filterId } from '../../../../data/StoreHelper';
+import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import { ILesson } from '../../../../interfaces/ILesson';
 import { ICourse } from '../../../../interfaces/ICourse';
@@ -185,8 +185,8 @@ export const AddLesson = () => {
               onChange={(e) => onCourseChange(courses, e.target.value as string)}
             >
               {courses.map((t) => {
-                const subject = filterId(subjects, t.subjectId);
-                const exam = filterId(exams, t.examId);
+                const subject = getObject(subjects, t.subjectId);
+                const exam = getObject(exams, t.examId);
 
                 return (
                   <MenuItem

@@ -4,7 +4,7 @@ import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
-import { filterId } from '../../../data/StoreHelper';
+import { getObject } from '../../../data/StoreHelper';
 import { IExam } from '../../../interfaces/IExam';
 import { ISubject } from '../../../interfaces/ISubject';
 
@@ -21,22 +21,23 @@ export const Subjects = () => {
 
   useBreadcrumb();
 
+  const exam = getObject(exams, examId);
   return (
     <div className={classes.root}>
-      {filterId(exams, examId)?.subjectIds?.map((subjectId: string) => {
-        const subject = filterId(subjects, subjectId);
+      {exam?.subjectIds?.map((subjectId: string) => {
+        const subject = getObject(subjects, subjectId);
+        const yrs = [];
 
-        return (
-
-          <Category
-            key={subjectId}
+        for (const yr of exam.years) {
+          yrs.push(<Category
+            key={`${subjectId}-${yr}`}
             title1=""
             title2={subject?.name}
-            title3=""
+            title3={yr}
             navURL={`${examId}/${subjectId}`}
-          />
-
-        );
+          />);
+        }
+        return yrs;
       })}
     </div>
   );

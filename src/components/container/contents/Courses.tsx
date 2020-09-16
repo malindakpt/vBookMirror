@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
-import { filterId } from '../../../data/StoreHelper';
+import { getObject } from '../../../data/StoreHelper';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
 import { ICourse } from '../../../interfaces/ICourse';
@@ -31,16 +31,16 @@ export const Courses: React.FC = () => {
     <div className={classes.root}>
       <h3>Courses</h3>
       {courses.map((course) => {
-        const subject = filterId(subjects, course.subjectId);
-        const teacher = filterId(teachers, course.teacherId);
-        const exam = filterId(exams, course.examId);
+        const subject = getObject(subjects, course.subjectId);
+        const teacher = getObject(teachers, course.teacherId);
+        const exam = getObject(exams, course.examId);
 
         return (
           <Category
             key={course.id}
             title1={teacher?.name}
             title2={subject?.name}
-            title3={` ${exam?.year} ${exam?.type} [${exam?.name}]`}
+            title3={` ${exam?.type} [${exam?.name}]`}
             navURL={`${subjectId}/${course.id}`}
           />
         );

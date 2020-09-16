@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { getDocsWithProps, updateDoc } from '../../../../data/Store';
-import { filterId } from '../../../../data/StoreHelper';
+import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
@@ -74,7 +74,7 @@ export const EditExam = () => {
                 value={idx}
                 key={exam.id}
               >
-                {`${exam.name} ${exam.year} ${exam.type}`}
+                {`${exam.name} ${exam.type}`}
               </MenuItem>
             ))}
           </Select>
@@ -93,7 +93,7 @@ export const EditExam = () => {
                   color="primary"
                 />
         )}
-              label={filterId(subjects, subject.id)?.name}
+              label={getObject(subjects, subject.id)?.name}
             />
           ))}
         </div>
