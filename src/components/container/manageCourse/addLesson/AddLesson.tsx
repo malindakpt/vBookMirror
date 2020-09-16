@@ -62,6 +62,7 @@ export const AddLesson = () => {
 
     const orderedLessons = [];
     for (const less of selectedCourse.lessons) {
+      console.log(lessons4CourseMap[less]);
       orderedLessons.push(lessons4CourseMap[less]);
     }
 
@@ -116,7 +117,11 @@ export const AddLesson = () => {
 
       updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] }).then(() => {
         showSnackbar('Course Added');
-        setCourses([]); // force update
+        setCourseLessons((prev) => {
+          const clone = [...prev, lesson];
+          return clone;
+        });
+        // setCourses([]); // force update
       });
     }
   };
@@ -288,7 +293,7 @@ export const AddLesson = () => {
                   || les.description?.toLowerCase()?.includes(searchText.toLocaleLowerCase())) {
                     return (
                       <tr key={les.id}>
-                        <td>{les.date ? new Date(les.date) : 'N/A'}</td>
+                        <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
                         <td>{les.description}</td>
                         <td>{les.videoURL}</td>
                         <td>
@@ -329,7 +334,7 @@ export const AddLesson = () => {
             {
               courseLessons.map((c, index) => (
                 <div
-                  key={c.id}
+                  key={c.id + c.videoURL}
                 >
                   <ListItem
                     button
