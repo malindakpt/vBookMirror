@@ -73,7 +73,7 @@ export const getDocsWithProps = <T>(
 ): Promise<T> => new Promise((resolves, reject) => {
     const cachedResponse = store[generateRequestKey(entityName, conditions, orderBy)];
     if (cachedResponse) {
-    // Resolve result from cache and skip network
+      // Resolve result from cache and skip network
       resolves(cachedResponse);
       return;
     }
@@ -82,14 +82,12 @@ export const getDocsWithProps = <T>(
     let query: any;
 
     Object.keys(conditions).forEach((key) => {
-      if (
-        typeof conditions[key] === 'string'
-        && (conditions[key].includes('>') || conditions[key].includes('<'))
+      if ((key.includes('>') || key.includes('<'))
       ) {
         query = (query ?? ref).where(
-          key,
-          conditions[key].charAt(0),
-          conditions[key].substring(1),
+          key.substring(0, key.length - 1),
+          key.charAt(key.length - 1),
+          conditions[key],
         );
       } else if (key === 'limit') {
         query = (query ?? ref).limit(conditions[key]);
@@ -118,6 +116,7 @@ export const getDocsWithProps = <T>(
         resolves(results);
       })
       .catch((error: any) => {
+        console.error(error);
         resolves(undefined);
       });
   });

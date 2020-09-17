@@ -60,7 +60,7 @@ export const Course: React.FC = () => {
     if (user) {
       for (const [les, subscribed] of Object.entries(selectedLessons)) {
         if (subscribed) {
-          user.lessons[les] = true;
+          user.lessons.push(les);
         }
       }
       updateDoc('users', user.id, user).then(() => {
@@ -72,11 +72,11 @@ export const Course: React.FC = () => {
       const newUser: IUser = {
         id: '',
         email,
-        lessons: {},
+        lessons: [],
       };
       for (const [les, subscribed] of Object.entries(selectedLessons)) {
         if (subscribed) {
-          newUser.lessons[les] = true;
+          newUser.lessons.push(les);
         }
       }
       addDoc('users', newUser).then(() => {
@@ -111,7 +111,7 @@ export const Course: React.FC = () => {
           let subsText;
           let status: 'yes'|'no'|undefined;
           if (lesson.price) {
-            if (user?.lessons[lesson.id]) {
+            if (user?.lessons.includes(lesson.id)) {
               subsText = 'Paid';
               status = 'yes';
             } else {
@@ -129,7 +129,8 @@ export const Course: React.FC = () => {
               title1={`Week ${idx}`}
               title2={`${lesson.topic}-${lesson.partNo}`}
               title3={subsText}
-              navURL={!lesson.price || user?.lessons[lesson.id] ? `${courseId}/${lesson.id}` : `${courseId}`}
+              navURL={!lesson.price
+                || user?.lessons.includes(lesson.id) ? `${courseId}/${lesson.id}` : `${courseId}`}
               onSelect={handleSelectLesson}
               status={status}
             />
