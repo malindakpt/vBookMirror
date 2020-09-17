@@ -72,7 +72,7 @@ const Router: React.FC = () => {
                 component={r[1]}
               />
             ))}
-            {routes.map((r: any) => (
+            {isTeacher !== undefined && routes.map((r: any) => (
               <Route
                 exact
                 key={r[0]}
@@ -81,7 +81,9 @@ const Router: React.FC = () => {
               />
             ))}
             <Route path="">
-              <h3>404 Not found</h3>
+              <div className={classes.loading}>
+                <p>Loading</p>
+              </div>
             </Route>
           </Switch>
         </div>

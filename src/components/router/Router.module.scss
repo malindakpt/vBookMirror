@@ -8,4 +8,10 @@
     min-height: calc(100vh - 76px);
     padding: 10px;
   }
+
+  .loading {
+    height: 400px;
+    display: grid;
+    place-items: center;
+  }
 }
