@@ -8,7 +8,7 @@ import { Exams } from '../container/contents/Exams';
 import { Subjects } from '../container/contents/Subjects';
 import { Courses } from '../container/contents/Courses';
 import { Course } from '../container/contents/Course';
-import { BreadcrumbBar } from '../container/breadcrumbs/BreadcrumbBar';
+import { BreadcrumbBar } from '../presentational/breadcrumbs/BreadcrumbBar';
 import { AddLesson } from '../container/manageCourse/addLesson/AddLesson';
 import { AddSubject } from '../container/manageCourse/addSubject/AddSubject';
 import { EditExam } from '../container/manageCourse/editExam/EditExam';
