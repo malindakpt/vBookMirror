@@ -19,6 +19,7 @@ import { Lesson } from '../container/contents/lesson/Lesson';
 import { AppContext } from '../../App';
 import { UpgradeCourse } from '../container/manageCourse/upgradeCourse/UpgradeCourse';
 import { Years } from '../container/contents/Years';
+import { Subscriptions } from '../container/subscriptions/Subscriptions';
 
 type routeConfig = [string, any, string, boolean][];
 
@@ -33,6 +34,7 @@ export const routes: routeConfig = [
 
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddLesson, 'Add Lesson', true],
+  ['/subscriptions', Subscriptions, 'Subscriptions', true],
   ['/upgradeCourses', UpgradeCourse, 'Upgrade Courses', true],
 ];
 
