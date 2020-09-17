@@ -276,45 +276,6 @@ export const AddLesson = () => {
             {editMode ? 'Save Changes' : 'Add New Lesson'}
           </Button>
 
-          <div className={classes.backlog}>
-            {allLessons.current?.length > 0 && (
-            <TextField
-              className={classes.input}
-              id="filled-basic"
-              label="Search previous lessons from all courses..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              onFocus={() => setDisplayBacklog(true)}
-            />
-        )}
-            { displayBacklog && (
-            <table className="center">
-              <tbody>
-                {remainingLessons.map((les) => {
-                  if (searchText === ''
-                  || les.description?.toLowerCase()?.includes(searchText.toLocaleLowerCase())) {
-                    return (
-                      <tr key={les.id}>
-                        <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
-                        <td>{les.topic}</td>
-                        <td>{les.description}</td>
-                        <td>
-                          <IconButton
-                            aria-label="copy"
-                            onClick={() => { setEditMode(false); copyLesson(les); }}
-                          >
-                            <FileCopyIcon />
-                          </IconButton>
-                        </td>
-                      </tr>
-                    );
-                  }
-                  return null;
-                })}
-              </tbody>
-            </table>
-            )}
-          </div>
         </div>
         <div>
           <List
@@ -360,7 +321,47 @@ export const AddLesson = () => {
           </List>
         </div>
       </form>
-
+      <div className={classes.backlog}>
+        {allLessons.current?.length > 0 && (
+        <TextField
+          className={classes.input}
+          id="filled-basic"
+          label="Search lessons..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onFocus={() => setDisplayBacklog(true)}
+        />
+        )}
+        { displayBacklog && (
+        <table className="center w100">
+          <tbody>
+            {remainingLessons.map((les) => {
+              const search = searchText.toLocaleLowerCase();
+              if (searchText === ''
+                  || les.topic?.toLowerCase()?.includes(search)
+                   || les.description?.toLowerCase()?.includes(search)) {
+                return (
+                  <tr key={les.id}>
+                    <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
+                    <td>{les.topic}</td>
+                    <td>{les.description}</td>
+                    <td>
+                      <IconButton
+                        aria-label="copy"
+                        onClick={() => { setEditMode(false); copyLesson(les); }}
+                      >
+                        <FileCopyIcon />
+                      </IconButton>
+                    </td>
+                  </tr>
+                );
+              }
+              return null;
+            })}
+          </tbody>
+        </table>
+        )}
+      </div>
     </>
   );
 };
