@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import { getDocsWithProps } from '../../../data/Store';
+import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 
 export const Subscriptions = () => {
+  useBreadcrumb();
   const { email } = useContext(AppContext);
   const [lessons, setLessons] = useState<ILesson[]>([]);
   const [subCount, setSubCount] = useState<number[]>([]);
@@ -42,6 +44,7 @@ export const Subscriptions = () => {
               <td>{l.description}</td>
               <td>{l.price}</td>
               <td>{subCount[idx]}</td>
+              <td style={{ float: 'right' }}>{subCount[idx] && subCount[idx] * l.price}</td>
             </tr>
           ))}
         </tbody>

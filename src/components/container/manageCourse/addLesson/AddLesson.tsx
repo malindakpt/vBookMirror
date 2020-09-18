@@ -17,8 +17,10 @@ import { ILesson } from '../../../../interfaces/ILesson';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const AddLesson = () => {
+  useBreadcrumb();
   const { showSnackbar, email } = useContext(AppContext);
 
   const [searchText, setSearchText] = useState<string>('');

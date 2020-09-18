@@ -8,8 +8,10 @@ import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const EditExam = () => {
+  useBreadcrumb();
   const { showSnackbar } = useContext(AppContext);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);

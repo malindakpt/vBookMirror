@@ -9,8 +9,10 @@ import { ISubject } from '../../../../interfaces/ISubject';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { examYears } from '../../../../data/Config';
 import { getObject } from '../../../../data/StoreHelper';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const UpgradeCourse = () => {
+  useBreadcrumb();
   const { showSnackbar, email } = useContext(AppContext);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);

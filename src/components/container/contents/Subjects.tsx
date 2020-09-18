@@ -18,7 +18,7 @@ export const Subjects = () => {
       setSubjects(data);
       keyMap(data);
     });
-  }, []);
+  }, [keyMap]);
 
   return (
     <>

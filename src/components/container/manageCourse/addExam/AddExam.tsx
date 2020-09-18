@@ -6,8 +6,10 @@ import classes from '../ManageCourse.module.scss';
 import { addDoc } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const AddExam = () => {
+  useBreadcrumb();
   const [exam, setExam] = useState<IExam>();
   const { showSnackbar } = useContext(AppContext);
 

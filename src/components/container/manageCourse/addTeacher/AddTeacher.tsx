@@ -8,8 +8,10 @@ import { ListItems } from '../../../presentational/ListItems/ListItemsComponent'
 import { AppContext } from '../../../../App';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const AddTeacher = () => {
+  useBreadcrumb();
   const [onUpdate, updateUI] = useForcedUpdate();
   const { showSnackbar } = useContext(AppContext);
   const [teacher, setTeacher] = useState<ITeacher>();

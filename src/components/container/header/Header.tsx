@@ -41,6 +41,7 @@ export const Header:React.FC = () => {
         setUserDetails(u);
       } else {
         setEmail(null);
+        setIsTeacher(false);
       }
     });
     // eslint-disable-next-line

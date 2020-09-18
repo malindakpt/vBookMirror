@@ -8,8 +8,10 @@ import { AppContext } from '../../../../App';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import { ISubject } from '../../../../interfaces/ISubject';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const AddSubject = () => {
+  useBreadcrumb();
   const [onUpdate, updateUI] = useForcedUpdate();
   const { showSnackbar } = useContext(AppContext);
   const [subject, setSubject] = useState<ISubject>();
