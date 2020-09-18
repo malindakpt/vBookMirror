@@ -62,10 +62,10 @@ export const UpgradeCourse = () => {
             printedCourses[`${course.subjectId}-${course.examId}`] = true;
             return examYears.map((year) => {
               const crsForYr = courses.findIndex((c) => c.subjectId === course.subjectId
-               && c.examYear === year);
+               && c.examYear === year.id);
 
               const courseString = `${getObject(exams, course.examId)?.name}-
-                  ${getObject(subjects, course.subjectId)?.name}-${year}`;
+                  ${getObject(subjects, course.subjectId)?.name}-${year.name}`;
 
               if (crsForYr >= 0) {
                 return <div key={courseString}>{courseString}</div>;
@@ -73,7 +73,7 @@ export const UpgradeCourse = () => {
               return (
                 <div key={courseString}>
                   {courseString}
-                  <Button onClick={() => createCourse(course, year)}>Enable</Button>
+                  <Button onClick={() => createCourse(course, year.id)}>Enable</Button>
                 </div>
               );
             });

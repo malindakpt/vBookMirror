@@ -7,15 +7,16 @@ import { examYears } from '../../../data/Config';
 
 export const Years = () => {
   const { examId } = useParams<any>();
-  useBreadcrumb();
+  const keyMap = useBreadcrumb();
+  keyMap(examYears);
 
   return (
     <div className={classes.root}>
       {examYears?.map((yr) => (
         <Category
-          key={yr}
-          title1={yr}
-          navURL={`${examId}/${yr}`}
+          key={yr.id}
+          title1={yr.name}
+          navURL={`${examId}/${yr.id}`}
         />
       )
       )}

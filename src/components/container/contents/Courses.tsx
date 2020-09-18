@@ -11,9 +11,10 @@ import { ITeacher } from '../../../interfaces/ITeacher';
 import { IExam } from '../../../interfaces/IExam';
 
 export const Courses: React.FC = () => {
+  const keyMap = useBreadcrumb();
+
   const { subjectId, examId, year } = useParams<any>();
 
-  useBreadcrumb();
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
@@ -21,9 +22,15 @@ export const Courses: React.FC = () => {
 
   useEffect(() => {
     getDocsWithProps<ICourse[]>('courses', { subjectId, examId, examYear: year })
-      .then((data) => setCourses(data));
+      .then((data) => {
+        setCourses(data);
+        keyMap(data);
+      });
     getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
-    getDocsWithProps<ITeacher[]>('teachers', {}).then((data) => setTeachers(data));
+    getDocsWithProps<ITeacher[]>('teachers', {}).then((data) => {
+      setTeachers(data);
+      keyMap(data);
+    });
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);

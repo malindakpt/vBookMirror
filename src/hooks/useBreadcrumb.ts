@@ -4,6 +4,16 @@ import {
 import { useParams } from 'react-router-dom';
 import { AppContext } from '../App';
 
+const keyMap: any = {};
+
+const updateKeyMap = (objs?: any[]) => {
+  if (!objs) return;
+
+  objs.forEach((obj) => {
+    keyMap[obj.id] = obj;
+  });
+};
+
 export const useBreadcrumb = () => {
   const {
     examId, year, subjectId, courseId,
@@ -27,19 +37,26 @@ export const useBreadcrumb = () => {
     ];
 
     if (examId) {
-      bcs.push(['Exam Year', `/${examId}`]);
+      const text = keyMap[examId] ? `${keyMap[examId].name}-${keyMap[examId].type}` : 'Exam Year';
+      bcs.push([text, `/${examId}`]);
     }
     if (year) {
-      bcs.push(['Subjects', `/${examId}/${year}`]);
+      const text = keyMap[year] ? `${keyMap[year].name}` : 'Subjects';
+      bcs.push([text, `/${examId}/${year}`]);
     }
     if (subjectId) {
-      bcs.push(['Courses', `/${examId}/${year}/${subjectId}`]);
+      const text = keyMap[subjectId] ? `${keyMap[subjectId].name}` : 'Courses';
+      bcs.push([text, `/${examId}/${year}/${subjectId}`]);
     }
     if (courseId) {
-      bcs.push(['Lessons',
+      const text = keyMap[courseId] && keyMap[keyMap[courseId].teacherId]
+        ? `${keyMap[keyMap[courseId].teacherId].name}` : 'Lessons';
+      bcs.push([text,
         `/${examId}/${year}/${subjectId}/${courseId}`]);
     }
     sendBreadcrumbs(bcs);
   },
   [examId, subjectId, courseId, sendBreadcrumbs, year]);
+
+  return updateKeyMap;
 };

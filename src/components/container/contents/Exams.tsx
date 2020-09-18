@@ -6,11 +6,13 @@ import { getDocsWithProps } from '../../../data/Store';
 import { IExam } from '../../../interfaces/IExam';
 
 export const Exams = () => {
-  useBreadcrumb();
   const [exams, setExams] = useState<IExam[]>([]);
-
+  const idMap = useBreadcrumb();
   useEffect(() => {
-    getDocsWithProps<IExam[]>('exams', {}).then((data) => { setExams(data); });
+    getDocsWithProps<IExam[]>('exams', {}).then((data) => {
+      setExams(data);
+      idMap(data);
+    });
     // eslint-disable-next-line
   }, []);
 

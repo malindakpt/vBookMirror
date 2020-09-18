@@ -11,12 +11,14 @@ import { ISubject } from '../../../interfaces/ISubject';
 export const Subjects = () => {
   const { year } = useParams<any>();
   const [subjects, setSubjects] = useState<ISubject[]>([]);
+  const keyMap = useBreadcrumb();
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => { setSubjects(data); });
+    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => {
+      setSubjects(data);
+      keyMap(data);
+    });
   }, []);
-
-  useBreadcrumb();
 
   return (
     <>
@@ -24,6 +26,7 @@ export const Subjects = () => {
         {
       subjects.map((subject) => (
         <Link
+          key={subject.id}
           to={`${year}/${subject.id}`}
           style={{ textDecoration: 'none', color: '#5d5d5d' }}
         >
