@@ -74,8 +74,8 @@ export const AddLesson = () => {
 
   useEffect(() => {
     Promise.all([
-      getDocsWithProps<ICourse[]>('courses', {}, {}),
-      getDocsWithProps<ILesson[]>('lessons', {}, {}),
+      getDocsWithProps<ICourse[]>('courses', {}),
+      getDocsWithProps<ILesson[]>('lessons', {}),
     ]).then((values) => {
       const [courses, lessons] = values;
 
@@ -84,8 +84,8 @@ export const AddLesson = () => {
 
       allLessons.current = lessons;
     });
-    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, [courses]);
 

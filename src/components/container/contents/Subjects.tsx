@@ -13,7 +13,7 @@ export const Subjects = () => {
   const [subjects, setSubjects] = useState<ISubject[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => { setSubjects(data); });
+    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => { setSubjects(data); });
   }, []);
 
   useBreadcrumb();

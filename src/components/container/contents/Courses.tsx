@@ -20,10 +20,11 @@ export const Courses: React.FC = () => {
   const [exams, setExams] = useState<IExam[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ICourse[]>('courses', { subjectId, examId, examYear: year }, {}).then((data) => setCourses(data));
-    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
-    getDocsWithProps<ITeacher[]>('teachers', {}, {}).then((data) => setTeachers(data));
-    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
+    getDocsWithProps<ICourse[]>('courses', { subjectId, examId, examYear: year })
+      .then((data) => setCourses(data));
+    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
+    getDocsWithProps<ITeacher[]>('teachers', {}).then((data) => setTeachers(data));
+    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);
 

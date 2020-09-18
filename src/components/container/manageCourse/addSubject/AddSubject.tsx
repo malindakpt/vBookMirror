@@ -23,7 +23,7 @@ export const AddSubject = () => {
   };
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
+    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
     // eslint-disable-next-line
   },[onUpdate])
 

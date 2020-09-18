@@ -10,7 +10,7 @@ export const Exams = () => {
   const [exams, setExams] = useState<IExam[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => { setExams(data); });
+    getDocsWithProps<IExam[]>('exams', {}).then((data) => { setExams(data); });
     // eslint-disable-next-line
   }, []);
 

@@ -10,7 +10,7 @@ export const Subscriptions = () => {
   const [subCount, setSubCount] = useState<number[]>([]);
 
   const setSubs = (idx:number, lessonId: string) => {
-    getDocsWithProps<IUser[]>('users', { lessons: [lessonId] }, {}).then((data) => {
+    getDocsWithProps<IUser[]>('users', { lessons: [lessonId] }).then((data) => {
       setSubCount((prev) => {
         const clone = [...prev];
         clone[idx] = data.length;
@@ -20,7 +20,7 @@ export const Subscriptions = () => {
   };
 
   useEffect(() => {
-    getDocsWithProps<ILesson[]>('lessons', { email, 'price>': 0 }, {}).then((data) => {
+    getDocsWithProps<ILesson[]>('lessons', { email, 'price>': 0 }).then((data) => {
       setLessons(data);
       setSubCount(new Array(data.length));
 

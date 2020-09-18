@@ -63,15 +63,15 @@ export const updateDoc = (entityName: string, id: string, obj: any) => new Promi
     });
 });
 
-const generateRequestKey = (entityName: string, conditions: any,
-  orderBy: any) => `${entityName}-${JSON.stringify(conditions)}-${JSON.stringify(orderBy)}`;
+const generateRequestKey = (
+  entityName: string, conditions: any,
+) => `${entityName}-${JSON.stringify(conditions)}}`;
 
 export const getDocsWithProps = <T>(
   entityName: string,
   conditions: any,
-  orderBy: any,
 ): Promise<T> => new Promise((resolves, reject) => {
-    const cachedResponse = store[generateRequestKey(entityName, conditions, orderBy)];
+    const cachedResponse = store[generateRequestKey(entityName, conditions)];
     if (cachedResponse) {
       // Resolve result from cache and skip network
       resolves(cachedResponse);
@@ -98,10 +98,6 @@ export const getDocsWithProps = <T>(
       }
     });
 
-    Object.keys(orderBy).forEach((key, index) => {
-      query = (query ?? ref).orderBy(key, orderBy[key]);
-    });
-
     const results: any = [];
     (query ?? ref)
       .get()
@@ -112,7 +108,7 @@ export const getDocsWithProps = <T>(
           results.push(v);
         });
         // Store result in cache and resolve
-        store[generateRequestKey(entityName, conditions, orderBy)] = results;
+        store[generateRequestKey(entityName, conditions)] = results;
         resolves(results);
       })
       .catch((error: any) => {

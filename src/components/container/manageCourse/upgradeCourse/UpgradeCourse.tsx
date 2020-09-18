@@ -17,13 +17,13 @@ export const UpgradeCourse = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ITeacher[]>('teachers', { email }, {}).then((data) => {
+    getDocsWithProps<ITeacher[]>('teachers', { email }).then((data) => {
       const teacher = data[0];
-      getDocsWithProps<ICourse[]>('courses', { teacherId: teacher.id }, {}).then((data) => setCourses(data));
+      getDocsWithProps<ICourse[]>('courses', { teacherId: teacher.id }).then((data) => setCourses(data));
     });
 
-    getDocsWithProps<IExam[]>('exams', {}, {}).then((data) => setExams(data));
-    getDocsWithProps<ISubject[]>('subjects', {}, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
   }, [email]);
 
   const createCourse = (course: ICourse, year: string) => {

@@ -25,8 +25,8 @@ export const Course: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      getDocsWithProps<IUser[]>('users', { email }, {}),
-      getDocsWithProps<ILesson[]>('lessons', {}, {}),
+      getDocsWithProps<IUser[]>('users', { email }),
+      getDocsWithProps<ILesson[]>('lessons', {}),
       getDocWithId<ICourse>('courses', courseId),
     ]).then((result) => {
       const [users, lessons, course] = result;

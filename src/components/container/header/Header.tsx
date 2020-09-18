@@ -28,7 +28,7 @@ export const Header:React.FC = () => {
       photo: result.photoURL,
     });
 
-    getDocsWithProps<ITeacher[]>('teachers', { email }, {}).then((data) => {
+    getDocsWithProps<ITeacher[]>('teachers', { email }).then((data) => {
       if (data.length > 0) {
         setIsTeacher(true);
       }
