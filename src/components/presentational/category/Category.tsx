@@ -36,21 +36,27 @@ export const Category:React.FC<Props> = ({
       onClick={handleClick}
     >
       <div className={classes.image}>
-        <CategoryImg style={{ fontSize: 40 }} />
+        <CategoryImg
+          htmlColor="#3f51b5"
+          style={{ fontSize: 40 }}
+        />
       </div>
       <div className={classes.content}>
         <div>{title1}</div>
         <div>{title2}</div>
         <div className={classes.iconTitle}>
           <div>
-            {status === 'yes' && <CheckCircleOutlineIcon htmlColor="#00ff4e" />}
+            {status === 'yes' && <CheckCircleOutlineIcon htmlColor="#0aa04d" />}
             {status === 'no' && <AddCircleOutlineIcon htmlColor="red" />}
           </div>
           {title3}
         </div>
       </div>
       <div className={classes.actions}>
-        <InputIcon style={{ fontSize: 40 }} />
+        <InputIcon
+          htmlColor="#3f51b5"
+          style={{ fontSize: 40 }}
+        />
       </div>
     </Link>
   );

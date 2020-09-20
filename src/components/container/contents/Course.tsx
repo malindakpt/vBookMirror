@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '@material-ui/core';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
@@ -127,7 +127,7 @@ export const Course: React.FC = () => {
             <Category
               id={lesson.id}
               key={idx}
-              CategoryImg={CheckCircleOutlineIcon}
+              CategoryImg={OndemandVideoIcon}
               title1={`Week ${idx}`}
               title2={`${lesson.topic}-${lesson.partNo}`}
               title3={subsText}
