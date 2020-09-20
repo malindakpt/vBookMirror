@@ -26,6 +26,13 @@
       font-size: 20px;
       font-weight: bold;
     }
+
+    .iconTitle {
+      display: grid;
+      place-items: center start;
+      grid-template-columns: auto auto;
+      grid-gap: 5px;
+    }
   }
 
   .actions {
@@ -33,9 +40,5 @@
     place-items: center;
   }
 
-  .iconTitle {
-    display: grid;
-    place-items: center start;
-    grid-template-columns: 27px auto;
-  }
+
 }

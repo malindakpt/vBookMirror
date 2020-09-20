@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   Card, CardActionArea, CardContent, Typography,
 } from '@material-ui/core';
+import CategoryIcon from '@material-ui/icons/Category';
 import classes from './Subjects.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
@@ -38,7 +39,8 @@ export const Subjects = () => {
                   variant="h5"
                   component="h2"
                 >
-                  {subject.name}
+                  <CategoryIcon />
+                  <span className={classes.sub}>{subject.name}</span>
                 </Typography>
               </CardContent>
             </CardActionArea>

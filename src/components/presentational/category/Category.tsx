@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import InputIcon from '@material-ui/icons/Input';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import { Link } from 'react-router-dom';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
@@ -45,7 +44,7 @@ export const Category:React.FC<Props> = ({
         <div className={classes.iconTitle}>
           {status === 'yes' && <CheckCircleOutlineIcon htmlColor="#0aa04d" />}
           {status === 'no' && <AddCircleOutlineIcon htmlColor="red" />}
-          {status === 'none' && <RadioButtonCheckedIcon htmlColor="#d6d608" />}
+          {status === 'none' && <CheckCircleOutlineIcon htmlColor="#ffa500" />}
           {title2}
         </div>
       </div>
