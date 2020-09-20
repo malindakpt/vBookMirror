@@ -109,18 +109,15 @@ export const Course: React.FC = () => {
       )}
       {
         lessons?.map((lesson, idx) => {
-          let subsText;
-          let status: 'yes'|'no'|undefined;
+          let status: 'yes'|'no'| 'none' | undefined;
           if (lesson.price) {
             if (user?.lessons.includes(lesson.id)) {
-              subsText = 'Paid';
               status = 'yes';
             } else {
-              subsText = `Rs: ${lesson.price}`;
               status = 'no';
             }
           } else {
-            subsText = 'Free';
+            status = 'none';
           }
 
           return (
@@ -130,7 +127,7 @@ export const Course: React.FC = () => {
               CategoryImg={OndemandVideoIcon}
               title1={`Week ${idx}`}
               title2={`${lesson.topic}-${lesson.partNo}`}
-              title3={subsText}
+              // title2={subsText}
               navURL={!lesson.price
                 || user?.lessons.includes(lesson.id) ? `${courseId}/${lesson.id}` : `${courseId}`}
               onSelect={handleSelectLesson}

@@ -23,8 +23,7 @@ export const Exams = () => {
         <Category
           key={ex.id}
           title1={ex.name}
-          title2=""
-          title3={ex.type}
+          title2={ex.type}
           CategoryImg={SchoolIcon}
           navURL={`${ex.id}`}
         />
