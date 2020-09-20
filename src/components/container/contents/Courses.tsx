@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { getObject } from '../../../data/StoreHelper';
@@ -46,6 +47,7 @@ export const Courses: React.FC = () => {
         return (
           <Category
             key={course.id}
+            CategoryImg={CheckCircleOutlineIcon}
             title1={teacher?.name}
             title2={subject?.name}
             title3={` ${exam?.type} [${exam?.name}]`}

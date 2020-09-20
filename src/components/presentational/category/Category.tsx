@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import ContactsIcon from '@material-ui/icons/Contacts';
+import InputIcon from '@material-ui/icons/Input';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import ForwardIcon from '@material-ui/icons/Forward';
 import { Link } from 'react-router-dom';
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import { SvgIconTypeMap } from '@material-ui/core';
 import classes from './Category.module.scss';
 
 interface Props {
@@ -12,10 +15,11 @@ interface Props {
   title3?: string;
   navURL: string;
   status?: 'yes' | 'no'
+  CategoryImg: OverridableComponent<SvgIconTypeMap>;
   onSelect?: (id: string, selected: boolean) => void;
 }
 export const Category:React.FC<Props> = ({
-  id, title1 = '', title2 = '', title3 = '', navURL, onSelect, status,
+  id, title1 = '', title2 = '', title3 = '', navURL, onSelect, status, CategoryImg,
 }) => {
   const [selected, setSelected] = useState(false);
   const handleClick = () => {
@@ -32,7 +36,7 @@ export const Category:React.FC<Props> = ({
       onClick={handleClick}
     >
       <div className={classes.image}>
-        <ContactsIcon style={{ fontSize: 40 }} />
+        <CategoryImg style={{ fontSize: 40 }} />
       </div>
       <div className={classes.content}>
         <div>{title1}</div>
@@ -46,7 +50,7 @@ export const Category:React.FC<Props> = ({
         </div>
       </div>
       <div className={classes.actions}>
-        <ContactsIcon style={{ fontSize: 40 }} />
+        <InputIcon style={{ fontSize: 40 }} />
       </div>
     </Link>
   );

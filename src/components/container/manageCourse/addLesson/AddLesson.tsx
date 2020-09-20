@@ -105,13 +105,14 @@ export const AddLesson = () => {
         setCourses([]); // force update
       });
     } else {
+      const selectedCourse = courses.filter((c) => c.id === courseId)[0];
       const lesson: ILesson = {
         id: '',
         date: new Date().getTime(),
         topic,
         partNo,
         description,
-        keywords,
+        keywords: `${selectedCourse.examYear}`,
         videoURL,
         price,
         email: email as string,
@@ -242,13 +243,13 @@ export const AddLesson = () => {
             value={partNo}
             onChange={(e) => setPartNo(e.target.value)}
           />
-          <TextField
+          {/* <TextField
             className={classes.input}
             id="standard-basic3"
             label="Keywords"
             value={keywords}
             onChange={(e) => setKeywords(e.target.value)}
-          />
+          /> */}
           <TextField
             className={classes.input}
             id="standard-basic4"

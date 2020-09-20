@@ -20,6 +20,7 @@ import { AppContext } from '../../App';
 import { UpgradeCourse } from '../container/manageCourse/upgradeCourse/UpgradeCourse';
 import { Years } from '../container/contents/Years';
 import { Subscriptions } from '../container/subscriptions/Subscriptions';
+import { Payments } from '../container/payments/Payments';
 
 type routeConfig = [string, any, string, boolean][];
 
@@ -44,6 +45,7 @@ export const adminRoutes: routeConfig = [
   ['/addTeacher', AddTeacher, 'Add Teacher', true],
   ['/addSubject', AddSubject, 'Add Subject', true],
   ['/addCourse', AddCourse, 'Add Course', true],
+  ['/payments', Payments, 'Payments', true],
 ];
 
 const Router: React.FC = () => {

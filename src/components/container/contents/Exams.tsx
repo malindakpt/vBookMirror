@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SchoolIcon from '@material-ui/icons/School';
 import { Category } from '../../presentational/category/Category';
 import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
@@ -24,6 +25,7 @@ export const Exams = () => {
           title1={ex.name}
           title2=""
           title3={ex.type}
+          CategoryImg={SchoolIcon}
           navURL={`${ex.id}`}
         />
       )

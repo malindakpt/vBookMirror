@@ -32,21 +32,34 @@ export const Subscriptions = () => {
     });
   }, [email]);
 
+  let totalSub = 0;
+  let totalAmount = 0;
   return (
     <>
       <h2>Subscriptions</h2>
       <table className="center w100">
 
         <tbody>
-          { lessons.map((l, idx) => (
-            <tr key={l.id}>
-              <td>{l.topic}</td>
-              <td>{l.description}</td>
-              <td>{l.price}</td>
-              <td>{subCount[idx]}</td>
-              <td style={{ float: 'right' }}>{subCount[idx] && subCount[idx] * l.price}</td>
-            </tr>
-          ))}
+          { lessons.map((l, idx) => {
+            totalSub += subCount[idx];
+            totalAmount += subCount[idx] * l.price;
+            return (
+              <tr key={l.id}>
+                <td>{l.topic}</td>
+                <td>{l.description}</td>
+                <td>{l.price}</td>
+                <td>{subCount[idx]}</td>
+                <td className="right">{subCount[idx] && subCount[idx] * l.price}</td>
+              </tr>
+            );
+          }) }
+          <tr>
+            <td />
+            <td />
+            <td className="right"><b>Total :</b></td>
+            <td><b>{totalSub && totalSub}</b></td>
+            <td className="right"><b>{ totalAmount && totalAmount }</b></td>
+          </tr>
         </tbody>
       </table>
     </>
