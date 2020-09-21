@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { Category } from '../../presentational/category/Category';
-import classes from './Contents.module.scss';
 import { getObject } from '../../../data/StoreHelper';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
@@ -34,7 +33,7 @@ export const Courses: React.FC = () => {
   }, []);
 
   return (
-    <div className={classes.root}>
+    <div className="container">
       <h3>Courses</h3>
       {courses.map((course) => {
         // const subject = getObject(subjects, course.subjectId);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SchoolIcon from '@material-ui/icons/School';
 import { Category } from '../../presentational/category/Category';
-import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { getDocsWithProps } from '../../../data/Store';
 import { IExam } from '../../../interfaces/IExam';
@@ -18,7 +17,7 @@ export const Exams = () => {
   }, []);
 
   return (
-    <div className={classes.root}>
+    <div className="container">
       {exams?.map((ex) => (
         <Category
           key={ex.id}

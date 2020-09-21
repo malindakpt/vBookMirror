@@ -2,7 +2,6 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import { Category } from '../../presentational/category/Category';
-import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { examYears } from '../../../data/Config';
 
@@ -12,7 +11,7 @@ export const Years = () => {
   keyMap(examYears);
 
   return (
-    <div className={classes.root}>
+    <div className="container">
       {examYears?.map((yr) => (
         <Category
           key={yr.id}

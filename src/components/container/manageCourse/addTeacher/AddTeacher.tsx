@@ -3,7 +3,7 @@ import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { addDoc, getDocsWithProps } from '../../../../data/Store';
+import { addDocWithId, getDocsWithProps } from '../../../../data/Store';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { AppContext } from '../../../../App';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
@@ -29,9 +29,10 @@ export const AddTeacher = () => {
     });
   };
 
-  const onSave = () => {
-    addDoc('teachers', teacher).then(() => {
-      showSnackbar('Teacher is added');
+  const onSave = async () => {
+    const teachers = await getDocsWithProps<ITeacher[]>('teachers', {});
+    addDocWithId('teachers', `${teachers.length + 1}`, teacher).then(() => {
+      showSnackbar('New teacher added');
       updateUI();
     });
   };

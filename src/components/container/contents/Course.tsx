@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import { Category } from '../../presentational/category/Category';
-import classes from './Contents.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
   getDocsWithProps, addDoc, updateDoc, getDocWithId,
@@ -89,12 +88,12 @@ export const Course: React.FC = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className="container">
       {total > 0 && (
-      <div className={classes.center}>
+      <div>
         <div />
-        <div className={classes.price}>
-          <span className={classes.cost}>
+        <div>
+          <span>
             { `Rs. ${total}.00`}
           </span>
           <Button

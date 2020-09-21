@@ -17,6 +17,11 @@ body {
   .right {
     float: right;
   }
+
+  .container {
+    max-width: 500px;
+    margin: auto;
+  }
 }
 
 code {

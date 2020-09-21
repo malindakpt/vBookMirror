@@ -21,16 +21,18 @@ import { UpgradeCourse } from '../container/manageCourse/upgradeCourse/UpgradeCo
 import { Years } from '../container/contents/Years';
 import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
+import { Teacher } from '../container/teacher/Teacher';
 
 type routeConfig = [string, any, string, boolean][];
 
 export const routes: routeConfig = [
-  ['/', Exams, 'Exams', true],
-  ['/:examId', Years, 'Years', false],
-  ['/:examId/:year', Subjects, 'Subjects', false],
-  ['/:examId/:year/:subjectId', Courses, 'Courses', false],
-  ['/:examId/:year/:subjectId/:courseId', Course, 'Course', false],
+  ['/teacher/:id', Teacher, 'Teacher', false],
   ['/:examId/:year/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
+  ['/:examId/:year/:subjectId/:courseId', Course, 'Course', false],
+  ['/:examId/:year/:subjectId', Courses, 'Courses', false],
+  ['/:examId/:year', Subjects, 'Subjects', false],
+  ['/:examId', Years, 'Years', false],
+  ['/', Exams, 'Exams', true],
 ];
 
 export const teacherRoutes: routeConfig = [
