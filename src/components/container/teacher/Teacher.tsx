@@ -10,6 +10,7 @@ import { ISubject } from '../../../interfaces/ISubject';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../interfaces/ITeacher';
+import classes from './Teacher.module.scss';
 
 export const Teacher = () => {
   useBreadcrumb();
@@ -28,7 +29,10 @@ export const Teacher = () => {
 
   return (
     <div className="container">
-      <h3>{teacher?.name}</h3>
+      <div className={classes.name}>
+        Courses from
+        {` ${teacher?.name}`}
+      </div>
       {
                 courses.map((c) => {
                   const subj = getObject(subjects, c.subjectId);
