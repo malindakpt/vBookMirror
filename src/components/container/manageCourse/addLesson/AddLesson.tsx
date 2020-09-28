@@ -10,7 +10,9 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
-import { addDoc, getDocsWithProps, updateDoc } from '../../../../data/Store';
+import {
+  addDoc, getDocsWithProps, updateDoc, uploadFile,
+} from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import { ILesson } from '../../../../interfaces/ILesson';
@@ -22,6 +24,9 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 export const AddLesson = () => {
   useBreadcrumb();
   const { showSnackbar, email } = useContext(AppContext);
+
+  const [uploadTask, setUploadTask] = useState<any>();
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -90,6 +95,18 @@ export const AddLesson = () => {
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, [courses]);
+
+  const onFileUpload = (e: any) => {
+    console.log('Start upload');
+    setUploadProgress(100);
+    const out = uploadFile(e).subscribe((next) => {
+      if (!uploadTask) { setUploadTask(next.uploadTask); }
+      if (next.downloadURL) {
+        setVideoURL(next.downloadURL);
+      }
+      setUploadProgress(next.progress);
+    });
+  };
 
   const onSave = async () => {
     if (editMode) {
@@ -179,6 +196,9 @@ export const AddLesson = () => {
   return (
     <>
       <h3>Manage Lessons</h3>
+
+      {/* <label htmlFor="myfile">Select a file:</label> */}
+
       <form
         className={classes.root}
         noValidate
@@ -194,16 +214,16 @@ export const AddLesson = () => {
               value={courseId}
               onChange={(e) => onCourseChange(courses, e.target.value as string)}
             >
-              {courses.map((t) => {
-                const subject = getObject(subjects, t.subjectId);
-                const exam = getObject(exams, t.examId);
+              {courses.map((course) => {
+                const subject = getObject(subjects, course.subjectId);
+                const exam = getObject(exams, course.examId);
 
                 return (
                   <MenuItem
-                    value={t.id}
-                    key={t.id}
+                    value={course.id}
+                    key={course.id}
                   >
-                    {`${t.examYear}-${exam?.name}-${exam?.type}-${subject?.name}`}
+                    {`${course.examYear}-${exam?.name}-${exam?.type}-${subject?.name}`}
                   </MenuItem>
                 );
               })}
@@ -243,20 +263,36 @@ export const AddLesson = () => {
             value={partNo}
             onChange={(e) => setPartNo(e.target.value)}
           />
-          {/* <TextField
-            className={classes.input}
-            id="standard-basic3"
-            label="Keywords"
-            value={keywords}
-            onChange={(e) => setKeywords(e.target.value)}
-          /> */}
-          <TextField
-            className={classes.input}
-            id="standard-basic4"
-            label="Video URL"
-            value={videoURL}
-            onChange={(e) => setVideoURL(e.target.value)}
-          />
+          <div className={classes.video}>
+            <TextField
+              className={classes.input}
+              id="standard-basic4"
+              label="Video URL"
+              disabled
+              value={videoURL}
+              onChange={(e) => setVideoURL(e.target.value)}
+            />
+            <div>
+              {uploadProgress === 0 && (
+              <input
+                type="file"
+                id="uploader"
+                name="uploader"
+                onChange={onFileUpload}
+              />
+              )}
+              <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
+              {uploadProgress > 0 && uploadProgress < 100 && (
+              <Button
+                variant="contained"
+                onClick={onSave}
+              >
+                Cancel Upload NA
+              </Button>
+              )}
+            </div>
+          </div>
+
           <TextField
             className={classes.input}
             id="filled-basic5"

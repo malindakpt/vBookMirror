@@ -29,7 +29,11 @@
     grid-template-columns: 1fr 1fr;
     width: 100%;
   }
-
+  .video {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+  }
 
 }
 

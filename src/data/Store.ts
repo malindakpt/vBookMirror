@@ -1,9 +1,18 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/storage';
+import { Subject } from 'rxjs';
 import firebaseConfig from './Config';
+
+export interface UploadStatus {
+  progress: number;
+  uploadTask: firebase.storage.UploadTask;
+  downloadURL?: string;
+}
 
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(app);
+const storage = firebase.storage(app);
 const store: {[key: string]: any} = {};
 console.log('firebase initialized');
 
@@ -16,6 +25,67 @@ const clearStore = (entityName: string) => {
 };
 
 // TODO: clear data store for all edit data queries
+
+export const uploadFile = (e: any): Subject<UploadStatus> => {
+  const subject = new Subject<UploadStatus>();
+  const storageRef = firebase.storage().ref();
+
+  const file = e.target.files[0];
+  // const blob = new Blob([file], { type: 'image/jpeg' });
+  const uploadTask = storageRef.child('images/mountains2.jpg').put(file);
+
+  // Register three observers:
+  // 1. 'state_changed' observer, called any time the state changes
+  // 2. Error observer, called on failure
+  // 3. Completion observer, called on successful completion
+  uploadTask.on('state_changed', (snapshot) => {
+  // Observe state change events such as progress, pause, and resume
+  // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log(`Upload is ${progress}% done`);
+    subject.next({
+      uploadTask,
+      progress,
+    });
+    switch (snapshot.state) {
+      case firebase.storage.TaskState.PAUSED: // or 'paused'
+        console.log('Upload is paused');
+        break;
+      case firebase.storage.TaskState.RUNNING: // or 'running'
+        console.log('Upload is running');
+        break;
+      default:
+        console.log('unhandled');
+    }
+  }, (error) => {
+  // Handle unsuccessful uploads
+  }, () => {
+  // Handle successful uploads on complete
+  // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+      console.log('File available at', downloadURL);
+      subject.next({
+        uploadTask,
+        progress: 100,
+        downloadURL,
+      });
+    });
+  });
+  // // Pause the upload
+  // uploadTask.pause();
+
+  // // Resume the upload
+  // uploadTask.resume();
+
+  // // Cancel the upload
+  // uploadTask.cancel();
+
+  // setTimeout(() => {
+  //   uploadTask.pause();
+  // }, 5000);
+
+  return subject;
+};
 
 export const addDoc = (entityName: string, obj: any) => new Promise<string>((resolve) => {
   delete obj.id; // Allow id auto generation
