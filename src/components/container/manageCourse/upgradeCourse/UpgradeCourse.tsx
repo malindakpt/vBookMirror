@@ -10,6 +10,7 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { examYears } from '../../../../data/Config';
 import { getObject } from '../../../../data/StoreHelper';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
+import { IStream } from '../../../../interfaces/IStream';
 
 export const UpgradeCourse = () => {
   useBreadcrumb();
@@ -17,18 +18,21 @@ export const UpgradeCourse = () => {
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [streams, setStreams] = useState<IStream[]>([]);
 
   useEffect(() => {
     getDocsWithProps<ITeacher[]>('teachers', { email }).then((data) => {
       const teacher = data[0];
       getDocsWithProps<ICourse[]>('courses', { teacherId: teacher.id }).then((data) => setCourses(data));
+      getDocsWithProps<IStream[]>('streams',
+        { teacherId: teacher.id }).then((data) => setStreams(data));
     });
 
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
     getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
   }, [email]);
 
-  const createCourse = (course: ICourse, year: string) => {
+  const createCourse = (course: IStream, year: string) => {
     const newCourse: ICourse = {
       id: '',
       lessons: [],
@@ -46,7 +50,7 @@ export const UpgradeCourse = () => {
     });
   };
 
-  const printedCourses: any = {};
+  // const printedCourses: any = {};
   return (
     <>
       <h3>Upgrade Course</h3>
@@ -56,32 +60,28 @@ export const UpgradeCourse = () => {
         autoComplete="off"
       >
         {
-          courses.map((course) => {
-            if (printedCourses[`${course.subjectId}-${course.examId}`]) {
-              return null;
+          streams.map((stream) => examYears.map((year) => {
+            const crsForYr = courses.findIndex((c) => c.subjectId === stream.subjectId
+               && c.examYear === year.id && c.teacherId === stream.teacherId);
+
+            const exam = getObject(exams, stream.examId);
+            // const actualExam = exams.find(ex => ex.)
+
+            const courseString = `${exam?.name}-
+                ${getObject(subjects, stream.subjectId)?.name}-${year.name}-${exam?.type}`;
+
+            if (crsForYr >= 0) {
+              return <div key={courseString}>{courseString}</div>;
             }
 
-            printedCourses[`${course.subjectId}-${course.examId}`] = true;
-            return examYears.map((year) => {
-              const crsForYr = courses.findIndex((c) => c.subjectId === course.subjectId
-               && c.examYear === year.id);
-
-              const courseString = `${getObject(exams, course.examId)?.name}-
-                  ${getObject(subjects, course.subjectId)?.name}-${year.name}`;
-
-              if (crsForYr >= 0) {
-                return <div key={courseString}>{courseString}</div>;
-              }
-              return (
-                <div key={courseString}>
-                  {courseString}
-                  <Button onClick={() => createCourse(course, year.id)}>Enable</Button>
-                </div>
-              );
-            });
-          })
+            return (
+              <div key={courseString}>
+                {courseString}
+                <Button onClick={() => createCourse(stream, year.id)}>Enable</Button>
+              </div>
+            );
+          }))
         }
-
       </form>
     </>
   );

@@ -5,17 +5,17 @@ import {
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
-import { IExam } from '../../../../interfaces/IExam';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
+import { IExam } from '../../../../interfaces/IExam';
 
 export const AddCourse = () => {
   useBreadcrumb();
   const { showSnackbar } = useContext(AppContext);
-  const [exams, setExams] = useState<IExam[]>([]);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
+  const [exams, setExams] = useState<IExam[]>([]);
 
   const [teacherId, setTeacherId] = useState('');
   const [subjectId, setSubjectId] = useState('');
@@ -28,22 +28,21 @@ export const AddCourse = () => {
   }, []);
 
   const onSave = () => {
-    addDoc('courses', {
+    addDoc('streams', {
       examId,
       subjectId,
       teacherId,
-    }).then(() => showSnackbar('Course added'));
+    }).then(() => showSnackbar('Course added for teacher'));
   };
 
   return (
     <>
-      <h3>Add Courses</h3>
+      <h3>Add Stream for Teacher</h3>
       <form
         className={classes.root}
         noValidate
         autoComplete="off"
       >
-
         <FormControl className={classes.input}>
           <InputLabel id="select-teacher">Select Teacher</InputLabel>
           <Select
@@ -98,7 +97,7 @@ export const AddCourse = () => {
                 value={t.id}
                 key={t.id}
               >
-                {`${t.name} ${t.type}`}
+                {`${t.name}-${t.type}`}
               </MenuItem>
             ))}
           </Select>

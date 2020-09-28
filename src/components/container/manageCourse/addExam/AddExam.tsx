@@ -39,12 +39,12 @@ export const AddExam = () => {
           onChange={(e) => setExamProps({ name: e.target.value })}
         />
 
-        <TextField
+        {/* <TextField
           className={classes.input}
           id="subjectName"
           label="Batch/Year of exam"
           onChange={(e) => setExamProps({ batch: e.target.value })}
-        />
+        /> */}
 
         <TextField
           className={classes.input}
