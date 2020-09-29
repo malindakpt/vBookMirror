@@ -301,7 +301,7 @@ export const AddLesson = () => {
                 onChange={(e) => setSearchText(e.target.value)}
                 onFocus={() => setDisplayBacklog(true)}
               />
-        )}
+              )}
               { displayBacklog && (
               <table className="center w100">
                 <tbody>
@@ -316,13 +316,13 @@ export const AddLesson = () => {
                           <td>{les.topic}</td>
                           <td>{les.description}</td>
                           <td>
-                  <IconButton
+                            <IconButton
                               aria-label="copy"
                               onClick={() => { setEditMode(false); copyLesson(les); }}
                             >
                               <FileCopyIcon />
                             </IconButton>
-                </td>
+                          </td>
                         </tr>
                       );
                     }
@@ -336,7 +336,7 @@ export const AddLesson = () => {
 
             <div className={classes.video}>
               {isAddNewVideo && (
-              <div>
+              <>
                 {uploadProgress === 0 && (
                 <input
                   type="file"
@@ -354,7 +354,7 @@ export const AddLesson = () => {
                   Cancel Upload
                 </Button>
                 )}
-              </div>
+              </>
               )}
             </div>
 
@@ -366,6 +366,7 @@ export const AddLesson = () => {
               value={videoURL}
               onChange={(e) => setVideoURL(e.target.value)}
             />
+
             <TextField
               className={classes.input}
               id="filled-basic5"
