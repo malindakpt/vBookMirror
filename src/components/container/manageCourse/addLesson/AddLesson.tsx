@@ -28,6 +28,7 @@ export const AddLesson = () => {
   const [uploadTask, setUploadTask] = useState<any>();
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
+  const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
@@ -235,40 +236,128 @@ export const AddLesson = () => {
             </Select>
           </FormControl>
 
-          <RadioGroup
-            className={classes.twoColumn}
-            aria-label="gender"
-            name="gender1"
-            value={editMode}
-            onChange={(e: any) => { e.target.value === 'false' && addNew(); }}
-          >
-            <FormControlLabel
-              value={false}
-              control={<Radio />}
-              label="Add New Lesson"
-            />
-            <FormControlLabel
-              value
-              control={<Radio />}
-              label="Edit lesson"
-            />
-          </RadioGroup>
+          {courseId && (
+          <div>
+            <RadioGroup
+              className={classes.twoColumn}
+              aria-label="gender"
+              name="gender1"
+              value={editMode}
+              onChange={(e: any) => { e.target.value === 'false' && addNew(); }}
+            >
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label="Add New Lesson"
+              />
+              <FormControlLabel
+                value
+                control={<Radio />}
+                label="Edit lesson"
+              />
+            </RadioGroup>
 
-          <TextField
-            className={classes.input}
-            id="standard-basic1"
-            label="Topic"
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-          />
-          <TextField
-            className={classes.input}
-            id="standard-basic2"
-            label="Part No"
-            value={partNo}
-            onChange={(e) => setPartNo(e.target.value)}
-          />
-          <div className={classes.video}>
+            <TextField
+              className={classes.input}
+              id="standard-basic1"
+              label="Topic"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+            />
+            <TextField
+              className={classes.input}
+              id="standard-basic2"
+              label="Part No"
+              value={partNo}
+              onChange={(e) => setPartNo(e.target.value)}
+            />
+            <RadioGroup
+              className={classes.twoColumn}
+              aria-label="gender"
+              name="gender1"
+              value={isAddNewVideo}
+              onChange={(e: any) => { setIsAddNewVideo(e.target.value === 'true'); }}
+            >
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label="Copy Previous Video"
+              />
+              <FormControlLabel
+                value
+                control={<Radio />}
+                label="Upload New Video"
+              />
+            </RadioGroup>
+
+            { !isAddNewVideo && (
+            <div className={classes.backlog}>
+              {allLessons.current?.length > 0 && (
+              <TextField
+                className={classes.input}
+                id="filled-basic"
+                label="Search lessons..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onFocus={() => setDisplayBacklog(true)}
+              />
+        )}
+              { displayBacklog && (
+              <table className="center w100">
+                <tbody>
+                  {remainingLessons.map((les) => {
+                    const search = searchText.toLocaleLowerCase();
+                    if (searchText === ''
+                  || les.topic?.toLowerCase()?.includes(search)
+                   || les.description?.toLowerCase()?.includes(search)) {
+                      return (
+                        <tr key={les.id}>
+                          <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
+                          <td>{les.topic}</td>
+                          <td>{les.description}</td>
+                          <td>
+                  <IconButton
+                              aria-label="copy"
+                              onClick={() => { setEditMode(false); copyLesson(les); }}
+                            >
+                              <FileCopyIcon />
+                            </IconButton>
+                </td>
+                        </tr>
+                      );
+                    }
+                    return null;
+                  })}
+                </tbody>
+              </table>
+              )}
+            </div>
+            )}
+
+            <div className={classes.video}>
+              {isAddNewVideo && (
+              <div>
+                {uploadProgress === 0 && (
+                <input
+                  type="file"
+                  id="uploader"
+                  name="uploader"
+                  onChange={onFileUpload}
+                />
+                )}
+                <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
+                {uploadProgress > 0 && uploadProgress < 100 && (
+                <Button
+                  variant="contained"
+                  onClick={onCancelUpload}
+                >
+                  Cancel Upload
+                </Button>
+                )}
+              </div>
+              )}
+            </div>
+
             <TextField
               className={classes.input}
               id="standard-basic4"
@@ -277,50 +366,31 @@ export const AddLesson = () => {
               value={videoURL}
               onChange={(e) => setVideoURL(e.target.value)}
             />
-            <div>
-              {uploadProgress === 0 && (
-              <input
-                type="file"
-                id="uploader"
-                name="uploader"
-                onChange={onFileUpload}
-              />
-              )}
-              <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
-              {uploadProgress > 0 && uploadProgress < 100 && (
-              <Button
-                variant="contained"
-                onClick={onCancelUpload}
-              >
-                Cancel Upload NA
-              </Button>
-              )}
-            </div>
+            <TextField
+              className={classes.input}
+              id="filled-basic5"
+              label="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <TextField
+              className={classes.input}
+              id="filled-basic6"
+              type="number"
+              label="Price"
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
+            />
+            <Button
+              variant="contained"
+              onClick={onSave}
+            >
+              {editMode ? 'Save Changes' : 'Add New Lesson'}
+            </Button>
           </div>
-
-          <TextField
-            className={classes.input}
-            id="filled-basic5"
-            label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <TextField
-            className={classes.input}
-            id="filled-basic6"
-            type="number"
-            label="Price"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-          />
-          <Button
-            variant="contained"
-            onClick={onSave}
-          >
-            {editMode ? 'Save Changes' : 'Add New Lesson'}
-          </Button>
-
+          )}
         </div>
+
         <div>
           <List
             component="nav"
@@ -365,47 +435,7 @@ export const AddLesson = () => {
           </List>
         </div>
       </form>
-      <div className={classes.backlog}>
-        {allLessons.current?.length > 0 && (
-        <TextField
-          className={classes.input}
-          id="filled-basic"
-          label="Search lessons..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onFocus={() => setDisplayBacklog(true)}
-        />
-        )}
-        { displayBacklog && (
-        <table className="center w100">
-          <tbody>
-            {remainingLessons.map((les) => {
-              const search = searchText.toLocaleLowerCase();
-              if (searchText === ''
-                  || les.topic?.toLowerCase()?.includes(search)
-                   || les.description?.toLowerCase()?.includes(search)) {
-                return (
-                  <tr key={les.id}>
-                    <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
-                    <td>{les.topic}</td>
-                    <td>{les.description}</td>
-                    <td>
-                      <IconButton
-                        aria-label="copy"
-                        onClick={() => { setEditMode(false); copyLesson(les); }}
-                      >
-                        <FileCopyIcon />
-                      </IconButton>
-                    </td>
-                  </tr>
-                );
-              }
-              return null;
-            })}
-          </tbody>
-        </table>
-        )}
-      </div>
+
     </>
   );
 };
