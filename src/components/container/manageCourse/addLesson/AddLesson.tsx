@@ -108,6 +108,11 @@ export const AddLesson = () => {
     });
   };
 
+  const onCancelUpload = () => {
+    uploadTask?.cancel();
+    setUploadProgress(0);
+  };
+
   const onSave = async () => {
     if (editMode) {
       if (!editingLesson) return;
@@ -285,7 +290,7 @@ export const AddLesson = () => {
               {uploadProgress > 0 && uploadProgress < 100 && (
               <Button
                 variant="contained"
-                onClick={onSave}
+                onClick={onCancelUpload}
               >
                 Cancel Upload NA
               </Button>

@@ -46,7 +46,7 @@ export const adminRoutes: routeConfig = [
   ['/addExam', AddExam, 'Add Exam', true],
   ['/addTeacher', AddTeacher, 'Add Teacher', true],
   ['/addSubject', AddSubject, 'Add Subject', true],
-  ['/addCourse', AddCourse, 'Add Template Course', true],
+  ['/addCourse', AddCourse, 'Subject Streams', true],
   ['/payments', Payments, 'Payments', true],
 ];
 
