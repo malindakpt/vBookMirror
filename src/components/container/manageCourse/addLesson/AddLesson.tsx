@@ -150,17 +150,22 @@ export const AddLesson = () => {
   };
 
   const startUploadFile = (e: any) => {
+    if (!email) {
+      showSnackbar('Error with the logged in teacher');
+      return;
+    }
+
     if (videoURL) {
       onSave(videoURL);
     } else if (uploadFile) {
-      const file = e.target.files[0];
       console.log('Start upload');
-      setUploadProgress(100);
-      const out = uploadVideo(file).subscribe((next) => {
+      setUploadProgress(0);
+      const out = uploadVideo(uploadFile, email).subscribe((next) => {
         if (!uploadTask) { setUploadTask(next.uploadTask); }
         if (next.downloadURL) {
           setVideoURL(next.downloadURL);
           onSave(next.downloadURL);
+          out.unsubscribe();
         }
         setUploadProgress(next.progress);
       });

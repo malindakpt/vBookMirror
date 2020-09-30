@@ -26,12 +26,12 @@ const clearStore = (entityName: string) => {
 
 // TODO: clear data store for all edit data queries
 
-export const uploadVideo = (file: any): Subject<UploadStatus> => {
+export const uploadVideo = (file: any, email: string): Subject<UploadStatus> => {
   const subject = new Subject<UploadStatus>();
   const storageRef = firebase.storage().ref();
 
   // const blob = new Blob([file], { type: 'image/jpeg' });
-  const uploadTask = storageRef.child('images/mountains2.jpg').put(file);
+  const uploadTask = storageRef.child(`video/${email}/${new Date().getTime()}`).put(file);
 
   // Register three observers:
   // 1. 'state_changed' observer, called any time the state changes
@@ -41,7 +41,7 @@ export const uploadVideo = (file: any): Subject<UploadStatus> => {
   // Observe state change events such as progress, pause, and resume
   // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    console.log(`Upload is ${progress}% done`);
+    // console.log(`Upload is ${progress}% done`);
     subject.next({
       uploadTask,
       progress,
@@ -51,7 +51,7 @@ export const uploadVideo = (file: any): Subject<UploadStatus> => {
         console.log('Upload is paused');
         break;
       case firebase.storage.TaskState.RUNNING: // or 'running'
-        console.log('Upload is running');
+        // console.log('Upload is running');
         break;
       default:
         console.log('unhandled');
