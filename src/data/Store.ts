@@ -26,11 +26,10 @@ const clearStore = (entityName: string) => {
 
 // TODO: clear data store for all edit data queries
 
-export const uploadFile = (e: any): Subject<UploadStatus> => {
+export const uploadVideo = (file: any): Subject<UploadStatus> => {
   const subject = new Subject<UploadStatus>();
   const storageRef = firebase.storage().ref();
 
-  const file = e.target.files[0];
   // const blob = new Blob([file], { type: 'image/jpeg' });
   const uploadTask = storageRef.child('images/mountains2.jpg').put(file);
 

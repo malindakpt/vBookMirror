@@ -1,7 +1,7 @@
 export interface ILesson {
     id: string;
     topic: string;
-    partNo: string;
+    // partNo: string;
     description: string;
     videoURL: string;
     keywords: string;

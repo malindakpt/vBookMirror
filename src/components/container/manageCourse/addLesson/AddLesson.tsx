@@ -11,7 +11,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import {
-  addDoc, getDocsWithProps, updateDoc, uploadFile,
+  addDoc, getDocsWithProps, updateDoc, uploadVideo,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
@@ -28,6 +28,7 @@ export const AddLesson = () => {
   const [uploadTask, setUploadTask] = useState<any>();
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
+  const [uploadFile, setUploadFile] = useState<any>(undefined);
   const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -46,7 +47,7 @@ export const AddLesson = () => {
   const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
   const [topic, setTopic] = useState<string>('');
-  const [partNo, setPartNo] = useState<string>('');
+  // const [partNo, setPartNo] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
   const [videoURL, setVideoURL] = useState<string>('');
@@ -97,16 +98,10 @@ export const AddLesson = () => {
     // eslint-disable-next-line
   }, [courses]);
 
-  const onFileUpload = (e: any) => {
-    console.log('Start upload');
-    setUploadProgress(100);
-    const out = uploadFile(e).subscribe((next) => {
-      if (!uploadTask) { setUploadTask(next.uploadTask); }
-      if (next.downloadURL) {
-        setVideoURL(next.downloadURL);
-      }
-      setUploadProgress(next.progress);
-    });
+  const onFileSelect = (e: any) => {
+    // TODO: Handle if file is not selected from file explorer
+    const file = e.target.files[0];
+    if (file) { setUploadFile(file); }
   };
 
   const onCancelUpload = () => {
@@ -114,13 +109,13 @@ export const AddLesson = () => {
     setUploadProgress(0);
   };
 
-  const onSave = async () => {
+  const onSave = async (videoURL: string) => {
     if (editMode) {
       if (!editingLesson) return;
       const less = {
         ...editingLesson,
         ...{
-          topic, partNo, description, keywords, videoURL, price,
+          topic, description, keywords, videoURL, price,
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
@@ -133,7 +128,7 @@ export const AddLesson = () => {
         id: '',
         date: new Date().getTime(),
         topic,
-        partNo,
+        // partNo,
         description,
         keywords: `${selectedCourse.examYear}`,
         videoURL,
@@ -154,10 +149,30 @@ export const AddLesson = () => {
     }
   };
 
+  const startUploadFile = (e: any) => {
+    if (videoURL) {
+      onSave(videoURL);
+    } else if (uploadFile) {
+      const file = e.target.files[0];
+      console.log('Start upload');
+      setUploadProgress(100);
+      const out = uploadVideo(file).subscribe((next) => {
+        if (!uploadTask) { setUploadTask(next.uploadTask); }
+        if (next.downloadURL) {
+          setVideoURL(next.downloadURL);
+          onSave(next.downloadURL);
+        }
+        setUploadProgress(next.progress);
+      });
+    } else {
+      showSnackbar('Upload file not found');
+    }
+  };
+
   const copyLesson = (les: ILesson) => {
     setEditingLesson(les);
     setTopic(les.topic ?? '');
-    setPartNo(les.partNo ?? '');
+    // setPartNo(les.partNo ?? '');
     setKeywords(les.keywords ?? '');
     setDescription(les.description ?? '');
     setVideoURL(les.videoURL ?? '');
@@ -167,7 +182,7 @@ export const AddLesson = () => {
     setEditMode(false);
 
     setTopic('');
-    setPartNo('');
+    // setPartNo('');
     setKeywords('');
     setDescription('');
     setVideoURL('');
@@ -264,13 +279,13 @@ export const AddLesson = () => {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
             />
-            <TextField
+            {/* <TextField
               className={classes.input}
               id="standard-basic2"
               label="Part No"
               value={partNo}
               onChange={(e) => setPartNo(e.target.value)}
-            />
+            /> */}
             <RadioGroup
               className={classes.twoColumn}
               aria-label="gender"
@@ -296,7 +311,7 @@ export const AddLesson = () => {
               <TextField
                 className={classes.input}
                 id="filled-basic"
-                label="Search lessons..."
+                label="Search Previous Lessons..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onFocus={() => setDisplayBacklog(true)}
@@ -342,7 +357,7 @@ export const AddLesson = () => {
                   type="file"
                   id="uploader"
                   name="uploader"
-                  onChange={onFileUpload}
+                  onChange={onFileSelect}
                 />
                 )}
                 <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
@@ -384,7 +399,7 @@ export const AddLesson = () => {
             />
             <Button
               variant="contained"
-              onClick={onSave}
+              onClick={startUploadFile}
             >
               {editMode ? 'Save Changes' : 'Add New Lesson'}
             </Button>
@@ -418,7 +433,7 @@ export const AddLesson = () => {
                     button
                   >
                     <ListItemText
-                      primary={`${c.partNo}-${c.topic}`}
+                      primary={`${c.topic}`}
                       onClick={() => { setEditMode(true); copyLesson(c); }}
                     />
                     {index > 0 && <ArrowUpwardIcon onClick={(e) => { changeOrder(index, true); }} />}

@@ -125,7 +125,7 @@ export const Course: React.FC = () => {
               key={idx}
               CategoryImg={OndemandVideoIcon}
               title1={`Week ${idx}`}
-              title2={`${lesson.topic}-${lesson.partNo}`}
+              title2={`${lesson.topic}`}
               // title2={subsText}
               navURL={!lesson.price
                 || user?.lessons.includes(lesson.id) ? `${courseId}/${lesson.id}` : `${courseId}`}
