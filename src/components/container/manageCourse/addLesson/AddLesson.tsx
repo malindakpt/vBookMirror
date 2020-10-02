@@ -109,6 +109,14 @@ export const AddLesson = () => {
     setUploadProgress(0);
   };
 
+  const addNew = () => {
+    setEditMode(false);
+    setTopic('');
+    setKeywords('');
+    setDescription('');
+    setVideoURL('');
+  };
+
   const onSave = async (videoURL: string) => {
     if (editMode) {
       if (!editingLesson) return;
@@ -128,7 +136,6 @@ export const AddLesson = () => {
         id: '',
         date: new Date().getTime(),
         topic,
-        // partNo,
         description,
         keywords: `${selectedCourse.examYear}`,
         videoURL,
@@ -140,18 +147,37 @@ export const AddLesson = () => {
 
       updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] }).then(() => {
         showSnackbar('Course Added');
+        addNew();
         setCourseLessons((prev) => {
           const clone = [...prev, lesson];
           return clone;
         });
-        // setCourses([]); // force update
       });
     }
+  };
+
+  const validateLesson = (): boolean => {
+    if (!topic || topic.length < 5) {
+      showSnackbar('Topic should have minimum length of 5');
+      return false;
+    }
+    if (!description || description.length < 5) {
+      showSnackbar('Description should have minimum length of 5');
+      return false;
+    }
+    if (!videoURL || videoURL.length < 5) {
+      showSnackbar('Lesson should have a video');
+      return false;
+    }
+    return true;
   };
 
   const startUploadFile = (e: any) => {
     if (!email) {
       showSnackbar('Error with the logged in teacher');
+      return;
+    }
+    if (!validateLesson()) {
       return;
     }
 
@@ -181,16 +207,6 @@ export const AddLesson = () => {
     setKeywords(les.keywords ?? '');
     setDescription(les.description ?? '');
     setVideoURL(les.videoURL ?? '');
-  };
-
-  const addNew = () => {
-    setEditMode(false);
-
-    setTopic('');
-    // setPartNo('');
-    setKeywords('');
-    setDescription('');
-    setVideoURL('');
   };
 
   const changeOrder = (index: number, isUp: boolean) => {
@@ -368,6 +384,8 @@ export const AddLesson = () => {
                 <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
                 {uploadProgress > 0 && uploadProgress < 100 && (
                 <Button
+                  size="small"
+                  color="secondary"
                   variant="contained"
                   onClick={onCancelUpload}
                 >
@@ -402,12 +420,16 @@ export const AddLesson = () => {
               value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
+            {uploadProgress === 0 && (
             <Button
+              size="small"
               variant="contained"
+              color="primary"
               onClick={startUploadFile}
             >
               {editMode ? 'Save Changes' : 'Add New Lesson'}
             </Button>
+            )}
           </div>
           )}
         </div>

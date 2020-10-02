@@ -36,7 +36,7 @@ export const routes: routeConfig = [
 ];
 
 export const teacherRoutes: routeConfig = [
-  ['/addLesson', AddLesson, 'Add Lesson', true],
+  ['/addLesson', AddLesson, 'Manage Lessons', true],
   ['/subscriptions', Subscriptions, 'Subscriptions', true],
   ['/upgradeCourses', UpgradeCourse, 'Upgrade Courses', true],
 ];
