@@ -9,7 +9,7 @@ import { ILesson } from '../../../../interfaces/ILesson';
 export const Lesson: React.FC = () => {
   useBreadcrumb();
   const { lessonId } = useParams<any>();
-  const [lesson, setLesson] = useState<ILesson>();
+  const [, setLesson] = useState<ILesson>();
   const [vidSrc, setVidSrc] = useState<string | null>(null);
 
   const processVideo = async () => {
@@ -24,6 +24,7 @@ export const Lesson: React.FC = () => {
 
   useEffect(() => {
     processVideo();
+    // eslint-disable-next-line
   }, []);
 
   return (

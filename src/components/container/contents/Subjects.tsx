@@ -26,7 +26,8 @@ export const Subjects = () => {
 
   useEffect(() => {
     fetchData();
-  }, [keyMap]);
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <>
