@@ -31,6 +31,8 @@ export const Header:React.FC = () => {
     getDocsWithProps<ITeacher[]>('teachers', { email }).then((data) => {
       if (data.length > 0) {
         setIsTeacher(true);
+      } else {
+        setIsTeacher(false);
       }
     });
   };

@@ -25,7 +25,7 @@ import { Teacher } from '../container/teacher/Teacher';
 
 type routeConfig = [string, any, string, boolean][];
 
-export const routes: routeConfig = [
+export const commonRoutes: routeConfig = [
   ['/teacher/:id', Teacher, 'Teacher', false],
   ['/:examId/:year/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
   ['/:examId/:year/:subjectId/:courseId', Course, 'Course', false],
@@ -76,7 +76,7 @@ const Router: React.FC = () => {
                 component={r[1]}
               />
             ))}
-            {isTeacher !== undefined && routes.map((r: any) => (
+            {isTeacher !== undefined && commonRoutes.map((r: any) => (
               <Route
                 exact
                 key={r[0]}

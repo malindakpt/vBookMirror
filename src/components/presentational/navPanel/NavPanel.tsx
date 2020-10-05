@@ -13,14 +13,14 @@ import InboxIcon from '@material-ui/icons/BorderClear';
 import MailIcon from '@material-ui/icons/BlurOn';
 import { Link } from 'react-router-dom';
 import { AppContext } from '../../../App';
-import { adminRoutes, teacherRoutes, routes } from '../../router/Router';
+import { adminRoutes, teacherRoutes, commonRoutes } from '../../router/Router';
 
 interface NavLink{
   label: string;
   url: string;
 }
 
-const commonLinks: NavLink[] = routes.filter((r) => r[3]).map((r) => ({ url: r[0], label: r[2] }));
+const commonLinks: NavLink[] = commonRoutes.filter((r) => r[3]).map((r) => ({ url: r[0], label: r[2] }));
 
 const teacherLinks: NavLink[] = teacherRoutes.filter((r) => r[3]).map((r) => ({ url: r[0], label: r[2] }));
 

@@ -21,8 +21,7 @@ export const Exams = () => {
       {exams?.map((ex) => (
         <Category
           key={ex.id}
-          title1={ex.name}
-          title2={ex.type}
+          title1={`${ex.name}-${ex.type}`}
           CategoryImg={SchoolIcon}
           navURL={`${ex.id}`}
         />
