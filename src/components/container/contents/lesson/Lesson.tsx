@@ -14,9 +14,12 @@ export const Lesson: React.FC = () => {
 
   const processVideo = async () => {
     const lesson = await getDocWithId<ILesson>('lessons', lessonId);
-    const url = await getVideo(lesson.email, lesson.videoId);
-    setLesson(lesson);
-    setVidSrc(url);
+
+    if (lesson) {
+      const url = await getVideo(lesson.email, lesson.videoId);
+      setLesson(lesson);
+      setVidSrc(url);
+    }
   };
 
   useEffect(() => {

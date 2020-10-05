@@ -24,7 +24,7 @@ export const Teacher = () => {
     getDocsWithProps<ICourse[]>('courses', { teacherId: id }).then((data) => setCourses(data));
     getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
-    getDocWithId<ITeacher>('teachers', id).then((dat) => setTeacher(dat));
+    getDocWithId<ITeacher>('teachers', id).then((data) => data && setTeacher(data));
   }, [id]);
 
   return (

@@ -30,10 +30,12 @@ export const Course: React.FC = () => {
       getDocWithId<ICourse>('courses', courseId),
     ]).then((result) => {
       const [users, lessons, course] = result;
-      setUser(users[0]);
 
-      const lessons4Course = lessons.filter((less) => course.lessons.includes(less.id));
-      setLessons(lessons4Course);
+      if (users && lessons && course) {
+        const lessons4Course = lessons?.filter((less) => course?.lessons.includes(less.id));
+        setUser(users[0]);
+        setLessons(lessons4Course);
+      }
     });
     // eslint-disable-next-line
   }, [email, selectedLessons]);

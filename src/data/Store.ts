@@ -145,7 +145,7 @@ const generateRequestKey = (
 export const getDocsWithProps = <T>(
   entityName: string,
   conditions: any,
-): Promise<T> => new Promise((resolves, reject) => {
+): Promise<T> => new Promise((resolves) => {
     const cachedResponse = store[generateRequestKey(entityName, conditions)];
     if (cachedResponse) {
       // Resolve result from cache and skip network
@@ -192,14 +192,14 @@ export const getDocsWithProps = <T>(
       });
   });
 
-export const getDocWithId = <T>(entityName: string, id: string): Promise<T> => new Promise(
-  (resolves, reject) => {
+export const getDocWithId = <T>(entityName: string, id: string): Promise<T | null> => new Promise(
+  (resolves) => {
     db.collection(entityName).doc(id).get().then((doc: any) => {
       if (doc.exists) {
         resolves(doc.data());
       } else {
       // doc.data() will be undefined in this case
-        reject();
+        resolves(null);
         console.log('getDocWithId: No such document!');
       }
     });
