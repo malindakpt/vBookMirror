@@ -62,10 +62,9 @@ export const UpgradeCourse = () => {
         {
           streams.map((stream) => examYears.map((year) => {
             const crsForYr = courses.findIndex((c) => c.subjectId === stream.subjectId
-               && c.examYear === year.id && c.teacherId === stream.teacherId);
+               && c.examYear === year.id && c.teacherId === stream.teacherId && c.examId === stream.examId);
 
             const exam = getObject(exams, stream.examId);
-            // const actualExam = exams.find(ex => ex.)
 
             const courseString = `${exam?.name}-
                 ${getObject(subjects, stream.subjectId)?.name}-${year.name}-${exam?.type}`;
