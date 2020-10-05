@@ -9,7 +9,7 @@ import { ILesson } from '../../../../interfaces/ILesson';
 export const Lesson: React.FC = () => {
   useBreadcrumb();
   const { lessonId } = useParams<any>();
-  const [, setLesson] = useState<ILesson>();
+  const [lesson, setLesson] = useState<ILesson>();
   const [vidSrc, setVidSrc] = useState<string | null>(null);
 
   const processVideo = async () => {
@@ -29,6 +29,9 @@ export const Lesson: React.FC = () => {
 
   return (
     <div className={classes.root}>
+      <div className={classes.desc}>
+        {lesson?.description}
+      </div>
       {vidSrc && (
       <video
         width="100%"

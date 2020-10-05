@@ -47,7 +47,6 @@ export const AddLesson = () => {
   const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
   const [topic, setTopic] = useState<string>('');
-  // const [partNo, setPartNo] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
   const [videoId, setVideoId] = useState<string>('');
@@ -104,18 +103,23 @@ export const AddLesson = () => {
     if (file) { setUploadFile(file); }
   };
 
-  const onCancelUpload = () => {
-    uploadTask?.cancel();
-    setUploadProgress(0);
-  };
-
   const addNew = () => {
     setEditMode(false);
+    setUploadProgress(0);
     setTopic('');
     setKeywords('');
     setDescription('');
     setVideoId('');
+    setPrice(0);
+    setUploadFile(null);
   };
+
+  const onCancelUpload = () => {
+    uploadTask?.cancel();
+    addNew();
+  };
+
+  const disabled = uploadProgress > 0 && uploadProgress < 100;
 
   const onSave = async (videoId: string) => {
     if (editMode) {
@@ -128,6 +132,7 @@ export const AddLesson = () => {
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
         showSnackbar('Lesson Modified');
+        addNew();
         setCourses([]); // force update
       });
     } else {
@@ -146,7 +151,7 @@ export const AddLesson = () => {
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
       updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] }).then(() => {
-        showSnackbar('Course Added');
+        showSnackbar('Lesson Added');
         addNew();
         setCourseLessons((prev) => {
           const clone = [...prev, lesson];
@@ -183,13 +188,13 @@ export const AddLesson = () => {
       const vId = `${new Date().getTime()}`;
       setUploadProgress(0);
       const out = uploadVideo(uploadFile, email, vId).subscribe((next) => {
-        if (!uploadTask) { setUploadTask(next.uploadTask); }
+        setUploadTask(next.uploadTask);
         if (next.downloadURL) {
           setVideoId(vId);
           onSave(vId);
           out.unsubscribe();
         }
-        setUploadProgress(next.progress);
+        if (next.progress < 100) { setUploadProgress(next.progress); }
       });
     } else {
       showSnackbar('Upload video not found');
@@ -248,6 +253,7 @@ export const AddLesson = () => {
               labelId="label1"
               id="id1"
               value={courseId}
+              disabled={disabled}
               onChange={(e) => onCourseChange(courses, e.target.value as string)}
             >
               {courses.map((course) => {
@@ -279,11 +285,13 @@ export const AddLesson = () => {
                 value={false}
                 control={<Radio />}
                 label="Add New Lesson"
+                disabled={disabled}
               />
               <FormControlLabel
                 value
                 control={<Radio />}
                 label="Edit lesson"
+                disabled={disabled}
               />
             </RadioGroup>
 
@@ -292,6 +300,7 @@ export const AddLesson = () => {
               id="standard-basic1"
               label="Topic"
               value={topic}
+              disabled={disabled}
               onChange={(e) => setTopic(e.target.value)}
             />
             <RadioGroup
@@ -305,11 +314,13 @@ export const AddLesson = () => {
                 value={false}
                 control={<Radio />}
                 label="Copy Previous Video"
+                disabled={disabled}
               />
               <FormControlLabel
                 value
                 control={<Radio />}
                 label="Upload New Video"
+                disabled={disabled}
               />
             </RadioGroup>
 
@@ -323,6 +334,7 @@ export const AddLesson = () => {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onFocus={() => setDisplayBacklog(true)}
+                disabled={disabled}
               />
               )}
               { displayBacklog && (
@@ -360,12 +372,13 @@ export const AddLesson = () => {
             <div className={classes.video}>
               {isAddNewVideo && (
               <>
-                {uploadProgress === 0 && (
+                {!disabled && (
                 <input
                   type="file"
                   id="uploader"
                   name="uploader"
                   onChange={onFileSelect}
+                  disabled={disabled}
                 />
                 )}
                 <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
@@ -397,6 +410,7 @@ export const AddLesson = () => {
               id="filled-basic5"
               label="Description"
               value={description}
+              disabled={disabled}
               onChange={(e) => setDescription(e.target.value)}
             />
             <TextField
@@ -405,6 +419,7 @@ export const AddLesson = () => {
               type="number"
               label="Price"
               value={price}
+              disabled={disabled}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
             {uploadProgress === 0 && (
@@ -412,6 +427,7 @@ export const AddLesson = () => {
               size="small"
               variant="contained"
               color="primary"
+              disabled={disabled}
               onClick={startUploadFile}
             >
               {editMode ? 'Save Changes' : 'Add New Lesson'}
@@ -439,9 +455,9 @@ export const AddLesson = () => {
             </ListItem>
             )}
             {
-              courseLessons.map((c, index) => (
+              !disabled && courseLessons.map((c, index) => (
                 <div
-                  key={c.id + c.videoId}
+                  key={c.id}
                 >
                   <ListItem
                     button
