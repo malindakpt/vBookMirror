@@ -1,15 +1,43 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './Lesson.module.scss';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
+import { getDocWithId, getVideo } from '../../../../data/Store';
+import { ILesson } from '../../../../interfaces/ILesson';
 
 export const Lesson: React.FC = () => {
   useBreadcrumb();
-  const { lessonId } = useParams();
+  const { lessonId } = useParams<any>();
+  const [lesson, setLesson] = useState<ILesson>();
+  const [vidSrc, setVidSrc] = useState<string | null>(null);
+
+  const processVideo = async () => {
+    const lesson = await getDocWithId<ILesson>('lessons', lessonId);
+    const url = await getVideo(lesson.email, lesson.videoId);
+    setLesson(lesson);
+    setVidSrc(url);
+  };
+
+  useEffect(() => {
+    processVideo();
+  }, []);
+
   return (
     <div className={classes.root}>
-      Lesson:
-      {lessonId}
+      {vidSrc && (
+      <video
+        width="100%"
+        height="100%"
+        controls
+        controlsList="nodownload"
+      >
+        <source
+          src={vidSrc}
+          type="video/mp4"
+        />
+      </video>
+      )}
     </div>
   );
 };

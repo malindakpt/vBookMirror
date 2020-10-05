@@ -50,7 +50,7 @@ export const AddLesson = () => {
   // const [partNo, setPartNo] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
-  const [videoURL, setVideoURL] = useState<string>('');
+  const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
   const onCourseChange = (courses: ICourse[], courseId: string) => {
@@ -114,16 +114,16 @@ export const AddLesson = () => {
     setTopic('');
     setKeywords('');
     setDescription('');
-    setVideoURL('');
+    setVideoId('');
   };
 
-  const onSave = async (videoURL: string) => {
+  const onSave = async (videoId: string) => {
     if (editMode) {
       if (!editingLesson) return;
       const less = {
         ...editingLesson,
         ...{
-          topic, description, keywords, videoURL, price,
+          topic, description, keywords, videoId, price,
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
@@ -138,7 +138,7 @@ export const AddLesson = () => {
         topic,
         description,
         keywords: `${selectedCourse.examYear}`,
-        videoURL,
+        videoId,
         price,
         email: email as string,
       };
@@ -165,10 +165,6 @@ export const AddLesson = () => {
       showSnackbar('Description should have minimum length of 5');
       return false;
     }
-    if (!videoURL || videoURL.length < 5) {
-      showSnackbar('Lesson should have a video');
-      return false;
-    }
     return true;
   };
 
@@ -181,22 +177,22 @@ export const AddLesson = () => {
       return;
     }
 
-    if (videoURL) {
-      onSave(videoURL);
+    if (videoId) {
+      onSave(videoId);
     } else if (uploadFile) {
-      console.log('Start upload');
+      const vId = `${new Date().getTime()}`;
       setUploadProgress(0);
-      const out = uploadVideo(uploadFile, email).subscribe((next) => {
+      const out = uploadVideo(uploadFile, email, vId).subscribe((next) => {
         if (!uploadTask) { setUploadTask(next.uploadTask); }
         if (next.downloadURL) {
-          setVideoURL(next.downloadURL);
-          onSave(next.downloadURL);
+          setVideoId(vId);
+          onSave(vId);
           out.unsubscribe();
         }
         setUploadProgress(next.progress);
       });
     } else {
-      showSnackbar('Upload file not found');
+      showSnackbar('Upload video not found');
     }
   };
 
@@ -206,7 +202,7 @@ export const AddLesson = () => {
     // setPartNo(les.partNo ?? '');
     setKeywords(les.keywords ?? '');
     setDescription(les.description ?? '');
-    setVideoURL(les.videoURL ?? '');
+    setVideoId(les.videoId ?? '');
   };
 
   const changeOrder = (index: number, isUp: boolean) => {
@@ -238,8 +234,6 @@ export const AddLesson = () => {
   return (
     <>
       <h3>Manage Lessons</h3>
-
-      {/* <label htmlFor="myfile">Select a file:</label> */}
 
       <form
         className={classes.root}
@@ -300,13 +294,6 @@ export const AddLesson = () => {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
             />
-            {/* <TextField
-              className={classes.input}
-              id="standard-basic2"
-              label="Part No"
-              value={partNo}
-              onChange={(e) => setPartNo(e.target.value)}
-            /> */}
             <RadioGroup
               className={classes.twoColumn}
               aria-label="gender"
@@ -399,10 +386,10 @@ export const AddLesson = () => {
             <TextField
               className={classes.input}
               id="standard-basic4"
-              label="Video URL"
+              label="Video Id"
               disabled
-              value={videoURL}
-              onChange={(e) => setVideoURL(e.target.value)}
+              value={videoId}
+              onChange={(e) => setVideoId(e.target.value)}
             />
 
             <TextField
@@ -454,7 +441,7 @@ export const AddLesson = () => {
             {
               courseLessons.map((c, index) => (
                 <div
-                  key={c.id + c.videoURL}
+                  key={c.id + c.videoId}
                 >
                   <ListItem
                     button

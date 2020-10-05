@@ -126,7 +126,6 @@ export const Course: React.FC = () => {
               CategoryImg={OndemandVideoIcon}
               title1={`Week ${idx}`}
               title2={`${lesson.topic}`}
-              // title2={subsText}
               navURL={!lesson.price
                 || user?.lessons.includes(lesson.id) ? `${courseId}/${lesson.id}` : `${courseId}`}
               onSelect={handleSelectLesson}

@@ -26,12 +26,18 @@ const clearStore = (entityName: string) => {
 
 // TODO: clear data store for all edit data queries
 
-export const uploadVideo = (file: any, email: string): Subject<UploadStatus> => {
+export const getVideo = (email: string, vId: string): Promise<string> => new Promise((resolve) => {
+  storage.ref().child('video').child(email).child(vId)
+    .getDownloadURL()
+    .then((data) => resolve(data));
+});
+
+export const uploadVideo = (file: any, email: string, vId: string): Subject<UploadStatus> => {
   const subject = new Subject<UploadStatus>();
-  const storageRef = firebase.storage().ref();
+  const storageRef = storage.ref();
 
   // const blob = new Blob([file], { type: 'image/jpeg' });
-  const uploadTask = storageRef.child(`video/${email}/${new Date().getTime()}`).put(file);
+  const uploadTask = storageRef.child(`video/${email}/${vId}`).put(file);
 
   // Register three observers:
   // 1. 'state_changed' observer, called any time the state changes
