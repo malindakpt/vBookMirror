@@ -6,19 +6,26 @@ import {
 import CategoryIcon from '@material-ui/icons/Category';
 import classes from './Subjects.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps } from '../../../data/Store';
+import { getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { ISubject } from '../../../interfaces/ISubject';
+import { IExam } from '../../../interfaces/IExam';
 
 export const Subjects = () => {
-  const { year } = useParams<any>();
+  const { year, examId } = useParams<any>();
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const keyMap = useBreadcrumb();
 
+  const fetchData = async () => {
+    const exam = await getDocWithId<IExam>('exams', examId);
+    const subjects = await getDocsWithProps<ISubject[]>('subjects', {});
+    const filtered = subjects.filter((sub) => exam?.subjectIds.includes(sub.id));
+
+    setSubjects(filtered);
+    keyMap(subjects);
+  };
+
   useEffect(() => {
-    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => {
-      setSubjects(data);
-      keyMap(data);
-    });
+    fetchData();
   }, [keyMap]);
 
   return (
