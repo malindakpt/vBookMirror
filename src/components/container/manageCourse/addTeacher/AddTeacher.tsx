@@ -60,6 +60,20 @@ export const AddTeacher = () => {
           onChange={(e) => setTeacherProps({ email: e.target.value })}
         />
 
+        <TextField
+          className={classes.input}
+          id="phone"
+          label="Phone"
+          onChange={(e) => setTeacherProps({ phone: e.target.value })}
+        />
+
+        <TextField
+          className={classes.input}
+          id="phoneChat"
+          label="Phone Chat"
+          onChange={(e) => setTeacherProps({ phoneChat: e.target.value })}
+        />
+
         <Button
           variant="contained"
           onClick={onSave}
