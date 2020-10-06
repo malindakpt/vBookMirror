@@ -26,7 +26,8 @@ import { Teacher } from '../container/teacher/Teacher';
 type routeConfig = [string, any, string, boolean][];
 
 export const commonRoutes: routeConfig = [
-  ['/teacher/:id', Teacher, 'Teacher', false],
+  ['/teacher/:teacherId', Teacher, 'Teacher', false],
+  ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/:examId/:year/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
   ['/:examId/:year/:subjectId/:courseId', Course, 'Course', false],
   ['/:examId/:year/:subjectId', Courses, 'Courses', false],

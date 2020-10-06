@@ -36,6 +36,8 @@ export const AddSubject = () => {
     });
   };
 
+  const disabled: boolean = (subject?.name.length ?? 0) < 2;
+
   return (
     <>
       <h3>Add Subject</h3>
@@ -55,6 +57,7 @@ export const AddSubject = () => {
         <Button
           variant="contained"
           onClick={onSave}
+          disabled={disabled}
         >
           Add
         </Button>

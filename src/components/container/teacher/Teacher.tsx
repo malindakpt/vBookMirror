@@ -14,18 +14,18 @@ import classes from './Teacher.module.scss';
 
 export const Teacher = () => {
   useBreadcrumb();
-  const { id } = useParams<any>();
+  const { teacherId } = useParams<any>();
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [teacher, setTeacher] = useState<ITeacher| undefined>(undefined);
 
   useEffect(() => {
-    getDocsWithProps<ICourse[]>('courses', { teacherId: id }).then((data) => setCourses(data));
+    getDocsWithProps<ICourse[]>('courses', { teacherId }).then((data) => setCourses(data));
     getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
-    getDocWithId<ITeacher>('teachers', id).then((data) => data && setTeacher(data));
-  }, [id]);
+    getDocWithId<ITeacher>('teachers', teacherId).then((data) => data && setTeacher(data));
+  }, [teacherId]);
 
   return (
     <div className="container">
@@ -43,7 +43,7 @@ export const Teacher = () => {
                       key={c.id}
                       title1={`${subj?.name} ${exam?.type}`}
                       title2={`${examTime?.name} ${exam?.name}`}
-                      navURL=""
+                      navURL={`${teacherId}/${c.id}`}
                       CategoryImg={CategoryIcon}
                     />
                   );

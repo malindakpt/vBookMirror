@@ -2,12 +2,11 @@
 
 .root {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   margin: auto;
   place-items: center;
   grid-gap: 30px;
   max-width: 800px;
-
 
   @include mobile {
     grid-template-columns: 1fr;

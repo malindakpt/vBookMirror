@@ -20,7 +20,7 @@ export const Course: React.FC = () => {
   const [total, setTotal] = useState(0);
   const { email, showSnackbar } = useContext(AppContext);
 
-  const { courseId } = useParams<any>();
+  const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
   const [lessons, setLessons] = useState<ILesson[]>([]);
 
   useEffect(() => {
