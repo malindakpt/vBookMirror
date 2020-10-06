@@ -11,6 +11,7 @@ import { AppContext } from '../../../App';
 import { ILesson } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
+import { Util } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -50,18 +51,24 @@ export const Course: React.FC = () => {
   }, [email, selectedLessons]);
 
   const handleSelectLesson = (id: string, selected: boolean) => {
-    let total = 0;
-    const next: any = { ...selectedLessons };
-    next[id] = selected;
-
-    for (const les of lessons) {
-      if (next[les.id] && les.price) {
-        total += les.price;
+    if (!email) {
+      if (Util.invokeLogin) {
+        Util.invokeLogin();
       }
-    }
+    } else {
+      let total = 0;
+      const next: any = { ...selectedLessons };
+      next[id] = selected;
 
-    setSelectedLessons(next);
-    setTotal(total);
+      for (const les of lessons) {
+        if (next[les.id] && les.price) {
+          total += les.price;
+        }
+      }
+
+      setSelectedLessons(next);
+      setTotal(total);
+    }
   };
 
   const pay = async () => {

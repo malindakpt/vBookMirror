@@ -10,6 +10,7 @@ import { NavPanel } from '../../presentational/navPanel/NavPanel';
 import { AppContext } from '../../../App';
 import { getDocsWithProps } from '../../../data/Store';
 import { ITeacher } from '../../../interfaces/ITeacher';
+import { Util } from '../../../helper/util';
 
 export const Header:React.FC = () => {
   const [user, setUser] = useState <{name: '', photo: ''} | null>(null);
@@ -70,6 +71,8 @@ export const Header:React.FC = () => {
       // // ...
     });
   };
+
+  Util.invokeLogin = handleLogin;
 
   const handleLogout = () => {
     firebase.auth().signOut().then(() => {
