@@ -29,9 +29,10 @@ export const Lesson: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.desc}>
-        {lesson?.description}
+      <div className={classes.topic}>
+        {lesson?.topic}
       </div>
+
       {vidSrc && (
       <video
         width="100%"
@@ -45,6 +46,22 @@ export const Lesson: React.FC = () => {
         />
       </video>
       )}
+      <div className={classes.desc}>
+        {lesson?.description}
+      </div>
+      <div>
+        {lesson?.attachments.map((atta) => (
+          <div>
+            <a
+              href={atta}
+              rel="noreferrer"
+              target="_blank"
+            >
+              {atta}
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
