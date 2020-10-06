@@ -1,0 +1,12 @@
+.purchase {
+  position: fixed;
+  right: 10px;
+  top: 70px;
+  background: #ff99ab8f;
+  padding: 10px;
+
+  .box {
+    display: grid;
+    place-items: center;
+  }
+}

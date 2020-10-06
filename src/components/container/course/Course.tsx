@@ -12,6 +12,7 @@ import { ILesson } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import { Util } from '../../../helper/util';
+import classes from './Course.module.scss';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -108,9 +109,8 @@ export const Course: React.FC = () => {
   return (
     <div className="container">
       {total > 0 && (
-      <div>
-        <div />
-        <div>
+      <div className={classes.purchase}>
+        <div className={classes.box}>
           <span>
             { `Rs. ${total}.00`}
           </span>
