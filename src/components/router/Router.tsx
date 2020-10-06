@@ -87,7 +87,7 @@ const Router: React.FC = () => {
             ))}
             <Route path="">
               <div className={classes.loading}>
-                <p>Loading</p>
+                <p>අක්ෂර.lk</p>
               </div>
             </Route>
           </Switch>

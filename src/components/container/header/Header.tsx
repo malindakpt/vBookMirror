@@ -89,7 +89,7 @@ export const Header:React.FC = () => {
           variant="h6"
           className={classes.title}
         >
-          SMS
+          අක්ෂර.lk
         </Typography>
         <Button
           color="inherit"
