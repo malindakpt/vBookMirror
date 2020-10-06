@@ -6,7 +6,7 @@ export interface ILesson {
     videoId: string;
     keywords: string;
     date: number;
-    attachments?: [],
+    attachments: string[],
 
     // meta information
     email: string;

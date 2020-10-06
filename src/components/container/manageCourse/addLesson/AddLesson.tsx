@@ -47,6 +47,7 @@ export const AddLesson = () => {
   const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
   const [topic, setTopic] = useState<string>('');
+  const [attachments, setAttachments] = useState<string[]>([]);
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
   const [videoId, setVideoId] = useState<string>('');
@@ -109,6 +110,7 @@ export const AddLesson = () => {
     setTopic('');
     setKeywords('');
     setDescription('');
+    setAttachments([]);
     setVideoId('');
     setPrice(0);
     setUploadFile(null);
@@ -127,7 +129,7 @@ export const AddLesson = () => {
       const less = {
         ...editingLesson,
         ...{
-          topic, description, keywords, videoId, price,
+          topic, description, attachments, keywords, videoId, price,
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
@@ -137,11 +139,13 @@ export const AddLesson = () => {
       });
     } else {
       const selectedCourse = courses.filter((c) => c.id === courseId)[0];
+      // When you make a change here, replicate that on edit mode also
       const lesson: ILesson = {
         id: '',
         date: new Date().getTime(),
         topic,
         description,
+        attachments,
         keywords: `${selectedCourse.examYear}`,
         videoId,
         price,
@@ -210,9 +214,9 @@ export const AddLesson = () => {
   const copyLesson = (les: ILesson) => {
     setEditingLesson(les);
     setTopic(les.topic ?? '');
-    // setPartNo(les.partNo ?? '');
     setKeywords(les.keywords ?? '');
     setDescription(les.description ?? '');
+    setAttachments(les.attachments ?? []);
     setVideoId(les.videoId ?? '');
   };
 
@@ -418,6 +422,20 @@ export const AddLesson = () => {
               value={description}
               disabled={disabled}
               onChange={(e) => setDescription(e.target.value)}
+            />
+
+            <TextField
+              className={classes.inputMulti}
+              id="standard-multiline-static"
+              label="Attachment links(Use new line to add)"
+              multiline
+              rows={3}
+              variant="outlined"
+              value={attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setAttachments(e.target.value.split('\n'));
+              }}
             />
 
             <TextField

@@ -58,7 +58,7 @@ export const useBreadcrumb = () => {
     }
     sendBreadcrumbs(bcs);
   },
-  [examId, subjectId, courseId, sendBreadcrumbs, year]);
+  [examId, subjectId, courseId, sendBreadcrumbs, year, teacherId]);
 
   return updateKeyMap;
 };
