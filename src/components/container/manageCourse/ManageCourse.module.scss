@@ -1,7 +1,7 @@
 .root {
   display: grid;
   grid-template-columns: 1fr;
-  place-items: end;
+  place-items: start;
   grid-gap: 10px;
   max-width: 400px;
   margin: auto;

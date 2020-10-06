@@ -37,7 +37,7 @@ export const commonRoutes: routeConfig = [
 ];
 
 export const teacherRoutes: routeConfig = [
-  ['/addLesson', AddLesson, 'Manage Lessons', true],
+  ['/addLesson', AddLesson, 'Add Lessons', true],
   ['/subscriptions', Subscriptions, 'Subscriptions', true],
   ['/upgradeCourses', UpgradeCourse, 'Create Courses', true],
 ];

@@ -46,14 +46,13 @@ export const UpgradeCourse = () => {
         const clone = [...prev, newCourse];
         return clone;
       });
-      showSnackbar(`Enrolled for new course: ${newCourse.examYear}`);
+      showSnackbar(`New course created: ${newCourse.examYear}`);
     });
   };
 
-  // const printedCourses: any = {};
   return (
     <>
-      <h3>Upgrade Course</h3>
+      <h3>Create Courses</h3>
       <form
         className={classes.root}
         noValidate
@@ -76,7 +75,7 @@ export const UpgradeCourse = () => {
             return (
               <div key={courseString}>
                 {courseString}
-                <Button onClick={() => createCourse(stream, year.id)}>Enable</Button>
+                <Button onClick={() => createCourse(stream, year.id)}>Create</Button>
               </div>
             );
           }))

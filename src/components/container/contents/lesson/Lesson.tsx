@@ -66,7 +66,7 @@ export const Lesson: React.FC = () => {
         {lesson?.description}
       </div>
       <div className={classes.attachments}>
-        {lesson?.attachments.map((atta) => (
+        {lesson?.attachments?.map((atta) => (
           <li>
             <a
               href={atta}
