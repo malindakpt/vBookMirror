@@ -11,6 +11,15 @@
     // margin: 20px;
   }
 
+  .attachments {
+    li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 50%;
+    }
+  }
+
   button {
     float: right;
     background: #3f51b5;

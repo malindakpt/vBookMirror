@@ -65,9 +65,9 @@ export const Lesson: React.FC = () => {
       <div className={classes.desc}>
         {lesson?.description}
       </div>
-      <div>
+      <div className={classes.attachments}>
         {lesson?.attachments.map((atta) => (
-          <div>
+          <li>
             <a
               href={atta}
               rel="noreferrer"
@@ -75,7 +75,7 @@ export const Lesson: React.FC = () => {
             >
               {atta}
             </a>
-          </div>
+          </li>
         ))}
       </div>
     </div>
