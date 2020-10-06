@@ -419,6 +419,7 @@ export const AddLesson = () => {
               disabled={disabled}
               onChange={(e) => setDescription(e.target.value)}
             />
+
             <TextField
               className={classes.input}
               id="filled-basic6"
@@ -428,6 +429,7 @@ export const AddLesson = () => {
               disabled={disabled}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
+
             {uploadProgress === 0 && (
             <Button
               size="small"

@@ -32,7 +32,16 @@ export const Course: React.FC = () => {
       const [users, lessons, course] = result;
 
       if (users && lessons && course) {
-        const lessons4Course = lessons?.filter((less) => course?.lessons.includes(less.id));
+        const lessons4Course: ILesson[] = [];
+        course?.lessons.forEach((lesId) => {
+          const les = lessons.find((l) => l.id === lesId);
+          if (les) {
+            lessons4Course.push(les);
+          } else {
+            console.error('lesson not found', lesId);
+          }
+        });
+        lessons?.filter((less) => course?.lessons.includes(less.id));
         setUser(users[0]);
         setLessons(lessons4Course);
       }
