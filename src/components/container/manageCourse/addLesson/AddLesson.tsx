@@ -154,11 +154,11 @@ export const AddLesson = () => {
       const lessonId = await addDoc('lessons', lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
-      updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] }).then(() => {
+      updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] }).then((data) => {
         showSnackbar('Lesson Added');
         addNew();
         setCourseLessons((prev) => {
-          const clone = [...prev, lesson];
+          const clone = [lesson, ...prev];
           return clone;
         });
       });
@@ -483,7 +483,8 @@ export const AddLesson = () => {
             {
               !disabled && courseLessons.map((c, index) => (
                 <div
-                  key={c.id}
+                // c.id becomes undefined for newly added lesson since we refer that from local
+                  key={c.videoId}
                 >
                   <ListItem
                     button
