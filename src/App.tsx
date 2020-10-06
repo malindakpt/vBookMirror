@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Header from './components/container/header/Header';
-import Footer from './components/presentational/footer/Footer';
+// import Footer from './components/presentational/footer/Footer';
 import Router from './components/router/Router';
 import { Snack, State } from './components/presentational/snackbar/Snack';
 import { adminEmail } from './data/Config';
@@ -77,7 +77,7 @@ const App: React.FC = () => {
         />
         <Header />
         <Router />
-        <Footer />
+        {/* <Footer /> */}
       </AppContext.Provider>
     </BrowserRouter>
   );
