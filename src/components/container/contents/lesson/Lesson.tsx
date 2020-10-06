@@ -10,7 +10,7 @@ import { ITeacher } from '../../../../interfaces/ITeacher';
 
 export const Lesson: React.FC = () => {
   useBreadcrumb();
-  const { lessonId, teacherId } = useParams<any>();
+  const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILesson>();
   const [vidSrc, setVidSrc] = useState<string | null>(null);
@@ -70,7 +70,7 @@ export const Lesson: React.FC = () => {
           <li>
             <a
               href={atta}
-              rel="noreferrer"
+              rel="noopener noreferrer"
               target="_blank"
             >
               {atta}
