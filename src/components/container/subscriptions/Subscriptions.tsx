@@ -41,8 +41,9 @@ export const Subscriptions = () => {
 
         <tbody>
           { lessons.map((l, idx) => {
-            totalSub += subCount[idx];
-            totalAmount += subCount[idx] * l.price;
+            const count = subCount[idx] ?? 0;
+            totalSub += count ?? 0;
+            totalAmount += count * l.price;
             return (
               <tr key={l.id}>
                 <td>{l.topic}</td>
@@ -57,7 +58,7 @@ export const Subscriptions = () => {
             <td />
             <td />
             <td className="right"><b>Total :</b></td>
-            <td><b>{totalSub && totalSub}</b></td>
+            <td><b>{totalSub}</b></td>
             <td className="right"><b>{ totalAmount && totalAmount }</b></td>
           </tr>
         </tbody>
