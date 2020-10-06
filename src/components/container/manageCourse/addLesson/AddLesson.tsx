@@ -173,7 +173,7 @@ export const AddLesson = () => {
     return true;
   };
 
-  const startUploadFile = (e: any) => {
+  const prepareLesson = (e: any) => {
     if (!email) {
       showSnackbar('Error with the logged in teacher');
       return;
@@ -434,7 +434,7 @@ export const AddLesson = () => {
               variant="contained"
               color="primary"
               disabled={disabled}
-              onClick={startUploadFile}
+              onClick={prepareLesson}
             >
               {editMode ? 'Save Changes' : 'Add New Lesson'}
             </Button>
@@ -467,15 +467,20 @@ export const AddLesson = () => {
                 >
                   <ListItem
                     button
+                    onClick={() => { setEditMode(true); copyLesson(c); }}
                   >
                     <ListItemText
                       primary={`${c.topic}`}
-                      onClick={() => { setEditMode(true); copyLesson(c); }}
                     />
-                    {index > 0 && <ArrowUpwardIcon onClick={(e) => { changeOrder(index, true); }} />}
+                    {index > 0 && (
+                    <ArrowUpwardIcon onClick={(e) => {
+                      changeOrder(index, true); e.stopPropagation();
+                    }}
+                    />
+                    )}
                     {index < courseLessons.length - 1 && (
                     <ArrowDownwardIcon
-                      onClick={(e) => { changeOrder(index, false); }}
+                      onClick={(e) => { changeOrder(index, false); e.stopPropagation(); }}
                     />
                     )}
                   </ListItem>
