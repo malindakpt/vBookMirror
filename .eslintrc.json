@@ -22,6 +22,7 @@
     "rules": {
         "no-unused-expressions":"off",
         "no-shadow":"off",
+        "no-lonely-if":"off",
         "no-param-reassign":"off",
         "no-alert":"off",
         "no-restricted-syntax":"off",

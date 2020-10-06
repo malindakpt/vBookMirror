@@ -182,22 +182,28 @@ export const AddLesson = () => {
       return;
     }
 
-    if (videoId) {
-      onSave(videoId);
-    } else if (uploadFile) {
-      const vId = `${new Date().getTime()}`;
-      setUploadProgress(0);
-      const out = uploadVideo(uploadFile, email, vId).subscribe((next) => {
-        setUploadTask(next.uploadTask);
-        if (next.downloadURL) {
-          setVideoId(vId);
-          onSave(vId);
-          out.unsubscribe();
-        }
-        if (next.progress < 100) { setUploadProgress(next.progress); }
-      });
+    if (isAddNewVideo) {
+      if (uploadFile) {
+        const vId = `${new Date().getTime()}`;
+        setUploadProgress(0);
+        const out = uploadVideo(uploadFile, email, vId).subscribe((next) => {
+          setUploadTask(next.uploadTask);
+          if (next.downloadURL) {
+            setVideoId(vId);
+            onSave(vId);
+            out.unsubscribe();
+          }
+          if (next.progress < 100) { setUploadProgress(next.progress); }
+        });
+      } else {
+        showSnackbar('Upload video not found');
+      }
     } else {
-      showSnackbar('Upload video not found');
+      if (videoId) {
+        onSave(videoId);
+      } else {
+        showSnackbar('Upload video not found');
+      }
     }
   };
 
