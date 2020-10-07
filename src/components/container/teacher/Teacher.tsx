@@ -27,17 +27,20 @@ export const Teacher = () => {
       if (data.length > 0) {
         const teacher = data[0];
         setTeacher(teacher);
-        getDocsWithProps<ICourse[]>('courses', { ownerEmail: teacher.ownerEmail }).then((data) => setCourses(data));
+        getDocsWithProps<ICourse[]>('courses', { ownerEmail: teacher.ownerEmail })
+          .then((data) => setCourses(data));
       }
     });
   }, [teacherId]);
 
   return (
     <div className="container">
+      {teacher && (
       <div className={classes.name}>
         Courses from
         {` ${teacher?.name}`}
       </div>
+      )}
       {
                 courses.map((c) => {
                   const subj = getObject(subjects, c.subjectId);
