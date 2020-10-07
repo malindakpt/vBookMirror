@@ -13,8 +13,9 @@ export const ListItems:React.FC<Props> = ({ list }) => (
       component="nav"
       aria-label="mailbox folders"
     >
-      {list.map((item) => (
-        <div key={item.id}>
+      {list.map((item, idx) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={idx}>
           <ListItem
             button
           >

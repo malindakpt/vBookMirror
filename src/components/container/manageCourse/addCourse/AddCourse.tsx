@@ -9,6 +9,9 @@ import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { IExam } from '../../../../interfaces/IExam';
+import { IStream } from '../../../../interfaces/IStream';
+import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
+import { getObject } from '../../../../data/StoreHelper';
 
 export const AddCourse = () => {
   useBreadcrumb();
@@ -16,8 +19,9 @@ export const AddCourse = () => {
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
+  const [streams, setStreams] = useState<IStream[]>([]);
 
-  const [teacherId, setTeacherId] = useState('');
+  const [ownerEmail, setOwnerEmail] = useState('');
   const [subjectId, setSubjectId] = useState('');
   const [examId, setExamId] = useState('');
 
@@ -27,12 +31,27 @@ export const AddCourse = () => {
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
   }, []);
 
+  useEffect(() => {
+    getDocsWithProps<IStream[]>('streams', {}).then((data) => setStreams(data));
+  }, [streams]);
+
+  const disabled = !examId || !subjectId || !ownerEmail;
+
   const onSave = () => {
-    addDoc('streams', {
+    const idx = streams.findIndex((str) => str.examId === examId
+     && str.subjectId === subjectId && str.ownerEmail === ownerEmail);
+    if (idx >= 0) {
+      showSnackbar('Course already added');
+      return;
+    }
+    addDoc<Omit<IStream, 'id'>>('streams', {
       examId,
       subjectId,
-      teacherId,
-    }).then(() => showSnackbar('Course added for teacher'));
+      ownerEmail,
+    }).then(() => {
+      setStreams([]);
+      showSnackbar('Course added for teacher');
+    });
   };
 
   return (
@@ -49,8 +68,8 @@ export const AddCourse = () => {
             className={classes.input}
             labelId="label1"
             id="id1"
-            value={teacherId}
-            onChange={(e: any) => setTeacherId(e.target.value)}
+            value={ownerEmail}
+            onChange={(e: any) => setOwnerEmail(e.target.value)}
           >
             {teachers.map((t) => (
               <MenuItem
@@ -106,10 +125,21 @@ export const AddCourse = () => {
         <Button
           variant="contained"
           onClick={onSave}
+          disabled={disabled}
         >
           Add
         </Button>
       </form>
+
+      <ListItems list={streams.map((str) => {
+        const next = {
+          teacher: getObject(teachers, str.ownerEmail)?.name,
+          exam: getObject(exams, str.examId)?.name,
+          subject: getObject(subjects, str.subjectId)?.name,
+        };
+        return next;
+      })}
+      />
     </>
   );
 };

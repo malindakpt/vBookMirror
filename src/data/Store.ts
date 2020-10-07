@@ -92,7 +92,8 @@ export const uploadVideo = (file: any, email: string, vId: string): Subject<Uplo
   return subject;
 };
 
-export const addDoc = (entityName: string, obj: any) => new Promise<string>((resolve) => {
+export const addDoc = <T>(entityName: string, obj: T) => new Promise<string>((resolve) => {
+  // @ts-ignore
   delete obj.id; // Allow id auto generation
 
   db.collection(entityName).add(obj).then((docRef: any) => {
@@ -116,7 +117,7 @@ export const deleteDoc = (entityName: string, id: string) => new Promise<boolean
     });
 });
 
-export const addDocWithId = (entityName: string, id: string, obj: any) => new Promise((resolve) => {
+export const addDocWithId = <T>(entityName: string, id: string, obj: T) => new Promise((resolve) => {
   db.collection(entityName).doc(id).set(obj).then((data: any) => {
     clearStore(entityName);
     resolve(true);
