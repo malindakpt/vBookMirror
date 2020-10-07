@@ -36,8 +36,7 @@ export const Courses: React.FC = () => {
     <div className="container">
       <h3>Courses</h3>
       {courses.map((course) => {
-        // const subject = getObject(subjects, course.subjectId);
-        const teacher = getObject(teachers, course.teacherId);
+        const teacher = getObject(teachers, course.ownerEmail);
         const exam = getObject(exams, course.examId);
 
         return (

@@ -124,6 +124,10 @@ export const AddLesson = () => {
   const disabled = uploadProgress > 0 && uploadProgress < 100;
 
   const onSave = async (videoId: string) => {
+    if (!email) {
+      showSnackbar('Issue with email');
+      return;
+    }
     if (editMode) {
       if (!editingLesson) return;
       const less = {
@@ -149,7 +153,7 @@ export const AddLesson = () => {
         keywords: `${selectedCourse.examYear}`,
         videoId,
         price,
-        email: email as string,
+        ownerEmail: email,
       };
       const lessonId = await addDoc('lessons', lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];

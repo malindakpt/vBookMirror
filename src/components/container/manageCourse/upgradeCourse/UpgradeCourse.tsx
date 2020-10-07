@@ -39,7 +39,7 @@ export const UpgradeCourse = () => {
       examId: course.examId,
       examYear: year,
       subjectId: course.subjectId,
-      teacherId: course.teacherId,
+      ownerEmail: course.ownerEmail,
     };
     addDoc('courses', newCourse).then(() => {
       setCourses((prev) => {
@@ -61,7 +61,7 @@ export const UpgradeCourse = () => {
         {
           streams.map((stream) => examYears.map((year) => {
             const crsForYr = courses.findIndex((c) => c.subjectId === stream.subjectId
-               && c.examYear === year.id && c.teacherId === stream.teacherId && c.examId === stream.examId);
+               && c.examYear === year.id && c.ownerEmail === stream.ownerEmail && c.examId === stream.examId);
 
             const exam = getObject(exams, stream.examId);
 

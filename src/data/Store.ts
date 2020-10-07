@@ -26,8 +26,8 @@ const clearStore = (entityName: string) => {
 
 // TODO: clear data store for all edit data queries
 
-export const getVideo = (email: string, vId: string): Promise<string> => new Promise((resolve) => {
-  storage.ref().child('video').child(email).child(vId)
+export const getVideo = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
+  storage.ref().child('video').child(ownerEmail).child(vId)
     .getDownloadURL()
     .then((data) => resolve(data));
 });

@@ -90,7 +90,7 @@ export const Course: React.FC = () => {
     } else {
       const newUser: IUser = {
         id: '',
-        email,
+        ownerEmail: email,
         lessons: [],
       };
       for (const [les, subscribed] of Object.entries(selectedLessons)) {
