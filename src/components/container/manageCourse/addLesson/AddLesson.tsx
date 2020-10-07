@@ -29,7 +29,6 @@ export const AddLesson = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const [uploadFile, setUploadFile] = useState<any>(undefined);
-  const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
@@ -43,6 +42,8 @@ export const AddLesson = () => {
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
   const [remainingLessons, setRemainingLessons] = useState<ILesson[]>([]);
 
+  // Component state
+  const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
   const [editingLesson, setEditingLesson] = useState<ILesson>();
   const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
@@ -105,6 +106,7 @@ export const AddLesson = () => {
   };
 
   const addNew = () => {
+    setIsAddNewVideo(false);
     setEditMode(false);
     setUploadProgress(0);
     setTopic('');
@@ -216,6 +218,7 @@ export const AddLesson = () => {
   };
 
   const copyLesson = (les: ILesson) => {
+    setIsAddNewVideo(false);
     setEditingLesson(les);
     setTopic(les.topic ?? '');
     setKeywords(les.keywords ?? '');

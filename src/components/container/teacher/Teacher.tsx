@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CategoryIcon from '@material-ui/icons/Category';
 import { examYears } from '../../../data/Config';
-import { getDocsWithProps, getDocWithId } from '../../../data/Store';
+import { getDocsWithProps } from '../../../data/Store';
 import { getObject } from '../../../data/StoreHelper';
 import { ICourse } from '../../../interfaces/ICourse';
 import { IExam } from '../../../interfaces/IExam';
