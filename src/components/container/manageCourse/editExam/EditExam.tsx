@@ -54,6 +54,8 @@ export const EditExam = () => {
       .then(() => showSnackbar('Exam is updated'));
   };
 
+  const disabled = selectedExamIdx < 0;
+
   return (
     <>
       <h3>Edit Exam</h3>
@@ -102,6 +104,7 @@ export const EditExam = () => {
         <Button
           variant="contained"
           onClick={onSave}
+          disabled={disabled}
         >
           Save
         </Button>

@@ -4,4 +4,5 @@ export interface ITeacher {
     phone: string;
     phoneChat: string;
     ownerEmail: string;
+    shortId: string;
 }

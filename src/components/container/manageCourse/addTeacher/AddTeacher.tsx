@@ -31,10 +31,15 @@ export const AddTeacher = () => {
 
   const onSave = async () => {
     const teachers = await getDocsWithProps<ITeacher[]>('teachers', {});
-    addDocWithId('teachers', `${teachers.length + 1}`, teacher).then(() => {
-      showSnackbar('New teacher added');
-      updateUI();
-    });
+    if (teacher) {
+      teacher.shortId = `${teachers.length + 1}`;
+      addDocWithId<Omit<ITeacher, 'id'>>('teachers', teacher.ownerEmail, teacher).then(() => {
+        showSnackbar('New teacher added');
+        updateUI();
+      });
+    } else {
+      console.log('Teacher not set');
+    }
   };
 
   return (
@@ -57,7 +62,7 @@ export const AddTeacher = () => {
           className={classes.input}
           id="email"
           label="Email Address"
-          onChange={(e) => setTeacherProps({ email: e.target.value })}
+          onChange={(e) => setTeacherProps({ ownerEmail: e.target.value })}
         />
 
         <TextField

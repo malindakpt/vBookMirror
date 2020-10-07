@@ -41,7 +41,7 @@ export const AddCourse = () => {
     const idx = streams.findIndex((str) => str.examId === examId
      && str.subjectId === subjectId && str.ownerEmail === ownerEmail);
     if (idx >= 0) {
-      showSnackbar('Course already added');
+      showSnackbar('Course already added for teacher');
       return;
     }
     addDoc<Omit<IStream, 'id'>>('streams', {
@@ -69,12 +69,14 @@ export const AddCourse = () => {
             labelId="label1"
             id="id1"
             value={ownerEmail}
-            onChange={(e: any) => setOwnerEmail(e.target.value)}
+            onChange={(e: any) => {
+              setOwnerEmail(e.target.value);
+            }}
           >
             {teachers.map((t) => (
               <MenuItem
-                value={t.id}
-                key={t.id}
+                value={t.ownerEmail}
+                key={t.ownerEmail}
               >
                 {`${t.name}`}
               </MenuItem>

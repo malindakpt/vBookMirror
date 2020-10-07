@@ -21,12 +21,12 @@ export const UpgradeCourse = () => {
   const [streams, setStreams] = useState<IStream[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ITeacher[]>('teachers', { email }).then((data) => {
+    getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: email }).then((data) => {
       if (data.length > 0) {
         const teacher = data[0];
         getDocsWithProps<ICourse[]>('courses', { teacherId: teacher.id }).then((data) => setCourses(data));
         getDocsWithProps<IStream[]>('streams',
-          { teacherId: teacher.id }).then((data) => setStreams(data));
+          { ownerEmail: teacher.id }).then((data) => setStreams(data));
       }
     });
 

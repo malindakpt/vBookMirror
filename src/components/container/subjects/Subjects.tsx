@@ -18,7 +18,7 @@ export const Subjects = () => {
   const fetchData = async () => {
     const exam = await getDocWithId<IExam>('exams', examId);
     const subjects = await getDocsWithProps<ISubject[]>('subjects', {});
-    const filtered = subjects.filter((sub) => exam?.subjectIds.includes(sub.id));
+    const filtered = subjects.filter((sub) => exam?.subjectIds?.includes(sub.id));
 
     setSubjects(filtered);
     keyMap(subjects);
