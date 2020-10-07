@@ -21,10 +21,15 @@ export const Teacher = () => {
   const [teacher, setTeacher] = useState<ITeacher| undefined>(undefined);
 
   useEffect(() => {
-    getDocsWithProps<ICourse[]>('courses', { teacherId }).then((data) => setCourses(data));
     getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
-    getDocWithId<ITeacher>('teachers', teacherId).then((data) => data && setTeacher(data));
+    getDocsWithProps<ITeacher[]>('teachers', { shortId: teacherId }).then((data) => {
+      if (data.length > 0) {
+        const teacher = data[0];
+        setTeacher(teacher);
+        getDocsWithProps<ICourse[]>('courses', { ownerEmail: teacher.ownerEmail }).then((data) => setCourses(data));
+      }
+    });
   }, [teacherId]);
 
   return (

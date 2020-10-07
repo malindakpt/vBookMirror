@@ -24,7 +24,7 @@ export const UpgradeCourse = () => {
     getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: email }).then((data) => {
       if (data.length > 0) {
         const teacher = data[0];
-        getDocsWithProps<ICourse[]>('courses', { teacherId: teacher.id }).then((data) => setCourses(data));
+        getDocsWithProps<ICourse[]>('courses', { ownerEmail: teacher.id }).then((data) => setCourses(data));
         getDocsWithProps<IStream[]>('streams',
           { ownerEmail: teacher.id }).then((data) => setStreams(data));
       }
