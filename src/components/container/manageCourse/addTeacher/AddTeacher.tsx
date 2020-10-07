@@ -2,13 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import {
   TextField, Button,
 } from '@material-ui/core';
-import classes from '../ManageCourse.module.scss';
 import { addDocWithId, getDocsWithProps } from '../../../../data/Store';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { AppContext } from '../../../../App';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
+import classes from './AddTeacher.module.scss';
 
 export const AddTeacher = () => {
   useBreadcrumb();
@@ -81,8 +81,8 @@ export const AddTeacher = () => {
           Add
         </Button>
 
-        <ListItems list={teachers} />
       </form>
+      <ListItems list={teachers} />
     </>
   );
 };

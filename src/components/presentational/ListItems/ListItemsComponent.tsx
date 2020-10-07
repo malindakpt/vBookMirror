@@ -18,7 +18,10 @@ export const ListItems:React.FC<Props> = ({ list }) => (
           <ListItem
             button
           >
-            {Object.values(item).map((val: any) => (<span key={val}>{`${val}`}</span>))}
+
+            {Object.values(item).map((val: any, index:number) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <span key={index}>{`${val}`}</span>))}
           </ListItem>
           <Divider />
         </div>

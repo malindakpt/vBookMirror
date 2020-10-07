@@ -74,7 +74,7 @@ export const NavPanel = () => {
     >
       {linkSegment(commonLinks)}
       <Divider />
-      {(isTeacher || isAdmin()) && linkSegment(teacherLinks)}
+      {(isTeacher) && linkSegment(teacherLinks)}
       <Divider />
       {isAdmin() && linkSegment(adminLinks)}
     </div>
