@@ -1,4 +1,4 @@
 export interface ISubscription {
-    email: string;
     lessonIds: string[];
+    ownerEmail: string;
 }

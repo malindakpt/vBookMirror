@@ -9,6 +9,6 @@ export interface ILesson {
     attachments: string[],
 
     // meta information
-    email: string;
     price: number;
+    ownerEmail: string;
   }
