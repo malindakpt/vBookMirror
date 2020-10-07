@@ -41,8 +41,8 @@ export const Teacher = () => {
                   return (
                     <Category
                       key={c.id}
-                      title1={`${subj?.name} ${exam?.type}`}
-                      title2={`${examTime?.name} ${exam?.name}`}
+                      title1={`${subj?.name} [${exam?.type}]`}
+                      title2={`${exam?.name}-${examTime?.name}`}
                       navURL={`${teacherId}/${c.id}`}
                       CategoryImg={CategoryIcon}
                     />
