@@ -26,11 +26,11 @@ const clearStore = (entityName: string) => {
 
 // TODO: clear data store for all edit data queries
 
-export const getVideo = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
-  storage.ref().child('video').child(ownerEmail).child(vId)
-    .getDownloadURL()
-    .then((data) => resolve(data));
-});
+// export const getVideo = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
+//   storage.ref().child('video').child(ownerEmail).child(vId)
+//     .getDownloadURL()
+//     .then((data) => resolve(data));
+// });
 
 export const uploadVideo = (file: any, email: string, vId: string): Subject<UploadStatus> => {
   const subject = new Subject<UploadStatus>();

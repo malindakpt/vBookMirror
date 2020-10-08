@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import ReactWhatsapp from 'react-whatsapp';
 import classes from './Lesson.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps, getDocWithId, getVideo } from '../../../data/Store';
+import { getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 
@@ -13,7 +13,7 @@ export const Lesson: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILesson>();
-  const [vidSrc, setVidSrc] = useState<string | null>(null);
+  // const [vidSrc, setVidSrc] = useState<string | null>(null);
 
   const processVideo = async () => {
     const lesson = await getDocWithId<ILesson>('lessons', lessonId);
@@ -21,9 +21,9 @@ export const Lesson: React.FC = () => {
     if (lesson) {
       getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: lesson.ownerEmail })
         .then((data) => data && setTeacher(data[0]));
-      const url = await getVideo(lesson.ownerEmail, lesson.videoURL);
+      // const url = await getVideo(lesson.ownerEmail, lesson.videoURL);
       setLesson(lesson);
-      setVidSrc(url);
+      // setVidSrc(url);
     }
   };
 
@@ -38,7 +38,7 @@ export const Lesson: React.FC = () => {
         {lesson?.topic}
       </div>
 
-      {vidSrc && (
+      {lesson?.videoURL && (
       <video
         width="100%"
         height="100%"
@@ -46,7 +46,7 @@ export const Lesson: React.FC = () => {
         controlsList="nodownload"
       >
         <source
-          src={vidSrc}
+          src={lesson?.videoURL}
           type="video/mp4"
         />
       </video>

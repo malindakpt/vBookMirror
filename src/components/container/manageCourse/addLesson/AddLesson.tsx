@@ -487,17 +487,17 @@ export const AddLesson = () => {
             </ListItem>
             )}
             {
-              !disabled && courseLessons.map((c, index) => (
+              !disabled && courseLessons.map((lesson, index) => (
                 <div
                 // c.id becomes undefined for newly added lesson since we refer that from local
-                  key={c.videoURL}
+                  key={lesson.id}
                 >
                   <ListItem
                     button
-                    onClick={() => { setEditMode(true); copyLesson(c); }}
+                    onClick={() => { setEditMode(true); copyLesson(lesson); }}
                   >
                     <ListItemText
-                      primary={`${c.topic}`}
+                      primary={`${lesson.topic}`}
                     />
                     {index > 0 && (
                     <ArrowUpwardIcon onClick={(e) => {
