@@ -490,7 +490,7 @@ export const AddLesson = () => {
               !disabled && courseLessons.map((lesson, index) => (
                 <div
                 // c.id becomes undefined for newly added lesson since we refer that from local
-                  key={lesson.id}
+                  key={lesson.date}
                 >
                   <ListItem
                     button
