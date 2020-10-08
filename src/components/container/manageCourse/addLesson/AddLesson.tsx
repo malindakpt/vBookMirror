@@ -51,7 +51,7 @@ export const AddLesson = () => {
   const [attachments, setAttachments] = useState<string[]>([]);
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
-  const [videoId, setVideoId] = useState<string>('');
+  const [videoURL, setVideoURL] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
   const onCourseChange = (courses: ICourse[], courseId: string) => {
@@ -113,7 +113,7 @@ export const AddLesson = () => {
     setKeywords('');
     setDescription('');
     setAttachments([]);
-    setVideoId('');
+    setVideoURL('');
     setPrice(0);
     setUploadFile(null);
   };
@@ -125,7 +125,7 @@ export const AddLesson = () => {
 
   const disabled = uploadProgress > 0 && uploadProgress < 100;
 
-  const onSave = async (videoId: string) => {
+  const onSave = async (videoURL: string) => {
     if (!email) {
       showSnackbar('Issue with email');
       return;
@@ -135,7 +135,7 @@ export const AddLesson = () => {
       const less = {
         ...editingLesson,
         ...{
-          topic, description, attachments, keywords, videoId, price,
+          topic, description, attachments, keywords, videoURL, price,
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
@@ -153,7 +153,7 @@ export const AddLesson = () => {
         description,
         attachments,
         keywords: `${selectedCourse.examYear}`,
-        videoId,
+        videoURL,
         price,
         ownerEmail: email,
       };
@@ -183,7 +183,7 @@ export const AddLesson = () => {
     return true;
   };
 
-  const prepareLesson = (e: any) => {
+  const sendVideo = (e: any) => {
     if (!email) {
       showSnackbar('Error with the logged in teacher');
       return;
@@ -199,8 +199,8 @@ export const AddLesson = () => {
         const out = uploadVideo(uploadFile, email, vId).subscribe((next) => {
           setUploadTask(next.uploadTask);
           if (next.downloadURL) {
-            setVideoId(vId);
-            onSave(vId);
+            setVideoURL(next.downloadURL);
+            onSave(next.downloadURL);
             out.unsubscribe();
           }
           if (next.progress < 100) { setUploadProgress(next.progress); }
@@ -209,8 +209,8 @@ export const AddLesson = () => {
         showSnackbar('Upload video not found');
       }
     } else {
-      if (videoId) {
-        onSave(videoId);
+      if (videoURL) {
+        onSave(videoURL);
       } else {
         showSnackbar('Upload video not found');
       }
@@ -224,7 +224,7 @@ export const AddLesson = () => {
     setKeywords(les.keywords ?? '');
     setDescription(les.description ?? '');
     setAttachments(les.attachments ?? []);
-    setVideoId(les.videoId ?? '');
+    setVideoURL(les.videoURL ?? '');
   };
 
   const changeOrder = (index: number, isUp: boolean) => {
@@ -256,7 +256,6 @@ export const AddLesson = () => {
   return (
     <>
       <h3>Manage Lessons</h3>
-
       <form
         className={classes.root}
         noValidate
@@ -418,8 +417,8 @@ export const AddLesson = () => {
               id="standard-basic4"
               label="Video Id"
               disabled
-              value={videoId}
-              onChange={(e) => setVideoId(e.target.value)}
+              value={videoURL}
+              onChange={(e) => setVideoURL(e.target.value)}
             />
 
             <TextField
@@ -461,7 +460,7 @@ export const AddLesson = () => {
               variant="contained"
               color="primary"
               disabled={disabled}
-              onClick={prepareLesson}
+              onClick={sendVideo}
             >
               {editMode ? 'Save Changes' : 'Add New Lesson'}
             </Button>
@@ -491,7 +490,7 @@ export const AddLesson = () => {
               !disabled && courseLessons.map((c, index) => (
                 <div
                 // c.id becomes undefined for newly added lesson since we refer that from local
-                  key={c.videoId}
+                  key={c.videoURL}
                 >
                   <ListItem
                     button

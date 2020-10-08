@@ -3,7 +3,7 @@ export interface ILesson {
     topic: string;
     // partNo: string;
     description: string;
-    videoId: string;
+    videoURL: string;
     keywords: string;
     date: number;
     attachments: string[],

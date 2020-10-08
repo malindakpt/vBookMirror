@@ -21,7 +21,7 @@ export const Lesson: React.FC = () => {
     if (lesson) {
       getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: lesson.ownerEmail })
         .then((data) => data && setTeacher(data[0]));
-      const url = await getVideo(lesson.ownerEmail, lesson.videoId);
+      const url = await getVideo(lesson.ownerEmail, lesson.videoURL);
       setLesson(lesson);
       setVidSrc(url);
     }
