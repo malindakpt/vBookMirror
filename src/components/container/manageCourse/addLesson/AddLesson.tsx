@@ -55,6 +55,7 @@ export const AddLesson = () => {
   const [price, setPrice] = useState<number>(0);
 
   const addNew = () => {
+    setCourseOrderChaged(false);
     setIsAddNewVideo(false);
     setEditMode(false);
     setUploadProgress(0);
@@ -83,13 +84,15 @@ export const AddLesson = () => {
       }
     }
 
-    const orderedLessons = [];
+    let orderedLessons: ILesson[] = [];
     for (const less of selectedCourse.lessons) {
       const t = (lessons4CourseMap[less]);
-      t && orderedLessons.push(t);
+      if (t) {
+        orderedLessons = [...orderedLessons, t];
+      }
     }
 
-    remainingLessons.sort((a, b) => (a.date > b.date ? -1 : 1));
+    // remainingLessons.sort((a, b) => (a.date > b.date ? -1 : 1));
 
     setCourseLessons(orderedLessons);
     setRemainingLessons(remainingLessons);
@@ -159,17 +162,16 @@ export const AddLesson = () => {
         price,
         ownerEmail: email,
       };
-      const lessonId = await addDoc('lessons', lesson);
+      lesson.id = await addDoc('lessons', lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
-      await updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] });// .then((data) => {
+      await updateDoc('courses', courseId, { lessons: [lesson.id, ...lessons ?? []] });
       showSnackbar('Lesson Added');
       addNew();
       setCourseLessons((prev) => {
         const clone = [lesson, ...prev];
         return clone;
       });
-      // });
     }
   };
 
@@ -248,9 +250,16 @@ export const AddLesson = () => {
   };
 
   const saveLessonsOrder = () => {
-    updateDoc('courses', courseId, { lessons: courseLessons.map((less) => less.id) })
+    const courseLessonIds = courseLessons.map((less) => less.id);
+    updateDoc('courses', courseId, { lessons: courseLessonIds })
       .then(() => {
         showSnackbar('Lessons order updated');
+        setCourses((prev) => {
+          const clone = [...prev];
+          const idx = clone.findIndex((c) => c.id === courseId);
+          clone[idx].lessons = courseLessonIds;
+          return clone;
+        });
         setCourseOrderChaged(false);
       });
   };
