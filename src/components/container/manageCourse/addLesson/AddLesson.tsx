@@ -2,10 +2,9 @@ import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
 import {
-  TextField, Button, Select, MenuItem, InputLabel, FormControl, IconButton,
+  TextField, Button, Select, MenuItem, InputLabel, FormControl,
   RadioGroup, FormControlLabel, Radio, List, ListItem, ListItemText, Divider,
 } from '@material-ui/core';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
