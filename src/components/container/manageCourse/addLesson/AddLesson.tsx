@@ -164,10 +164,11 @@ export const AddLesson = () => {
       await updateDoc('courses', courseId, { lessons: [lesson.id, ...lessons ?? []] });
       showSnackbar('Lesson Added');
       addNew();
-      setCourseLessons((prev) => {
-        const clone = [lesson, ...prev];
-        return clone;
-      });
+      setCourses([]); // force update
+      // setCourseLessons((prev) => {
+      //   const clone = [lesson, ...prev];
+      //   return clone;
+      // });
     }
   };
 
