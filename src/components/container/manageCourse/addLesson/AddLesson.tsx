@@ -54,6 +54,19 @@ export const AddLesson = () => {
   const [videoURL, setVideoURL] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
+  const addNew = () => {
+    setIsAddNewVideo(false);
+    setEditMode(false);
+    setUploadProgress(0);
+    setTopic('');
+    setKeywords('');
+    setDescription('');
+    setAttachments([]);
+    setVideoURL('');
+    setPrice(0);
+    setUploadFile(null);
+  };
+
   const onCourseChange = (courses: ICourse[], courseId: string) => {
     if (!courseId || courseId === '') { return; }
 
@@ -80,6 +93,8 @@ export const AddLesson = () => {
 
     setCourseLessons(orderedLessons);
     setRemainingLessons(remainingLessons);
+
+    addNew();
   };
 
   useEffect(() => {
@@ -103,19 +118,6 @@ export const AddLesson = () => {
     // TODO: Handle if file is not selected from file explorer
     const file = e.target.files[0];
     if (file) { setUploadFile(file); }
-  };
-
-  const addNew = () => {
-    setIsAddNewVideo(false);
-    setEditMode(false);
-    setUploadProgress(0);
-    setTopic('');
-    setKeywords('');
-    setDescription('');
-    setAttachments([]);
-    setVideoURL('');
-    setPrice(0);
-    setUploadFile(null);
   };
 
   const onCancelUpload = () => {
@@ -160,14 +162,14 @@ export const AddLesson = () => {
       const lessonId = await addDoc('lessons', lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
-      updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] }).then((data) => {
-        showSnackbar('Lesson Added');
-        addNew();
-        setCourseLessons((prev) => {
-          const clone = [lesson, ...prev];
-          return clone;
-        });
+      await updateDoc('courses', courseId, { lessons: [...lessons ?? [], lessonId] });// .then((data) => {
+      showSnackbar('Lesson Added');
+      addNew();
+      setCourseLessons((prev) => {
+        const clone = [lesson, ...prev];
+        return clone;
       });
+      // });
     }
   };
 
@@ -203,7 +205,9 @@ export const AddLesson = () => {
             onSave(next.downloadURL);
             out.unsubscribe();
           }
-          if (next.progress < 100) { setUploadProgress(next.progress); }
+          if (next.progress < 100) {
+            setUploadProgress(next.progress);
+          }
         });
       } else {
         showSnackbar('Upload video not found');
