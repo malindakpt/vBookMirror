@@ -91,9 +91,6 @@ export const AddLesson = () => {
         orderedLessons = [...orderedLessons, t];
       }
     }
-
-    // remainingLessons.sort((a, b) => (a.date > b.date ? -1 : 1));
-
     setCourseLessons(orderedLessons);
     setRemainingLessons(remainingLessons);
 
@@ -375,18 +372,18 @@ export const AddLesson = () => {
                   || les.topic?.toLowerCase()?.includes(search)
                    || les.description?.toLowerCase()?.includes(search)) {
                       return (
-                        <tr key={les.id}>
+                        <tr
+                          key={les.id}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            setEditMode(false);
+                            copyLesson(les);
+                            setDisplayBacklog(false);
+                          }}
+                        >
                           <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
                           <td>{les.topic}</td>
                           <td>{les.description}</td>
-                          <td>
-                            <IconButton
-                              aria-label="copy"
-                              onClick={() => { setEditMode(false); copyLesson(les); }}
-                            >
-                              <FileCopyIcon />
-                            </IconButton>
-                          </td>
                         </tr>
                       );
                     }
@@ -509,9 +506,12 @@ export const AddLesson = () => {
                     button
                     onClick={() => { setEditMode(true); copyLesson(lesson); }}
                   >
-                    <ListItemText
-                      primary={`${lesson.topic}`}
-                    />
+                    <div style={{ fontSize: '11px', width: '150px' }}>
+                      {lesson.topic}
+                    </div>
+                    {/* primary={`${lesson.topic}`}
+                      style={{ fontSize: '11px' }}
+                    /> */}
                     {index > 0 && (
                     <ArrowUpwardIcon onClick={(e) => {
                       changeOrder(index, true); e.stopPropagation();
