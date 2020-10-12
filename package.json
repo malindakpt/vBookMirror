@@ -29,7 +29,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "s": "set HTTPS=true&&npm start"
+    "clean": "rmdir \"firebase\\public\\\" /q /s",
+    "copy": "xcopy \".\\build\" \"firebase\\public\\\" /e /y",
+    "deploy": "npm run build && npm run clean && npm run copy"
   },
   "eslintConfig": {
     "extends": "react-app"
