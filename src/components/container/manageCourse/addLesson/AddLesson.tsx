@@ -19,9 +19,11 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
+import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 
 export const AddLesson = () => {
   useBreadcrumb();
+  const [onDataFetch, fetchData] = useForcedUpdate();
   const { showSnackbar, email } = useContext(AppContext);
 
   const [uploadTask, setUploadTask] = useState<any>();
@@ -35,11 +37,12 @@ export const AddLesson = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
-  const allLessons = useRef<ILesson[]>([]);
+  const [allLessons, setAllLessons] = useState<ILesson[]>([]);
+  // const allLessons = useRef<ILesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
 
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
-  const [remainingLessons, setRemainingLessons] = useState<ILesson[]>([]);
+  const [unrelatedLessons, setUnrelatedLessons] = useState<ILesson[]>([]);
 
   // Component state
   const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
@@ -67,19 +70,20 @@ export const AddLesson = () => {
     setUploadFile(null);
   };
 
-  const onCourseChange = (courses: ICourse[], courseId: string) => {
-    if (!courseId || courseId === '') { return; }
+  const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: ILesson[]) => {
+    if (!_courseId || _courseId === '') { return; }
 
-    setCourseId(courseId);
+    setCourseId(_courseId);
 
-    const selectedCourse = courses.filter((c) => c.id === courseId)[0];
+    const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
     const lessons4CourseMap: any = {};
-    const remainingLessons = [];
-    for (const les of allLessons.current) {
+    const otherLessons = [];
+
+    for (const les of _allLessons) {
       if (selectedCourse.lessons?.includes(les.id)) {
         lessons4CourseMap[les.id] = les;
       } else {
-        remainingLessons.push(les);
+        otherLessons.push(les);
       }
     }
 
@@ -90,28 +94,33 @@ export const AddLesson = () => {
         orderedLessons = [...orderedLessons, t];
       }
     }
+
     setCourseLessons(orderedLessons);
-    setRemainingLessons(remainingLessons);
+    setUnrelatedLessons(otherLessons.sort((a, b) => b.date - a.date));
 
     addNew();
   };
 
   useEffect(() => {
     Promise.all([
-      getDocsWithProps<ICourse[]>('courses', {}),
-      getDocsWithProps<ILesson[]>('lessons', {}),
+      getDocsWithProps<ICourse[]>('courses', { ownerEmail: email }),
+      getDocsWithProps<ILesson[]>('lessons', { ownerEmail: email }),
     ]).then((values) => {
       const [courses, lessons] = values;
 
+      // state changes
       setCourses(courses);
-      onCourseChange(courses, courseId);
+      setAllLessons(lessons);
 
-      allLessons.current = lessons;
+      onCourseChange(courses, courseId, lessons);
     });
+
+    // fetch unrelated data
     getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
+
     // eslint-disable-next-line
-  }, [courses]);
+  }, [onDataFetch]);
 
   const onFileSelect = (e: any) => {
     // TODO: Handle if file is not selected from file explorer
@@ -128,11 +137,12 @@ export const AddLesson = () => {
 
   const onSave = async (videoURL: string) => {
     if (!email) {
-      showSnackbar('Issue with email');
+      showSnackbar('Error with logged in user');
       return;
     }
     if (editMode) {
       if (!editingLesson) return;
+      // When you make a change here, replicate that on addMode, copyLesson also
       const less = {
         ...editingLesson,
         ...{
@@ -140,13 +150,14 @@ export const AddLesson = () => {
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
-        showSnackbar('Lesson Modified');
+        showSnackbar(`${editingLesson.topic} modified successfully`);
         addNew();
-        setCourses([]); // force update
+        fetchData();
       });
+    // AddMode
     } else {
       const selectedCourse = courses.filter((c) => c.id === courseId)[0];
-      // When you make a change here, replicate that on edit mode also
+      // When you make a change here, replicate that on edit, copyLesson mode also
       const lesson: ILesson = {
         id: '',
         date: new Date().getTime(),
@@ -164,11 +175,7 @@ export const AddLesson = () => {
       await updateDoc('courses', courseId, { lessons: [lesson.id, ...lessons ?? []] });
       showSnackbar('Lesson Added');
       addNew();
-      setCourses([]); // force update
-      // setCourseLessons((prev) => {
-      //   const clone = [lesson, ...prev];
-      //   return clone;
-      // });
+      fetchData();
     }
   };
 
@@ -221,6 +228,7 @@ export const AddLesson = () => {
   };
 
   const copyLesson = (les: ILesson) => {
+    // When change here, replicate it in add and edit modes
     setIsAddNewVideo(false);
     setEditingLesson(les);
     setTopic(les.topic ?? '');
@@ -280,7 +288,7 @@ export const AddLesson = () => {
               id="id1"
               value={courseId}
               disabled={disabled}
-              onChange={(e) => onCourseChange(courses, e.target.value as string)}
+              onChange={(e) => onCourseChange(courses, e.target.value as string, allLessons)}
             >
               {courses.map((course) => {
                 const subject = getObject(subjects, course.subjectId);
@@ -352,7 +360,7 @@ export const AddLesson = () => {
 
             { !isAddNewVideo && (
             <div className={classes.backlog}>
-              {allLessons.current?.length > 0 && (
+              {allLessons.length > 0 && (
               <TextField
                 className={classes.input}
                 id="filled-basic"
@@ -366,7 +374,7 @@ export const AddLesson = () => {
               { displayBacklog && (
               <table className="center w100">
                 <tbody>
-                  {remainingLessons.map((les) => {
+                  {unrelatedLessons.map((les) => {
                     const search = searchText.toLocaleLowerCase();
                     if (searchText === ''
                   || les.topic?.toLowerCase()?.includes(search)
