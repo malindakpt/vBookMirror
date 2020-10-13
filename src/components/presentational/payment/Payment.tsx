@@ -1,5 +1,6 @@
 import { Button } from '@material-ui/core';
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from '../../../App';
 
 // @ts-ignore
 // eslint-disable-next-line no-undef
@@ -8,8 +9,11 @@ export const paymentJS = payhere;
 interface PaymentProps {
     amount: number;
     email: string;
+    onSuccess: () => void;
 }
-export const Payment: React.FC<PaymentProps> = ({ amount, email }) => {
+export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) => {
+  const { showSnackbar } = useContext(AppContext);
+
   const payment = {
     sandbox: true,
     merchant_id: '121XXXX', // Replace your Merchant ID
@@ -36,16 +40,19 @@ export const Payment: React.FC<PaymentProps> = ({ amount, email }) => {
 
   paymentJS.onDismissed = function onDismissed() {
     // Note: Prompt user to pay again or show an error page
-    console.log('Payment dismissed 1');
+    console.log('Payment dismissed');
+    showSnackbar('Payment dismissed');
   };
 
   paymentJS.onError = function onError(error: any) {
     // Note: show an error page
-    console.log(`Error1:${error}`);
+    console.log(`Error: ${error}`);
+    showSnackbar(`Error: ${error}`);
   };
 
   paymentJS.onCompleted = function onCompleted(orderId: string) {
     console.log(`Payment completed. OrderID:${orderId}`);
+    onSuccess();
     // Note: validate the payment and show success or failure page to the customer
   };
 

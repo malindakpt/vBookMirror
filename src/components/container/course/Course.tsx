@@ -72,7 +72,13 @@ export const Course: React.FC = () => {
     }
   };
 
-  const pay = async () => {
+  const resetPayments = () => {
+    showSnackbar('Subscribed to lessons');
+    setSelectedLessons({});
+    setTotal(0);
+  };
+
+  const handlePaymentSuccess = async () => {
     if (!email) return;
 
     // const usersWithEmail: IUser[] = await getDocsWithProps('users', { email }, {});
@@ -83,9 +89,7 @@ export const Course: React.FC = () => {
         }
       }
       updateDoc('users', user.id, user).then(() => {
-        showSnackbar('Subscribed to lessons');
-        setSelectedLessons({});
-        setTotal(0);
+        resetPayments();
       });
     } else {
       const newUser: IUser = {
@@ -99,9 +103,7 @@ export const Course: React.FC = () => {
         }
       }
       addDoc('users', newUser).then(() => {
-        showSnackbar('Subscribed to lessons');
-        setSelectedLessons({});
-        setTotal(0);
+        resetPayments();
       });
     }
   };
@@ -117,6 +119,7 @@ export const Course: React.FC = () => {
           <Payment
             amount={total}
             email={email}
+            onSuccess={handlePaymentSuccess}
           />
         </div>
       </div>
