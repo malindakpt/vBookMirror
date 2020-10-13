@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button } from '@material-ui/core';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
@@ -13,6 +12,7 @@ import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import { Util } from '../../../helper/util';
 import classes from './Course.module.scss';
+import { Payment } from '../../presentational/payment/Payment';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -108,19 +108,16 @@ export const Course: React.FC = () => {
 
   return (
     <div className="container">
-      {total > 0 && (
+      {total > 0 && email && (
       <div className={classes.purchase}>
         <div className={classes.box}>
           <span>
             { `Rs. ${total}.00`}
           </span>
-          <Button
-            variant="contained"
-            onClick={pay}
-            color="secondary"
-          >
-            Purchase
-          </Button>
+          <Payment
+            amount={total}
+            email={email}
+          />
         </div>
       </div>
       )}
