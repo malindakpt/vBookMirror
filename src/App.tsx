@@ -5,6 +5,7 @@ import Header from './components/container/header/Header';
 import Router from './components/router/Router';
 import { Snack, State } from './components/presentational/snackbar/Snack';
 import { adminEmail } from './data/Config';
+import Footer from './components/presentational/footer/Footer';
 
 export interface IContext {
   email: string | null;
@@ -77,7 +78,7 @@ const App: React.FC = () => {
         />
         <Header />
         <Router />
-        {/* <Footer /> */}
+        <Footer />
       </AppContext.Provider>
     </BrowserRouter>
   );
