@@ -1,9 +1,15 @@
+@import '../../../../mixins.scss';
+
 .root {
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-gap: 10px;
   max-width: 700px;
   margin: auto;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
 
   .input {
     width: 100%;

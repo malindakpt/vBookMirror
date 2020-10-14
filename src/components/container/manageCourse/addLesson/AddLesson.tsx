@@ -453,7 +453,7 @@ export const AddLesson = () => {
             <TextField
               className={classes.inputMulti}
               id="standard-multiline-static"
-              label="Attachment links(Use new line to add)"
+              label="Upload tutorials to GoogleDrive and paste the link here(*Add each of them in a new line)"
               multiline
               rows={3}
               variant="outlined"
@@ -516,7 +516,7 @@ export const AddLesson = () => {
                     button
                     onClick={() => { setEditMode(true); copyLesson(lesson); }}
                   >
-                    <div style={{ fontSize: '11px', width: '150px' }}>
+                    <div style={{ fontSize: '11px', width: '100%' }}>
                       {lesson.topic}
                     </div>
                     {/* primary={`${lesson.topic}`}
