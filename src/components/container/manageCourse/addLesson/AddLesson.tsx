@@ -227,8 +227,8 @@ export const AddLesson = () => {
     }
   };
 
+  // copyLessonMode
   const copyLesson = (les: ILesson) => {
-    // When change here, replicate it in add and edit modes
     setIsAddNewVideo(false);
     setEditingLesson(les);
     setTopic(les.topic ?? '');
@@ -236,6 +236,8 @@ export const AddLesson = () => {
     setDescription(les.description ?? '');
     setAttachments(les.attachments ?? []);
     setVideoURL(les.videoURL ?? '');
+    setPrice(les.price ?? 0);
+    // When change here, replicate it in addMode and editModes
   };
 
   const changeOrder = (index: number, isUp: boolean) => {

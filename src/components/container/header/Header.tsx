@@ -85,7 +85,10 @@ export const Header:React.FC = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      color="secondary"
+    >
       <Toolbar className={classes.container}>
         <NavPanel />
         <Typography

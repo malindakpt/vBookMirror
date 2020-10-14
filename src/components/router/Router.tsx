@@ -23,7 +23,7 @@ import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 
-type routeConfig = [string, any, string, boolean][];
+type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
@@ -38,7 +38,7 @@ export const commonRoutes: routeConfig = [
 
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddLesson, 'Add Lessons', true],
-  ['/subscriptions', Subscriptions, 'Subscriptions', true],
+  ['/profile', Subscriptions, 'Profile', true],
   ['/upgradeCourses', UpgradeCourse, 'Create Courses', true],
 ];
 

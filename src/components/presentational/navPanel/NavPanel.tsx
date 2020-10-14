@@ -93,6 +93,13 @@ export const NavPanel = () => {
           onClose={toggleDrawer(false)}
         >
           {list()}
+
+          <a
+            href="mailto: contact.akshara.lk@gmail.com"
+            style={{ fontSize: '11px', textAlign: 'center', margin: '5px' }}
+          >
+            contact.akshara.lk@gmail.com
+          </a>
         </Drawer>
       </>
     </div>

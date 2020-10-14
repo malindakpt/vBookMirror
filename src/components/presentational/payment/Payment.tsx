@@ -16,7 +16,7 @@ export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) =>
 
   const payment = {
     sandbox: true,
-    merchant_id: '121XXXX', // Replace your Merchant ID
+    merchant_id: '1215643', // Replace your Merchant ID
     return_url: undefined, // Important
     cancel_url: undefined, // Important
     notify_url: 'http://sample.com/notify',

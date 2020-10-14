@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
-import { getDocsWithProps } from '../../../data/Store';
+import { getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
+import { ITeacher } from '../../../interfaces/ITeacher';
 import { IUser } from '../../../interfaces/IUser';
 
 export const Subscriptions = () => {
   useBreadcrumb();
   const { email } = useContext(AppContext);
   const [lessons, setLessons] = useState<ILesson[]>([]);
+  const [teacher, setTeacher] = useState<ITeacher>();
   const [subCount, setSubCount] = useState<number[]>([]);
 
   const setSubs = (idx:number, lessonId: string) => {
@@ -22,20 +24,37 @@ export const Subscriptions = () => {
   };
 
   useEffect(() => {
-    getDocsWithProps<ILesson[]>('lessons', { email, 'price>': 0 }).then((data) => {
-      setLessons(data);
-      setSubCount(new Array(data.length));
+    if (email) {
+      getDocWithId<ITeacher>('teachers', email).then((data) => data && setTeacher(data));
+      getDocsWithProps<ILesson[]>('lessons', { email, 'price>': 0 }).then((data) => {
+        setLessons(data);
+        setSubCount(new Array(data.length));
 
-      data.forEach((les, idx) => {
-        setSubs(idx, les.id);
+        data.forEach((les, idx) => {
+          setSubs(idx, les.id);
+        });
       });
-    });
+    }
   }, [email]);
 
   let totalSub = 0;
   let totalAmount = 0;
   return (
     <>
+      {teacher && (
+      <div>
+        <span style={{ marginRight: '5px' }}>Profile url:</span>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href={`teacher/${teacher.shortId}`}
+        >
+          akshara.lk/teacher/
+          {teacher.shortId}
+        </a>
+      </div>
+      )}
+
       <h2>Subscriptions</h2>
       <table className="center w100">
 
