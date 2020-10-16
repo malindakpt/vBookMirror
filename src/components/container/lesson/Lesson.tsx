@@ -67,7 +67,7 @@ export const Lesson: React.FC = () => {
       </div>
       <div className={classes.attachments}>
         {lesson?.attachments?.map((atta) => (
-          <li>
+          <li key={atta}>
             <a
               href={atta}
               rel="noopener noreferrer"

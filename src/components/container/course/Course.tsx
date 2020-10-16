@@ -53,7 +53,8 @@ export const Course: React.FC = () => {
 
   const handleSelectLesson = (id: string, selected: boolean) => {
     if (!email) {
-      if (Util.invokeLogin) {
+      const selectedLesson = lessons.find((les) => les.id === id);
+      if (Util.invokeLogin && selectedLesson?.price) {
         Util.invokeLogin();
       }
     } else {
