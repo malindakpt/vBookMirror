@@ -41,7 +41,7 @@ export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) =>
   paymentJS.onDismissed = function onDismissed() {
     // Note: Prompt user to pay again or show an error page
     console.log('Payment dismissed');
-    showSnackbar('Payment dismissed');
+    showSnackbar('Payment cancelled');
   };
 
   paymentJS.onError = function onError(error: any) {
