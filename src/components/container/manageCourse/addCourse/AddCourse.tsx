@@ -134,9 +134,11 @@ export const AddCourse = () => {
       </form>
 
       <ListItems list={streams.map((str) => {
+        const exam = getObject(exams, str.examId);
         const next = {
           teacher: getObject(teachers, str.ownerEmail)?.name,
-          exam: getObject(exams, str.examId)?.name,
+          exam: exam?.name,
+          type: exam?.type,
           subject: getObject(subjects, str.subjectId)?.name,
         };
         return next;

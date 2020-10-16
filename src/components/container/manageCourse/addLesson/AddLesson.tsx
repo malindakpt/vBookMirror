@@ -369,6 +369,7 @@ export const AddLesson = () => {
                 label="Search Previous Lessons..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
+                onBlur={() => setTimeout(() => setDisplayBacklog(false), 400)}
                 onFocus={() => setDisplayBacklog(true)}
                 disabled={disabled}
               />
