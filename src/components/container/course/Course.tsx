@@ -10,7 +10,6 @@ import { AppContext } from '../../../App';
 import { ILesson } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
-import { Util } from '../../../helper/util';
 import classes from './Course.module.scss';
 import { Payment } from '../../presentational/payment/Payment';
 
@@ -52,25 +51,24 @@ export const Course: React.FC = () => {
   }, [email, selectedLessons]);
 
   const handleSelectLesson = (id: string, selected: boolean) => {
-    if (!email) {
-      const selectedLesson = lessons.find((les) => les.id === id);
-      if (Util.invokeLogin && selectedLesson?.price) {
-        Util.invokeLogin();
-      }
-    } else {
-      let total = 0;
-      const next: any = { ...selectedLessons };
-      next[id] = selected;
+    // if (!email) {
+    //   const selectedLesson = lessons.find((les) => les.id === id);
+    //   if (Util.invokeLogin && selectedLesson?.price) {
+    //     Util.invokeLogin();
+    //   }
+    // } else {
+    let total = 0;
+    const next: any = { ...selectedLessons };
+    next[id] = selected;
 
-      for (const les of lessons) {
-        if (next[les.id] && les.price) {
-          total += les.price;
-        }
+    for (const les of lessons) {
+      if (next[les.id] && les.price) {
+        total += les.price;
       }
-
-      setSelectedLessons(next);
-      setTotal(total);
     }
+    setSelectedLessons(next);
+    setTotal(total);
+    // }
   };
 
   const resetPayments = () => {
@@ -111,7 +109,7 @@ export const Course: React.FC = () => {
 
   return (
     <div className="container">
-      {total > 0 && email && (
+      {total > 0 && (
       <div className={classes.purchase}>
         <div className={classes.box}>
           <span>

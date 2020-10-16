@@ -1,6 +1,7 @@
 import { Button } from '@material-ui/core';
 import React, { useContext } from 'react';
 import { AppContext } from '../../../App';
+import { Util } from '../../../helper/util';
 
 // @ts-ignore
 // eslint-disable-next-line no-undef
@@ -8,7 +9,7 @@ export const paymentJS = payhere;
 
 interface PaymentProps {
     amount: number;
-    email: string;
+    email: string | null;
     onSuccess: () => void;
 }
 export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) => {
@@ -21,7 +22,7 @@ export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) =>
     cancel_url: undefined, // Important
     notify_url: 'http://sample.com/notify',
     order_id: 'ItemNo12345',
-    items: 'Lessons subsctiption',
+    items: 'අක්ෂර.lk',
     amount: `${amount}`,
     currency: 'LKR',
     first_name: email,
@@ -56,10 +57,20 @@ export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) =>
     // Note: validate the payment and show success or failure page to the customer
   };
 
+  const startPay = () => {
+    if (!email) {
+      if (Util.invokeLogin) {
+        Util.invokeLogin();
+      }
+    } else {
+      paymentJS.startPayment(payment);
+    }
+  };
+
   return (
     <Button
       variant="contained"
-      onClick={() => paymentJS.startPayment(payment)}
+      onClick={startPay}
       color="secondary"
     >
       Purchase
