@@ -1,9 +1,15 @@
+@import '../../../mixins.scss';
+
 .root {
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   margin: auto;
   background: #f7f7f7;
   margin: 10px;
+
+  @include mobile {
+    grid-template-columns: 4fr 1fr;
+  }
 
 
   &.selected {
@@ -14,6 +20,10 @@
     padding: 20px;
     display: grid;
     place-items: center;
+
+    @include mobile {
+      display: none;
+    }
   }
 
   .content {
