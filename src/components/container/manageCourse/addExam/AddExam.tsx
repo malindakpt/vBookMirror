@@ -1,16 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { addDoc } from '../../../../data/Store';
+import { addDoc, getDocsWithProps } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
+import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 
 export const AddExam = () => {
   useBreadcrumb();
   const [exam, setExam] = useState<IExam>();
+  const [exams, setExams] = useState<IExam[]>([]);
   const { showSnackbar } = useContext(AppContext);
 
   const setExamProps = (obj: any) => {
@@ -19,6 +21,10 @@ export const AddExam = () => {
       return newObj;
     });
   };
+
+  useEffect(() => {
+    getDocsWithProps<IExam[]>('exams', {}).then((data) => data && setExams(data));
+  }, []);
 
   const onSave = () => {
     addDoc('exams', exam).then(() => showSnackbar('Exam added'));
@@ -39,13 +45,6 @@ export const AddExam = () => {
           onChange={(e) => setExamProps({ name: e.target.value })}
         />
 
-        {/* <TextField
-          className={classes.input}
-          id="subjectName"
-          label="Batch/Year of exam"
-          onChange={(e) => setExamProps({ batch: e.target.value })}
-        /> */}
-
         <TextField
           className={classes.input}
           id="subjectName"
@@ -59,6 +58,8 @@ export const AddExam = () => {
         >
           Add
         </Button>
+
+        <ListItems list={exams} />
       </form>
     </>
   );
