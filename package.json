@@ -31,7 +31,8 @@
     "eject": "react-scripts eject",
     "clean": "rmdir \"firebase\\public\\\" /q /s",
     "copy": "xcopy \".\\build\" \"firebase\\public\\\" /e /y",
-    "deploy": "npm run build && npm run clean && npm run copy"
+    "upload": "cd firebase && firebase deploy",
+    "deploy": "npm run build && npm run clean && npm run copy && npm run upload"
   },
   "eslintConfig": {
     "extends": "react-app"
