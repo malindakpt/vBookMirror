@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CategoryIcon from '@material-ui/icons/Category';
-import { examYears } from '../../../data/Config';
 import { getDocsWithProps } from '../../../data/Store';
 import { getObject } from '../../../data/StoreHelper';
 import { ICourse } from '../../../interfaces/ICourse';
@@ -44,13 +43,12 @@ export const Teacher = () => {
       {
                 courses.map((c) => {
                   const subj = getObject(subjects, c.subjectId);
-                  const examTime = getObject(examYears, c.examYear);
                   const exam = getObject(exams, c.examId);
                   return (
                     <Category
                       key={c.id}
                       title1={`${subj?.name} [${exam?.type}]`}
-                      title2={`${exam?.name}-${examTime?.name}`}
+                      title2={`${exam?.name}`}
                       navURL={`${teacherId}/${c.id}`}
                       CategoryImg={CategoryIcon}
                     />

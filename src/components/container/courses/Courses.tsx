@@ -12,14 +12,14 @@ import { IExam } from '../../../interfaces/IExam';
 export const Courses: React.FC = () => {
   const keyMap = useBreadcrumb();
 
-  const { subjectId, examId, year } = useParams<any>();
+  const { subjectId, examId } = useParams<any>();
 
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ICourse[]>('courses', { subjectId, examId, examYear: year })
+    getDocsWithProps<ICourse[]>('courses', { subjectId, examId })
       .then((data) => {
         setCourses(data);
         keyMap(data);
@@ -38,7 +38,6 @@ export const Courses: React.FC = () => {
       {courses.map((course) => {
         const teacher = getObject(teachers, course.ownerEmail);
         const exam = getObject(exams, course.examId);
-
         return (
           <Category
             key={course.id}

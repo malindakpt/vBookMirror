@@ -57,6 +57,8 @@ export const AddLesson = () => {
   const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
+  const [examYear, setExamYear] = useState<string>('');
+
   const addNew = () => {
     setCourseOrderChaged(false);
     setIsAddNewVideo(false);
@@ -71,12 +73,21 @@ export const AddLesson = () => {
     setUploadFile(null);
   };
 
+  const editCourseYear = () => {
+    const selectedCourse = courses.filter((c) => c.id === courseId)[0];
+    selectedCourse.examYear = examYear;
+    updateDoc('courses', selectedCourse.id, selectedCourse).then((c) => {
+      fetchData();
+    });
+  };
+
   const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: ILesson[]) => {
     if (!_courseId || _courseId === '') { return; }
 
     setCourseId(_courseId);
 
     const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
+    setExamYear(selectedCourse.examYear);
     const lessons4CourseMap: any = {};
     const otherLessons = [];
 
@@ -314,6 +325,14 @@ export const AddLesson = () => {
 
           {courseId && (
           <div>
+            <TextField
+              className={classes.input}
+              id="standard-basic1"
+              label="Exam Year"
+              value={examYear}
+              onChange={(e) => setExamYear(e.target.value)}
+            />
+            <Button onClick={editCourseYear}>Change</Button>
             <RadioGroup
               className={classes.twoColumn}
               aria-label="gender"

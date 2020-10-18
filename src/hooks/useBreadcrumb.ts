@@ -16,7 +16,7 @@ const updateKeyMap = (objs?: any[]) => {
 
 export const useBreadcrumb = () => {
   const {
-    examId, year, subjectId, courseId, teacherId,
+    examId, subjectId, courseId, teacherId,
   } = useParams<any>();
   const { updateBreadcrumbs } = useContext(AppContext);
 
@@ -38,27 +38,27 @@ export const useBreadcrumb = () => {
 
     if (!teacherId) {
       if (examId) {
-        const text = keyMap[examId] ? `${keyMap[examId].name}-${keyMap[examId].type}` : 'Exam Year';
+        const text = keyMap[examId] ? `${keyMap[examId].name}-${keyMap[examId].type}` : 'Subjects';
         bcs.push([text, `/${examId}`]);
       }
-      if (year) {
-        const text = keyMap[year] ? `${keyMap[year].name}` : 'Subjects';
-        bcs.push([text, `/${examId}/${year}`]);
-      }
+      // if (year) {
+      //   const text = keyMap[year] ? `${keyMap[year].name}` : 'Subjects';
+      //   bcs.push([text, `/${examId}/${year}`]);
+      // }
       if (subjectId) {
-        const text = keyMap[subjectId] ? `${keyMap[subjectId].name}` : 'Courses';
-        bcs.push([text, `/${examId}/${year}/${subjectId}`]);
+        const text = keyMap[subjectId] ? `${keyMap[subjectId].name}` : 'Tutors';
+        bcs.push([text, `/${examId}/${subjectId}`]);
       }
       if (courseId) {
         const text = keyMap[courseId] && keyMap[keyMap[courseId].teacherId]
           ? `${keyMap[keyMap[courseId].teacherId].name}` : 'Lessons';
         bcs.push([text,
-          `/${examId}/${year}/${subjectId}/${courseId}`]);
+          `/${examId}/${subjectId}/${courseId}`]);
       }
     }
     sendBreadcrumbs(bcs);
   },
-  [examId, subjectId, courseId, sendBreadcrumbs, year, teacherId]);
+  [examId, subjectId, courseId, sendBreadcrumbs, teacherId]);
 
   return updateKeyMap;
 };

@@ -11,7 +11,7 @@ import { ISubject } from '../../../interfaces/ISubject';
 import { IExam } from '../../../interfaces/IExam';
 
 export const Subjects = () => {
-  const { year, examId } = useParams<any>();
+  const { examId } = useParams<any>();
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const keyMap = useBreadcrumb();
 
@@ -36,7 +36,7 @@ export const Subjects = () => {
       subjects.map((subject) => (
         <Link
           key={subject.id}
-          to={`${year}/${subject.id}`}
+          to={`/${examId}/${subject.id}`}
           style={{ textDecoration: 'none', color: '#5d5d5d' }}
         >
           <Card className={classes.card}>

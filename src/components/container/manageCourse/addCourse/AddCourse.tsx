@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  Button, Select, MenuItem, InputLabel, FormControl,
+  Button, Select, MenuItem, InputLabel, FormControl, TextField,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { addDoc, getDocsWithProps } from '../../../../data/Store';
@@ -9,9 +9,9 @@ import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { IExam } from '../../../../interfaces/IExam';
-import { IStream } from '../../../../interfaces/IStream';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { getObject } from '../../../../data/StoreHelper';
+import { ICourse } from '../../../../interfaces/ICourse';
 
 export const AddCourse = () => {
   useBreadcrumb();
@@ -19,7 +19,9 @@ export const AddCourse = () => {
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
-  const [streams, setStreams] = useState<IStream[]>([]);
+  const [courses, setCourses] = useState<ICourse[]>([]);
+
+  const [year, setYear] = useState<string>('');
 
   const [ownerEmail, setOwnerEmail] = useState('');
   const [subjectId, setSubjectId] = useState('');
@@ -32,25 +34,26 @@ export const AddCourse = () => {
   }, []);
 
   useEffect(() => {
-    getDocsWithProps<IStream[]>('streams', {}).then((data) => setStreams(data));
-  }, [streams]);
+    getDocsWithProps<ICourse[]>('courses', {}).then((data) => setCourses(data));
+  }, [courses]);
 
   const disabled = !examId || !subjectId || !ownerEmail;
 
   const onSave = () => {
-    const idx = streams.findIndex((str) => str.examId === examId
-     && str.subjectId === subjectId && str.ownerEmail === ownerEmail);
-    if (idx >= 0) {
-      showSnackbar('Course already added for teacher');
-      return;
-    }
-    addDoc<Omit<IStream, 'id'>>('streams', {
+    const newCourse: ICourse = {
+      id: '',
+      lessons: [],
       examId,
+      examYear: year,
       subjectId,
       ownerEmail,
-    }).then(() => {
-      setStreams([]);
-      showSnackbar('Course added for teacher');
+    };
+    addDoc('courses', newCourse).then(() => {
+      setCourses((prev) => {
+        const clone = [...prev, newCourse];
+        return clone;
+      });
+      showSnackbar(`New course created: ${newCourse.examYear}`);
     });
   };
 
@@ -124,6 +127,13 @@ export const AddCourse = () => {
           </Select>
         </FormControl>
 
+        <TextField
+          className={classes.input}
+          id="year"
+          label="Year"
+          onChange={(e) => setYear(e.target.value)}
+        />
+
         <Button
           variant="contained"
           onClick={onSave}
@@ -133,11 +143,12 @@ export const AddCourse = () => {
         </Button>
       </form>
 
-      <ListItems list={streams.map((str) => {
+      <ListItems list={courses.map((str) => {
         const exam = getObject(exams, str.examId);
         const next = {
           teacher: getObject(teachers, str.ownerEmail)?.name,
           exam: exam?.name,
+          year: str.examYear,
           type: exam?.type,
           subject: getObject(subjects, str.subjectId)?.name,
         };
