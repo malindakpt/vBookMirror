@@ -6,7 +6,6 @@ const Footer:React.FC = () => (
   <div className={classes.container}>
     Powered by AMSI @ 2020
     -
-    _
     {packageJson.version}
 
   </div>

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import {
-  Card, CardActionArea, CardContent, Typography,
-} from '@material-ui/core';
 import CategoryIcon from '@material-ui/icons/Category';
 import classes from './Subjects.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
