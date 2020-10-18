@@ -20,14 +20,6 @@ interface Props {
 export const Category:React.FC<Props> = ({
   id, title1 = '', title2 = '', navURL, isSelected, status, CategoryImg,
 }) => (
-
-  // const [selected, setSelected] = useState(false);
-  // const handleClick = () => {
-  //   if (id && onSelect) {
-  //     setSelected(!selected);
-  //     onSelect(id, !selected);
-  //   }
-  // };
   <Link
     className={`${classes.root} ${isSelected && classes.selected}`}
     to={navURL}
