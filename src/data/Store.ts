@@ -26,11 +26,31 @@ const clearStore = (entityName: string) => {
 
 // TODO: clear data store for all edit data queries
 
-// export const getVideo = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
-//   storage.ref().child('video').child(ownerEmail).child(vId)
-//     .getDownloadURL()
-//     .then((data) => resolve(data));
-// });
+export const getVideo = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
+  storage.ref().child('video').child(ownerEmail).child(vId)
+    .getDownloadURL()
+    .then((data) => resolve(data));
+});
+
+export const updateMeta = (email: string, vId: string) => {
+  const storageRef = storage.ref();
+  // Create a reference to the file whose metadata we want to change
+  const forestRef = storageRef.child(`video/${email}/${vId}`);
+
+  // Create file metadata to update
+  const newMetadata = {
+    contentType: 'image/jpeg',
+  };
+
+  // Update metadata properties
+  forestRef.updateMetadata(newMetadata).then((metadata) => {
+    console.log(metadata);
+  // Updated metadata for 'images/forest.jpg' is returned in the Promise
+  }).catch((error) => {
+    console.log(error);
+  // Uh-oh, an error occurred!
+  });
+};
 
 export const uploadVideo = (file: any, email: string, vId: string): Subject<UploadStatus> => {
   const subject = new Subject<UploadStatus>();
@@ -68,7 +88,8 @@ export const uploadVideo = (file: any, email: string, vId: string): Subject<Uplo
   // Handle successful uploads on complete
   // For instance, get the download URL: https://firebasestorage.googleapis.com/...
     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-      console.log('File available at', downloadURL);
+      // console.log('File available at', downloadURL);
+      updateMeta(email, vId);
       subject.next({
         uploadTask,
         progress: 100,

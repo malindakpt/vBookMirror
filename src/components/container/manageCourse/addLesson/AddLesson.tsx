@@ -54,6 +54,7 @@ export const AddLesson = () => {
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
   const [videoURL, setVideoURL] = useState<string>('');
+  const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
   const addNew = () => {
@@ -146,7 +147,7 @@ export const AddLesson = () => {
       const less = {
         ...editingLesson,
         ...{
-          topic, description, attachments, keywords, videoURL, price,
+          topic, description, attachments, keywords, videoURL, videoId, price,
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
@@ -166,6 +167,7 @@ export const AddLesson = () => {
         attachments,
         keywords: `${selectedCourse.examYear}`,
         videoURL,
+        videoId,
         price,
         ownerEmail: email,
       };
@@ -208,6 +210,7 @@ export const AddLesson = () => {
           setUploadTask(next.uploadTask);
           if (next.downloadURL) {
             setVideoURL(next.downloadURL);
+            setVideoId(vId);
             onSave(next.downloadURL);
             out.unsubscribe();
           }
@@ -231,12 +234,13 @@ export const AddLesson = () => {
   const copyLesson = (les: ILesson) => {
     setIsAddNewVideo(false);
     setEditingLesson(les);
-    setTopic(les.topic ?? '');
-    setKeywords(les.keywords ?? '');
-    setDescription(les.description ?? '');
-    setAttachments(les.attachments ?? []);
-    setVideoURL(les.videoURL ?? '');
-    setPrice(les.price ?? 0);
+    setTopic(les.topic);
+    setKeywords(les.keywords);
+    setDescription(les.description);
+    setAttachments(les.attachments);
+    setVideoURL(les.videoURL);
+    setVideoId(les.videoId);
+    setPrice(les.price);
     // When change here, replicate it in addMode and editModes
   };
 

@@ -4,7 +4,9 @@ import React, { useEffect, useState } from 'react';
 import ReactWhatsapp from 'react-whatsapp';
 import classes from './Lesson.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps, getDocWithId } from '../../../data/Store';
+import {
+  getDocsWithProps, getDocWithId, getVideo,
+} from '../../../data/Store';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 
@@ -19,8 +21,14 @@ export const Lesson: React.FC = () => {
     const lesson = await getDocWithId<ILesson>('lessons', lessonId);
 
     if (lesson) {
+      // WhatsApp details
       getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: lesson.ownerEmail })
         .then((data) => data && setTeacher(data[0]));
+
+      // Video URL
+      // getVideo(lesson.ownerEmail, lesson.videoId).then((data) => {
+      //   setVidSrc(data);
+      // });
       // const url = await getVideo(lesson.ownerEmail, lesson.videoURL);
       setLesson(lesson);
       // setVidSrc(url);
@@ -37,7 +45,6 @@ export const Lesson: React.FC = () => {
       <div className={classes.topic}>
         {lesson?.topic}
       </div>
-
       {lesson?.videoURL && (
       <video
         width="100%"
@@ -47,6 +54,7 @@ export const Lesson: React.FC = () => {
       >
         <source
           src={lesson?.videoURL}
+          // src={vidSrc}
           type="video/mp4"
         />
       </video>

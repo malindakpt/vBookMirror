@@ -4,6 +4,7 @@ export interface ILesson {
     // partNo: string;
     description: string;
     videoURL: string;
+    videoId: string;
     keywords: string;
     date: number;
     attachments: string[],

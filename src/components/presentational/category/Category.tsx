@@ -14,46 +14,45 @@ interface Props {
   navURL: string;
   status?: 'yes' | 'no' | 'none'
   CategoryImg: OverridableComponent<SvgIconTypeMap>;
-  onSelect?: (id: string, selected: boolean) => void;
+  // onSelect?: (id: string, selected: boolean) => void;
+  isSelected?: boolean;
 }
 export const Category:React.FC<Props> = ({
-  id, title1 = '', title2 = '', navURL, onSelect, status, CategoryImg,
-}) => {
-  const [selected, setSelected] = useState(false);
-  const handleClick = () => {
-    if (id && onSelect) {
-      setSelected(!selected);
-      onSelect(id, !selected);
-    }
-  };
-  return (
-    <Link
-      className={`${classes.root} ${selected && classes.selected}`}
-      to={navURL}
-      style={{ textDecoration: 'none', color: '#5d5d5d' }}
-      onClick={handleClick}
-    >
-      <div className={classes.image}>
-        <CategoryImg
-          htmlColor="#3f51b5"
-          style={{ fontSize: 40 }}
-        />
+  id, title1 = '', title2 = '', navURL, isSelected, status, CategoryImg,
+}) => (
+
+  // const [selected, setSelected] = useState(false);
+  // const handleClick = () => {
+  //   if (id && onSelect) {
+  //     setSelected(!selected);
+  //     onSelect(id, !selected);
+  //   }
+  // };
+  <Link
+    className={`${classes.root} ${isSelected && classes.selected}`}
+    to={navURL}
+    style={{ textDecoration: 'none', color: '#5d5d5d' }}
+  >
+    <div className={classes.image}>
+      <CategoryImg
+        htmlColor="#3f51b5"
+        style={{ fontSize: 40 }}
+      />
+    </div>
+    <div className={classes.content}>
+      <div className={classes.title1}>{title1}</div>
+      <div className={classes.iconTitle}>
+        {status === 'yes' && <CheckCircleOutlineIcon htmlColor="#0aa04d" />}
+        {status === 'no' && <AddCircleOutlineIcon htmlColor="red" />}
+        {status === 'none' && <CheckCircleOutlineIcon htmlColor="#ffa500" />}
+        {title2}
       </div>
-      <div className={classes.content}>
-        <div className={classes.title1}>{title1}</div>
-        <div className={classes.iconTitle}>
-          {status === 'yes' && <CheckCircleOutlineIcon htmlColor="#0aa04d" />}
-          {status === 'no' && <AddCircleOutlineIcon htmlColor="red" />}
-          {status === 'none' && <CheckCircleOutlineIcon htmlColor="#ffa500" />}
-          {title2}
-        </div>
-      </div>
-      <div className={classes.actions}>
-        <InputIcon
-          htmlColor="#3f51b5"
-          style={{ fontSize: 40 }}
-        />
-      </div>
-    </Link>
-  );
-};
+    </div>
+    <div className={classes.actions}>
+      <InputIcon
+        htmlColor="#3f51b5"
+        style={{ fontSize: 40 }}
+      />
+    </div>
+  </Link>
+);

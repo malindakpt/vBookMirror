@@ -12,11 +12,12 @@ import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import classes from './Course.module.scss';
 import { Payment } from '../../presentational/payment/Payment';
+import { Util } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
 
-  const [selectedLessons, setSelectedLessons] = useState<{[key: string]: boolean}>({});
+  const [selectedLessons, setSelectedLessons] = useState<{ [key: string]: boolean }>({});
   const [user, setUser] = useState<IUser>();
   const [total, setTotal] = useState(0);
   const { email, showSnackbar } = useContext(AppContext);
@@ -50,25 +51,27 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email, selectedLessons]);
 
-  const handleSelectLesson = (id: string, selected: boolean) => {
-    // if (!email) {
-    //   const selectedLesson = lessons.find((les) => les.id === id);
-    //   if (Util.invokeLogin && selectedLesson?.price) {
-    //     Util.invokeLogin();
-    //   }
-    // } else {
-    let total = 0;
-    const next: any = { ...selectedLessons };
-    next[id] = selected;
+  const isAccessible = (lesson: ILesson) => !lesson.price
+    || user?.lessons.includes(lesson.id);
 
-    for (const les of lessons) {
-      if (next[les.id] && les.price) {
-        total += les.price;
+  const handleSelectLesson = (lesson: ILesson) => {
+    if (!isAccessible(lesson) && !email) {
+      if (Util.invokeLogin) {
+        Util.invokeLogin();
       }
+    } else {
+      const next: any = { ...selectedLessons };
+      next[lesson.id] = !next[lesson.id];
+      let total = 0;
+
+      for (const les of lessons) {
+        if (next[les.id] && les.price) {
+          total += les.price;
+        }
+      }
+      setSelectedLessons(next);
+      setTotal(total);
     }
-    setSelectedLessons(next);
-    setTotal(total);
-    // }
   };
 
   const resetPayments = () => {
@@ -110,22 +113,22 @@ export const Course: React.FC = () => {
   return (
     <div className="container">
       {total > 0 && (
-      <div className={classes.purchase}>
-        <div className={classes.box}>
-          <span>
-            { `Rs. ${total}.00`}
-          </span>
-          <Payment
-            amount={total}
-            email={email}
-            onSuccess={handlePaymentSuccess}
-          />
+        <div className={classes.purchase}>
+          <div className={classes.box}>
+            <span>
+              {`Rs. ${total}.00`}
+            </span>
+            <Payment
+              amount={total}
+              email={email}
+              onSuccess={handlePaymentSuccess}
+            />
+          </div>
         </div>
-      </div>
       )}
       {
         lessons?.map((lesson, idx) => {
-          let status: 'yes'|'no'| 'none' | undefined;
+          let status: 'yes' | 'no' | 'none' | undefined;
           if (lesson.price) {
             if (user?.lessons.includes(lesson.id)) {
               status = 'yes';
@@ -137,17 +140,24 @@ export const Course: React.FC = () => {
           }
 
           return (
-            <Category
-              id={lesson.id}
+            <div
+              onClick={() => handleSelectLesson(lesson)}
               key={idx}
-              CategoryImg={OndemandVideoIcon}
-              title1={`${lesson.topic}`}
-              title2={`${lesson.description}`}
-              navURL={!lesson.price
-                || user?.lessons.includes(lesson.id) ? `${courseId}/${lesson.id}` : `${courseId}`}
-              onSelect={handleSelectLesson}
-              status={status}
-            />
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => handleSelectLesson(lesson)}
+            >
+              <Category
+                id={lesson.id}
+                key={idx}
+                CategoryImg={OndemandVideoIcon}
+                title1={`${lesson.topic}`}
+                title2={`${lesson.description}`}
+                navURL={isAccessible(lesson) ? `${courseId}/${lesson.id}` : `${courseId}`}
+                isSelected={selectedLessons[lesson.id]}
+                status={status}
+              />
+            </div>
           );
         })
       }
