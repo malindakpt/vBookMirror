@@ -43,7 +43,7 @@ export const Courses: React.FC = () => {
             key={course.id}
             CategoryImg={ListAltIcon}
             title1={teacher?.name}
-            title2={` ${exam?.type} [${exam?.name}]`}
+            title2={` ${course?.examYear} - ${exam?.type} [${exam?.name}]`}
             navURL={`${subjectId}/${course.id}`}
           />
         );
