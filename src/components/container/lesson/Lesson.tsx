@@ -4,9 +4,7 @@ import React, { useEffect, useState } from 'react';
 import ReactWhatsapp from 'react-whatsapp';
 import classes from './Lesson.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import {
-  getDocsWithProps, getDocWithId, getVideo,
-} from '../../../data/Store';
+import { getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 
