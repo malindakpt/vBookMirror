@@ -1,7 +1,17 @@
 {
-  "name": "sms",
-  "version": "0.1.0",
+  "name": "akshara",
+  "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "clean": "rmdir \"firebase\\public\\\" /q /s",
+    "copy": "xcopy \".\\build\" \"firebase\\public\\\" /e /y",
+    "upload": "cd firebase && firebase deploy",
+    "deploy": "npm run build && npm run clean && npm run copy && npm run upload"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
@@ -23,16 +33,6 @@
     "react-whatsapp": "^0.2.0",
     "rxjs": "^6.6.3",
     "typescript": "~3.7.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "clean": "rmdir \"firebase\\public\\\" /q /s",
-    "copy": "xcopy \".\\build\" \"firebase\\public\\\" /e /y",
-    "upload": "cd firebase && firebase deploy",
-    "deploy": "npm run build && npm run clean && npm run copy && npm run upload"
   },
   "eslintConfig": {
     "extends": "react-app"
