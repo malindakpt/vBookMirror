@@ -33,29 +33,19 @@ export const Subjects = () => {
     <>
       <div className={classes.root}>
         {
-      subjects.map((subject) => (
-        <Link
-          key={subject.id}
-          to={`/${examId}/${subject.id}`}
-          style={{ textDecoration: 'none', color: '#5d5d5d' }}
-        >
-          <Card className={classes.card}>
-            <CardActionArea>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="h2"
-                >
-                  <CategoryIcon />
-                  <span className={classes.sub}>{subject.name}</span>
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Link>
-      ))
-}
+          subjects.map((subject) => (
+            <Link
+              key={subject.id}
+              to={`/${examId}/${subject.id}`}
+              style={{ textDecoration: 'none', color: '#5d5d5d' }}
+            >
+              <div className={classes.card}>
+                <CategoryIcon />
+                <span className={classes.sub}>{subject.name}</span>
+              </div>
+            </Link>
+          ))
+        }
       </div>
     </>
   );

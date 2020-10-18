@@ -1,4 +1,4 @@
-@import '../../../mixins.scss';
+@import "../../../mixins.scss";
 
 .root {
   display: grid;
@@ -15,6 +15,12 @@
   .card {
     width: 245px;
     height: 67px;
+    display: grid;
+    place-items: center start;
+    grid-template-columns: 1fr 5fr;
+    background: grey;
+    padding: 0px 20px;
+    color: white;
 
     .sub {
       margin-left: 5px;
