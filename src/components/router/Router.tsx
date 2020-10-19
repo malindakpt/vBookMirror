@@ -39,11 +39,11 @@ export const teacherRoutes: routeConfig = [
 ];
 
 export const adminRoutes: routeConfig = [
-  ['/editExam', EditExam, 'Edit Exam', true],
   ['/addExam', AddExam, 'Add Exam', true],
+  ['/editExam', EditExam, 'Edit Exam', true],
   ['/addTeacher', AddTeacher, 'Add Teacher', true],
   ['/addSubject', AddSubject, 'Add Subject', true],
-  ['/addCourse', AddCourse, 'Subject Streams', true],
+  ['/addCourse', AddCourse, 'Add Course', true],
   ['/payments', Payments, 'Payments', true],
 ];
 
