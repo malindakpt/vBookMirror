@@ -94,12 +94,21 @@ export const NavPanel = () => {
         >
           {list()}
 
-          <a
-            href="mailto: contact.akshara.lk@gmail.com"
-            style={{ fontSize: '11px', textAlign: 'center', margin: '5px' }}
-          >
-            contact.akshara.lk@gmail.com
-          </a>
+          <div style={{ display: 'grid' }}>
+            <a
+              href="mailto: contact.akshara.lk@gmail.com"
+              style={{ fontSize: '11px', textAlign: 'center', margin: '5px' }}
+            >
+              contact.akshara.lk@gmail.com
+            </a>
+            <a
+              href="tel:0771141194"
+              style={{ fontSize: '11px', textAlign: 'center', margin: '5px' }}
+            >
+              0771141194
+            </a>
+          </div>
+
         </Drawer>
       </>
     </div>
