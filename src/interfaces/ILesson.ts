@@ -9,7 +9,7 @@ export interface ILesson {
     date: number;
     attachments: string[],
     watchCount: number;
-
+    subCount: number;
     // meta information
     price: number;
     ownerEmail: string;

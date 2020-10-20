@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
+import firebase from 'firebase';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
@@ -85,43 +86,36 @@ export const Course: React.FC = () => {
     if (!email) return;
 
     const paymentRef = await addDoc<Omit<IPayment, 'id'>>('payment', { amount, date, ownerEmail: email });
-
+    const isNewUser = user === null;
     // const usersWithEmail: IUser[] = await getDocsWithProps('users', { email }, {});
-    if (user) {
-      for (const [les, subscribed] of Object.entries(selectedLessons)) {
-        if (subscribed) {
-          const lesson = lessons.find((l) => l.id === les);
-          if (lesson) {
-            user.lessons.push({
+    if (!user) {
+      setUser({
+        id: '',
+        ownerEmail: email,
+        lessons: [],
+      });
+    }
+
+    for (const [les, subscribed] of Object.entries(selectedLessons)) {
+      if (subscribed) {
+        const lesson = lessons.find((l) => l.id === les);
+        if (lesson) {
+            user?.lessons.push({
               id: les,
               paymentRef,
               watchedCount: 0,
             });
-          }
         }
+        updateDoc('lessons', les, { subCount: firebase.firestore.FieldValue.increment(1) });
       }
-      updateDoc('users', user.id, user).then(() => {
+    }
+
+    if (isNewUser) {
+      addDoc('users', user).then(() => {
         resetPayments();
       });
-    } else {
-      const newUser: IUser = {
-        id: '',
-        ownerEmail: email,
-        lessons: [],
-      };
-      for (const [les, subscribed] of Object.entries(selectedLessons)) {
-        if (subscribed) {
-          const lesson = lessons.find((l) => l.id === les);
-          if (lesson) {
-            newUser.lessons.push({
-              id: les,
-              paymentRef,
-              watchedCount: lesson.watchCount,
-            });
-          }
-        }
-      }
-      addDoc('users', newUser).then(() => {
+    } else if (user) { // this check is to fix ts issue below
+      updateDoc('users', user.id, user).then(() => {
         resetPayments();
       });
     }

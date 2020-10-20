@@ -185,6 +185,7 @@ export const AddLesson = () => {
         videoURL,
         videoId,
         price,
+        subCount: 0,
         ownerEmail: email,
       };
       lesson.id = await addDoc('lessons', lesson);
@@ -334,7 +335,7 @@ export const AddLesson = () => {
           <div>
             <TextField
               className={classes.input}
-              id="standard-basic1"
+              id="examYear"
               label="Exam Year"
               value={examYear}
               onChange={(e) => setExamYear(e.target.value)}
@@ -342,8 +343,8 @@ export const AddLesson = () => {
             <Button onClick={editCourseYear}>Change</Button>
             <RadioGroup
               className={classes.twoColumn}
-              aria-label="gender"
-              name="gender1"
+              aria-label="editMode"
+              name="editMode"
               value={editMode}
               onChange={(e: any) => { e.target.value === 'false' && addNew(); }}
             >
@@ -363,7 +364,7 @@ export const AddLesson = () => {
 
             <TextField
               className={classes.input}
-              id="standard-basic1"
+              id="topic"
               label="Topic"
               value={topic}
               disabled={disabled}
@@ -371,8 +372,8 @@ export const AddLesson = () => {
             />
             <RadioGroup
               className={classes.twoColumn}
-              aria-label="gender"
-              name="gender1"
+              aria-label="isAddVd"
+              name="isAddVd"
               value={isAddNewVideo}
               onChange={(e: any) => { setIsAddNewVideo(e.target.value === 'true'); }}
             >
@@ -560,9 +561,7 @@ export const AddLesson = () => {
                     <div style={{ fontSize: '11px', width: '100%' }}>
                       {lesson.topic}
                     </div>
-                    {/* primary={`${lesson.topic}`}
-                      style={{ fontSize: '11px' }}
-                    /> */}
+
                     {index > 0 && (
                     <ArrowUpwardIcon onClick={(e) => {
                       changeOrder(index, true); e.stopPropagation();
@@ -579,7 +578,6 @@ export const AddLesson = () => {
                 </div>
               ))
             }
-
           </List>
         </div>
       </form>
