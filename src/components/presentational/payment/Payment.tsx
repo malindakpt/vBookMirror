@@ -10,7 +10,7 @@ export const paymentJS = payhere;
 interface PaymentProps {
     amount: number;
     email: string | null;
-    onSuccess: () => void;
+    onSuccess: (amount: number, date: number) => void;
 }
 export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) => {
   const { showSnackbar } = useContext(AppContext);
@@ -43,6 +43,11 @@ export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) =>
     // Note: Prompt user to pay again or show an error page
     console.log('Payment dismissed');
     showSnackbar('Payment cancelled');
+
+    // TODO: Remove this code
+    console.log('Payment completed.');
+    const dd = new Date().getTime();
+    onSuccess(amount, dd);
   };
 
   paymentJS.onError = function onError(error: any) {
@@ -53,8 +58,9 @@ export const Payment: React.FC<PaymentProps> = ({ amount, email, onSuccess }) =>
 
   paymentJS.onCompleted = function onCompleted(orderId: string) {
     console.log(`Payment completed. OrderID:${orderId}`);
-    onSuccess();
-    // Note: validate the payment and show success or failure page to the customer
+    const dd = new Date().getTime();
+    onSuccess(amount, dd);
+    // TODO Note: validate the payment and show success or failure page to the customer
   };
 
   const startPay = () => {

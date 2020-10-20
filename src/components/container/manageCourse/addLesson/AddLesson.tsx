@@ -50,6 +50,7 @@ export const AddLesson = () => {
   const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
   const [topic, setTopic] = useState<string>('');
+  const [watchCount, setWatchCount] = useState<number>(2);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
@@ -59,12 +60,14 @@ export const AddLesson = () => {
 
   const [examYear, setExamYear] = useState<string>('');
 
+  // Replicate changes of here for all #LessonModify
   const addNew = () => {
     setCourseOrderChaged(false);
     setIsAddNewVideo(false);
     setEditMode(false);
     setUploadProgress(0);
     setTopic('');
+    setWatchCount(2);
     setKeywords('');
     setDescription('');
     setAttachments([]);
@@ -154,11 +157,11 @@ export const AddLesson = () => {
     }
     if (editMode) {
       if (!editingLesson) return;
-      // When you make a change here, replicate that on addMode, copyLesson also
-      const less = {
+      // Replicate changes of here for all #LessonModify
+      const less: ILesson = {
         ...editingLesson,
         ...{
-          topic, description, attachments, keywords, videoURL, videoId, price,
+          topic, watchCount, description, attachments, keywords, videoURL, videoId, price,
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
@@ -170,10 +173,12 @@ export const AddLesson = () => {
     } else {
       const selectedCourse = courses.filter((c) => c.id === courseId)[0];
       // When you make a change here, replicate that on edit, copyLesson mode also
+      // Replicate changes of here for all #LessonModify
       const lesson: ILesson = {
         id: '',
         date: new Date().getTime(),
         topic,
+        watchCount,
         description,
         attachments,
         keywords: `${selectedCourse.examYear}`,
@@ -242,10 +247,12 @@ export const AddLesson = () => {
   };
 
   // copyLessonMode
+  // Replicate changes of here for all #LessonModify
   const copyLesson = (les: ILesson) => {
     setIsAddNewVideo(false);
     setEditingLesson(les);
     setTopic(les.topic);
+    setWatchCount(les.watchCount);
     setKeywords(les.keywords);
     setDescription(les.description);
     setAttachments(les.attachments);
@@ -496,6 +503,16 @@ export const AddLesson = () => {
               value={price}
               disabled={disabled}
               onChange={(e) => setPrice(Number(e.target.value))}
+            />
+
+            <TextField
+              className={classes.input}
+              id="watchCount"
+              type="number"
+              label="Watch Count/Payment"
+              value={watchCount}
+              disabled={disabled}
+              onChange={(e) => setWatchCount(Number(e.target.value))}
             />
 
             {uploadProgress === 0 && (

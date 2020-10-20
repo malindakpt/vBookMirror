@@ -8,6 +8,7 @@ export interface ILesson {
     keywords: string;
     date: number;
     attachments: string[],
+    watchCount: number;
 
     // meta information
     price: number;

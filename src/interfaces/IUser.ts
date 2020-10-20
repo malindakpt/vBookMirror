@@ -1,9 +1,9 @@
 export interface IUser {
     id: string;
-    lessons: string[];
-    payments?: [{
-        date: number;
-        amount: number;
-    }];
+    lessons: {
+        id: string;
+        watchedCount: number;
+        paymentRef: string;
+    }[];
     ownerEmail: string;
 }

@@ -13,6 +13,7 @@ import { ICourse } from '../../../interfaces/ICourse';
 import classes from './Course.module.scss';
 import { Payment } from '../../presentational/payment/Payment';
 import { Util } from '../../../helper/util';
+import { IPayment } from '../../../interfaces/IPayment';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -27,7 +28,7 @@ export const Course: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      getDocsWithProps<IUser[]>('users', { email }),
+      getDocsWithProps<IUser[]>('users', { ownerEmail: email }),
       getDocsWithProps<ILesson[]>('lessons', {}),
       getDocWithId<ICourse>('courses', courseId),
     ]).then((result) => {
@@ -52,7 +53,7 @@ export const Course: React.FC = () => {
   }, [email, selectedLessons]);
 
   const isAccessible = (lesson: ILesson) => !lesson.price
-    || user?.lessons.includes(lesson.id);
+    || user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < lesson.watchCount);
 
   const handleSelectLesson = (lesson: ILesson) => {
     if (!isAccessible(lesson) && !email) {
@@ -80,14 +81,23 @@ export const Course: React.FC = () => {
     setTotal(0);
   };
 
-  const handlePaymentSuccess = async () => {
+  const handlePaymentSuccess = async (amount: number, date: number) => {
     if (!email) return;
+
+    const paymentRef = await addDoc<Omit<IPayment, 'id'>>('payment', { amount, date, ownerEmail: email });
 
     // const usersWithEmail: IUser[] = await getDocsWithProps('users', { email }, {});
     if (user) {
       for (const [les, subscribed] of Object.entries(selectedLessons)) {
         if (subscribed) {
-          user.lessons.push(les);
+          const lesson = lessons.find((l) => l.id === les);
+          if (lesson) {
+            user.lessons.push({
+              id: les,
+              paymentRef,
+              watchedCount: 0,
+            });
+          }
         }
       }
       updateDoc('users', user.id, user).then(() => {
@@ -101,7 +111,14 @@ export const Course: React.FC = () => {
       };
       for (const [les, subscribed] of Object.entries(selectedLessons)) {
         if (subscribed) {
-          newUser.lessons.push(les);
+          const lesson = lessons.find((l) => l.id === les);
+          if (lesson) {
+            newUser.lessons.push({
+              id: les,
+              paymentRef,
+              watchedCount: lesson.watchCount,
+            });
+          }
         }
       }
       addDoc('users', newUser).then(() => {
@@ -130,7 +147,7 @@ export const Course: React.FC = () => {
         lessons?.map((lesson, idx) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (lesson.price) {
-            if (user?.lessons.includes(lesson.id)) {
+            if (isAccessible(lesson)) {
               status = 'yes';
             } else {
               status = 'no';
