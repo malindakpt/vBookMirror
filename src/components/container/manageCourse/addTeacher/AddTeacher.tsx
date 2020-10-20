@@ -44,7 +44,6 @@ export const AddTeacher = () => {
 
   return (
     <>
-      <h3>Add Teacher</h3>
       <form
         className={classes.root}
         noValidate
@@ -79,11 +78,19 @@ export const AddTeacher = () => {
           onChange={(e) => setTeacherProps({ phoneChat: e.target.value })}
         />
 
+        <TextField
+          className={classes.input}
+          type="number"
+          id="commission"
+          label="Commission Rate"
+          onChange={(e) => setTeacherProps({ commission: Number(e.target.value) })}
+        />
+
         <Button
           variant="contained"
           onClick={onSave}
         >
-          Add
+          Add Teacher
         </Button>
 
       </form>
