@@ -161,7 +161,14 @@ export const AddLesson = () => {
       const less: ILesson = {
         ...editingLesson,
         ...{
-          topic, watchCount, description, attachments, keywords, videoURL, videoId, price,
+          topic,
+          // watchCount, disable by business logic
+          description,
+          attachments,
+          keywords,
+          videoURL,
+          videoId,
+          // price, disabled by business logic
         },
       };
       updateDoc('lessons', editingLesson.id, less).then(() => {
@@ -498,11 +505,11 @@ export const AddLesson = () => {
 
             <TextField
               className={classes.input}
-              id="filled-basic6"
+              id="price"
               type="number"
               label="Price"
               value={price}
-              disabled={disabled}
+              disabled={disabled || editMode}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
 
@@ -510,9 +517,9 @@ export const AddLesson = () => {
               className={classes.input}
               id="watchCount"
               type="number"
-              label="Watch Count/Payment"
+              label="Watch Count Per Payment"
               value={watchCount}
-              disabled={disabled}
+              disabled={disabled || editMode}
               onChange={(e) => setWatchCount(Number(e.target.value))}
             />
 

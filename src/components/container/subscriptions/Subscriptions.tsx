@@ -4,7 +4,6 @@ import { getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
-import { IUser } from '../../../interfaces/IUser';
 
 export const Subscriptions = () => {
   useBreadcrumb();

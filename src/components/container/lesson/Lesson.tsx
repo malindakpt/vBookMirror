@@ -9,27 +9,29 @@ import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 
 export const Lesson: React.FC = () => {
+  // disble context menu for avoid right click
+  document.addEventListener('contextmenu', (event) => event.preventDefault());
   useBreadcrumb();
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILesson>();
-  // const [vidSrc, setVidSrc] = useState<string | null>(null);
 
   const processVideo = async () => {
     const lesson = await getDocWithId<ILesson>('lessons', lessonId);
 
     if (lesson) {
-      // WhatsApp details
+      // for WhatsApp details
       getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: lesson.ownerEmail })
         .then((data) => data && setTeacher(data[0]));
-
-      // Video URL
-      // getVideo(lesson.ownerEmail, lesson.videoId).then((data) => {
-      //   setVidSrc(data);
-      // });
-      // const url = await getVideo(lesson.ownerEmail, lesson.videoURL);
       setLesson(lesson);
-      // setVidSrc(url);
+
+      if (lesson.videoURL) {
+        setTimeout(() => {
+          // eslint-disable-next-line
+          // @ts-ignore
+          document.getElementById('player').src = '';
+        }, 1000);
+      }
     }
   };
 
@@ -49,8 +51,10 @@ export const Lesson: React.FC = () => {
         height="100%"
         controls
         controlsList="nodownload"
+        autoPlay
       >
         <source
+          id="player"
           src={lesson?.videoURL}
           // src={vidSrc}
           type="video/mp4"
