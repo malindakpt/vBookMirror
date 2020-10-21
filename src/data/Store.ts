@@ -32,6 +32,12 @@ export const getVideo = (ownerEmail: string, vId: string): Promise<string> => ne
     .then((data) => resolve(data));
 });
 
+export const deleteVideo = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
+  storage.ref().child('video').child(ownerEmail).child(vId)
+    .delete()
+    .then((data) => resolve(data));
+});
+
 export const listAllVideos = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
   storage.ref().child('video').child(ownerEmail).listAll()
     .then((data) => console.log(data));
@@ -57,7 +63,7 @@ export const updateMeta = (email: string, vId: string) => {
   });
 };
 
-export const uploadVideo = (file: any, email: string, vId: string): Subject<UploadStatus> => {
+export const uploadVideoToServer = (file: any, email: string, vId: string): Subject<UploadStatus> => {
   const subject = new Subject<UploadStatus>();
   const storageRef = storage.ref();
 
