@@ -59,7 +59,6 @@ export const Payments = () => {
   return (
     <>
       <table className="center w100">
-
         <tbody>
           { teachers.map((t) => {
             const payble = (allPayments[t.id] ?? 0) - (paidPayments[t.id] ?? 0);

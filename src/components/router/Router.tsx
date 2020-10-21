@@ -8,6 +8,7 @@ import { Exams } from '../container/exams/Exams';
 import { Subjects } from '../container/subjects/Subjects';
 import { Courses } from '../container/courses/Courses';
 import { Course } from '../container/course/Course';
+import { Storage } from '../container/storage/Storage';
 import { BreadcrumbBar } from '../presentational/breadcrumbs/BreadcrumbBar';
 import { AddLesson } from '../container/manageCourse/addLesson/AddLesson';
 import { AddSubject } from '../container/manageCourse/addSubject/AddSubject';
@@ -45,6 +46,7 @@ export const adminRoutes: routeConfig = [
   ['/addSubject', AddSubject, 'Add Subject', true],
   ['/addCourse', AddCourse, 'Add Course', true],
   ['/payments', Payments, 'Payments', true],
+  ['/storage', Storage, 'Storage', true],
 ];
 
 const Router: React.FC = () => {

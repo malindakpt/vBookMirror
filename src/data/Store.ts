@@ -32,6 +32,11 @@ export const getVideo = (ownerEmail: string, vId: string): Promise<string> => ne
     .then((data) => resolve(data));
 });
 
+export const listAllVideos = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
+  storage.ref().child('video').child(ownerEmail).listAll()
+    .then((data) => console.log(data));
+});
+
 export const updateMeta = (email: string, vId: string) => {
   const storageRef = storage.ref();
   // Create a reference to the file whose metadata we want to change
