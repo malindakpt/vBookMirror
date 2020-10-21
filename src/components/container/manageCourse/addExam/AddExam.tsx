@@ -27,7 +27,10 @@ export const AddExam = () => {
   }, []);
 
   const onSave = () => {
-    addDoc('exams', exam).then(() => showSnackbar('Exam added'));
+    if (exam) {
+      exam.createdAt = new Date().getTime();
+      addDoc('exams', exam).then(() => showSnackbar('Exam added'));
+    }
   };
 
   return (
@@ -58,9 +61,8 @@ export const AddExam = () => {
         >
           Add
         </Button>
-
-        <ListItems list={exams} />
       </form>
+      <ListItems list={exams} />
     </>
   );
 };

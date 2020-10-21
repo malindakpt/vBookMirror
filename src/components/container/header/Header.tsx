@@ -87,7 +87,7 @@ export const Header:React.FC = () => {
   return (
     <AppBar
       position="static"
-      color="secondary"
+      color="primary"
     >
       <Toolbar className={classes.container}>
         <NavPanel />
