@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import { getDocsWithProps, getDocWithId } from '../../../data/Store';
+import { calcTeacherCommission } from '../../../helper/util';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
@@ -44,7 +45,7 @@ export const Subscriptions = () => {
         <tbody>
           {
             teacher && lessons?.map((l, idx) => {
-              const balPayment = l.price * ((100 - teacher.commission) / 100) * (l.subCount ?? 0);
+              const balPayment = calcTeacherCommission(l, teacher.commission);
               totalAmount += balPayment;
               return (
                 <tr key={l.id}>
