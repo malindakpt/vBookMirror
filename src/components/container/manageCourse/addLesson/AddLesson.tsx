@@ -10,7 +10,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import {
-  addDoc, getDocsWithProps, updateDoc, uploadVideo,
+  addDoc, deleteVideo, getDocsWithProps, updateDoc, uploadVideoToServer,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
@@ -30,7 +30,7 @@ export const AddLesson = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const [uploadFile, setUploadFile] = useState<any>(undefined);
-  const [searchText, setSearchText] = useState<string>('');
+  // const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
 
@@ -42,12 +42,11 @@ export const AddLesson = () => {
   const [courseId, setCourseId] = useState<string>('');
 
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
-  const [unrelatedLessons, setUnrelatedLessons] = useState<ILesson[]>([]);
 
   // Component state
-  const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
+  // const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
   const [editingLesson, setEditingLesson] = useState<ILesson>();
-  const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
+  // const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
   const [topic, setTopic] = useState<string>('');
   const [watchCount, setWatchCount] = useState<number>(2);
@@ -63,7 +62,7 @@ export const AddLesson = () => {
   // Replicate changes of here for all #LessonModify
   const addNew = () => {
     setCourseOrderChaged(false);
-    setIsAddNewVideo(false);
+    // setIsAddNewVideo(false);
     setEditMode(false);
     setUploadProgress(0);
     setTopic('');
@@ -92,14 +91,15 @@ export const AddLesson = () => {
     const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
     setExamYear(selectedCourse.examYear);
     const lessons4CourseMap: any = {};
-    const otherLessons = [];
+    // const otherLessons = [];
 
     for (const les of _allLessons) {
       if (selectedCourse.lessons?.includes(les.id)) {
         lessons4CourseMap[les.id] = les;
-      } else {
-        otherLessons.push(les);
       }
+      // else {
+      //   otherLessons.push(les);
+      // }
     }
 
     let orderedLessons: ILesson[] = [];
@@ -111,7 +111,7 @@ export const AddLesson = () => {
     }
 
     setCourseLessons(orderedLessons);
-    setUnrelatedLessons(otherLessons.sort((a, b) => b.date - a.date));
+    // setUnrelatedLessons(otherLessons.sort((a, b) => b.date - a.date));
 
     addNew();
   };
@@ -150,7 +150,7 @@ export const AddLesson = () => {
 
   const disabled = uploadProgress > 0 && uploadProgress < 100;
 
-  const onSave = async (videoURL: string) => {
+  const onSave = async (videoURL: string, videoId: string, date: number) => {
     if (!email) {
       showSnackbar('Error with logged in user');
       return;
@@ -183,7 +183,7 @@ export const AddLesson = () => {
       // Replicate changes of here for all #LessonModify
       const lesson: ILesson = {
         id: '',
-        date: new Date().getTime(),
+        date,
         topic,
         watchCount,
         description,
@@ -217,7 +217,23 @@ export const AddLesson = () => {
     return true;
   };
 
-  const sendVideo = (e: any) => {
+  const uploadAndSave = (email: string, dd: number) => {
+    setUploadProgress(0);
+    const out = uploadVideoToServer(uploadFile, email, `${dd}`).subscribe((next) => {
+      setUploadTask(next.uploadTask);
+      if (next.downloadURL) {
+        setVideoURL(next.downloadURL);
+        onSave(next.downloadURL, `${dd}`, dd);
+        out.unsubscribe();
+      }
+      if (next.progress < 100) {
+        setUploadProgress(next.progress);
+      }
+    });
+  };
+
+  const startUploadVideo = (e: any) => {
+    const dd = new Date().getTime();
     if (!email) {
       showSnackbar('Error with the logged in teacher');
       return;
@@ -226,28 +242,16 @@ export const AddLesson = () => {
       return;
     }
 
-    if (isAddNewVideo) {
+    if (editMode) {
       if (uploadFile) {
-        const vId = `${new Date().getTime()}`;
-        setUploadProgress(0);
-        const out = uploadVideo(uploadFile, email, vId).subscribe((next) => {
-          setUploadTask(next.uploadTask);
-          if (next.downloadURL) {
-            setVideoURL(next.downloadURL);
-            setVideoId(vId);
-            onSave(next.downloadURL);
-            out.unsubscribe();
-          }
-          if (next.progress < 100) {
-            setUploadProgress(next.progress);
-          }
-        });
+        deleteVideo(email, videoId).then((data) => console.log('deleted', data));
+        uploadAndSave(email, dd);
       } else {
-        showSnackbar('Upload video not found');
+        onSave(videoURL, videoId, dd);
       }
     } else {
-      if (videoURL) {
-        onSave(videoURL);
+      if (uploadFile) {
+        uploadAndSave(email, dd);
       } else {
         showSnackbar('Upload video not found');
       }
@@ -257,7 +261,7 @@ export const AddLesson = () => {
   // copyLessonMode
   // Replicate changes of here for all #LessonModify
   const copyLesson = (les: ILesson) => {
-    setIsAddNewVideo(false);
+    // setIsAddNewVideo(false);
     setEditingLesson(les);
     setTopic(les.topic);
     setWatchCount(les.watchCount);
@@ -268,6 +272,8 @@ export const AddLesson = () => {
     setVideoId(les.videoId);
     setPrice(les.price);
     // When change here, replicate it in addMode and editModes
+
+    console.log(les.videoId);
   };
 
   const changeOrder = (index: number, isUp: boolean) => {
@@ -287,6 +293,7 @@ export const AddLesson = () => {
   };
 
   const saveLessonsOrder = () => {
+    setCourseOrderChaged(false);
     const courseLessonIds = courseLessons.map((less) => less.id);
     updateDoc('courses', courseId, { lessons: courseLessonIds })
       .then(() => {
@@ -297,7 +304,6 @@ export const AddLesson = () => {
           clone[idx].lessons = courseLessonIds;
           return clone;
         });
-        setCourseOrderChaged(false);
       });
   };
 
@@ -305,7 +311,6 @@ export const AddLesson = () => {
 
   return (
     <>
-      <h3>Manage Lessons</h3>
       <form
         className={classes.root}
         noValidate
@@ -377,75 +382,9 @@ export const AddLesson = () => {
               disabled={disabled}
               onChange={(e) => setTopic(e.target.value)}
             />
-            <RadioGroup
-              className={classes.twoColumn}
-              aria-label="isAddVd"
-              name="isAddVd"
-              value={isAddNewVideo}
-              onChange={(e: any) => { setIsAddNewVideo(e.target.value === 'true'); }}
-            >
-              <FormControlLabel
-                value={false}
-                control={<Radio />}
-                label="Copy Previous Video"
-                disabled={disabled}
-              />
-              <FormControlLabel
-                value
-                control={<Radio />}
-                label="Upload New Video"
-                disabled={disabled}
-              />
-            </RadioGroup>
-
-            { !isAddNewVideo && (
-            <div className={classes.backlog}>
-              {allLessons.length > 0 && (
-              <TextField
-                className={classes.input}
-                id="filled-basic"
-                label="Search Previous Lessons..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                onBlur={() => setTimeout(() => setDisplayBacklog(false), 400)}
-                onFocus={() => setDisplayBacklog(true)}
-                disabled={disabled}
-              />
-              )}
-              { displayBacklog && (
-              <table className="center w100">
-                <tbody>
-                  {unrelatedLessons.map((les) => {
-                    const search = searchText.toLocaleLowerCase();
-                    if (searchText === ''
-                  || les.topic?.toLowerCase()?.includes(search)
-                   || les.description?.toLowerCase()?.includes(search)) {
-                      return (
-                        <tr
-                          key={les.id}
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => {
-                            setEditMode(false);
-                            copyLesson(les);
-                            setDisplayBacklog(false);
-                          }}
-                        >
-                          <td>{les.date ? new Date(les.date).toDateString() : 'N/A'}</td>
-                          <td>{les.topic}</td>
-                          <td>{les.description}</td>
-                        </tr>
-                      );
-                    }
-                    return null;
-                  })}
-                </tbody>
-              </table>
-              )}
-            </div>
-            )}
 
             <div className={classes.video}>
-              {isAddNewVideo && (
+
               <>
                 {!disabled && (
                 <input
@@ -468,17 +407,7 @@ export const AddLesson = () => {
                 </Button>
                 )}
               </>
-              )}
             </div>
-
-            <TextField
-              className={classes.input}
-              id="standard-basic4"
-              label="Video Id"
-              disabled
-              value={videoURL}
-              onChange={(e) => setVideoURL(e.target.value)}
-            />
 
             <TextField
               className={classes.input}
@@ -496,6 +425,7 @@ export const AddLesson = () => {
               multiline
               rows={3}
               variant="outlined"
+              disabled={disabled}
               value={attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
               onChange={(e) => {
                 console.log(e.target.value);
@@ -509,7 +439,7 @@ export const AddLesson = () => {
               type="number"
               label="Price"
               value={price}
-              disabled={disabled || editMode}
+              disabled={disabled || editMode} // do not allow changes after added
               onChange={(e) => setPrice(Number(e.target.value))}
             />
 
@@ -529,7 +459,7 @@ export const AddLesson = () => {
               variant="contained"
               color="primary"
               disabled={disabled}
-              onClick={sendVideo}
+              onClick={startUploadVideo}
             >
               {editMode ? 'Save Changes' : 'Add New Lesson'}
             </Button>
@@ -556,7 +486,7 @@ export const AddLesson = () => {
             </ListItem>
             )}
             {
-              !disabled && courseLessons.map((lesson, index) => (
+              courseLessons.map((lesson, index) => (
                 <div
                 // c.id becomes undefined for newly added lesson since we refer that from local
                   key={lesson.date}

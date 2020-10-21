@@ -25,11 +25,6 @@
     color: white !important;
   }
 
-  .backlog {
-    max-height: 350px;
-    overflow: auto;
-  }
-
   button {
     float: right;
     margin: 10px;
@@ -52,6 +47,7 @@
     grid-template-columns: 1fr 6fr;
     place-items: center start;
     font-size: 30px;
+    margin-top: 10px;
   }
 }
 
