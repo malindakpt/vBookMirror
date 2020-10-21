@@ -38,9 +38,10 @@ export const deleteVideo = (ownerEmail: string, vId: string): Promise<string> =>
     .then((data) => resolve(data));
 });
 
-export const listAllVideos = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
+export const listAllVideos = (ownerEmail: string)
+    : Promise<firebase.storage.ListResult> => new Promise((resolve) => {
   storage.ref().child('video').child(ownerEmail).listAll()
-    .then((data) => console.log(data));
+    .then((data) => resolve(data));
 });
 
 export const updateMeta = (email: string, vId: string) => {

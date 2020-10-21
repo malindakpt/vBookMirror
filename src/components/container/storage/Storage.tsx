@@ -1,35 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import CategoryIcon from '@material-ui/icons/Category';
+import { Button } from '@material-ui/core';
 import classes from './Storage.module.scss';
-import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps, getDocWithId } from '../../../data/Store';
-import { ISubject } from '../../../interfaces/ISubject';
-import { IExam } from '../../../interfaces/IExam';
+import { deleteVideo, getDocsWithProps, listAllVideos } from '../../../data/Store';
+import { ILesson } from '../../../interfaces/ILesson';
+import { ITeacher } from '../../../interfaces/ITeacher';
+import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 
 export const Storage = () => {
-  const { examId } = useParams<any>();
-  const [subjects, setSubjects] = useState<ISubject[]>([]);
-  const keyMap = useBreadcrumb();
-
-  const fetchData = async () => {
-    const exam = await getDocWithId<IExam>('exams', examId);
-    const subjects = await getDocsWithProps<ISubject[]>('subjects', {});
-    const filtered = subjects.filter((sub) => exam?.subjectIds?.includes(sub.id));
-
-    setSubjects(filtered);
-    keyMap(subjects);
-  };
+  const [vds, setVds] = useState<{tId: string; vidId: string}[]>([]);
+  const [onUpdate, rerender] = useForcedUpdate();
 
   useEffect(() => {
-    fetchData();
+    setVds([]);
+    getDocsWithProps<ILesson[]>('lessons', {}).then((lessons) => {
+      getDocsWithProps<ITeacher[]>('teachers', {}).then((teachers) => {
+        teachers.forEach((teacher) => {
+          listAllVideos(teacher.ownerEmail).then((videos) => {
+            videos?.items.forEach((vid) => {
+              const videoId = vid.fullPath.split('/')[2];
+              const lessonExists = lessons.findIndex((les) => les.videoId === videoId) > -1;
+              if (!lessonExists) {
+                setVds((prev) => {
+                  const clone = [...prev];
+                  clone.push({
+                    tId: teacher.id,
+                    vidId: videoId,
+                  });
+                  return clone;
+                });
+              }
+            });
+          });
+        });
+      });
+    });
     // eslint-disable-next-line
-  }, []);
+  }, [onUpdate]);
 
   return (
     <>
       <div className={classes.root}>
-        Storage
+        {
+          vds.map((v) => (
+            <div key={v.tId + v.vidId}>
+              <span>{v.tId}</span>
+              <span>{v.vidId}</span>
+              <Button onClick={() => deleteVideo(v.tId, v.vidId).then(() => rerender())}>Delete</Button>
+            </div>
+          ))
+        }
       </div>
     </>
   );
