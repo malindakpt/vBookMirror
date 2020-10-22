@@ -28,7 +28,7 @@ export const Subjects = () => {
 
   return (
     <>
-      <div className={classes.root}>
+      <div className="container">
         {
           subjects.map((subject) => (
             <Link

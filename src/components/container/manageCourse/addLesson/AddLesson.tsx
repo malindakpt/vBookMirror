@@ -57,7 +57,7 @@ export const AddLesson = () => {
   const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
-  const [examYear, setExamYear] = useState<string>('');
+  // const [examYear, setExamYear] = useState<string>('');
 
   // Replicate changes of here for all #LessonModify
   const addNew = () => {
@@ -75,13 +75,13 @@ export const AddLesson = () => {
     setUploadFile(null);
   };
 
-  const editCourseYear = () => {
-    const selectedCourse = courses.filter((c) => c.id === courseId)[0];
-    selectedCourse.examYear = examYear;
-    updateDoc('courses', selectedCourse.id, selectedCourse).then((c) => {
-      fetchData();
-    });
-  };
+  // const editCourseYear = () => {
+  //   const selectedCourse = courses.filter((c) => c.id === courseId)[0];
+  //   selectedCourse.examYear = examYear;
+  //   updateDoc('courses', selectedCourse.id, selectedCourse).then((c) => {
+  //     fetchData();
+  //   });
+  // };
 
   const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: ILesson[]) => {
     if (!_courseId || _courseId === '') { return; }
@@ -89,7 +89,7 @@ export const AddLesson = () => {
     setCourseId(_courseId);
 
     const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
-    setExamYear(selectedCourse.examYear);
+    // setExamYear(selectedCourse.examYear);
     const lessons4CourseMap: any = {};
     // const otherLessons = [];
 
@@ -142,8 +142,26 @@ export const AddLesson = () => {
     const file = e.target.files[0];
     if (file) {
       const size = file.size / (1024 * 1024);
-      if (size > 1000) {
-        showSnackbar('Error: Maximum file size is 1GB');
+
+      const videoNode = document.querySelector('video');
+      if (videoNode) {
+        const fileURL = URL.createObjectURL(file);
+        videoNode.src = fileURL;
+      }
+
+      setTimeout(() => {
+        const dur = videoNode?.duration;
+        if (dur && size) {
+          const ratio = ((size * 60) / dur);
+          if (ratio > 5) {
+            showSnackbar(`${Math.round(ratio * 100) / 100}Mb ~ Maximum 5Mb is allowed for 1 min`);
+            setUploadFile(null);
+          }
+        }
+      }, 1000);
+
+      if (size > 600) {
+        showSnackbar('Error: Maximum file size is 600Mb');
       } else {
         setUploadFile(file);
       }
@@ -155,7 +173,9 @@ export const AddLesson = () => {
     addNew();
   };
 
-  const disabled = uploadProgress > 0 && uploadProgress < 100;
+  const disabled = (uploadProgress > 0 && uploadProgress < 100) || !courseId;
+
+  const disabledCourseSelection = (uploadProgress > 0 && uploadProgress < 100);
 
   const onSave = async (videoURL: string, videoId: string, date: number) => {
     if (!email) {
@@ -278,9 +298,12 @@ export const AddLesson = () => {
     setVideoURL(les.videoURL);
     setVideoId(les.videoId);
     setPrice(les.price);
-    // When change here, replicate it in addMode and editModes
 
-    console.log(les.videoId);
+    const videoNode = document.querySelector('video');
+    if (videoNode) {
+      videoNode.src = les.videoURL;
+    }
+    // When change here, replicate it in addMode and editModes
   };
 
   const changeOrder = (index: number, isUp: boolean) => {
@@ -336,7 +359,7 @@ export const AddLesson = () => {
               labelId="label1"
               id="id1"
               value={courseId}
-              disabled={disabled}
+              disabled={disabledCourseSelection}
               onChange={(e) => onCourseChange(courses, e.target.value as string, allLessons)}
             >
               {courses.map((course) => {
@@ -348,23 +371,22 @@ export const AddLesson = () => {
                     value={course.id}
                     key={course.id}
                   >
-                    {`${course.examYear}-${exam?.name}-${exam?.type}-${subject?.name}`}
+                    {`${exam?.name}-${exam?.type}-${subject?.name}`}
                   </MenuItem>
                 );
               })}
             </Select>
           </FormControl>
 
-          {courseId && (
           <div>
-            <TextField
+            {/* <TextField
               className={`${classes.input} fc1`}
               id="examYear"
               label="Exam Year"
               value={examYear}
               onChange={(e) => setExamYear(e.target.value)}
             />
-            <Button onClick={editCourseYear}>Change</Button>
+            <Button onClick={editCourseYear}>Change</Button> */}
             <RadioGroup
               className={classes.twoColumn}
               aria-label="editMode"
@@ -417,7 +439,21 @@ export const AddLesson = () => {
                 >
                   Cancel Upload
                 </Button>
+
                 )}
+
+                <video
+                  id="myVideo"
+                  width="320"
+                  height="176"
+                  controls
+                >
+                  <track
+                    kind="captions"
+                  />
+
+                </video>
+
               </>
             </div>
 
@@ -477,7 +513,6 @@ export const AddLesson = () => {
             </Button>
             )}
           </div>
-          )}
         </div>
 
         <div>

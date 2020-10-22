@@ -42,6 +42,13 @@ export const AddCourse = () => {
   const disabled = !examId || !subjectId || !ownerEmail;
 
   const onSave = () => {
+    for (const c of courses) {
+      if (c.ownerEmail === ownerEmail && c.subjectId === subjectId && c.examId === examId) {
+        showSnackbar('Course already exists');
+        return;
+      }
+    }
+
     setBusy(true);
     const newCourse: ICourse = {
       id: '',
