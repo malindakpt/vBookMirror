@@ -140,7 +140,14 @@ export const AddLesson = () => {
   const onFileSelect = (e: any) => {
     // TODO: Handle if file is not selected from file explorer
     const file = e.target.files[0];
-    if (file) { setUploadFile(file); }
+    if (file) {
+      const size = file.size / (1024 * 1024);
+      if (size > 1000) {
+        showSnackbar('Error: Maximum file size is 1GB');
+      } else {
+        setUploadFile(file);
+      }
+    }
   };
 
   const onCancelUpload = () => {
@@ -318,9 +325,14 @@ export const AddLesson = () => {
       >
         <div>
           <FormControl className={classes.input}>
-            <InputLabel id="demo-simple-select-label">Select Course</InputLabel>
+            <InputLabel
+              id="demo-simple-select-label"
+              className="fc1"
+            >
+              Select Course
+            </InputLabel>
             <Select
-              className={classes.input}
+              className={`${classes.input} fc1`}
               labelId="label1"
               id="id1"
               value={courseId}
@@ -346,7 +358,7 @@ export const AddLesson = () => {
           {courseId && (
           <div>
             <TextField
-              className={classes.input}
+              className={`${classes.input} fc1`}
               id="examYear"
               label="Exam Year"
               value={examYear}
@@ -495,7 +507,10 @@ export const AddLesson = () => {
                     button
                     onClick={() => { setEditMode(true); copyLesson(lesson); }}
                   >
-                    <div style={{ fontSize: '11px', width: '100%' }}>
+                    <div
+                      className="fc1"
+                      style={{ fontSize: '11px', width: '100%' }}
+                    >
                       {lesson.topic}
                     </div>
 

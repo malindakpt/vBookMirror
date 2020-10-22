@@ -23,7 +23,7 @@ export const Category:React.FC<Props> = ({
   <Link
     className={`${classes.root} ${isSelected && classes.selected}`}
     to={navURL}
-    style={{ textDecoration: 'none', color: '#5d5d5d' }}
+    style={{ textDecoration: 'none', color: 'black' }}
   >
     <div className={classes.image}>
       <CategoryImg
