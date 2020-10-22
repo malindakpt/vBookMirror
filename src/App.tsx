@@ -78,7 +78,7 @@ const App: React.FC = () => {
         />
         <Header />
         <Router />
-        {isTeacher !== undefined && <Footer />}
+        {/* {isTeacher !== undefined && <Footer />} */}
       </AppContext.Provider>
     </BrowserRouter>
   );
