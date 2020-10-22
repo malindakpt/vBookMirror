@@ -1,3 +1,4 @@
+@import './mixins.scss';
 
 body {
   // background-image: linear-gradient(#00147f, #0078ff, #0a0a94);
@@ -21,8 +22,15 @@ body {
   }
 
   .container {
-    max-width: 500px;
+    max-width: 800px;
     margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+    
   }
 
   // overrides

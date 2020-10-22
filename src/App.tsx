@@ -35,7 +35,9 @@ const App: React.FC = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
   const [snackText, setSnackText] = useState<string>('');
   const [email, setEmail] = useState<string|null>(null);
-  const [isTeacher, setIsTeacher] = useState<boolean | undefined>(undefined); // undefined: fetching initial data inprogress
+
+  // undefined: fetching initial data inprogress
+  const [isTeacher, setIsTeacher] = useState<boolean | undefined>(undefined);
 
   const [state, setState] = React.useState<State>({
     open: false,
