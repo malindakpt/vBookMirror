@@ -1,17 +1,20 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ReactWhatsapp from 'react-whatsapp';
 import classes from './Lesson.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps, getDocWithId } from '../../../data/Store';
+import { getDocsWithProps, getDocWithId, updateDoc } from '../../../data/Store';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
+import { IUser } from '../../../interfaces/IUser';
+import { AppContext } from '../../../App';
 
 export const Lesson: React.FC = () => {
   // disble context menu for avoid right click
   document.addEventListener('contextmenu', (event) => event.preventDefault());
   useBreadcrumb();
+  const { email, showSnackbar } = useContext(AppContext);
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILesson>();
@@ -19,11 +22,13 @@ export const Lesson: React.FC = () => {
   const processVideo = async () => {
     const lesson = await getDocWithId<ILesson>('lessons', lessonId);
 
-    if (lesson) {
+    if (lesson && email) {
+      setLesson(lesson);
       // for WhatsApp details
       getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: lesson.ownerEmail })
         .then((data) => data && setTeacher(data[0]));
-      setLesson(lesson);
+
+      const user = await getDocWithId<IUser>('users', email);
 
       if (lesson.videoURL) {
         setTimeout(() => {
@@ -31,6 +36,23 @@ export const Lesson: React.FC = () => {
           // @ts-ignore
           document.getElementById('player').src = '';
         }, 1000);
+
+        if (user && lesson.price > 0) {
+          setTimeout(() => {
+            user.lessons.forEach((less, idx) => {
+              if (less.id === lesson.id) {
+                user.lessons[idx].watchedCount += 1;
+
+                const remain = user.lessons[idx].watchedCount === lesson.watchCount ? 0
+                  : user.lessons[idx].watchedCount - lesson.watchCount;
+
+                updateDoc('users', email, user).then(() => {
+                  showSnackbar(`You can watch this lesson ${remain} more times in the future`);
+                });
+              }
+            });
+          }, 20000);
+        }
       }
     }
   };

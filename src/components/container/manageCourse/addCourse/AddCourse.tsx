@@ -15,6 +15,8 @@ import { ICourse } from '../../../../interfaces/ICourse';
 
 export const AddCourse = () => {
   useBreadcrumb();
+  const [busy, setBusy] = useState<boolean>(false);
+
   const { showSnackbar } = useContext(AppContext);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
@@ -40,6 +42,7 @@ export const AddCourse = () => {
   const disabled = !examId || !subjectId || !ownerEmail;
 
   const onSave = () => {
+    setBusy(true);
     const newCourse: ICourse = {
       id: '',
       lessons: [],
@@ -54,12 +57,12 @@ export const AddCourse = () => {
         return clone;
       });
       showSnackbar(`New course created: ${newCourse.examYear}`);
+      setBusy(false);
     });
   };
 
   return (
     <>
-      <h3>Add Stream for Teacher</h3>
       <form
         className={classes.root}
         noValidate
@@ -137,9 +140,9 @@ export const AddCourse = () => {
         <Button
           variant="contained"
           onClick={onSave}
-          disabled={disabled}
+          disabled={disabled || busy}
         >
-          Add
+          Add Course
         </Button>
       </form>
 

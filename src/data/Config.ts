@@ -22,10 +22,4 @@ const firebaseConfig = {
 
 export default firebaseConfig;
 
-export const adminEmail = 'rasikadri@gmail.com';
-// export const adminEmail = 'malindakpt@gmail.com';
-
-// export const examYears = [
-//   { id: '2021', name: '2021' },
-//   // { id: '2022', name: '2022' }
-// ];
+export const adminEmail = 'contact.akshara.lk@gmail.com';

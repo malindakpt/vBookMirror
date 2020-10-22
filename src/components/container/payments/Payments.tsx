@@ -8,6 +8,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import { ITeacher } from '../../../interfaces/ITeacher';
 
 export const Payments = () => {
+  const [busy, setBusy] = useState<boolean>(false);
   const { showSnackbar } = useContext(AppContext);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [allPayments, setAllPayments] = useState<{[id: string]: number}>({});
@@ -47,12 +48,14 @@ export const Payments = () => {
   };
 
   const pay = (ownerEmail: string) => {
+    setBusy(true);
     // @ts-ignore
     const amount = Number(document.getElementById(ownerEmail)?.value);
     const date = new Date().getTime();
     console.log(amount);
     addDoc<Omit<IPayment, 'id'>>('teacherPayments', { ownerEmail, date, amount }).then(() => {
       showSnackbar(`Payment done:${amount}`);
+      setBusy(false);
     });
   };
 
@@ -75,7 +78,13 @@ export const Payments = () => {
                     type="number"
                     id={t.id}
                   />
-                  <Button onClick={() => pay(t.ownerEmail)}>Pay</Button>
+                  <Button
+                    onClick={() => pay(t.ownerEmail)}
+                    disabled={busy}
+                  >
+                    Pay
+
+                  </Button>
                 </td>
               </tr>
             );

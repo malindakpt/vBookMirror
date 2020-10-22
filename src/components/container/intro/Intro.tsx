@@ -38,5 +38,15 @@ export const Intro: React.FC = () => (
       </li>
     </ul>
     <p />
+    <p>
+      More details:
+      <a
+        href="tel:0716151541"
+        style={{ textAlign: 'center', margin: '5px' }}
+      >
+        0716151541
+      </a>
+
+    </p>
   </div>
 );

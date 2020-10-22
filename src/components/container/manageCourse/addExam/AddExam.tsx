@@ -8,12 +8,17 @@ import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
+import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 
 export const AddExam = () => {
   useBreadcrumb();
+
+  const [busy, setBusy] = useState<boolean>(false);
+
   const [exam, setExam] = useState<IExam>();
   const [exams, setExams] = useState<IExam[]>([]);
   const { showSnackbar } = useContext(AppContext);
+  const [onUpdate, updateUI] = useForcedUpdate();
 
   const setExamProps = (obj: any) => {
     setExam((prev) => {
@@ -24,18 +29,22 @@ export const AddExam = () => {
 
   useEffect(() => {
     getDocsWithProps<IExam[]>('exams', {}).then((data) => data && setExams(data));
-  }, []);
+  }, [onUpdate]);
 
   const onSave = () => {
+    setBusy(true);
     if (exam) {
       exam.createdAt = new Date().getTime();
-      addDoc('exams', exam).then(() => showSnackbar('Exam added'));
+      addDoc('exams', exam).then(() => {
+        showSnackbar('Exam added');
+        updateUI();
+        setBusy(false);
+      });
     }
   };
 
   return (
     <>
-      <h3>Add Exam</h3>
       <form
         className={classes.root}
         noValidate
@@ -58,8 +67,9 @@ export const AddExam = () => {
         <Button
           variant="contained"
           onClick={onSave}
+          disabled={busy}
         >
-          Add
+          Add Examination
         </Button>
       </form>
       <ListItems list={exams} />

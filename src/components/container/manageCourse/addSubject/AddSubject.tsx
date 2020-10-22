@@ -12,6 +12,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const AddSubject = () => {
   useBreadcrumb();
+  const [busy, setBusy] = useState<boolean>(false);
   const [onUpdate, updateUI] = useForcedUpdate();
   const { showSnackbar } = useContext(AppContext);
   const [subject, setSubject] = useState<ISubject>();
@@ -30,9 +31,11 @@ export const AddSubject = () => {
   },[onUpdate])
 
   const onSave = () => {
+    setBusy(true);
     addDoc('subjects', subject).then(() => {
       showSnackbar('Subject added');
       updateUI();
+      setBusy(false);
     });
   };
 
@@ -40,13 +43,11 @@ export const AddSubject = () => {
 
   return (
     <>
-      <h3>Add Subject</h3>
       <form
         className={classes.root}
         noValidate
         autoComplete="off"
       >
-
         <TextField
           className={classes.input}
           id="subjectName"
@@ -57,9 +58,9 @@ export const AddSubject = () => {
         <Button
           variant="contained"
           onClick={onSave}
-          disabled={disabled}
+          disabled={disabled || busy}
         >
-          Add
+          Add Subject
         </Button>
       </form>
       <ListItems list={subjects} />

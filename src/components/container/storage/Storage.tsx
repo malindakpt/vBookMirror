@@ -45,7 +45,12 @@ export const Storage = () => {
             <div key={v.tId + v.vidId}>
               <span>{v.tId}</span>
               <span>{v.vidId}</span>
-              <Button onClick={() => deleteVideo(v.tId, v.vidId).then(() => rerender())}>Delete</Button>
+              <Button
+                onClick={() => deleteVideo(v.tId, v.vidId).then(() => rerender())}
+              >
+                Delete
+
+              </Button>
             </div>
           ))
         }

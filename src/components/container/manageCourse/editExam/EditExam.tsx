@@ -12,6 +12,8 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 
 export const EditExam = () => {
   useBreadcrumb();
+  const [busy, setBusy] = useState<boolean>(false);
+
   const { showSnackbar } = useContext(AppContext);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
@@ -50,8 +52,12 @@ export const EditExam = () => {
   };
 
   const onSave = () => {
+    setBusy(true);
     updateDoc('exams', exams[selectedExamIdx].id, { subjectIds: exams[selectedExamIdx].subjectIds })
-      .then(() => showSnackbar('Exam is updated'));
+      .then(() => {
+        showSnackbar('Exam is updated');
+        setBusy(false);
+      });
   };
 
   const disabled = selectedExamIdx < 0;
@@ -104,9 +110,9 @@ export const EditExam = () => {
         <Button
           variant="contained"
           onClick={onSave}
-          disabled={disabled}
+          disabled={disabled || busy}
         >
-          Save
+          Save Changes
         </Button>
       </form>
     </>

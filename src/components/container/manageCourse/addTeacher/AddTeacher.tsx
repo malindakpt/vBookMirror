@@ -12,6 +12,9 @@ import classes from './AddTeacher.module.scss';
 
 export const AddTeacher = () => {
   useBreadcrumb();
+
+  const [busy, setBusy] = useState<boolean>(false);
+
   const [onUpdate, updateUI] = useForcedUpdate();
   const { showSnackbar } = useContext(AppContext);
   const [teacher, setTeacher] = useState<ITeacher>();
@@ -30,15 +33,18 @@ export const AddTeacher = () => {
   };
 
   const onSave = async () => {
+    setBusy(true);
     const teachers = await getDocsWithProps<ITeacher[]>('teachers', {});
     if (teacher) {
       teacher.shortId = `${teachers.length + 1}`;
       addDocWithId<Omit<ITeacher, 'id'>>('teachers', teacher.ownerEmail, teacher).then(() => {
         showSnackbar('New teacher added');
         updateUI();
+        setBusy(false);
       });
     } else {
       console.log('Teacher not set');
+      setBusy(false);
     }
   };
 
@@ -89,6 +95,7 @@ export const AddTeacher = () => {
         <Button
           variant="contained"
           onClick={onSave}
+          disabled={busy}
         >
           Add Teacher
         </Button>
