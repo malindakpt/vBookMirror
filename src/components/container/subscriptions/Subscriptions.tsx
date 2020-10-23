@@ -22,7 +22,7 @@ export const Subscriptions = () => {
       getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
 
       Promise.all([
-        getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { ownerEmail: email }),
+        getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: email }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: email }),
       ]).then(([payments, lessons]) => {
         const lessonMap: LessMap = {};
@@ -48,8 +48,6 @@ export const Subscriptions = () => {
     }
   }, [email]);
 
-  // const totalSub = 0;
-  const totalAmount = 0;
   return (
     <div className={classes.container}>
       {teacher && (

@@ -1,16 +1,17 @@
 import { Button } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
-import { addDoc, Entity, getDocsWithProps } from '../../../data/Store';
-import { calcTeacherCommission } from '../../../helper/util';
-import { ILesson } from '../../../interfaces/ILesson';
+import {
+  addDoc, Entity, getDocsWithProps,
+} from '../../../data/Store';
 import { IPayment } from '../../../interfaces/IPayment';
 import { ITeacher } from '../../../interfaces/ITeacher';
 
 export const Payments = () => {
   const [busy, setBusy] = useState<boolean>(false);
-  const { showSnackbar } = useContext(AppContext);
+  const { email, showSnackbar } = useContext(AppContext);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
+
   const [allPayments, setAllPayments] = useState<{[id: string]: number}>({});
   const [paidPayments, setPaidPayments] = useState<{[id: string]: number}>({});
 
@@ -18,47 +19,44 @@ export const Payments = () => {
     getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
   }, []);
 
-  const checkBal = (ownerEmail: string, commission: number) => {
-    getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail, 'price>': 0 }).then((lessons) => {
-      let totalAmount = 0;
-      lessons?.forEach((l) => {
-        const balPayment = calcTeacherCommission(l, commission);
-        totalAmount += balPayment;
-      });
-
+  const checkBal = (teacherEmail: string, commission: number) => {
+    getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: teacherEmail }).then((data) => {
+      const total = data.length > 0 ? data.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount : 0;
       setAllPayments((prev) => {
         const clone = { ...prev };
-        clone[ownerEmail] = totalAmount;
+        clone[teacherEmail] = total;
         return clone;
       });
     });
-
-    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_TEACHER, { ownerEmail }).then((payments) => {
-      let totalAmount = 0;
-      payments?.forEach((p) => {
-        totalAmount += p.amount;
-      });
-
+    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_TEACHER, { paidFor: teacherEmail }).then((data) => {
+      const total = data.length > 0 ? data.reduce((a, b) => ({
+        ...a,
+        amount: a.amount + b.amount,
+      })).amount : 0;
       setPaidPayments((prev) => {
         const clone = { ...prev };
-        clone[ownerEmail] = totalAmount;
+        clone[teacherEmail] = total;
         return clone;
       });
     });
   };
 
-  const pay = (ownerEmail: string) => {
+  const pay = (teacherEmail: string) => {
     setBusy(true);
     // @ts-ignore
-    const amount = Number(document.getElementById(ownerEmail)?.value);
+    const amount = Number(document.getElementById(teacherEmail)?.value);
     const date = new Date().getTime();
-    console.log(amount);
-    addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_TEACHER, {
-      ownerEmail, date, amount, lessonId: '',
-    }).then(() => {
-      showSnackbar(`Payment done:${amount}`);
-      setBusy(false);
-    });
+
+    if (email) {
+      addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_TEACHER, {
+        ownerEmail: email, paidFor: teacherEmail, date, amount, lessonId: '',
+      }).then(() => {
+        showSnackbar(`Payment done:${amount}`);
+        setBusy(false);
+      });
+    } else {
+      showSnackbar('email not exists');
+    }
   };
 
   return (

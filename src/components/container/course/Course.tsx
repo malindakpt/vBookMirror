@@ -62,9 +62,6 @@ export const Course: React.FC = () => {
   const handlePaymentSuccess = async (amount: number, date: number, lessonId: string) => {
     if (!email) return;
 
-    const paymentRef = await addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS, {
-      amount, date, ownerEmail: email, lessonId,
-    });
     let editableUser = user;
 
     if (!editableUser) {
@@ -77,6 +74,10 @@ export const Course: React.FC = () => {
     const lesson = lessons.find((l) => l.id === lessonId);
 
     if (!lesson) return;
+
+    const paymentRef = await addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS, {
+      amount, date, ownerEmail: email, paidFor: lesson.ownerEmail, lessonId,
+    });
 
     const alreadyPurchased = editableUser.lessons.findIndex((sub) => sub.id === lesson.id);
     if (alreadyPurchased > -1) {
@@ -154,7 +155,8 @@ export const Course: React.FC = () => {
                 title2={`${lesson.description}`}
                 title3={lesson.price > 0 ? `Watched: ${getRemain(lesson)}/${lesson.watchCount}` : 'Free'}
                 title4={`${lesson.duration} mins`}
-                navURL={freeOrPurchased(lesson) && (accepted || lesson.price === 0) ? `${courseId}/${lesson.id}` : `${courseId}`}
+                navURL={freeOrPurchased(lesson)
+                   && (accepted || lesson.price === 0) ? `${courseId}/${lesson.id}` : `${courseId}`}
                 status={status}
               />
             </div>

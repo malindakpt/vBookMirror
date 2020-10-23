@@ -3,5 +3,6 @@ export interface IPayment {
     date: number;
     amount: number;
     lessonId: string;
+    paidFor: string;
     ownerEmail: string;
 }
