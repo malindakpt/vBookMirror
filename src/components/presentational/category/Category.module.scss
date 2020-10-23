@@ -11,13 +11,11 @@
     grid-template-columns: 4fr 1fr;
   }
 
-
   &.selected {
-    background: #e0e0e0;
+    background: black;
   }
 
   .image {
-    padding: 20px;
     display: grid;
     place-items: center;
 
@@ -34,6 +32,7 @@
     place-items: center start;
     padding: 15px 0px 15px 0px;
     grid-gap: 2px;
+    min-height: 50px;
 
     @include mobile {
       padding: 15px 0px 15px 15px;

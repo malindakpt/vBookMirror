@@ -52,8 +52,9 @@ export const Lesson: React.FC = () => {
 
   const processVideo = async () => {
     const lesson = await getDocWithId<ILesson>(Entity.LESSONS, lessonId);
-
     if (!lesson) return;
+
+    getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
 
     if (lesson.price === 0) {
       setLesson(lesson);
@@ -65,7 +66,6 @@ export const Lesson: React.FC = () => {
           if (les.id === lesson.id && les.watchedCount < lesson.watchCount) {
             setWarn('Do not reload this page');
             setLesson(lesson);
-            getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
             setTimeout(() => {
               // eslint-disable-next-line
               // @ts-ignore
@@ -100,6 +100,9 @@ export const Lesson: React.FC = () => {
       <div className={classes.topic}>
         {lesson?.topic}
       </div>
+      <div className={classes.desc}>
+        {lesson?.description}
+      </div>
       {lesson?.videoURL && (
       <video
         width="100%"
@@ -127,11 +130,9 @@ export const Lesson: React.FC = () => {
         </ReactWhatsapp>
       </div>
       )}
-      <div className={classes.desc}>
-        {lesson?.description}
-      </div>
+      {lesson?.attachments && (
       <div className={classes.attachments}>
-        {lesson?.attachments?.map((atta) => (
+        {lesson.attachments.map((atta) => (
           <li key={atta}>
             <a
               href={atta}
@@ -143,6 +144,7 @@ export const Lesson: React.FC = () => {
           </li>
         ))}
       </div>
+)}
     </div>
   );
 };
