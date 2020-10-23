@@ -10,6 +10,18 @@ export interface UploadStatus {
   downloadURL?: string;
 }
 
+export enum Entity {
+  USERS = 'USERS',
+  TEACHERS = 'TEACHERS',
+  COURSES = 'COURSES',
+  EXAMS = 'EXAMS',
+  LESSONS = 'LESSONS',
+  SUBJECTS = 'SUBJECTS',
+  PAYMENTS = 'PAYMENTS',
+  PAYMENTS_TEACHER = 'PAYMENTS_TEACHER',
+  LOGS = 'LOGS'
+}
+
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(app);
 const storage = firebase.storage(app);
@@ -125,7 +137,7 @@ export const uploadVideoToServer = (file: any, email: string, vId: string): Subj
   return subject;
 };
 
-export const addDoc = <T>(entityName: string, obj: T) => new Promise<string>((resolve) => {
+export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((resolve) => {
   // @ts-ignore
   delete obj.id; // Allow id auto generation
 
@@ -139,7 +151,7 @@ export const addDoc = <T>(entityName: string, obj: T) => new Promise<string>((re
   });
 });
 
-export const deleteDoc = (entityName: string, id: string) => new Promise<boolean>((resolve) => {
+export const deleteDoc = (entityName: Entity, id: string) => new Promise<boolean>((resolve) => {
   db.collection(entityName).doc(id).delete().then(() => {
     clearStore(entityName);
     resolve(true);
@@ -150,7 +162,7 @@ export const deleteDoc = (entityName: string, id: string) => new Promise<boolean
     });
 });
 
-export const addDocWithId = <T>(entityName: string, id: string, obj: T) => new Promise((resolve) => {
+export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve) => {
   db.collection(entityName).doc(id).set(obj).then((data: any) => {
     clearStore(entityName);
     resolve(true);
@@ -161,7 +173,7 @@ export const addDocWithId = <T>(entityName: string, id: string, obj: T) => new P
     });
 });
 
-export const updateDoc = (entityName: string, id: string, obj: any) => new Promise((resolve) => {
+export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promise((resolve) => {
   db.collection(entityName).doc(id).update(obj).then((data: any) => {
     clearStore(entityName);
     resolve(true);
@@ -177,7 +189,7 @@ const generateRequestKey = (
 ) => `${entityName}-${JSON.stringify(conditions)}}`;
 
 export const getDocsWithProps = <T>(
-  entityName: string,
+  entityName: Entity,
   conditions: any,
 ): Promise<T> => new Promise((resolves) => {
     const cachedResponse = store[generateRequestKey(entityName, conditions)];
@@ -226,15 +238,14 @@ export const getDocsWithProps = <T>(
       });
   });
 
-export const getDocWithId = <T>(entityName: string, id: string): Promise<T | null> => new Promise(
+export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | null> => new Promise(
   (resolves) => {
     db.collection(entityName).doc(id).get().then((doc: any) => {
       if (doc.exists) {
         resolves(doc.data());
       } else {
-      // doc.data() will be undefined in this case
         resolves(null);
-        console.log('getDocWithId: No such document!');
+        console.log(`${entityName}: ${id} : No such document!`);
       }
     });
   },

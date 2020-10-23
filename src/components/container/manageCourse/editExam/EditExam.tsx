@@ -3,7 +3,7 @@ import {
   Button, Select, MenuItem, InputLabel, FormControl, FormControlLabel, Checkbox,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { getDocsWithProps, updateDoc } from '../../../../data/Store';
+import { Entity, getDocsWithProps, updateDoc } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
@@ -20,8 +20,8 @@ export const EditExam = () => {
   const [selectedExamIdx, setSelectedExamIdx] = useState<number>(-1);
 
   useEffect(() => {
-    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
-    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
   }, []);
 
   const onSelectedExamChange = (e: any) => {
@@ -53,7 +53,7 @@ export const EditExam = () => {
 
   const onSave = () => {
     setBusy(true);
-    updateDoc('exams', exams[selectedExamIdx].id, { subjectIds: exams[selectedExamIdx].subjectIds })
+    updateDoc(Entity.EXAMS, exams[selectedExamIdx].id, { subjectIds: exams[selectedExamIdx].subjectIds })
       .then(() => {
         showSnackbar('Exam is updated');
         setBusy(false);

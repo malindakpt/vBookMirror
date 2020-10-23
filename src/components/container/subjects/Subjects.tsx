@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import CategoryIcon from '@material-ui/icons/Category';
 import classes from './Subjects.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps, getDocWithId } from '../../../data/Store';
+import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { ISubject } from '../../../interfaces/ISubject';
 import { IExam } from '../../../interfaces/IExam';
 
@@ -13,8 +13,8 @@ export const Subjects = () => {
   const keyMap = useBreadcrumb();
 
   const fetchData = async () => {
-    const exam = await getDocWithId<IExam>('exams', examId);
-    const subjects = await getDocsWithProps<ISubject[]>('subjects', {});
+    const exam = await getDocWithId<IExam>(Entity.EXAMS, examId);
+    const subjects = await getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {});
     const filtered = subjects.filter((sub) => exam?.subjectIds?.includes(sub.id));
 
     setSubjects(filtered);

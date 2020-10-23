@@ -10,7 +10,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddLesson.module.scss';
 import {
-  addDoc, deleteVideo, getDocsWithProps, updateDoc, uploadVideoToServer,
+  addDoc, deleteVideo, Entity, getDocsWithProps, updateDoc, uploadVideoToServer,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
@@ -95,8 +95,8 @@ export const AddLesson = () => {
 
   useEffect(() => {
     Promise.all([
-      getDocsWithProps<ICourse[]>('courses', { ownerEmail: email }),
-      getDocsWithProps<ILesson[]>('lessons', { ownerEmail: email }),
+      getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email }),
+      getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: email }),
     ]).then((values) => {
       const [courses, lessons] = values;
 
@@ -108,8 +108,8 @@ export const AddLesson = () => {
     });
 
     // fetch unrelated data
-    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
 
     // eslint-disable-next-line
   }, [onDataFetch]);
@@ -175,7 +175,7 @@ export const AddLesson = () => {
           // price, disabled by business logic
         },
       };
-      updateDoc('lessons', editingLesson.id, less).then(() => {
+      updateDoc(Entity.LESSONS, editingLesson.id, less).then(() => {
         showSnackbar(`${editingLesson.topic} modified successfully`);
         addNew();
         fetchData();
@@ -200,10 +200,10 @@ export const AddLesson = () => {
         subCount: 0,
         ownerEmail: email,
       };
-      lesson.id = await addDoc('lessons', lesson);
+      lesson.id = await addDoc(Entity.LESSONS, lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
-      await updateDoc('courses', courseId, { lessons: [...lessons, lesson.id] });
+      await updateDoc(Entity.COURSES, courseId, { lessons: [...lessons, lesson.id] });
 
       showSnackbar('Lesson Added');
       addNew();
@@ -303,7 +303,7 @@ export const AddLesson = () => {
   const saveLessonsOrder = () => {
     setCourseOrderChaged(false);
     const courseLessonIds = courseLessons.map((less) => less.id);
-    updateDoc('courses', courseId, { lessons: courseLessonIds })
+    updateDoc(Entity.COURSES, courseId, { lessons: courseLessonIds })
       .then(() => {
         showSnackbar('Lessons order updated');
         setCourses((prev) => {

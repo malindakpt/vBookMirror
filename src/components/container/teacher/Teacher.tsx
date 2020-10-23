@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import CategoryIcon from '@material-ui/icons/Category';
-import { getDocsWithProps } from '../../../data/Store';
+import { Entity, getDocsWithProps } from '../../../data/Store';
 import { getObject } from '../../../data/StoreHelper';
 import { ICourse } from '../../../interfaces/ICourse';
 import { IExam } from '../../../interfaces/IExam';
@@ -20,13 +20,13 @@ export const Teacher = () => {
   const [teacher, setTeacher] = useState<ITeacher| undefined>(undefined);
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
-    getDocsWithProps<ITeacher[]>('teachers', { shortId: teacherId }).then((data) => {
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { shortId: teacherId }).then((data) => {
       if (data.length > 0) {
         const teacher = data[0];
         setTeacher(teacher);
-        getDocsWithProps<ICourse[]>('courses', { ownerEmail: teacher.ownerEmail })
+        getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: teacher.ownerEmail })
           .then((data) => setCourses(data));
       }
     });

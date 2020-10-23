@@ -1,4 +1,4 @@
-import { addDoc } from '../data/Store';
+import { addDoc, Entity } from '../data/Store';
 import { ILog } from '../interfaces/ILog';
 
 export enum Page {
@@ -18,7 +18,7 @@ export const send = (page: Page, error: boolean = false) => {
     error,
   };
   if (window.location.host === 'akshara.lk' && !localStorage.getItem('log_off')) {
-    addDoc('log', log);
+    addDoc(Entity.LOGS, log);
   } else {
     console.log(log);
   }

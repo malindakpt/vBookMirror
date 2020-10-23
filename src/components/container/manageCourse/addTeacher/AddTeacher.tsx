@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import {
   TextField, Button,
 } from '@material-ui/core';
-import { addDocWithId, getDocsWithProps } from '../../../../data/Store';
+import { addDocWithId, Entity, getDocsWithProps } from '../../../../data/Store';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { AppContext } from '../../../../App';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
@@ -22,7 +22,7 @@ export const AddTeacher = () => {
 
   useEffect(() => {
     // display existing teachers
-    getDocsWithProps<ITeacher[]>('teachers', {}).then((data) => setTeachers(data));
+    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
   }, [onUpdate]);
 
   const setTeacherProps = (obj: any) => {
@@ -34,10 +34,10 @@ export const AddTeacher = () => {
 
   const onSave = async () => {
     setBusy(true);
-    const teachers = await getDocsWithProps<ITeacher[]>('teachers', {});
+    const teachers = await getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {});
     if (teacher) {
       teacher.shortId = `${teachers.length + 1}`;
-      addDocWithId<Omit<ITeacher, 'id'>>('teachers', teacher.ownerEmail, teacher).then(() => {
+      addDocWithId<Omit<ITeacher, 'id'>>(Entity.TEACHERS, teacher.ownerEmail, teacher).then(() => {
         showSnackbar('New teacher added');
         updateUI();
         setBusy(false);

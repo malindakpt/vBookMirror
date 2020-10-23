@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
-import { getDocsWithProps, getDocWithId } from '../../../data/Store';
+import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { calcTeacherCommission } from '../../../helper/util';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
@@ -14,8 +14,8 @@ export const Subscriptions = () => {
 
   useEffect(() => {
     if (email) {
-      getDocWithId<ITeacher>('teachers', email).then((data) => data && setTeacher(data));
-      getDocsWithProps<ILesson[]>('lessons', { ownerEmail: email, 'price>': 0 }).then((data) => {
+      getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
+      getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: email, 'price>': 0 }).then((data) => {
         setLessons(data);
       });
     }

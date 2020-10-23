@@ -5,7 +5,7 @@ import firebase from 'firebase';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
-  getDocsWithProps, addDoc, updateDoc, getDocWithId,
+  getDocsWithProps, addDoc, updateDoc, getDocWithId, Entity,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
 import { ILesson } from '../../../interfaces/ILesson';
@@ -30,11 +30,11 @@ export const Course: React.FC = () => {
   useEffect(() => {
     Promise.all([
       // Check the lessons paid by user
-      getDocsWithProps<IUser[]>('users', { ownerEmail: email }),
+      getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }),
       // All lessons related to courseId
-      getDocsWithProps<ILesson[]>('lessons', { courseId }),
+      getDocsWithProps<ILesson[]>(Entity.LESSONS, { courseId }),
       // Find the lesson order of the course
-      getDocWithId<ICourse>('courses', courseId),
+      getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
       const [users, lessons, course] = result;
 
@@ -88,8 +88,10 @@ export const Course: React.FC = () => {
   const handlePaymentSuccess = async (amount: number, date: number) => {
     if (!email) return;
 
-    const paymentRef = await addDoc<Omit<IPayment, 'id'>>('payment', { amount, date, ownerEmail: email });
+    const paymentRef = await addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS,
+      { amount, date, ownerEmail: email });
     const isNewUser = user === null;
+
     // const usersWithEmail: IUser[] = await getDocsWithProps('users', { email }, {});
     if (!user) {
       setUser({
@@ -109,16 +111,16 @@ export const Course: React.FC = () => {
               watchedCount: 0,
             });
         }
-        updateDoc('lessons', les, { subCount: firebase.firestore.FieldValue.increment(1) });
+        updateDoc(Entity.LESSONS, les, { subCount: firebase.firestore.FieldValue.increment(1) });
       }
     }
 
     if (isNewUser) {
-      addDoc('users', user).then(() => {
+      addDoc(Entity.USERS, user).then(() => {
         resetPayments();
       });
     } else if (user) { // this check is to fix ts issue below
-      updateDoc('users', user.id, user).then(() => {
+      updateDoc(Entity.USERS, user.id, user).then(() => {
         resetPayments();
       });
     }

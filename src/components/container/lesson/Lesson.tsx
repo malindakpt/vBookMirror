@@ -4,7 +4,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import ReactWhatsapp from 'react-whatsapp';
 import classes from './Lesson.module.scss';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps, getDocWithId, updateDoc } from '../../../data/Store';
+import {
+  Entity, getDocsWithProps, getDocWithId, updateDoc,
+} from '../../../data/Store';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IUser } from '../../../interfaces/IUser';
@@ -20,15 +22,15 @@ export const Lesson: React.FC = () => {
   const [lesson, setLesson] = useState<ILesson>();
 
   const processVideo = async () => {
-    const lesson = await getDocWithId<ILesson>('lessons', lessonId);
+    const lesson = await getDocWithId<ILesson>(Entity.LESSONS, lessonId);
 
     if (lesson && email) {
       setLesson(lesson);
       // for WhatsApp details
-      getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: lesson.ownerEmail })
+      getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { ownerEmail: lesson.ownerEmail })
         .then((data) => data && setTeacher(data[0]));
 
-      const user = await getDocWithId<IUser>('users', email);
+      const user = await getDocWithId<IUser>(Entity.USERS, email);
 
       if (lesson.videoURL) {
         setTimeout(() => {
@@ -46,7 +48,7 @@ export const Lesson: React.FC = () => {
                 const remain = user.lessons[idx].watchedCount === lesson.watchCount ? 0
                   : user.lessons[idx].watchedCount - lesson.watchCount;
 
-                updateDoc('users', email, user).then(() => {
+                updateDoc(Entity.USERS, email, user).then(() => {
                   showSnackbar(`You can watch this lesson ${remain} more times in the future`);
                 });
               }

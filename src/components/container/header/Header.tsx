@@ -8,7 +8,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import classes from './Header.module.scss';
 import { NavPanel } from '../../presentational/navPanel/NavPanel';
 import { AppContext } from '../../../App';
-import { getDocsWithProps } from '../../../data/Store';
+import { Entity, getDocsWithProps } from '../../../data/Store';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { Util } from '../../../helper/util';
 
@@ -29,7 +29,7 @@ export const Header:React.FC = () => {
       photo: result.photoURL,
     });
 
-    getDocsWithProps<ITeacher[]>('teachers', { ownerEmail: email }).then((data) => {
+    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { ownerEmail: email }).then((data) => {
       if (data.length > 0) {
         setIsTeacher(true);
       } else {

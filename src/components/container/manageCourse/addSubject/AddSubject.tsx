@@ -3,7 +3,7 @@ import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { addDoc, getDocsWithProps } from '../../../../data/Store';
+import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
@@ -26,13 +26,13 @@ export const AddSubject = () => {
   };
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     // eslint-disable-next-line
   },[onUpdate])
 
   const onSave = () => {
     setBusy(true);
-    addDoc('subjects', subject).then(() => {
+    addDoc(Entity.SUBJECTS, subject).then(() => {
       showSnackbar('Subject added');
       updateUI();
       setBusy(false);

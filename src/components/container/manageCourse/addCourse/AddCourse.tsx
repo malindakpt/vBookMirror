@@ -3,7 +3,7 @@ import {
   Button, Select, MenuItem, InputLabel, FormControl, TextField,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { addDoc, getDocsWithProps } from '../../../../data/Store';
+import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ISubject } from '../../../../interfaces/ISubject';
@@ -30,13 +30,13 @@ export const AddCourse = () => {
   const [examId, setExamId] = useState('');
 
   useEffect(() => {
-    getDocsWithProps<ITeacher[]>('teachers', {}).then((data) => setTeachers(data));
-    getDocsWithProps<ISubject[]>('subjects', {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
+    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
   }, []);
 
   useEffect(() => {
-    getDocsWithProps<ICourse[]>('courses', {}).then((data) => setCourses(data));
+    getDocsWithProps<ICourse[]>(Entity.COURSES, {}).then((data) => setCourses(data));
   }, [courses]);
 
   const disabled = !examId || !subjectId || !ownerEmail;
@@ -58,7 +58,7 @@ export const AddCourse = () => {
       subjectId,
       ownerEmail,
     };
-    addDoc('courses', newCourse).then(() => {
+    addDoc(Entity.COURSES, newCourse).then(() => {
       setCourses((prev) => {
         const clone = [...prev, newCourse];
         return clone;

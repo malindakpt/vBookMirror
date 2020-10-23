@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import classes from './Storage.module.scss';
-import { deleteVideo, getDocsWithProps, listAllVideos } from '../../../data/Store';
+import {
+  deleteVideo, Entity, getDocsWithProps, listAllVideos,
+} from '../../../data/Store';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
@@ -12,8 +14,8 @@ export const Storage = () => {
 
   useEffect(() => {
     setVds([]);
-    getDocsWithProps<ILesson[]>('lessons', {}).then((lessons) => {
-      getDocsWithProps<ITeacher[]>('teachers', {}).then((teachers) => {
+    getDocsWithProps<ILesson[]>(Entity.LESSONS, {}).then((lessons) => {
+      getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((teachers) => {
         teachers.forEach((teacher) => {
           listAllVideos(teacher.ownerEmail).then((videos) => {
             videos?.items.forEach((vid) => {

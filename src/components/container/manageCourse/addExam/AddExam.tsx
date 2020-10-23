@@ -3,7 +3,7 @@ import {
   TextField, Button,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
-import { addDoc, getDocsWithProps } from '../../../../data/Store';
+import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
 import { AppContext } from '../../../../App';
 import { IExam } from '../../../../interfaces/IExam';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
@@ -28,14 +28,14 @@ export const AddExam = () => {
   };
 
   useEffect(() => {
-    getDocsWithProps<IExam[]>('exams', {}).then((data) => data && setExams(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => data && setExams(data));
   }, [onUpdate]);
 
   const onSave = () => {
     setBusy(true);
     if (exam) {
       exam.createdAt = new Date().getTime();
-      addDoc('exams', exam).then(() => {
+      addDoc(Entity.EXAMS, exam).then(() => {
         showSnackbar('Exam added');
         updateUI();
         setBusy(false);

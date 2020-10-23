@@ -4,7 +4,7 @@ import ListAltIcon from '@material-ui/icons/ListAlt';
 import { Category } from '../../presentational/category/Category';
 import { getObject } from '../../../data/StoreHelper';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { getDocsWithProps } from '../../../data/Store';
+import { Entity, getDocsWithProps } from '../../../data/Store';
 import { ICourse } from '../../../interfaces/ICourse';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IExam } from '../../../interfaces/IExam';
@@ -19,16 +19,16 @@ export const Courses: React.FC = () => {
   const [exams, setExams] = useState<IExam[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ICourse[]>('courses', { subjectId, examId })
+    getDocsWithProps<ICourse[]>(Entity.COURSES, { subjectId, examId })
       .then((data) => {
         setCourses(data);
         keyMap(data);
       });
-    getDocsWithProps<ITeacher[]>('teachers', {}).then((data) => {
+    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => {
       setTeachers(data);
       keyMap(data);
     });
-    getDocsWithProps<IExam[]>('exams', {}).then((data) => setExams(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);
 
