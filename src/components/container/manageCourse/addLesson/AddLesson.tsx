@@ -73,6 +73,12 @@ export const AddLesson = () => {
     setVideoURL('');
     setPrice(0);
     setUploadFile(null);
+
+    // Rest video thumbnail
+    const videoNode = document.querySelector('video');
+    if (videoNode) {
+      videoNode.src = '';
+    }
   };
 
   // const editCourseYear = () => {
@@ -140,14 +146,12 @@ export const AddLesson = () => {
   const onFileSelect = (e: any) => {
     // TODO: Handle if file is not selected from file explorer
     const file = e.target.files[0];
-    if (file) {
-      const size = file.size / (1024 * 1024);
+    const videoNode = document.querySelector('video');
 
-      const videoNode = document.querySelector('video');
-      if (videoNode) {
-        const fileURL = URL.createObjectURL(file);
-        videoNode.src = fileURL;
-      }
+    if (file && videoNode) {
+      const size = file.size / (1024 * 1024);
+      const fileURL = URL.createObjectURL(file);
+      videoNode.src = fileURL;
 
       setTimeout(() => {
         const dur = videoNode?.duration;
@@ -155,6 +159,7 @@ export const AddLesson = () => {
           const ratio = ((size * 60) / dur);
           if (ratio > 5) {
             showSnackbar(`${Math.round(ratio * 100) / 100}Mb ~ Maximum 5Mb is allowed for 1 min`);
+            videoNode.src = '';
             setUploadFile(null);
           }
         }
@@ -418,9 +423,7 @@ export const AddLesson = () => {
             />
 
             <div className={classes.video}>
-
               <>
-                {!disabled && (
                 <input
                   type="file"
                   id="uploader"
@@ -428,7 +431,6 @@ export const AddLesson = () => {
                   onChange={onFileSelect}
                   disabled={disabled}
                 />
-                )}
                 <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
                 {uploadProgress > 0 && uploadProgress < 100 && (
                 <Button
