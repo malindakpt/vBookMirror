@@ -11,6 +11,8 @@ interface Props {
   id?: string;
   title1?: string;
   title2?: string;
+  title3?: string;
+  title4?: string;
   navURL: string;
   status?: 'yes' | 'no' | 'none'
   CategoryImg: OverridableComponent<SvgIconTypeMap>;
@@ -18,7 +20,7 @@ interface Props {
   isSelected?: boolean;
 }
 export const Category:React.FC<Props> = ({
-  id, title1 = '', title2 = '', navURL, isSelected, status, CategoryImg,
+  id, title1 = '', title2 = '', title3, title4, navURL, isSelected, status, CategoryImg,
 }) => (
   <Link
     className={`${classes.root} ${isSelected && classes.selected}`}
@@ -38,6 +40,10 @@ export const Category:React.FC<Props> = ({
         {status === 'no' && <AddCircleOutlineIcon htmlColor="red" />}
         {status === 'none' && <CheckCircleOutlineIcon htmlColor="#ffa500" />}
         {title2}
+      </div>
+      <div className={classes.note}>
+        <span>{title3}</span>
+        <span>{title4}</span>
       </div>
     </div>
     <div className={classes.actions}>

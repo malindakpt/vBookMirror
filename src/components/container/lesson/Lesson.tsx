@@ -75,7 +75,7 @@ export const Lesson: React.FC = () => {
 
             startExpireLessonForUser(user, lesson);
 
-            window.onbeforeunload = () => 'You spent a remaining watch time. Are you sure to exit?';
+            // window.onbeforeunload = () => 'You spent a remaining watch time. Are you sure to exit?';
           }
         });
       } else {

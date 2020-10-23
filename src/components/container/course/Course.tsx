@@ -113,11 +113,17 @@ export const Course: React.FC = () => {
       if (subscribed) {
         const lesson = lessons.find((l) => l.id === les);
         if (lesson) {
-          editableUser?.lessons.push({
-            id: les,
-            paymentRef,
-            watchedCount: 0,
-          });
+          const alreadyPurchased = editableUser.lessons.findIndex((sub) => sub.id === lesson.id);
+          if (alreadyPurchased > -1) {
+            editableUser.lessons[alreadyPurchased].watchedCount = 0;
+            editableUser.lessons[alreadyPurchased].paymentRef = paymentRef;
+          } else {
+            editableUser.lessons.push({
+              id: les,
+              paymentRef,
+              watchedCount: 0,
+            });
+          }
         }
         updateDoc(Entity.LESSONS, les, { subCount: firebase.firestore.FieldValue.increment(1) });
       }
@@ -133,6 +139,8 @@ export const Course: React.FC = () => {
       });
     }
   };
+
+  const getRemain = (lesson: ILesson) => user?.lessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
 
   return (
     <div className="container">
@@ -176,7 +184,9 @@ export const Course: React.FC = () => {
                 key={idx}
                 CategoryImg={OndemandVideoIcon}
                 title1={`${lesson.topic}`}
-                title2={`${lesson.description}-${lesson.duration}mins.`}
+                title2={`${lesson.description}`}
+                title3={lesson.price > 0 ? `Watched: ${getRemain(lesson)}/${lesson.watchCount}` : 'Free'}
+                title4={`${lesson.duration} mins`}
                 navURL={isAccessible(lesson) && (accepted || lesson.price === 0) ? `${courseId}/${lesson.id}` : `${courseId}`}
                 isSelected={selectedLessons[lesson.id]}
                 status={status}
