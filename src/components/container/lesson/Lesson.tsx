@@ -22,8 +22,6 @@ export const Lesson: React.FC = () => {
 
   // disble context menu for avoid right click
   document.addEventListener('contextmenu', (event) => event.preventDefault());
-  window.onbeforeunload = () => {
-  };
 
   useBreadcrumb();
   const { lessonId } = useParams<any>();
@@ -42,7 +40,7 @@ export const Lesson: React.FC = () => {
 
           const msg = remain < 1 ? `You watched ${lesson.watchCount} times. 
           Please pay again if you need to watch this again`
-            : `You can watch this lesson ${remain} more times in the future`;
+            : `You can watch this lesson ${remain} more time in the future`;
 
           setWarn(msg);
           updateDoc(Entity.USERS, user.ownerEmail, user).then(() => {
@@ -76,6 +74,8 @@ export const Lesson: React.FC = () => {
             }, 1000);
 
             startExpireLessonForUser(user, lesson);
+
+            window.onbeforeunload = () => 'You spent a remaining watch time. Are you sure to exit?';
           }
         });
       } else {
