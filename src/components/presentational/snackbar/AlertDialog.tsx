@@ -29,13 +29,14 @@ export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel }) => {
         <DialogTitle id="alert-dialog-title">Please confirm</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ඔබගේ මුදල් ගෙවීම  සඳහා මෙම පාඩම නැරඹිය හැක්කේ සීමිත වාර ගණනක් පමණි.
-            ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම්
-            පමණක් ඉදිරියට යන්න. නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම  වෙලාවක උත්සහ කරන්න.
+            එක්  මුදල් ගෙවීමක් සඳහා මෙම පාඩම වාර 2ක්  නැරඹිය හැකිය.
+            ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම් පමණක් ඉදිරියට යන්න.
+            නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම වේලාවක උත්සහ කරන්න.
+
           </DialogContentText>
           <DialogContentText id="alert-dialog-description">
-            You have limited watch attempts for these paid lessons.
-            Continue this if you can manage to watch the full video now. Else please try again
+            Per a payment you are allowed to watch this lesson for 2 times.
+            Continue to watch, if you can manage to watch the full video now. Else please try again
             at any time when you can manage to watch full video.
           </DialogContentText>
         </DialogContent>

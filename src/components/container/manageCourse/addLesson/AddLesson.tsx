@@ -494,7 +494,7 @@ export const AddLesson = () => {
               onChange={(e) => setPrice(Number(e.target.value))}
             />
 
-            <TextField
+            {/* <TextField
               className={classes.input}
               id="watchCount"
               type="number"
@@ -502,7 +502,7 @@ export const AddLesson = () => {
               value={watchCount}
               disabled={disabled || editMode}
               onChange={(e) => setWatchCount(Number(e.target.value))}
-            />
+            /> */}
 
             {uploadProgress === 0 && (
             <Button
