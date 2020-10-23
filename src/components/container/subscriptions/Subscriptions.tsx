@@ -2,28 +2,54 @@ import React, { useContext, useEffect, useState } from 'react';
 import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
-import { calcTeacherCommission } from '../../../helper/util';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
+import { IPayment } from '../../../interfaces/IPayment';
+
+interface LessMap {[key: string]: {payments: IPayment[], lesson: ILesson}}
 
 export const Subscriptions = () => {
   useBreadcrumb();
   const { email } = useContext(AppContext);
-  const [lessons, setLessons] = useState<ILesson[]>([]);
+  const [lessMap, setLessMap] = useState<LessMap>({});
   const [teacher, setTeacher] = useState<ITeacher>();
+
+  const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     if (email) {
       getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
-      getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: email, 'price>': 0 }).then((data) => {
-        setLessons(data);
+
+      Promise.all([
+        getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { ownerEmail: email }),
+        getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: email }),
+      ]).then(([payments, lessons]) => {
+        const lessonMap: LessMap = {};
+        let total = 0;
+        for (const payment of payments) {
+          if (!lessonMap[payment.lessonId]) {
+            const lesson = lessons.find((l) => l.id === payment.lessonId);
+            if (lesson) {
+              lessonMap[payment.lessonId] = {
+                lesson,
+                payments: [],
+              };
+            } else {
+              console.log('Lesson, not found:', payment.lessonId);
+            }
+          }
+          total += payment.amount;
+          lessonMap[payment.lessonId]?.payments.push(payment);
+        }
+        setLessMap(lessonMap);
+        setTotal(total);
       });
     }
   }, [email]);
 
   // const totalSub = 0;
-  let totalAmount = 0;
+  const totalAmount = 0;
   return (
     <div className={classes.container}>
       {teacher && (
@@ -44,29 +70,28 @@ export const Subscriptions = () => {
       <table className="center w100">
 
         <tbody>
+
+          <tr key={0}>
+            <th>Lesson</th>
+            <th>Price</th>
+            <th>Count</th>
+            <th>Total</th>
+          </tr>
           {
-            teacher && lessons?.map((l, idx) => {
-              const balPayment = calcTeacherCommission(l, teacher.commission);
-              totalAmount += balPayment;
-              return (
-                <tr key={l.id}>
-                  <td>{l.topic}</td>
-                  <td>{l.description}</td>
-                  <td>{l.price}</td>
-                  <td>{balPayment}</td>
-                  <td>{l.subCount ?? 0}</td>
-                  <td>{l.subCount ? l.subCount * balPayment : 0}</td>
-                  <td className="right">{balPayment}</td>
-                </tr>
-              );
-            })
+          Object.values(lessMap)?.map((val) => (
+            <tr key={val.lesson.id}>
+              <td>{val.lesson.topic}</td>
+              <td>{val.lesson.price}</td>
+              <td>{val.payments.length}</td>
+              <td>{val.payments.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount}</td>
+            </tr>
+          ))
           }
-          <tr>
-            <td />
-            <td />
-            <td className="right"><b>Total :</b></td>
-            <td><b /></td>
-            <td className="right"><b>{ totalAmount }</b></td>
+          <tr key={1}>
+            <th>.</th>
+            <th>.</th>
+            <th>Total</th>
+            <th>{total}</th>
           </tr>
         </tbody>
       </table>

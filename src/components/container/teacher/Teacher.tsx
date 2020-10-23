@@ -33,10 +33,9 @@ export const Teacher = () => {
   }, [teacherId]);
 
   return (
-    <div className="container">
+    <div className={classes.container}>
       {teacher && (
       <div className={classes.name}>
-        Courses from
         {` ${teacher?.name}`}
       </div>
       )}

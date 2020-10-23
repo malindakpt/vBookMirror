@@ -38,8 +38,8 @@ export const Lesson: React.FC = () => {
 
           const remain = lesson.watchCount - user.lessons[idx].watchedCount;
 
-          const msg = remain < 1 ? 'Please continue watching... You have to pay again if you need to watch this again.'
-            : `Please continue watching....  You can watch this lesson ${remain} more time in the future`;
+          const msg = remain < 1 ? 'This is the last watch time for your payment.'
+            : `You can watch this lesson ${remain} more time in the future`;
 
           setWarn(msg);
           updateDoc(Entity.USERS, user.ownerEmail, user).then(() => {
