@@ -53,7 +53,9 @@ export const Payments = () => {
     const amount = Number(document.getElementById(ownerEmail)?.value);
     const date = new Date().getTime();
     console.log(amount);
-    addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_TEACHER, { ownerEmail, date, amount }).then(() => {
+    addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_TEACHER, {
+      ownerEmail, date, amount, lessonId: '',
+    }).then(() => {
       showSnackbar(`Payment done:${amount}`);
       setBusy(false);
     });

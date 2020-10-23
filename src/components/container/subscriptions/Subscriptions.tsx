@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { calcTeacherCommission } from '../../../helper/util';
@@ -24,7 +25,7 @@ export const Subscriptions = () => {
   // const totalSub = 0;
   let totalAmount = 0;
   return (
-    <>
+    <div className={classes.container}>
       {teacher && (
       <div>
         <span style={{ marginRight: '5px' }}>Profile url:</span>
@@ -69,6 +70,6 @@ export const Subscriptions = () => {
           </tr>
         </tbody>
       </table>
-    </>
+    </div>
   );
 };

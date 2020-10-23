@@ -14,7 +14,7 @@ import { ITeacher } from '../../../interfaces/ITeacher';
 import { IUser } from '../../../interfaces/IUser';
 import { AppContext } from '../../../App';
 
-const UPDATE_WATCH_TIMER = 20000;
+const UPDATE_WATCH_TIMER = 2000;
 
 export const Lesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
