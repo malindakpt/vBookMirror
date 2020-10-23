@@ -64,7 +64,6 @@ export const EditExam = () => {
 
   return (
     <>
-      <h3>Edit Exam</h3>
       <form
         className={classes.root}
         noValidate
@@ -112,7 +111,7 @@ export const EditExam = () => {
           onClick={onSave}
           disabled={disabled || busy}
         >
-          Save Changes
+          Edit Exam Changes
         </Button>
       </form>
     </>

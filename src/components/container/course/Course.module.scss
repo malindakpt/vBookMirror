@@ -1,11 +1,12 @@
 .purchase {
   position: fixed;
-  right: 10px;
-  top: 110px;
+  top: 40%;
   background: #b4b4b4cf;
   padding: 10px;
   border-radius: 4px;
   font-weight: bold;
+  left: calc(50% - 100px);
+  width: 200px;
 
   .box {
     display: grid;

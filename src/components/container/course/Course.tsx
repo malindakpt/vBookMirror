@@ -5,7 +5,7 @@ import firebase from 'firebase';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
-  getDocsWithProps, addDoc, updateDoc, getDocWithId, Entity,
+  getDocsWithProps, addDoc, updateDoc, getDocWithId, Entity, addDocWithId,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
 import { ILesson } from '../../../interfaces/ILesson';
@@ -15,6 +15,7 @@ import classes from './Course.module.scss';
 import { Payment } from '../../presentational/payment/Payment';
 import { Util } from '../../../helper/util';
 import { IPayment } from '../../../interfaces/IPayment';
+import { AlertDialog } from '../../presentational/snackbar/AlertDialog';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -26,6 +27,9 @@ export const Course: React.FC = () => {
 
   const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
   const [lessons, setLessons] = useState<ILesson[]>([]);
+
+  const [accepted, setAccepted] = useState<boolean>(false);
+  const [watchAttempted, setWatchAttempted] = useState<boolean>(false);
 
   useEffect(() => {
     Promise.all([
@@ -56,13 +60,17 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email, selectedLessons]);
 
-  const isAccessible = (lesson: ILesson) => !lesson.price
-    || user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < lesson.watchCount);
+  const isAccessible = (lesson: ILesson) => (!lesson.price)
+    || ((user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < lesson.watchCount)));
 
   const handleSelectLesson = (lesson: ILesson) => {
     if (!isAccessible(lesson) && !email) {
       if (Util.invokeLogin) {
         Util.invokeLogin();
+      }
+    } else if (isAccessible(lesson) && !accepted) {
+      if (lesson.price > 0) {
+        setWatchAttempted(true);
       }
     } else {
       const next: any = { ...selectedLessons };
@@ -90,37 +98,37 @@ export const Course: React.FC = () => {
 
     const paymentRef = await addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS,
       { amount, date, ownerEmail: email });
-    const isNewUser = user === null;
 
     // const usersWithEmail: IUser[] = await getDocsWithProps('users', { email }, {});
-    if (!user) {
-      setUser({
+    let editableUser = user;
+    if (!editableUser) {
+      editableUser = {
         id: '',
         ownerEmail: email,
         lessons: [],
-      });
+      };
     }
 
     for (const [les, subscribed] of Object.entries(selectedLessons)) {
       if (subscribed) {
         const lesson = lessons.find((l) => l.id === les);
         if (lesson) {
-            user?.lessons.push({
-              id: les,
-              paymentRef,
-              watchedCount: 0,
-            });
+          editableUser?.lessons.push({
+            id: les,
+            paymentRef,
+            watchedCount: 0,
+          });
         }
         updateDoc(Entity.LESSONS, les, { subCount: firebase.firestore.FieldValue.increment(1) });
       }
     }
 
-    if (isNewUser) {
-      addDoc(Entity.USERS, user).then(() => {
+    if (user) {
+      updateDoc(Entity.USERS, editableUser.id, editableUser).then(() => {
         resetPayments();
       });
-    } else if (user) { // this check is to fix ts issue below
-      updateDoc(Entity.USERS, user.id, user).then(() => {
+    } else { // this check is to fix ts issue below
+      addDocWithId(Entity.USERS, editableUser.ownerEmail, editableUser).then(() => {
         resetPayments();
       });
     }
@@ -168,8 +176,8 @@ export const Course: React.FC = () => {
                 key={idx}
                 CategoryImg={OndemandVideoIcon}
                 title1={`${lesson.topic}`}
-                title2={`${lesson.description}`}
-                navURL={isAccessible(lesson) ? `${courseId}/${lesson.id}` : `${courseId}`}
+                title2={`${lesson.description}-${lesson.duration}mins.`}
+                navURL={isAccessible(lesson) && (accepted || lesson.price === 0) ? `${courseId}/${lesson.id}` : `${courseId}`}
                 isSelected={selectedLessons[lesson.id]}
                 status={status}
               />
@@ -177,6 +185,19 @@ export const Course: React.FC = () => {
           );
         })
       }
+
+      {watchAttempted && !accepted && (
+      <AlertDialog
+        onAccept={() => {
+          setAccepted(true);
+        }}
+
+        onCancel={() => {
+          setAccepted(false);
+          setWatchAttempted(false);
+        }}
+      />
+      )}
     </div>
   );
 };

@@ -23,13 +23,15 @@ import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 
 export const AddLesson = () => {
   useBreadcrumb();
+  const [busy, setBusy] = useState<boolean>(false);
   const [onDataFetch, fetchData] = useForcedUpdate();
   const { showSnackbar, email } = useContext(AppContext);
 
   const [uploadTask, setUploadTask] = useState<any>();
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
-  const [uploadFile, setUploadFile] = useState<any>(undefined);
+  const [uploadFile, setUploadFile] = useState<File>();
+
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
 
@@ -52,6 +54,7 @@ export const AddLesson = () => {
   const [videoURL, setVideoURL] = useState<string>('');
   const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
 
   // Replicate changes of here for all #LessonModify
   const addNew = () => {
@@ -65,7 +68,9 @@ export const AddLesson = () => {
     setAttachments([]);
     setVideoURL('');
     setPrice(0);
-    setUploadFile(null);
+    setDuration(0);
+
+    setUploadFile(undefined);
     // No need to reset courseId
 
     // Rest video thumbnail
@@ -117,7 +122,7 @@ export const AddLesson = () => {
   const onFileSelect = (e: any) => {
     const limit = 5;
     // TODO: Handle if file is not selected from file explorer
-    const file = e.target.files[0];
+    const file: File = e.target.files[0];
     const videoNode = document.querySelector('video');
 
     if (file && videoNode) {
@@ -126,21 +131,23 @@ export const AddLesson = () => {
       videoNode.src = fileURL;
 
       setTimeout(() => {
-        const dur = Math.round((videoNode.duration * 10) / 60) / 10;
-        const ratio = (size / dur);
+        const duration = Math.round((videoNode.duration * 10) / 60) / 10;
+        const ratio = (size / duration);
         if (ratio > 5) {
-          const allowedSize = Math.round(limit * dur * 10) / 10;
-          showSnackbar(`Maximum ${allowedSize}Mb allowed for ${dur} minutes video`);
+          const allowedSize = Math.round(limit * duration * 10) / 10;
+          showSnackbar(`Maximum ${allowedSize}Mb allowed for ${duration} minutes video`);
           videoNode.src = '';
-          setUploadFile(null);
+          setUploadFile(undefined);
+        }
+
+        if (size > 600) {
+          showSnackbar('Error: Maximum file size is 600Mb');
+        } else {
+          // success
+          setUploadFile(file);
+          setDuration(duration);
         }
       }, 1000);
-
-      if (size > 600) {
-        showSnackbar('Error: Maximum file size is 600Mb');
-      } else {
-        setUploadFile(file);
-      }
     }
   };
 
@@ -149,13 +156,14 @@ export const AddLesson = () => {
     addNew();
   };
 
-  const disabled = (uploadProgress > 0 && uploadProgress < 100) || !courseId;
+  const disabled = (uploadProgress > 0 && uploadProgress < 100) || !courseId || busy;
 
   const disabledCourseSelection = (uploadProgress > 0 && uploadProgress < 100);
 
-  const onSave = async (videoURL: string, videoId: string, date: number) => {
+  const onSave = async (videoURL: string, videoId: string, date: number, duration: number) => {
     if (!email) {
       showSnackbar('Error with logged in user');
+      setBusy(false);
       return;
     }
     if (editMode) {
@@ -171,6 +179,7 @@ export const AddLesson = () => {
           keywords,
           videoURL,
           videoId,
+          duration,
           // No need to edit courseId
           // price, disabled by business logic
         },
@@ -179,6 +188,7 @@ export const AddLesson = () => {
         showSnackbar(`${editingLesson.topic} modified successfully`);
         addNew();
         fetchData();
+        setBusy(false);
       });
     // AddMode
     } else {
@@ -194,6 +204,7 @@ export const AddLesson = () => {
         attachments,
         keywords: `${selectedCourse.examYear}`,
         videoURL,
+        duration,
         videoId,
         price,
         courseId,
@@ -203,11 +214,12 @@ export const AddLesson = () => {
       lesson.id = await addDoc(Entity.LESSONS, lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
-      await updateDoc(Entity.COURSES, courseId, { lessons: [...lessons, lesson.id] });
-
-      showSnackbar('Lesson Added');
-      addNew();
-      fetchData();
+      updateDoc(Entity.COURSES, courseId, { lessons: [...lessons, lesson.id] }).then(() => {
+        showSnackbar('Lesson Added');
+        addNew();
+        fetchData();
+        setBusy(false);
+      });
     }
   };
 
@@ -224,12 +236,15 @@ export const AddLesson = () => {
   };
 
   const uploadAndSave = (email: string, dd: number) => {
+    if (!uploadFile) return;
+
     setUploadProgress(0);
     const out = uploadVideoToServer(uploadFile, email, `${dd}`).subscribe((next) => {
       setUploadTask(next.uploadTask);
       if (next.downloadURL) {
+        // upload completed
         setVideoURL(next.downloadURL);
-        onSave(next.downloadURL, `${dd}`, dd);
+        onSave(next.downloadURL, `${dd}`, dd, duration);
         out.unsubscribe();
       }
       if (next.progress < 100) {
@@ -247,19 +262,20 @@ export const AddLesson = () => {
     if (!validateLesson()) {
       return;
     }
-
+    setBusy(true);
     if (editMode) {
       if (uploadFile) {
         deleteVideo(email, videoId).then((data) => console.log('deleted', data));
         uploadAndSave(email, dd);
       } else {
-        onSave(videoURL, videoId, dd);
+        onSave(videoURL, videoId, dd, duration);
       }
     } else {
       if (uploadFile) {
         uploadAndSave(email, dd);
       } else {
         showSnackbar('Upload video not found');
+        setBusy(false);
       }
     }
   };
@@ -276,6 +292,7 @@ export const AddLesson = () => {
     setVideoURL(les.videoURL);
     setVideoId(les.videoId);
     setPrice(les.price);
+    setDuration(les.duration);
 
     const videoNode = document.querySelector('video');
     if (videoNode) {

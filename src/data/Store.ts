@@ -242,7 +242,9 @@ export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | nul
   (resolves) => {
     db.collection(entityName).doc(id).get().then((doc: any) => {
       if (doc.exists) {
-        resolves(doc.data());
+        const dat = doc.data();
+        dat.id = id;
+        resolves(dat);
       } else {
         resolves(null);
         console.log(`${entityName}: ${id} : No such document!`);

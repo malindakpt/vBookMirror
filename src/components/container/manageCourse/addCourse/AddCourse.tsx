@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  Button, Select, MenuItem, InputLabel, FormControl, TextField,
+  Button, Select, MenuItem, InputLabel, FormControl,
 } from '@material-ui/core';
 import classes from '../ManageCourse.module.scss';
 import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
@@ -23,7 +23,7 @@ export const AddCourse = () => {
   const [exams, setExams] = useState<IExam[]>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
 
-  const [year, setYear] = useState<string>('');
+  // const [year, setYear] = useState<string>('');
 
   const [ownerEmail, setOwnerEmail] = useState('');
   const [subjectId, setSubjectId] = useState('');
@@ -54,7 +54,7 @@ export const AddCourse = () => {
       id: '',
       lessons: [],
       examId,
-      examYear: year,
+      examYear: '',
       subjectId,
       ownerEmail,
     };
@@ -131,25 +131,18 @@ export const AddCourse = () => {
                 value={t.id}
                 key={t.id}
               >
-                {`${t.name}-${t.type}`}
+                {`${t.name} ${t.type}`}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-
-        <TextField
-          className={classes.input}
-          id="year"
-          label="Year"
-          onChange={(e) => setYear(e.target.value)}
-        />
 
         <Button
           variant="contained"
           onClick={onSave}
           disabled={disabled || busy}
         >
-          Add Course
+          Add Course for Teacher
         </Button>
       </form>
 
