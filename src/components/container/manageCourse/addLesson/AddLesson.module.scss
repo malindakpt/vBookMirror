@@ -47,10 +47,26 @@
 
   .video {
     display: grid;
-    grid-template-columns: 1fr 6fr;
-    place-items: center start;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
     font-size: 30px;
     margin-top: 10px;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+
+    .buttons {
+      display: grid;
+
+      .note {
+        font-size: 13px;
+        color: red;
+      }
+
+      input {
+      }
+    }
   }
 }
 

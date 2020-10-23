@@ -30,7 +30,6 @@ export const AddLesson = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const [uploadFile, setUploadFile] = useState<any>(undefined);
-  // const [searchText, setSearchText] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
 
@@ -38,15 +37,12 @@ export const AddLesson = () => {
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [allLessons, setAllLessons] = useState<ILesson[]>([]);
-  // const allLessons = useRef<ILesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
 
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
 
   // Component state
-  // const [isAddNewVideo, setIsAddNewVideo] = useState<boolean>(false);
   const [editingLesson, setEditingLesson] = useState<ILesson>();
-  // const [displayBacklog, setDisplayBacklog] = useState<boolean>(false);
 
   const [topic, setTopic] = useState<string>('');
   const [watchCount, setWatchCount] = useState<number>(2);
@@ -57,12 +53,9 @@ export const AddLesson = () => {
   const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
-  // const [examYear, setExamYear] = useState<string>('');
-
   // Replicate changes of here for all #LessonModify
   const addNew = () => {
     setCourseOrderChaged(false);
-    // setIsAddNewVideo(false);
     setEditMode(false);
     setUploadProgress(0);
     setTopic('');
@@ -73,6 +66,7 @@ export const AddLesson = () => {
     setVideoURL('');
     setPrice(0);
     setUploadFile(null);
+    // No need to reset courseId
 
     // Rest video thumbnail
     const videoNode = document.querySelector('video');
@@ -81,44 +75,21 @@ export const AddLesson = () => {
     }
   };
 
-  // const editCourseYear = () => {
-  //   const selectedCourse = courses.filter((c) => c.id === courseId)[0];
-  //   selectedCourse.examYear = examYear;
-  //   updateDoc('courses', selectedCourse.id, selectedCourse).then((c) => {
-  //     fetchData();
-  //   });
-  // };
-
   const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: ILesson[]) => {
     if (!_courseId || _courseId === '') { return; }
 
     setCourseId(_courseId);
-
     const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
-    // setExamYear(selectedCourse.examYear);
-    const lessons4CourseMap: any = {};
-    // const otherLessons = [];
 
-    for (const les of _allLessons) {
-      if (selectedCourse.lessons?.includes(les.id)) {
-        lessons4CourseMap[les.id] = les;
-      }
-      // else {
-      //   otherLessons.push(les);
-      // }
-    }
-
-    let orderedLessons: ILesson[] = [];
-    for (const less of selectedCourse.lessons) {
-      const t = (lessons4CourseMap[less]);
-      if (t) {
-        orderedLessons = [...orderedLessons, t];
+    const orderedLessons: ILesson[] = [];
+    for (const lessonId of selectedCourse.lessons) {
+      const less = _allLessons.find((l) => l.id === lessonId);
+      if (less) {
+        orderedLessons.push(less);
       }
     }
 
     setCourseLessons(orderedLessons);
-    // setUnrelatedLessons(otherLessons.sort((a, b) => b.date - a.date));
-
     addNew();
   };
 
@@ -144,6 +115,7 @@ export const AddLesson = () => {
   }, [onDataFetch]);
 
   const onFileSelect = (e: any) => {
+    const limit = 5;
     // TODO: Handle if file is not selected from file explorer
     const file = e.target.files[0];
     const videoNode = document.querySelector('video');
@@ -154,14 +126,13 @@ export const AddLesson = () => {
       videoNode.src = fileURL;
 
       setTimeout(() => {
-        const dur = videoNode?.duration;
-        if (dur && size) {
-          const ratio = ((size * 60) / dur);
-          if (ratio > 5) {
-            showSnackbar(`${Math.round(ratio * 100) / 100}Mb ~ Maximum 5Mb is allowed for 1 min`);
-            videoNode.src = '';
-            setUploadFile(null);
-          }
+        const dur = Math.round((videoNode.duration * 10) / 60) / 10;
+        const ratio = (size / dur);
+        if (ratio > 5) {
+          const allowedSize = Math.round(limit * dur * 10) / 10;
+          showSnackbar(`Maximum ${allowedSize}Mb allowed for ${dur} minutes video`);
+          videoNode.src = '';
+          setUploadFile(null);
         }
       }, 1000);
 
@@ -200,6 +171,7 @@ export const AddLesson = () => {
           keywords,
           videoURL,
           videoId,
+          // No need to edit courseId
           // price, disabled by business logic
         },
       };
@@ -224,13 +196,15 @@ export const AddLesson = () => {
         videoURL,
         videoId,
         price,
+        courseId,
         subCount: 0,
         ownerEmail: email,
       };
       lesson.id = await addDoc('lessons', lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
-      await updateDoc('courses', courseId, { lessons: [lesson.id, ...lessons ?? []] });
+      await updateDoc('courses', courseId, { lessons: [...lessons, lesson.id] });
+
       showSnackbar('Lesson Added');
       addNew();
       fetchData();
@@ -293,7 +267,6 @@ export const AddLesson = () => {
   // copyLessonMode
   // Replicate changes of here for all #LessonModify
   const copyLesson = (les: ILesson) => {
-    // setIsAddNewVideo(false);
     setEditingLesson(les);
     setTopic(les.topic);
     setWatchCount(les.watchCount);
@@ -424,25 +397,36 @@ export const AddLesson = () => {
 
             <div className={classes.video}>
               <>
-                <input
-                  type="file"
-                  id="uploader"
-                  name="uploader"
-                  onChange={onFileSelect}
-                  disabled={disabled}
-                />
-                <span>{uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}</span>
-                {uploadProgress > 0 && uploadProgress < 100 && (
-                <Button
-                  size="small"
-                  color="secondary"
-                  variant="contained"
-                  onClick={onCancelUpload}
-                >
-                  Cancel Upload
-                </Button>
+                <div className={classes.buttons}>
 
-                )}
+                  <input
+                    type="file"
+                    id="uploader"
+                    name="uploader"
+                    onChange={onFileSelect}
+                    disabled={disabled}
+                  />
+
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                  <Button
+                    size="small"
+                    color="secondary"
+                    variant="contained"
+                    onClick={onCancelUpload}
+                  >
+                    Cancel Upload
+                    <span style={{ marginLeft: '20px' }}>
+                      {uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}
+                    </span>
+                  </Button>
+
+                  )}
+                  <div className={classes.note}>
+                    Mamimum 5Mb allowed for 1 minute of your video.
+                    <br />
+                    Eg: If video length is 1 hour(60 minutes), size should be less than 300Mb.
+                  </div>
+                </div>
 
                 <video
                   id="myVideo"

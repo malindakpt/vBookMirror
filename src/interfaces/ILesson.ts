@@ -11,6 +11,7 @@ export interface ILesson {
     watchCount: number;
     subCount: number;
     // meta information
+    courseId: string;
     price: number;
     ownerEmail: string;
   }

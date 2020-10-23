@@ -29,18 +29,21 @@ export const Course: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
+      // Check the lessons paid by user
       getDocsWithProps<IUser[]>('users', { ownerEmail: email }),
-      getDocsWithProps<ILesson[]>('lessons', {}),
+      // All lessons related to courseId
+      getDocsWithProps<ILesson[]>('lessons', { courseId }),
+      // Find the lesson order of the course
       getDocWithId<ICourse>('courses', courseId),
     ]).then((result) => {
       const [users, lessons, course] = result;
 
       if (users && lessons && course) {
-        let lessons4Course: ILesson[] = [];
+        const lessons4Course: ILesson[] = [];
         course?.lessons.forEach((lesId) => {
           const les = lessons.find((l) => l.id === lesId);
           if (les) {
-            lessons4Course = [les, ...lessons4Course];
+            lessons4Course.push(les);
           } else {
             console.error('lesson not found', lesId);
           }
