@@ -10,7 +10,7 @@
     "clean": "rmdir \"firebase\\public\\\" /q /s",
     "copy": "xcopy \".\\build\" \"firebase\\public\\\" /e /y",
     "upload": "cd firebase && firebase deploy",
-    "deploy": "npm run build && npm run clean && npm run copy && npm run upload"
+    "buildcopy": "npm run build && npm run clean && npm run copy"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
