@@ -19,7 +19,7 @@ export const ListItems:React.FC<Props> = ({ list }) => (
             button
           >
             {
-            Object.values(item).map((val: any, index:number) => <span key={val}>{`${val}`}</span>)
+            Object.values(item).map((val: any) => <span key={val}>{`${val}`}</span>)
           }
           </ListItem>
           <Divider />
