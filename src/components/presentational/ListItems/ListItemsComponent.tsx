@@ -14,15 +14,13 @@ export const ListItems:React.FC<Props> = ({ list }) => (
       aria-label="mailbox folders"
     >
       {list.map((item, idx) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <div key={idx}>
+        <div key={item.id}>
           <ListItem
             button
           >
-
-            {Object.values(item).map((val: any, index:number) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <span key={index}>{`${val}`}</span>))}
+            {
+            Object.values(item).map((val: any, index:number) => <span key={val}>{`${val}`}</span>)
+          }
           </ListItem>
           <Divider />
         </div>
