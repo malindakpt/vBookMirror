@@ -118,6 +118,12 @@ export const Course: React.FC = () => {
         console.log('Payment dismissed completed. New');
         // handlePaymentSuccess(lesson.price, dd, lesson.id);
       };
+      paymentJS.onCompleted = function onDismissed() {
+        // Note: Prompt user to pay again or show an error page
+        // TODO: Remove this code
+        console.log('Succeed');
+        handlePaymentSuccess(lesson.price, dd, lesson.id);
+      };
       startPay(email, lesson.id, lesson.price, dd);
     }
   };

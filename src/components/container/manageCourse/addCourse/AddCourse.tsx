@@ -149,6 +149,7 @@ export const AddCourse = () => {
       <ListItems list={courses.map((str) => {
         const exam = getObject(exams, str.examId);
         const next = {
+          id: str.id,
           teacher: getObject(teachers, str.ownerEmail)?.name,
           exam: exam?.name,
           year: str.examYear,

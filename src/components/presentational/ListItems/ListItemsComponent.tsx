@@ -13,13 +13,13 @@ export const ListItems:React.FC<Props> = ({ list }) => (
       component="nav"
       aria-label="mailbox folders"
     >
-      {list.map((item, idx) => (
+      {list.map((item) => (
         <div key={item.id}>
           <ListItem
             button
           >
             {
-            Object.values(item).map((val: any) => <span key={val}>{`${val}`}</span>)
+            Object.entries(item).map(([key, val]) => <span key={key}>{`${val}`}</span>)
           }
           </ListItem>
           <Divider />
