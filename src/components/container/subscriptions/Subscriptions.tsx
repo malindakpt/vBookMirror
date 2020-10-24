@@ -17,6 +17,9 @@ export const Subscriptions = () => {
 
   const [total, setTotal] = useState<number>(0);
 
+  const teacherPortion = (amount: number) => Math.round((amount
+     * ((100 - (teacher?.commission ?? 0)) / 100)));
+
   useEffect(() => {
     if (email) {
       getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
@@ -49,50 +52,53 @@ export const Subscriptions = () => {
   }, [email]);
 
   return (
-    <div className={classes.container}>
-      {teacher && (
-      <div>
-        <span style={{ marginRight: '5px' }}>Profile url:</span>
-        <a
-          rel="noopener noreferrer"
-          target="_blank"
-          href={`teacher/${teacher.shortId}`}
-        >
-          akshara.lk/teacher/
-          {teacher.shortId}
-        </a>
-      </div>
-      )}
+    <>
+      {teacher ? (
+        <div className={classes.container}>
+          <div>
+            <span style={{ marginRight: '5px' }}>Profile url:</span>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`teacher/${teacher.shortId}`}
+            >
+              akshara.lk/teacher/
+              {teacher.shortId}
+            </a>
+          </div>
 
-      <h2>Subscriptions</h2>
-      <table className="center w100">
+          <h2>Subscriptions</h2>
+          <table className="center w100">
 
-        <tbody>
+            <tbody>
 
-          <tr key={0}>
-            <th>Lesson</th>
-            <th>Price</th>
-            <th>Count</th>
-            <th>Total</th>
-          </tr>
-          {
+              <tr key={0}>
+                <th>Lesson</th>
+                <th>Teacher Portion</th>
+                <th>Count</th>
+                <th>Total</th>
+              </tr>
+              {
           Object.values(lessMap)?.map((val) => (
             <tr key={val.lesson.id}>
               <td>{val.lesson.topic}</td>
-              <td>{val.lesson.price}</td>
+              <td>{teacherPortion(val.lesson.price)}</td>
               <td>{val.payments.length}</td>
-              <td>{val.payments.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount}</td>
+              <td>{teacherPortion(val.payments.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount)}</td>
             </tr>
           ))
           }
-          <tr key={1}>
-            <th>.</th>
-            <th>.</th>
-            <th>Total</th>
-            <th>{total}</th>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+              <tr key={1}>
+                <th>.</th>
+                <th>.</th>
+                <th>Total</th>
+                <th>{total}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )
+        : <div />}
+    </>
   );
 };

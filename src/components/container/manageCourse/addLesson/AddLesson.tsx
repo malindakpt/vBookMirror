@@ -181,7 +181,7 @@ export const AddLesson = () => {
           videoId,
           duration,
           // No need to edit courseId
-          // price, disabled by business logic
+          price,
         },
       };
       updateDoc(Entity.LESSONS, editingLesson.id, less).then(() => {
@@ -342,6 +342,32 @@ export const AddLesson = () => {
         autoComplete="off"
       >
         <div>
+          <RadioGroup
+            className={classes.twoColumn}
+            aria-label="editMode"
+            name="editMode"
+            value={editMode}
+            onChange={(e: any) => {
+              if (e.target.value === 'false') {
+                addNew();
+              } else {
+                showSnackbar('Select a lesson from the lessons list');
+              }
+            }}
+          >
+            <FormControlLabel
+              value={false}
+              control={<Radio />}
+              label="Add New Lesson"
+              disabled={disabled}
+            />
+            <FormControlLabel
+              value
+              control={<Radio />}
+              label="Edit lesson"
+              disabled={disabled}
+            />
+          </RadioGroup>
           <FormControl className={classes.input}>
             <InputLabel
               id="demo-simple-select-label"
@@ -374,35 +400,6 @@ export const AddLesson = () => {
           </FormControl>
 
           <div>
-            {/* <TextField
-              className={`${classes.input} fc1`}
-              id="examYear"
-              label="Exam Year"
-              value={examYear}
-              onChange={(e) => setExamYear(e.target.value)}
-            />
-            <Button onClick={editCourseYear}>Change</Button> */}
-            <RadioGroup
-              className={classes.twoColumn}
-              aria-label="editMode"
-              name="editMode"
-              value={editMode}
-              onChange={(e: any) => { e.target.value === 'false' && addNew(); }}
-            >
-              <FormControlLabel
-                value={false}
-                control={<Radio />}
-                label="Add New Lesson"
-                disabled={disabled}
-              />
-              <FormControlLabel
-                value
-                control={<Radio />}
-                label="Edit lesson"
-                disabled={disabled}
-              />
-            </RadioGroup>
-
             <TextField
               className={classes.input}
               id="topic"
@@ -411,11 +408,9 @@ export const AddLesson = () => {
               disabled={disabled}
               onChange={(e) => setTopic(e.target.value)}
             />
-
             <div className={classes.video}>
               <>
                 <div className={classes.buttons}>
-
                   <input
                     type="file"
                     id="uploader"
@@ -423,7 +418,6 @@ export const AddLesson = () => {
                     onChange={onFileSelect}
                     disabled={disabled}
                   />
-
                   {uploadProgress > 0 && uploadProgress < 100 && (
                   <Button
                     size="small"
@@ -436,7 +430,6 @@ export const AddLesson = () => {
                       {uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}
                     </span>
                   </Button>
-
                   )}
                   <div className={classes.note}>
                     Max 5Mb allowed for 1 minute of the video.
@@ -444,19 +437,18 @@ export const AddLesson = () => {
                     Eg: If video length is 1 hour(60 minutes), size should be less than 300Mb.
                   </div>
                 </div>
-
                 <video
                   id="myVideo"
                   width="320"
                   height="176"
                   controls
+                  controlsList="nodownload"
+                  autoPlay
                 >
                   <track
                     kind="captions"
                   />
-
                 </video>
-
               </>
             </div>
 
@@ -468,11 +460,10 @@ export const AddLesson = () => {
               disabled={disabled}
               onChange={(e) => setDescription(e.target.value)}
             />
-
             <TextField
               className={classes.inputMulti}
               id="standard-multiline-static"
-              label="Upload tutorials to GoogleDrive and paste the link here(*Add each of them in a new line)"
+              label="Add GoogleDrive links as separate lines"
               multiline
               rows={3}
               variant="outlined"
@@ -483,28 +474,15 @@ export const AddLesson = () => {
                 setAttachments(e.target.value.split('\n'));
               }}
             />
-
             <TextField
               className={classes.input}
               id="price"
               type="number"
               label="Price"
               value={price}
-              disabled={disabled || editMode} // do not allow changes after added
+              disabled={disabled}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
-
-            {/* <TextField
-              className={classes.input}
-              id="watchCount"
-              type="number"
-              label="Watch Count Per Payment"
-              value={watchCount}
-              disabled={disabled || editMode}
-              onChange={(e) => setWatchCount(Number(e.target.value))}
-            /> */}
-
-            {uploadProgress === 0 && (
             <Button
               size="small"
               variant="contained"
@@ -512,9 +490,8 @@ export const AddLesson = () => {
               disabled={disabled}
               onClick={startUploadVideo}
             >
-              {editMode ? 'Save Changes' : 'Add New Lesson'}
+              {editMode ? 'Edit Selected Lesson' : 'Add New Lesson'}
             </Button>
-            )}
           </div>
         </div>
 
