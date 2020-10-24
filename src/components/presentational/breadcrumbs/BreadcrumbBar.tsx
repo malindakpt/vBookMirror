@@ -9,7 +9,13 @@ export const BreadcrumbBar = () => {
   return (
     <Breadcrumbs
       aria-label="breadcrumb"
-      style={{ background: 'rgb(71 58 183)', padding: '10px 20px', minHeight: '24px' }}
+      style={{
+        background: 'rgb(71 58 183)',
+        padding: '10px 20px',
+        minHeight: '24px',
+        marginBottom: '30px',
+        boxShadow: '0 0px 8px 0 rgb(0 0 0 / 50%)',
+      }}
     >
       {breadcrumbs?.map((bc) => (
         <Link
