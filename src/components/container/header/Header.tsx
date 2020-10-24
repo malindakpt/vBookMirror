@@ -14,7 +14,7 @@ import { Util } from '../../../helper/util';
 
 export const Header:React.FC = () => {
   const [user, setUser] = useState <{name: '', photo: ''} | null>(null);
-  const { setEmail, setIsTeacher } = useContext(AppContext);
+  const { setEmail, setIsTeacher, showSnackbar } = useContext(AppContext);
 
   const setUserDetails = (result: any) => {
     let email;
@@ -66,6 +66,8 @@ export const Header:React.FC = () => {
       // setName(user.displayName);
       // ...
     }).catch((error) => {
+      console.log('Login error', error);
+      showSnackbar('Network error please try again in few minutes');
       // // Handle Errors here.
       // const errorCode = error.code;
       // const errorMessage = error.message;
