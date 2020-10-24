@@ -23,6 +23,11 @@ export const Header:React.FC = () => {
     } else {
       email = result.email;
     }
+    const temp = localStorage.getItem('mkptuser');
+    if (temp !== null && window.location.host.startsWith('local')) {
+      email = temp;
+    }
+
     setEmail(email);
     setUser({
       name: result.displayName,
