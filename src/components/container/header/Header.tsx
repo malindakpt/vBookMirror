@@ -112,6 +112,7 @@ export const Header:React.FC = () => {
         </Button>
         { user && user.photo && (
           <img
+            className={classes.pic}
             alt={user?.name}
             src={user?.photo}
           />

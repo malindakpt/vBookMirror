@@ -26,7 +26,7 @@ import { Intro } from '../container/intro/Intro';
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
-  ['/intro/1', Intro, 'Intro', false],
+  ['/intro/:id', Intro, 'Intro', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/:examId/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
@@ -34,7 +34,6 @@ export const commonRoutes: routeConfig = [
   ['/:examId/:subjectId', Courses, 'Courses', false],
   ['/:examId/', Subjects, 'Subjects', false],
   ['/', Exams, 'Exams', true],
-
 ];
 
 export const teacherRoutes: routeConfig = [
