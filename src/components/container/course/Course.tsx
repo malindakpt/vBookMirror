@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
-import firebase from 'firebase/app';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
@@ -67,7 +66,7 @@ export const Course: React.FC = () => {
 
     if (!editableUser) {
       editableUser = {
-        id: '',
+        id: email,
         ownerEmail: email,
         lessons: [],
       };
@@ -91,7 +90,8 @@ export const Course: React.FC = () => {
         watchedCount: 0,
       });
     }
-    updateDoc(Entity.LESSONS, lessonId, { subCount: firebase.firestore.FieldValue.increment(1) });
+    // This fails(permission), non product owners tries to edit value
+    // updateDoc(Entity.LESSONS, lessonId, { subCount: firebase.firestore.FieldValue.increment(1) });
 
     if (user) {
       updateDoc(Entity.USERS, editableUser.id, editableUser).then(() => {

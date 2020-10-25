@@ -26,7 +26,6 @@ const app = firebase.initializeApp(appConfig);
 const db = firebase.firestore(app);
 const storage = firebase.storage(app);
 const store: {[key: string]: any} = {};
-console.log('firebase initialized');
 
 const clearStore = (entityName: string) => {
   for (const key of Object.keys(store)) {
@@ -68,10 +67,9 @@ export const updateMeta = (email: string, vId: string) => {
 
   // Update metadata properties
   forestRef.updateMetadata(newMetadata).then((metadata) => {
-    // console.log(metadata);
     // Updated metadata for 'images/forest.jpg' is returned in the Promise
   }).catch((error) => {
-    console.log(error);
+    console.error(error);
   // Uh-oh, an error occurred!
   });
 };
@@ -91,20 +89,19 @@ export const uploadVideoToServer = (file: any, email: string, vId: string): Subj
   // Observe state change events such as progress, pause, and resume
   // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    // console.log(`Upload is ${progress}% done`);
     subject.next({
       uploadTask,
       progress,
     });
     switch (snapshot.state) {
       case firebase.storage.TaskState.PAUSED: // or 'paused'
-        console.log('Upload is paused');
+        // console.log('Upload is paused');
         break;
       case firebase.storage.TaskState.RUNNING: // or 'running'
         // console.log('Upload is running');
         break;
       default:
-        console.log('unhandled');
+        console.error('unhandled');
     }
   }, (error) => {
   // Handle unsuccessful uploads
@@ -112,7 +109,6 @@ export const uploadVideoToServer = (file: any, email: string, vId: string): Subj
   // Handle successful uploads on complete
   // For instance, get the download URL: https://firebasestorage.googleapis.com/...
     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-      // console.log('File available at', downloadURL);
       updateMeta(email, vId);
       subject.next({
         uploadTask,
@@ -138,15 +134,16 @@ export const uploadVideoToServer = (file: any, email: string, vId: string): Subj
 };
 
 export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((resolve, reject) => {
+  const saveObj = { ...obj };
   // @ts-ignore
-  delete obj.id; // Allow id auto generation and remove exsting id params
+  delete saveObj.id; // Allow id auto generation and remove exsting id params
 
-  db.collection(entityName).add(obj).then((docRef: any) => {
-    console.log(docRef.id);
+  db.collection(entityName).add(saveObj).then((docRef: any) => {
+    // console.log(docRef.id);
     clearStore(entityName);
     resolve(docRef.id);
   }).catch((err) => {
-    console.log(err);
+    console.error(err);
     reject(err);
   });
 });
@@ -157,18 +154,22 @@ export const deleteDoc = (entityName: Entity, id: string) => new Promise<boolean
     resolve(true);
   })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       reject(err);
     });
 });
 
 export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve, reject) => {
-  db.collection(entityName).doc(id).set(obj).then((data: any) => {
+  const saveObj = { ...obj };
+  // @ts-ignore
+  delete saveObj.id; // Allow id auto generation and remove exsting id params
+
+  db.collection(entityName).doc(id).set(saveObj).then((data: any) => {
     clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       reject(err);
     });
 });
@@ -179,7 +180,7 @@ export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promi
     resolve(true);
   })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       reject(err);
     });
 });
@@ -247,7 +248,7 @@ export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | nul
         resolves(dat);
       } else {
         resolves(null);
-        console.log(`${entityName}: ${id} : No such document!`);
+        console.error(`${entityName}: ${id} : No such document!`);
       }
     })
       .catch((err: any) => {
