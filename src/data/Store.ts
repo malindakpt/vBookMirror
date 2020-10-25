@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/storage';
 import { Subject } from 'rxjs';
-import firebaseConfig from './Config';
+import appConfig from './Config';
 
 export interface UploadStatus {
   progress: number;
@@ -22,7 +22,7 @@ export enum Entity {
   LOGS = 'LOGS'
 }
 
-const app = firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(appConfig);
 const db = firebase.firestore(app);
 const storage = firebase.storage(app);
 const store: {[key: string]: any} = {};
@@ -68,8 +68,8 @@ export const updateMeta = (email: string, vId: string) => {
 
   // Update metadata properties
   forestRef.updateMetadata(newMetadata).then((metadata) => {
-    console.log(metadata);
-  // Updated metadata for 'images/forest.jpg' is returned in the Promise
+    // console.log(metadata);
+    // Updated metadata for 'images/forest.jpg' is returned in the Promise
   }).catch((error) => {
     console.log(error);
   // Uh-oh, an error occurred!

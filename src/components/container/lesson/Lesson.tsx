@@ -13,8 +13,7 @@ import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IUser } from '../../../interfaces/IUser';
 import { AppContext } from '../../../App';
-
-const UPDATE_WATCH_TIMER = 2000;
+import appConfig from '../../../data/Config';
 
 export const Lesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -47,7 +46,7 @@ export const Lesson: React.FC = () => {
           });
         }
       });
-    }, UPDATE_WATCH_TIMER);
+    }, appConfig.watchedTimeout);
   };
 
   const processVideo = async () => {
@@ -119,7 +118,7 @@ export const Lesson: React.FC = () => {
         />
       </video>
       )}
-      {teacher && (
+      {teacher && lesson && (
       <div>
         <ReactWhatsapp
           number={teacher.phoneChat}
