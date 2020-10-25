@@ -4,6 +4,7 @@ import { AppContext } from '../../../App';
 import {
   addDoc, Entity, getDocsWithProps,
 } from '../../../data/Store';
+import { teacherPortion } from '../../../helper/util';
 import { IPayment } from '../../../interfaces/IPayment';
 import { ITeacher } from '../../../interfaces/ITeacher';
 
@@ -19,23 +20,23 @@ export const Payments = () => {
     getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
   }, []);
 
-  const checkBal = (teacherEmail: string, commission: number) => {
-    getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: teacherEmail }).then((data) => {
+  const checkBal = (teacher: ITeacher) => {
+    getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: teacher.ownerEmail }).then((data) => {
       const total = data.length > 0 ? data.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount : 0;
       setAllPayments((prev) => {
         const clone = { ...prev };
-        clone[teacherEmail] = total;
+        clone[teacher.ownerEmail] = teacherPortion(teacher.commission, total);
         return clone;
       });
     });
-    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_TEACHER, { paidFor: teacherEmail }).then((data) => {
+    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_TEACHER, { paidFor: teacher.ownerEmail }).then((data) => {
       const total = data.length > 0 ? data.reduce((a, b) => ({
         ...a,
         amount: a.amount + b.amount,
       })).amount : 0;
       setPaidPayments((prev) => {
         const clone = { ...prev };
-        clone[teacherEmail] = total;
+        clone[teacher.ownerEmail] = total;
         return clone;
       });
     });
@@ -69,7 +70,7 @@ export const Payments = () => {
               <tr key={t.id}>
                 <td>{t.name}</td>
                 <td>{t.ownerEmail}</td>
-                <td><Button onClick={() => checkBal(t.ownerEmail, t.commission)}>Check Balance</Button></td>
+                <td><Button onClick={() => checkBal(t)}>Check Balance</Button></td>
                 <td>{allPayments[t.id]}</td>
                 <td>{paidPayments[t.id]}</td>
                 <td>{payble}</td>

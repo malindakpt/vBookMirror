@@ -6,6 +6,7 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IPayment } from '../../../interfaces/IPayment';
+import { teacherPortion } from '../../../helper/util';
 
 interface LessMap {[key: string]: {payments: IPayment[], lesson: ILesson}}
 
@@ -16,9 +17,6 @@ export const Subscriptions = () => {
   const [teacher, setTeacher] = useState<ITeacher>();
 
   const [total, setTotal] = useState<number>(0);
-
-  const teacherPortion = (amount: number) => Math.round((amount
-     * ((100 - (teacher?.commission ?? 0)) / 100)));
 
   useEffect(() => {
     if (email) {
@@ -74,7 +72,7 @@ export const Subscriptions = () => {
 
               <tr key={0}>
                 <th>Lesson</th>
-                <th>Amount</th>
+                <th>Price</th>
                 <th>Payments</th>
                 <th>Total</th>
               </tr>
@@ -82,9 +80,13 @@ export const Subscriptions = () => {
           Object.values(lessMap)?.map((val) => (
             <tr key={val.lesson.id}>
               <td>{val.lesson.topic}</td>
-              <td>{teacherPortion(val.lesson.price)}</td>
+              <td>{teacherPortion(teacher.commission, val.lesson.price)}</td>
               <td>{val.payments.length}</td>
-              <td>{teacherPortion(val.payments.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount)}</td>
+              <td>
+                {teacherPortion(teacher.commission, val.payments.reduce(
+                  (a, b) => ({ ...a, amount: a.amount + b.amount }),
+                ).amount)}
+              </td>
             </tr>
           ))
           }
@@ -92,7 +94,7 @@ export const Subscriptions = () => {
                 <th>.</th>
                 <th>.</th>
                 <th>Total</th>
-                <th>{total}</th>
+                <th>{teacherPortion(teacher.commission, total)}</th>
               </tr>
             </tbody>
           </table>
