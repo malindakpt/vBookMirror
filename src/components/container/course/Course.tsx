@@ -14,6 +14,7 @@ import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
 import { AlertDialog } from '../../presentational/snackbar/AlertDialog';
 import { paymentJS, startPay } from '../../../helper/payment';
+import appConfig from '../../../data/Config';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -115,15 +116,24 @@ export const Course: React.FC = () => {
       paymentJS.onDismissed = function onDismissed() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-        console.log('Payment dismissed completed. New');
+        console.log('Payment cancelled');
+        showSnackbar('Payment cancelled');
         // handlePaymentSuccess(lesson.price, dd, lesson.id);
       };
       paymentJS.onCompleted = function onDismissed() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-        console.log('Succeed');
-        handlePaymentSuccess(lesson.price, dd, lesson.id);
+        if (appConfig.isProd) {
+          console.log('Succeed');
+          showSnackbar('Sorry, Payment gateway is under maintanance. Please contact us for inquiries');
+        } else {
+          console.log('Succeed');
+          showSnackbar('Dev Payment Succeed');
+          handlePaymentSuccess(lesson.price, dd, lesson.id);
+        }
       };
+
+      // Show payment dialog
       startPay(email, lesson.id, lesson.price, dd);
     }
   };
