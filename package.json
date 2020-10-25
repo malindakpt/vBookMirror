@@ -9,8 +9,9 @@
     "eject": "react-scripts eject",
     "clean": "rmdir \"firebase\\public\\\" /q /s",
     "copy": "xcopy \".\\build\" \"firebase\\public\\\" /e /y",
+    "postbuild": "rimraf build/**/*.map",
     "upload": "cd firebase && firebase deploy",
-    "buildcopy": "npm run build && npm run clean && npm run copy"
+    "host": "npm run build && npm run clean && npm run copy && npm run upload"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
