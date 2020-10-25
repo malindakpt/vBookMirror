@@ -116,8 +116,15 @@ export const Course: React.FC = () => {
       paymentJS.onDismissed = function onDismissed() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-        console.log('Payment cancelled');
-        showSnackbar('Payment cancelled');
+
+        if (appConfig.isProd) {
+          console.log('Payment cancelled');
+          showSnackbar('Payment cancelled');
+        } else {
+          console.log('Succeed');
+          showSnackbar('Dev Payment Succeed');
+          handlePaymentSuccess(lesson.price, dd, lesson.id);
+        }
         // handlePaymentSuccess(lesson.price, dd, lesson.id);
       };
       paymentJS.onCompleted = function onDismissed() {

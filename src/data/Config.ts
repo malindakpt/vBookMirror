@@ -8,7 +8,7 @@ const appConfig = {
   appId: '1:794082939900:web:9967e6ea91936c2016d879',
   measurementId: 'G-4SS7PQK8D5',
 
-  watchedTimeout: 5000,
+  watchedTimeout: 3000,
   isProd: false,
 };
 

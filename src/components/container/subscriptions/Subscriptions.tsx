@@ -74,8 +74,8 @@ export const Subscriptions = () => {
 
               <tr key={0}>
                 <th>Lesson</th>
-                <th>Teacher Portion</th>
-                <th>Count</th>
+                <th>Amount</th>
+                <th>Payments</th>
                 <th>Total</th>
               </tr>
               {
