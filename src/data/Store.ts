@@ -137,9 +137,9 @@ export const uploadVideoToServer = (file: any, email: string, vId: string): Subj
   return subject;
 };
 
-export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((resolve) => {
+export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((resolve, reject) => {
   // @ts-ignore
-  delete obj.id; // Allow id auto generation
+  delete obj.id; // Allow id auto generation and remove exsting id params
 
   db.collection(entityName).add(obj).then((docRef: any) => {
     console.log(docRef.id);
@@ -147,40 +147,40 @@ export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((re
     resolve(docRef.id);
   }).catch((err) => {
     console.log(err);
-    resolve(err);
+    reject(err);
   });
 });
 
-export const deleteDoc = (entityName: Entity, id: string) => new Promise<boolean>((resolve) => {
+export const deleteDoc = (entityName: Entity, id: string) => new Promise<boolean>((resolve, reject) => {
   db.collection(entityName).doc(id).delete().then(() => {
     clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
       console.log(err);
-      resolve(false);
+      reject(err);
     });
 });
 
-export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve) => {
+export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve, reject) => {
   db.collection(entityName).doc(id).set(obj).then((data: any) => {
     clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
       console.log(err);
-      resolve(false);
+      reject(err);
     });
 });
 
-export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promise((resolve) => {
+export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promise((resolve, reject) => {
   db.collection(entityName).doc(id).update(obj).then((data: any) => {
     clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
       console.log(err);
-      resolve(false);
+      reject(err);
     });
 });
 
@@ -191,7 +191,7 @@ const generateRequestKey = (
 export const getDocsWithProps = <T>(
   entityName: Entity,
   conditions: any,
-): Promise<T> => new Promise((resolves) => {
+): Promise<T> => new Promise((resolves, reject) => {
     const cachedResponse = store[generateRequestKey(entityName, conditions)];
     if (cachedResponse) {
       // Resolve result from cache and skip network
@@ -232,14 +232,14 @@ export const getDocsWithProps = <T>(
         store[generateRequestKey(entityName, conditions)] = results;
         resolves(results);
       })
-      .catch((error: any) => {
-        console.error(error);
-        resolves(undefined);
+      .catch((err: any) => {
+        console.error(err);
+        reject(err);
       });
   });
 
 export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | null> => new Promise(
-  (resolves) => {
+  (resolves, reject) => {
     db.collection(entityName).doc(id).get().then((doc: any) => {
       if (doc.exists) {
         const dat = doc.data();
@@ -249,6 +249,10 @@ export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | nul
         resolves(null);
         console.log(`${entityName}: ${id} : No such document!`);
       }
-    });
+    })
+      .catch((err: any) => {
+        console.error(err);
+        reject(err);
+      });
   },
 );
