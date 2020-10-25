@@ -5,36 +5,54 @@ import {
   addDoc, Entity, getDocsWithProps,
 } from '../../../data/Store';
 import { teacherPortion } from '../../../helper/util';
+import { ILesson } from '../../../interfaces/ILesson';
 import { IPayment } from '../../../interfaces/IPayment';
 import { ITeacher } from '../../../interfaces/ITeacher';
+import classes from './Payments.module.scss';
 
 export const Payments = () => {
   const [busy, setBusy] = useState<boolean>(false);
   const { email, showSnackbar } = useContext(AppContext);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
+  const [teacher, setTeacher] = useState<ITeacher>();
 
-  const [allPayments, setAllPayments] = useState<{[id: string]: number}>({});
-  const [paidPayments, setPaidPayments] = useState<{[id: string]: number}>({});
+  const [studentPayments, setStudentPayments] = useState<{[id: string]: number}>({});
+  const [teacherPayments, setTeacherPayments] = useState<{[id: string]: number}>({});
+
+  const [teacherLessons, setTeacherLsssons] = useState<{[id: string]: ILesson}>({});
+  const [payments, setPayments] = useState<IPayment[]>([]);
 
   useEffect(() => {
     getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
   }, []);
 
   const checkBal = (teacher: ITeacher) => {
+    setTeacher(teacher);
+
+    getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: teacher.ownerEmail }).then((data) => {
+      const lessonMap: any = {};
+      data.forEach((less) => {
+        lessonMap[less.id] = less;
+      });
+      setTeacherLsssons(lessonMap);
+    });
+
     getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: teacher.ownerEmail }).then((data) => {
+      setPayments(data);
       const total = data.length > 0 ? data.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount : 0;
-      setAllPayments((prev) => {
+      setStudentPayments((prev) => {
         const clone = { ...prev };
         clone[teacher.ownerEmail] = teacherPortion(teacher.commission, total);
         return clone;
       });
     });
+
     getDocsWithProps<IPayment[]>(Entity.PAYMENTS_TEACHER, { paidFor: teacher.ownerEmail }).then((data) => {
       const total = data.length > 0 ? data.reduce((a, b) => ({
         ...a,
         amount: a.amount + b.amount,
       })).amount : 0;
-      setPaidPayments((prev) => {
+      setTeacherPayments((prev) => {
         const clone = { ...prev };
         clone[teacher.ownerEmail] = total;
         return clone;
@@ -61,18 +79,18 @@ export const Payments = () => {
   };
 
   return (
-    <>
-      <table className="center w100">
+    <div className={classes.container}>
+      <table>
         <tbody>
           { teachers.map((t) => {
-            const payble = (allPayments[t.id] ?? 0) - (paidPayments[t.id] ?? 0);
+            const payble = (studentPayments[t.id] ?? 0) - (teacherPayments[t.id] ?? 0);
             return (
               <tr key={t.id}>
                 <td>{t.name}</td>
                 <td>{t.ownerEmail}</td>
                 <td><Button onClick={() => checkBal(t)}>Check Balance</Button></td>
-                <td>{allPayments[t.id]}</td>
-                <td>{paidPayments[t.id]}</td>
+                <td>{studentPayments[t.id]}</td>
+                <td>{teacherPayments[t.id]}</td>
                 <td>{payble}</td>
                 <td>
                   <input
@@ -84,7 +102,6 @@ export const Payments = () => {
                     disabled={busy}
                   >
                     Pay
-
                   </Button>
                 </td>
               </tr>
@@ -92,6 +109,19 @@ export const Payments = () => {
           })}
         </tbody>
       </table>
-    </>
+      <br />
+      <table>
+        <tbody>
+          { payments.sort((a, b) => b.date - a.date).map((p) => (
+            <tr key={p.id}>
+              <td>{new Date(p.date).toDateString()}</td>
+              <td>{p.ownerEmail}</td>
+              <td>{teacherLessons[p.lessonId]?.topic}</td>
+              <td>{p.amount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };

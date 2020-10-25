@@ -196,6 +196,7 @@ export const getDocsWithProps = <T>(
     const cachedResponse = store[generateRequestKey(entityName, conditions)];
     if (cachedResponse) {
       // Resolve result from cache and skip network
+      console.log('ch');
       resolves(cachedResponse);
       return;
     }
