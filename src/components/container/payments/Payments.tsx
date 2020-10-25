@@ -14,7 +14,6 @@ export const Payments = () => {
   const [busy, setBusy] = useState<boolean>(false);
   const { email, showSnackbar } = useContext(AppContext);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
-  const [teacher, setTeacher] = useState<ITeacher>();
 
   const [studentPayments, setStudentPayments] = useState<{[id: string]: number}>({});
   const [teacherPayments, setTeacherPayments] = useState<{[id: string]: number}>({});
@@ -27,8 +26,6 @@ export const Payments = () => {
   }, []);
 
   const checkBal = (teacher: ITeacher) => {
-    setTeacher(teacher);
-
     getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: teacher.ownerEmail }).then((data) => {
       const lessonMap: any = {};
       data.forEach((less) => {
@@ -39,7 +36,8 @@ export const Payments = () => {
 
     getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: teacher.ownerEmail }).then((data) => {
       setPayments(data);
-      const total = data.length > 0 ? data.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount : 0;
+      const total = data.length > 0
+        ? data.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount : 0;
       setStudentPayments((prev) => {
         const clone = { ...prev };
         clone[teacher.ownerEmail] = teacherPortion(teacher.commission, total);
