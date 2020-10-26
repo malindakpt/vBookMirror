@@ -22,10 +22,12 @@ import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
+import { zoomContainer } from '../presentational/zoomContainer/zoomContainer';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
+  ['/zoom', zoomContainer, 'Zoom', false],
   ['/intro/:id', Intro, 'Intro', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
