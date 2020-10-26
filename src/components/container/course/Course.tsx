@@ -14,6 +14,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import { AlertDialog } from '../../presentational/snackbar/AlertDialog';
 import { paymentJS, startPay } from '../../../helper/payment';
 import appConfig from '../../../data/Config';
+import { ILiveSession } from '../../../interfaces/ILiveSession';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -23,6 +24,7 @@ export const Course: React.FC = () => {
 
   const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
   const [lessons, setLessons] = useState<ILesson[]>([]);
+  const [liveLessons, setLiveLessons] = useState<ILiveSession[]>([]);
 
   const [accepted, setAccepted] = useState<boolean>(false);
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
@@ -32,13 +34,16 @@ export const Course: React.FC = () => {
       // Check the lessons paid by user
       getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }),
       // All lessons related to courseId
-      getDocsWithProps<ILesson[]>(Entity.LESSONS, { courseId }),
+      getDocsWithProps<ILesson[]>(Entity.LESSONS, { courseId, ownerEmail: email }),
+      getDocsWithProps<ILiveSession[]>(Entity.LIVE_SESSIONS, { courseId, ownerEmail: email }),
       // Find the lesson order of the course
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
-      const [users, lessons, course] = result;
+      const [users, lessons, liveLessons, course] = result;
 
-      if (users && lessons && course) {
+      if (liveLessons) { setLiveLessons(liveLessons); }
+
+      if (users && lessons && liveLessons && course) {
         const lessons4Course: ILesson[] = [];
         course?.lessons.forEach((lesId) => {
           const les = lessons.find((l) => l.id === lesId);
@@ -149,6 +154,43 @@ export const Course: React.FC = () => {
 
   return (
     <div className="container">
+      {
+        liveLessons.map((live) => {
+          let status: 'yes' | 'no' | 'none' | undefined;
+          if (live.price) {
+            // if (freeOrPurchased(live)) {
+            //   status = 'yes';
+            // } else {
+            status = 'no';
+            // }
+          } else {
+            status = 'none';
+          }
+          return (
+            <div
+              // onClick={() => handleSelectLesson(live)}
+              key={live.id}
+              role="button"
+              tabIndex={0}
+              // onKeyDown={() => handleSelectLesson(lesson)}
+            >
+              <Category
+                id={live.id}
+                CategoryImg={OndemandVideoIcon}
+                title1={`${live.topic}`}
+                title2={`${live.description}`}
+                title3={`${new Date(live.dateTime).toString()}`}
+                // title3={live.price > 0 ? `Watched: ${getRemain(live)}/${lesson.watchCount}` : 'Free'}
+                title4={`${live.duration} mins`}
+                navURL=""
+                // navURL={freeOrPurchased(live)
+                //    && (accepted || live.price === 0) ? `${courseId}/${live.id}` : `${courseId}`}
+                status={status}
+              />
+            </div>
+          );
+        })
+      }
       {
         lessons?.map((lesson, idx) => {
           let status: 'yes' | 'no' | 'none' | undefined;

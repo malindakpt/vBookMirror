@@ -3,9 +3,12 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../../../../App';
-import { Entity, getDocsWithProps } from '../../../../data/Store';
+import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
+import { getObject } from '../../../../data/StoreHelper';
 import { ICourse } from '../../../../interfaces/ICourse';
+import { IExam } from '../../../../interfaces/IExam';
 import { ILiveSession } from '../../../../interfaces/ILiveSession';
+import { ISubject } from '../../../../interfaces/ISubject';
 import classes from './AddLiveSession.module.scss';
 
 export const AddLiveSession = () => {
@@ -16,8 +19,10 @@ export const AddLiveSession = () => {
   const [sessions, setSessions] = useState<ILiveSession[]>([]);
 
   const [courses, setCourses] = useState<ICourse[]>([]);
-  const [courseId, setCourseId] = useState<string>('');
-  const weekDays = ['SUN', 'MON'];
+  const [selectedCourse, setSelectedCourse] = useState<ICourse>();
+
+  const [exams, setExams] = useState<IExam[]>([]);
+  const [subjects, setSubjects] = useState<ISubject[]>([]);
 
   const setSessionProps = (obj: any) => {
     setSession((prev) => {
@@ -26,20 +31,32 @@ export const AddLiveSession = () => {
     });
   };
 
-  const onDateChange = (e: any) => {
-    console.log(e.target.value);
-  };
-
   const onSave = () => {
-
+    setBusy(true);
+    addDoc(Entity.LIVE_SESSIONS, { ownerEmail: email, ...session }).then((data) => {
+      showSnackbar('Live Session Added');
+      getDocsWithProps<ILiveSession[]>(Entity.LIVE_SESSIONS, {}).then((data) => setSessions(data));
+      setBusy(false);
+    });
+    console.log(session);
   };
 
   useEffect(() => {
+    // fetch unrelated data
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
     getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
       .then((data) => data && setCourses(data));
+
+    getDocsWithProps<ILiveSession[]>(Entity.LIVE_SESSIONS, {}).then((data) => setSessions(data));
+  }, []);
+
+  const onCourseChange = (id: string) => {
+    setSessionProps({ courseId: id });
+    setSelectedCourse(courses.find((c) => c.id === id));
     getDocsWithProps<ILiveSession[]>(Entity.LIVE_SESSIONS, { ownerEmail: email })
       .then((data) => data && setSessions(data));
-  }, []);
+  };
 
   return (
     <>
@@ -48,6 +65,36 @@ export const AddLiveSession = () => {
         noValidate
         autoComplete="off"
       >
+        <FormControl className={classes.input}>
+          <InputLabel
+            id="demo-simple-select-label"
+            className="fc1"
+          >
+            Select Course
+          </InputLabel>
+          <Select
+            className={`${classes.input} fc1`}
+            labelId="label1"
+            id="id1"
+            value={selectedCourse}
+            disabled={busy}
+            onChange={(e) => onCourseChange(e.target.value as string)}
+          >
+            {courses.map((course) => {
+              const subject = getObject(subjects, course.subjectId);
+              const exam = getObject(exams, course.examId);
+
+              return (
+                <MenuItem
+                  value={course.id}
+                  key={course.id}
+                >
+                  {`${exam?.name}-${exam?.type}-${subject?.name}`}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
 
         <TextField
           className={classes.input}
@@ -78,50 +125,17 @@ export const AddLiveSession = () => {
           onChange={(e) => setSessionProps({ duration: e.target.value })}
         />
 
-        <FormControl className={classes.input}>
-          <InputLabel
-            id="demo-simple-select-label"
-            className="fc1"
-          >
-            Select Day
-          </InputLabel>
-          <Select
-            className={`${classes.input} fc1`}
-            labelId="label1"
-            id="id1"
-            value={courseId}
-            disabled={busy}
-            onChange={onDateChange}
-          >
-            {weekDays.map((day) => (
-              <MenuItem
-                value={day}
-                key={day}
-              >
-                {`${day}`}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <form
-          className={classes.container}
-          noValidate
-        >
-          <TextField
-            id="time"
-            label="Alarm clock"
-            type="time"
-            defaultValue="07:30"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              step: 300, // 5 min
-            }}
-          />
-        </form>
+        <TextField
+          id="datetime-local"
+          label="Next appointment"
+          type="datetime-local"
+          onChange={(e) => setSessionProps({ dateTime: new Date(e.target.value).getTime() })}
+            // defaultValue="2017-05-24T10:30"
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
 
         <Button
           variant="contained"
@@ -132,6 +146,17 @@ export const AddLiveSession = () => {
         </Button>
 
       </form>
+
+      <table>
+        {sessions.map((ses) => (
+          <tr>
+            <td>{new Date(ses.dateTime).toLocaleDateString()}</td>
+            <td>{ses.courseId}</td>
+            <td>{ses.topic}</td>
+            <td>{ses.duration}</td>
+          </tr>
+        )) }
+      </table>
     </>
   );
 };

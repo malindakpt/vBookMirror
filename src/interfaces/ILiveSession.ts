@@ -2,7 +2,7 @@ export interface ILiveSession {
     id: string;
     topic: string;
     description: string;
-    time: number;
+    dateTime: string;
     ownerEmail: string;
     courseId: string;
     price: number;
