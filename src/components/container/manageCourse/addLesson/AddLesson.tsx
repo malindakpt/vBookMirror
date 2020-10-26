@@ -21,6 +21,7 @@ import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import { OBS_DOWNLOAD, OBS_HELP_DOC, OBS_HELP_VIDEO } from '../../../../data/Config';
+import { round } from '../../../../helper/util';
 
 export const AddLesson = () => {
   useBreadcrumb();
@@ -60,6 +61,10 @@ export const AddLesson = () => {
   const resetFileInput = () => {
     // @ts-ignore
     document.getElementById('uploader').value = null;
+    setUploadFile(undefined);
+
+    const videoNode = document.querySelector('video');
+    if (videoNode) videoNode.src = '';
   };
 
   // Replicate changes of here for all #LessonModify
@@ -76,15 +81,14 @@ export const AddLesson = () => {
     setPrice(0);
     setDuration(0);
 
-    setUploadFile(undefined);
     resetFileInput();
     // No need to reset courseId
 
-    // Rest video thumbnail
-    const videoNode = document.querySelector('video');
-    if (videoNode) {
-      videoNode.src = '';
-    }
+    // // Rest video thumbnail
+    // const videoNode = document.querySelector('video');
+    // if (videoNode) {
+    //   videoNode.src = '';
+    // }
   };
 
   const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: ILesson[]) => {
@@ -127,35 +131,39 @@ export const AddLesson = () => {
   }, [onDataFetch]);
 
   const onFileSelect = (e: any) => {
-    const limit = 5;
+    const allowedSizeFor1min = 5;
     // TODO: Handle if file is not selected from file explorer
     const file: File = e.target.files[0];
     const videoNode = document.querySelector('video');
 
-    if (file && videoNode) {
-      const size = file.size / (1024 * 1024);
-      const fileURL = URL.createObjectURL(file);
-      videoNode.src = fileURL;
+    if (file.type === 'video/mp4') {
+      if (file && videoNode) {
+        const size = file.size / (1024 * 1024);
+        const fileURL = URL.createObjectURL(file);
+        videoNode.src = fileURL;
 
-      setTimeout(() => {
-        const duration = Math.round((videoNode.duration * 10) / 60) / 10;
-        const ratio = (size / duration);
-        if (ratio > 5) {
-          const allowedSize = Math.round(limit * duration * 10) / 10;
-          showSnackbar(`Maximum ${allowedSize}Mb allowed for ${duration} minutes video`);
-          videoNode.src = '';
-          setUploadFile(undefined);
-          resetFileInput();
-        }
+        setTimeout(() => {
+          const duration = round(videoNode.duration / 60);
+          const uploadedSizePer1min = (size / duration);
+          if (uploadedSizePer1min > allowedSizeFor1min) {
+            const allowedSize = round(allowedSizeFor1min * duration);
+            showSnackbar(`Maximum ${allowedSize}Mb allowed for 
+                ${duration} minutes video. But this file is ${round(size)}Mb`);
 
-        if (size > 600) {
-          showSnackbar('Error: Maximum file size is 600Mb');
-        } else {
-          // success
-          setUploadFile(file);
-          setDuration(duration);
-        }
-      }, 1000);
+            resetFileInput();
+          } else if (size > 600) {
+            showSnackbar('Error: Maximum file size is 600Mb');
+            resetFileInput();
+          } else {
+          // validation success. ready to upload
+            setUploadFile(file);
+            setDuration(duration);
+          }
+        }, 1000);
+      }
+    } else {
+      showSnackbar('Please choose an .mp4 file');
+      resetFileInput();
     }
   };
 
