@@ -4,7 +4,7 @@ import Header from './components/container/header/Header';
 // import Footer from './components/presentational/footer/Footer';
 import Router from './components/router/Router';
 import { Snack, State } from './components/presentational/snackbar/Snack';
-import { adminEmail } from './data/Config';
+import { ADMIN_EMAIL } from './data/Config';
 
 export interface IContext {
   email: string | null;
@@ -64,7 +64,7 @@ const App: React.FC = () => {
     setBreadcrumbs(obj);
   };
 
-  const isAdmin = () => email === adminEmail;
+  const isAdmin = () => email === ADMIN_EMAIL;
 
   return (
     <BrowserRouter>

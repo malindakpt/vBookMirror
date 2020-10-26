@@ -1,8 +1,10 @@
+import { Page } from '../helper/logger';
+
 export interface ILog {
     time: number;
     info: string;
     browser: string;
     screen: string;
-    page: number;
+    page: Page;
     error: boolean;
 }

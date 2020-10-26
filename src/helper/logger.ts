@@ -2,18 +2,19 @@ import { addDoc, Entity } from '../data/Store';
 import { ILog } from '../interfaces/ILog';
 
 export enum Page {
-    EXAMS,
-    SUBJECTS,
-    COURSES,
-    COURSE
+    EXAMS = 'EXAMS',
+    SUBJECTS= 'SUBJECTS',
+    COURSES= 'COURSES',
+    COURSE= 'COURSE',
+    INTRO= 'INTRO',
 }
 
-export const send = (page: Page, error: boolean = false) => {
+export const sendLog = (page: Page, info: string, error: boolean = false) => {
   const log: ILog = {
     page,
     screen: `${window.screen.availWidth}`,
     browser: navigator.userAgent,
-    info: '',
+    info,
     time: new Date().getTime(),
     error,
   };

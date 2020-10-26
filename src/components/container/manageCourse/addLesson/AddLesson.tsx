@@ -20,6 +20,7 @@ import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
+import { OBS_DOWNLOAD, OBS_HELP_DOC, OBS_HELP_VIDEO } from '../../../../data/Config';
 
 export const AddLesson = () => {
   useBreadcrumb();
@@ -445,8 +446,7 @@ export const AddLesson = () => {
                   height="176"
                   controls
                   controlsList="nodownload"
-                  autoPlay
-                  src="https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2F2020-10-26%2006-26-23.mp4?alt=media&token=8f4a2f91-5f8f-49a9-b9cc-8639cf1fa342"
+                  src={OBS_HELP_VIDEO}
                 >
                   <track
                     kind="captions"
@@ -555,14 +555,14 @@ export const AddLesson = () => {
           <a
             rel="noopener noreferrer"
             target="_blank"
-            href="https://drive.google.com/file/d/1msRO-JjzadW6v_FzHp-MaDN9IgbpYkBk/view?usp=sharing"
+            href={OBS_DOWNLOAD}
           >
             Download Screen Recorder
           </a>
           <a
             rel="noopener noreferrer"
             target="_blank"
-            href="https://drive.google.com/file/d/1msRO-JjzadW6v_FzHp-MaDN9IgbpYkBk/view?usp=sharing"
+            href={OBS_HELP_DOC}
           >
             OBS Setup Issues
           </a>
