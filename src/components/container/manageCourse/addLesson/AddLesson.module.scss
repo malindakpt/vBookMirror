@@ -71,6 +71,15 @@
       }
     }
   }
+
+  .help {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 40px;
+    a {
+      color: white;
+    }
+  }
 }
 
 
