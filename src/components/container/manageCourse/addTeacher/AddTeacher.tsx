@@ -34,16 +34,15 @@ export const AddTeacher = () => {
 
   const onSave = async () => {
     setBusy(true);
-    const teachers = await getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {});
-    if (teacher) {
-      teacher.shortId = `${teachers.length + 1}`;
-      addDocWithId<Omit<ITeacher, 'id'>>(Entity.TEACHERS, teacher.ownerEmail, teacher).then(() => {
+    if (teacher && teachers.findIndex((t) => t.url === teacher.url
+        || t.ownerEmail === teacher.ownerEmail) < 0) {
+      addDocWithId<ITeacher>(Entity.TEACHERS, teacher.ownerEmail, teacher).then(() => {
         showSnackbar('New teacher added');
         updateUI();
         setBusy(false);
       });
     } else {
-      console.log('Teacher not set');
+      showSnackbar('Teacher already exists with same params');
       setBusy(false);
     }
   };
@@ -68,6 +67,13 @@ export const AddTeacher = () => {
           id="email"
           label="Email Address"
           onChange={(e) => setTeacherProps({ ownerEmail: e.target.value })}
+        />
+
+        <TextField
+          className={classes.input}
+          id="url"
+          label="URL"
+          onChange={(e) => setTeacherProps({ url: e.target.value })}
         />
 
         <TextField

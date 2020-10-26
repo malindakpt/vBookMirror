@@ -22,7 +22,7 @@ export const Teacher = () => {
   useEffect(() => {
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { shortId: teacherId }).then((data) => {
+    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { url: teacherId }).then((data) => {
       if (data.length > 0) {
         const teacher = data[0];
         setTeacher(teacher);

@@ -58,10 +58,10 @@ export const Subscriptions = () => {
             <a
               rel="noopener noreferrer"
               target="_blank"
-              href={`teacher/${teacher.shortId}`}
+              href={`teacher/${teacher.url}`}
             >
               akshara.lk/teacher/
-              {teacher.shortId}
+              {teacher.url}
             </a>
           </div>
 
