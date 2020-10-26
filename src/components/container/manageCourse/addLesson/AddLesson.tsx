@@ -446,7 +446,7 @@ export const AddLesson = () => {
                   >
                     Cancel Upload
                     <span style={{ marginLeft: '20px' }}>
-                      {uploadProgress > 0 && uploadProgress < 100 && `${Math.round(uploadProgress)}%`}
+                      {uploadProgress > 0 && uploadProgress < 100 && `${round(uploadProgress)}%`}
                     </span>
                   </Button>
                   )}
