@@ -422,7 +422,7 @@ export const AddLesson = () => {
               className={classes.input}
               id="topic"
               label="Topic"
-              inputProps={{ maxLength: 20 }}
+              inputProps={{ maxLength: 40 }}
               value={topic}
               disabled={disabled}
               onChange={(e) => setTopic(e.target.value)}
@@ -476,7 +476,7 @@ export const AddLesson = () => {
               id="filled-basic5"
               label="Description"
               value={description}
-              inputProps={{ maxLength: 100 }}
+              inputProps={{ maxLength: 120 }}
               disabled={disabled}
               onChange={(e) => setDescription(e.target.value)}
             />
