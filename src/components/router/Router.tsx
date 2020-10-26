@@ -22,12 +22,11 @@ import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
-import { zoomContainer } from '../presentational/zoomContainer/zoomContainer';
+import { AddLiveSession } from '../container/manageCourse/addLiveSession/AddLiveSession';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
-  ['/zoom', zoomContainer, 'Zoom', false],
   ['/intro/:id', Intro, 'Intro', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
@@ -40,6 +39,7 @@ export const commonRoutes: routeConfig = [
 
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddLesson, 'Add Lessons', true],
+  ['/addLive', AddLiveSession, 'Add Live Session', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 
