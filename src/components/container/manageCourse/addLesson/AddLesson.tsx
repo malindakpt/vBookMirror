@@ -57,6 +57,11 @@ export const AddLesson = () => {
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
 
+  const resetFileInput = () => {
+    // @ts-ignore
+    document.getElementById('uploader').value = null;
+  };
+
   // Replicate changes of here for all #LessonModify
   const addNew = () => {
     setCourseOrderChaged(false);
@@ -72,6 +77,7 @@ export const AddLesson = () => {
     setDuration(0);
 
     setUploadFile(undefined);
+    resetFileInput();
     // No need to reset courseId
 
     // Rest video thumbnail
@@ -139,6 +145,7 @@ export const AddLesson = () => {
           showSnackbar(`Maximum ${allowedSize}Mb allowed for ${duration} minutes video`);
           videoNode.src = '';
           setUploadFile(undefined);
+          resetFileInput();
         }
 
         if (size > 600) {
@@ -155,6 +162,7 @@ export const AddLesson = () => {
   const onCancelUpload = () => {
     uploadTask?.cancel();
     addNew();
+    setBusy(false);
   };
 
   const disabled = (uploadProgress > 0 && uploadProgress < 100) || !courseId || busy;
