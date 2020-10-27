@@ -100,6 +100,7 @@ function getStringFromHash (s) {
 
     ZoomMtg.inMeetingServiceListener('onUserJoin', function (data) {
       console.log('inMeetingServiceListener onUserJoin', data);
+      document.getElementsByClassName('meeting-info-icon__icon')[0].style.display='none'
     });
   
     ZoomMtg.inMeetingServiceListener('onUserLeave', function (data) {
@@ -116,4 +117,6 @@ function getStringFromHash (s) {
   }
 
   beginJoin(meetingConfig.signature);
+
+
 })();
