@@ -7,6 +7,15 @@ function getHashFromString (s){
   return res;
 };
 
+function getStringFromHash (s) {
+  let res = '';
+  while (s.length > 0) {
+    const code = Number(s.substr(0, 3)) - 103;
+    res = res + String.fromCharCode(code);
+    s = s.substr(3);
+  }
+  return res;
+};
 
 var testTool = {
   b64EncodeUnicode: function (str) {
@@ -44,10 +53,14 @@ var testTool = {
     );
   },
   getMeetingConfig: function () {
+
+    console.log('..mkpt', window.location.href);
+    var params = window.location.href.split('&a=');
+    console.log('..mkpt',params);
     return {
-      mn: parseInt(8657436183),
-      name: testTool.b64EncodeUnicode('My Display Name'),
-      pwd: 'WDRBaGhZMEd5ZEMwZ3crZWNjSXRBUT09',
+      mn: parseInt(getStringFromHash(params[2])),
+      name: getStringFromHash(params[1]),
+      pwd: getStringFromHash(params[3]),
       role: parseInt(document.getElementById("meeting_role").value, 10),
       email: testTool.b64EncodeUnicode(
         document.getElementById("meeting_email").value

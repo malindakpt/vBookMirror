@@ -80,11 +80,12 @@ export const Zoom: React.FC = () => {
       {teacher && (
       <iframe
         className={isFullScr ? classes.fullScr : ''}
-        src={`${Config.zoomURL}?a=
-          ${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}`}
+        src={`${Config.zoomURL}?&a=${'ReactName'}&a=${
+          getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}`}
         name="iframe_a"
         height="300px"
         width="100%"
+        allow="camera *;microphone *"
         title="Iframe Example"
       />
       )}

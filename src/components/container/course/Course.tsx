@@ -200,7 +200,7 @@ export const Course: React.FC = () => {
   return (
     <div className="container">
       {
-        liveLessons.map((live) => {
+        liveLessons.sort((a, b) => a.dateTime - b.dateTime).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (live.price) {
             if (readyToGo(live)) {
