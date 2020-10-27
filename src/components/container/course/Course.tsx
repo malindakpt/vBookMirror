@@ -39,21 +39,21 @@ export const Course: React.FC = () => {
       // Find the lesson order of the course
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
-      const [users, lessons, liveLessons, course] = result;
+      const [users, videoLessons, liveLessons, course] = result;
 
       if (liveLessons) { setLiveLessons(liveLessons); }
 
-      if (users && lessons && liveLessons && course) {
+      if (users && videoLessons && liveLessons && course) {
         const lessons4Course: IVideoLesson[] = [];
         course?.lessons.forEach((lesId) => {
-          const les = lessons.find((l) => l.id === lesId);
+          const les = videoLessons.find((l) => l.id === lesId);
           if (les) {
             lessons4Course.push(les);
           } else {
             console.error('lesson not found', lesId);
           }
         });
-        lessons?.filter((less) => course?.lessons.includes(less.id));
+        videoLessons?.filter((less) => course?.lessons.includes(less.id));
         setUser(users[0]);
         setLessons(lessons4Course);
       }
@@ -62,7 +62,7 @@ export const Course: React.FC = () => {
   }, [email]);
 
   const freeOrPurchased = (lesson: ILesson) => (!lesson.price)
-    || ((user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < Config.allowedWatchCount)));
+    || ((user?.videoLessons.find((les) => les.id === lesson.id && les.watchedCount < Config.allowedWatchCount)));
 
   const handlePaymentSuccess = async (amount: number, date: number, lessonId: string) => {
     if (!email) return;
@@ -73,7 +73,8 @@ export const Course: React.FC = () => {
       editableUser = {
         id: email,
         ownerEmail: email,
-        lessons: [],
+        videoLessons: [],
+        liveLessons: [],
       };
     }
     const lesson = lessons.find((l) => l.id === lessonId);
@@ -84,12 +85,12 @@ export const Course: React.FC = () => {
       amount, date, ownerEmail: email, paidFor: lesson.ownerEmail, lessonId,
     });
 
-    const alreadyPurchased = editableUser.lessons.findIndex((sub) => sub.id === lesson.id);
+    const alreadyPurchased = editableUser.videoLessons.findIndex((sub) => sub.id === lesson.id);
     if (alreadyPurchased > -1) {
-      editableUser.lessons[alreadyPurchased].watchedCount = 0;
-      editableUser.lessons[alreadyPurchased].paymentRef = paymentRef;
+      editableUser.videoLessons[alreadyPurchased].watchedCount = 0;
+      editableUser.videoLessons[alreadyPurchased].paymentRef = paymentRef;
     } else {
-      editableUser.lessons.push({
+      editableUser.videoLessons.push({
         id: lessonId,
         paymentRef,
         watchedCount: 0,
@@ -150,7 +151,7 @@ export const Course: React.FC = () => {
     }
   };
 
-  const getRemain = (lesson: ILesson) => user?.lessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
+  const getRemain = (lesson: ILesson) => user?.videoLessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
 
   return (
     <div className="container">
@@ -158,11 +159,11 @@ export const Course: React.FC = () => {
         liveLessons.map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (live.price) {
-            // if (freeOrPurchased(live)) {
-            //   status = 'yes';
-            // } else {
-            status = 'no';
-            // }
+            if (freeOrPurchased(live)) {
+              status = 'yes';
+            } else {
+              status = 'no';
+            }
           } else {
             status = 'none';
           }
@@ -183,9 +184,9 @@ export const Course: React.FC = () => {
                 // title3={live.price > 0 ? `Watched: ${getRemain(live)}/${lesson.watchCount}` : 'Free'}
                 title5="Live"
                 title6={`${live.duration} mins`}
-                navURL=""
-                // navURL={freeOrPurchased(live)
-                //    && (accepted || live.price === 0) ? `${courseId}/${live.id}` : `${courseId}`}
+                // navURL=""
+                navURL={freeOrPurchased(live)
+                   && (accepted || live.price === 0) ? `${courseId}/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>

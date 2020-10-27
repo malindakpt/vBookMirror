@@ -163,3 +163,8 @@ function getStringFromHash (s) {
 
 
 })();
+
+$( document ).ready(function() {
+  console.log( "ready!" );
+  document.getElementById('join_meeting').click()
+});

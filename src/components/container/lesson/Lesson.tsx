@@ -31,11 +31,11 @@ export const Lesson: React.FC = () => {
 
   const startExpireLessonForUser = (user: IUser, lesson: ILesson) => {
     timerRef.current = setTimeout(() => {
-      user.lessons.forEach((less, idx) => {
+      user.videoLessons.forEach((less, idx) => {
         if (less.id === lesson.id) {
-          user.lessons[idx].watchedCount += 1;
+          user.videoLessons[idx].watchedCount += 1;
 
-          const remain = Config.allowedWatchCount - user.lessons[idx].watchedCount;
+          const remain = Config.allowedWatchCount - user.videoLessons[idx].watchedCount;
 
           const msg = remain < 1 ? 'This is the last watch time for your payment.'
             : `You can watch this lesson ${remain} more time in the future`;
@@ -61,7 +61,7 @@ export const Lesson: React.FC = () => {
     } else {
       if (email) {
         const user = await getDocWithId<IUser>(Entity.USERS, email);
-        user?.lessons.forEach((les) => {
+        user?.videoLessons.forEach((les) => {
           if (les.id === lesson.id && les.watchedCount < Config.allowedWatchCount) {
             setWarn('Do not reload this page');
             setLesson(lesson);

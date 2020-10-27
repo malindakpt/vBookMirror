@@ -11,6 +11,7 @@ const APP_CONFIG_DEV = {
   watchedTimeout: 3000,
   allowedWatchCount: 2,
   isProd: false,
+  zoomURL: 'http://127.0.0.1:8887/',
 };
 
 const APP_CONFIG_PROD = {
@@ -26,13 +27,13 @@ const APP_CONFIG_PROD = {
   watchedTimeout: 20000,
   allowedWatchCount: 2,
   isProd: true,
+  zoomURL: 'https://smsm-54fa3.web.app/',
 };
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;
 
 console.log(process.env.REACT_APP_ENV);
 
-export const ZOOM_URL = 'https://smsm-54fa3.web.app/';
 export const ADMIN_EMAIL = 'contact.akshara.lk@gmail.com';
 export const OBS_DOWNLOAD = 'https://drive.google.com/file/d/1NOqkKwhl1FVuHE7Z52FB4qn7iE2U-_6b/view?usp=sharing';
 export const OBS_HELP_DOC = '';
