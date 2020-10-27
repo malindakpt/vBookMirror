@@ -20,7 +20,7 @@ function getStringFromHash (s) {
 (function () {
   var testTool = window.testTool;
   if (testTool.isMobileDevice()) {
-    vConsole = new VConsole();
+    //vConsole = new VConsole();
   }
   console.log("checkSystemRequirements");
   console.log(JSON.stringify(ZoomMtg.checkSystemRequirements()));
@@ -126,7 +126,8 @@ function getStringFromHash (s) {
           meetingConfig.apiKey = API_KEY;
           var joinUrl = "/meeting.html?" + testTool.serialize(meetingConfig);
           console.log(joinUrl);
-        window.open(joinUrl, "_blank");
+        // window.open(joinUrl, "_blank");
+        window.location.href = joinUrl;
         },
       });
     });

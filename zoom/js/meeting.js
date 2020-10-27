@@ -53,7 +53,7 @@ function getStringFromHash (s) {
 
   // a tool use debug mobile device
   if (testTool.isMobileDevice()) {
-    vConsole = new VConsole();
+   // vConsole = new VConsole();
   }
   console.log(JSON.stringify(ZoomMtg.checkSystemRequirements()));
 
