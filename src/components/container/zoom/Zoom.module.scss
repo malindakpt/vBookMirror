@@ -5,22 +5,24 @@
   max-width: 900px;
 
    .fsButton{
-    position: fixed;
-    z-index: 99999;
-    top: 10px;
-    left: calc(50% - 90px);
-    width: 180px;
-    background-color: #ffffff4d;
-    color: black;
-    font-size: 12px;
-
-    @include mobile {
-    }
-
-    &:hover{
+      position: fixed;
+      z-index: 99999;
+      top: -2px;
+      left: calc(50% - 55px);
+      width: 110px;
       background-color: white;
+      color: black;
+      font-size: 8px;
+      border-radius: 0px;
+      padding-bottom: 0px;
+
+      @include mobile {
+      }
+
+      &:hover{
+        background-color: white;
+      }
     }
-  }
 
   .fullScr {
     position: fixed;

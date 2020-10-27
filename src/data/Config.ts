@@ -11,7 +11,8 @@ const APP_CONFIG_DEV = {
   watchedTimeout: 3000,
   allowedWatchCount: 2,
   isProd: false,
-  zoomURL: 'http://127.0.0.1:8887',
+  // zoomURL: 'http://127.0.0.1:8887',
+  zoomURL: 'https://smsm-54fa3.web.app',
 };
 
 const APP_CONFIG_PROD = {
