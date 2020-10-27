@@ -17,3 +17,22 @@ export const formattedTime = (x: Date) => {
 
   return `${x.getFullYear()}-${month}-${date}T${hh}:${mm}`;
 };
+
+export const getHashFromString = (s: string) => {
+  let res = '';
+  s.split('').forEach((c) => {
+    const code = c.charCodeAt(0) + 103;
+    res += code;
+  });
+  return res;
+};
+
+export const getStringFromHash = (s: string) => {
+  let res = '';
+  while (s.length > 0) {
+    const code = Number(s.substr(0, 3)) - 103;
+    res += String.fromCharCode(code);
+    s = s.substr(3);
+  }
+  return res;
+};

@@ -11,7 +11,7 @@ const APP_CONFIG_DEV = {
   watchedTimeout: 3000,
   allowedWatchCount: 2,
   isProd: false,
-  zoomURL: 'http://127.0.0.1:8887/',
+  zoomURL: 'http://127.0.0.1:8887',
 };
 
 const APP_CONFIG_PROD = {
@@ -27,7 +27,7 @@ const APP_CONFIG_PROD = {
   watchedTimeout: 20000,
   allowedWatchCount: 2,
   isProd: true,
-  zoomURL: 'https://smsm-54fa3.web.app/',
+  zoomURL: 'https://smsm-54fa3.web.app',
 };
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;

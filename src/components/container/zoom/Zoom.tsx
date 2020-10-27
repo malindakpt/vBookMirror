@@ -13,6 +13,7 @@ import { ITeacher } from '../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../interfaces/ILesson';
 import { Entity, getDocWithId } from '../../../data/Store';
 import { IUser } from '../../../interfaces/IUser';
+import { getHashFromString } from '../../../helper/util';
 
 export const Zoom: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -69,25 +70,24 @@ export const Zoom: React.FC = () => {
       <div>
         <Button
           className={classes.fsButton}
-          onClick={() => setFullScr(!isFullScr)}
+          onClick={() => {
+            setFullScr(!isFullScr);
+          }}
         >
-          Full Screen
+          { isFullScr ? 'Exit' : 'Full Screen'}
         </Button>
       </div>
+      {teacher && (
       <iframe
         className={isFullScr ? classes.fullScr : ''}
-        src="http://127.0.0.1:8887/"
+        src={`${Config.zoomURL}?a=
+          ${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}`}
         name="iframe_a"
         height="300px"
         width="100%"
         title="Iframe Example"
       />
-      {/* {lesson?.meetingId && (
-        <iframe
-          src="https://www.w3schools.com/jquery/event_load.asp#:~:text=The%20load()%20method%20attaches,)%2C%20and%20the%20window%20object."
-          title="description"
-        />
-      )} */}
+      )}
 
       {lesson?.attachments && (
       <div className={classes.attachments}>

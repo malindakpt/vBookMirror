@@ -1,5 +1,6 @@
 import {
-  Button, Divider, FormControl, FormControlLabel, InputLabel, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField,
+  Button, Divider, FormControl, FormControlLabel, InputLabel,
+  List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
 import React, { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../../../../App';
@@ -94,14 +95,16 @@ export const AddLiveSession = () => {
     if (editMode) {
       updateDoc(Entity.LESSONS_LIVE, session.id, session).then((data) => {
         showSnackbar('Live Session Edited');
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId: selectedCourse?.id }).then((data) => setSessions(data));
+        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+          { courseId: selectedCourse?.id }).then((data) => setSessions(data));
         setBusy(false);
         addNew();
       });
     } else {
       addDoc(Entity.LESSONS_LIVE, { ...session, ownerEmail: email }).then((data) => {
         showSnackbar('Live Session Added');
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId: selectedCourse?.id }).then((data) => setSessions(data));
+        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+          { courseId: selectedCourse?.id }).then((data) => setSessions(data));
         setBusy(false);
         addNew();
       });
@@ -295,9 +298,8 @@ export const AddLiveSession = () => {
             aria-label="main mailbox folders"
           >
             {
-              sessions.map((ses) => (
+              sessions.sort((a, b) => a.dateTime - b.dateTime).map((ses) => (
                 <div
-                // c.id becomes undefined for newly added lesson since we refer that from local
                   key={ses.id}
                 >
                   <ListItem

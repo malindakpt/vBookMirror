@@ -1,15 +1,21 @@
+@import '../../../mixins.scss';
+
 .root {
   margin: auto;
   max-width: 900px;
 
-  .fsButton{
+   .fsButton{
     position: fixed;
-    z-index: 1;
+    z-index: 99999;
     top: 10px;
-    left: calc(50% - 75px);
-    width: 150px;
+    left: calc(50% - 90px);
+    width: 180px;
     background-color: #ffffff4d;
     color: black;
+    font-size: 12px;
+
+    @include mobile {
+    }
 
     &:hover{
       background-color: white;
