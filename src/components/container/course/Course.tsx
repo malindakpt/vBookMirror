@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
+import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
@@ -176,12 +177,13 @@ export const Course: React.FC = () => {
             >
               <Category
                 id={live.id}
-                CategoryImg={OndemandVideoIcon}
+                CategoryImg={DesktopWindowsIcon}
                 title1={`${live.topic}`}
                 title2={`${live.description}`}
-                title3={`${new Date(live.dateTime).toString()}`}
+                title3={`${new Date(live.dateTime).toString().split('GMT')[0]}`}
                 // title3={live.price > 0 ? `Watched: ${getRemain(live)}/${lesson.watchCount}` : 'Free'}
-                title4={`${live.duration} mins`}
+                title5="Live"
+                title6={`${live.duration} mins`}
                 navURL=""
                 // navURL={freeOrPurchased(live)
                 //    && (accepted || live.price === 0) ? `${courseId}/${live.id}` : `${courseId}`}

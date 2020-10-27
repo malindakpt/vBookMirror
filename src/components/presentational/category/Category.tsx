@@ -13,6 +13,8 @@ interface Props {
   title2?: string;
   title3?: string;
   title4?: string;
+  title5?: string;
+  title6?: string;
   navURL: string;
   status?: 'yes' | 'no' | 'none'
   CategoryImg: OverridableComponent<SvgIconTypeMap>;
@@ -20,7 +22,7 @@ interface Props {
   isSelected?: boolean;
 }
 export const Category:React.FC<Props> = ({
-  id, title1 = '', title2 = '', title3, title4, navURL, isSelected, status, CategoryImg,
+  id, title1 = '', title2 = '', title3, title4, title5, title6, navURL, isSelected, status, CategoryImg,
 }) => (
   <Link
     className={`${classes.root} ${isSelected && classes.selected}`}
@@ -43,14 +45,15 @@ export const Category:React.FC<Props> = ({
       </div>
       <div className={classes.note}>
         <span>{title3}</span>
-        <span>{title4}</span>
       </div>
     </div>
     <div className={classes.actions}>
+      {title5 ? <span className={classes.rightTop}>{title5}</span> : <span />}
       <InputIcon
         htmlColor="#3f51b5"
         style={{ fontSize: 40 }}
       />
+      <span className={classes.rightBottom}>{title6}</span>
     </div>
   </Link>
 );
