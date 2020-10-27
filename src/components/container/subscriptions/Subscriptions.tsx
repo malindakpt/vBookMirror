@@ -3,12 +3,12 @@ import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { ILesson2 } from '../../../interfaces/ILesson';
+import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IPayment } from '../../../interfaces/IPayment';
 import { teacherPortion } from '../../../helper/util';
 
-interface LessMap {[key: string]: {payments: IPayment[], lesson: ILesson2}}
+interface LessMap {[key: string]: {payments: IPayment[], lesson: ILesson}}
 
 export const Subscriptions = () => {
   useBreadcrumb();
@@ -24,7 +24,7 @@ export const Subscriptions = () => {
 
       Promise.all([
         getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: email }),
-        getDocsWithProps<ILesson2[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
+        getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
       ]).then(([payments, lessons]) => {
         const lessonMap: LessMap = {};
         let total = 0;

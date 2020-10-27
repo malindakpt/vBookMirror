@@ -9,7 +9,7 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
   Entity, getDocWithId, updateDoc,
 } from '../../../data/Store';
-import { ILesson2, IVideoLesson } from '../../../interfaces/ILesson';
+import { ILesson, IVideoLesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IUser } from '../../../interfaces/IUser';
 import { AppContext } from '../../../App';
@@ -29,7 +29,7 @@ export const Lesson: React.FC = () => {
 
   const [warn, setWarn] = useState<string>('');
 
-  const startExpireLessonForUser = (user: IUser, lesson: ILesson2) => {
+  const startExpireLessonForUser = (user: IUser, lesson: ILesson) => {
     timerRef.current = setTimeout(() => {
       user.lessons.forEach((less, idx) => {
         if (less.id === lesson.id) {

@@ -83,12 +83,6 @@ export const AddLesson = () => {
 
     resetFileInput();
     // No need to reset courseId
-
-    // // Rest video thumbnail
-    // const videoNode = document.querySelector('video');
-    // if (videoNode) {
-    //   videoNode.src = '';
-    // }
   };
 
   const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: IVideoLesson[]) => {
@@ -214,7 +208,6 @@ export const AddLesson = () => {
       // Replicate changes of here for all #LessonModify
       const lesson: IVideoLesson = {
         id: '',
-        date,
         topic,
         description,
         attachments,
@@ -225,7 +218,6 @@ export const AddLesson = () => {
         price,
         courseId,
         ownerEmail: email,
-        isLive: false,
       };
       lesson.id = await addDoc(Entity.LESSONS_VIDEO, lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
@@ -533,8 +525,9 @@ export const AddLesson = () => {
             {
               courseLessons.map((lesson, index) => (
                 <div
+                // TODO: refresh on lesson add. do not local update
                 // c.id becomes undefined for newly added lesson since we refer that from local
-                  key={lesson.date}
+                  key={lesson.id}
                 >
                   <ListItem
                     button

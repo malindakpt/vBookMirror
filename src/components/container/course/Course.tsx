@@ -8,7 +8,7 @@ import {
   getDocsWithProps, addDoc, updateDoc, getDocWithId, Entity, addDocWithId,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
-import { ILesson2, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
+import { ILesson, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
@@ -61,7 +61,7 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-  const freeOrPurchased = (lesson: ILesson2) => (!lesson.price)
+  const freeOrPurchased = (lesson: ILesson) => (!lesson.price)
     || ((user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < Config.allowedWatchCount)));
 
   const handlePaymentSuccess = async (amount: number, date: number, lessonId: string) => {
@@ -111,7 +111,7 @@ export const Course: React.FC = () => {
     }
   };
 
-  const handleSelectLesson = (lesson: ILesson2) => {
+  const handleSelectLesson = (lesson: ILesson) => {
     if (freeOrPurchased(lesson)) {
       if (lesson.price > 0) {
         setDisplayAlert(true);
@@ -150,7 +150,7 @@ export const Course: React.FC = () => {
     }
   };
 
-  const getRemain = (lesson: ILesson2) => user?.lessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
+  const getRemain = (lesson: ILesson) => user?.lessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
 
   return (
     <div className="container">

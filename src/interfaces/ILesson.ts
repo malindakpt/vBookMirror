@@ -1,27 +1,22 @@
-export interface ILesson2 {
+export interface ILesson {
     id: string;
     topic: string;
     description: string;
 
     duration: number;
     keywords: string;
-    date: number;
     attachments: string[],
-    // watchCount: number;
-    // subCount: number;
-    // meta information
     courseId: string;
     price: number;
     ownerEmail: string;
-    isLive: boolean;
   }
 
-export interface IVideoLesson extends ILesson2 {
+export interface IVideoLesson extends ILesson {
   videoURL: string;
   videoId: string;
 }
 
-export interface ILiveLesson extends ILesson2 {
+export interface ILiveLesson extends ILesson {
   meetingId: string;
   dateTime: number;
   pwd: string;

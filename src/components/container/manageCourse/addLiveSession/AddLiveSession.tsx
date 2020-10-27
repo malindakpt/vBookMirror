@@ -7,7 +7,7 @@ import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
-import { ILesson2, ILiveLesson } from '../../../../interfaces/ILesson';
+import { ILesson, ILiveLesson } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import classes from './AddLiveSession.module.scss';
 
@@ -16,11 +16,26 @@ export const AddLiveSession = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const [busy, setBusy] = useState<boolean>(false);
-  const [session, setSession] = useState<ILiveLesson>();
+  const [session, setSession] = useState<ILiveLesson>({
+    id: '',
+    topic: '',
+    description: '',
+    duration: 0,
+    keywords: '',
+    attachments: [],
+    courseId: '',
+    price: 0,
+    ownerEmail: '',
+    meetingId: '',
+    dateTime: new Date().getTime(),
+    pwd: '',
+  });
   const [sessions, setSessions] = useState<ILiveLesson[]>([]);
 
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<ICourse>();
+
+  const [attachments, setAttachments] = useState<string[]>([]);
 
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
@@ -34,12 +49,11 @@ export const AddLiveSession = () => {
 
   const onSave = () => {
     setBusy(true);
-    addDoc(Entity.LESSONS_LIVE, { ownerEmail: email, ...session }).then((data) => {
+    addDoc(Entity.LESSONS_LIVE, { ...session, ownerEmail: email }).then((data) => {
       showSnackbar('Live Session Added');
       getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {}).then((data) => setSessions(data));
       setBusy(false);
     });
-    console.log(session);
   };
 
   useEffect(() => {
@@ -48,19 +62,17 @@ export const AddLiveSession = () => {
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
     getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
       .then((data) => data && setCourses(data));
-
-    getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {}).then((data) => setSessions(data));
   }, []);
 
   const onCourseChange = (id: string) => {
     setSessionProps({ courseId: id });
     setSelectedCourse(courses.find((c) => c.id === id));
-    getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email })
+    getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
       .then((data) => data && setSessions(data));
   };
 
   const copyLesson = (sess: ILiveLesson) => {
-
+    setSessionProps(sess);
   };
 
   return (
@@ -108,6 +120,7 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="topic"
             label="Topic"
+            value={session?.topic}
             onChange={(e) => setSessionProps({ topic: e.target.value })}
           />
 
@@ -134,8 +147,23 @@ export const AddLiveSession = () => {
           />
 
           <TextField
+            className={classes.inputMulti}
+            id="standard-multiline-static"
+            label="Add GoogleDrive links as separate lines"
+            multiline
+            rows={3}
+            variant="outlined"
+            disabled={busy}
+            value={attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
+            onChange={(e) => {
+              console.log(e.target.value);
+              setAttachments(e.target.value.split('\n'));
+            }}
+          />
+
+          <TextField
             id="datetime-local"
-            label="Next appointment"
+            label="Date and Time"
             type="datetime-local"
             onChange={(e) => setSessionProps({ dateTime: new Date(e.target.value).getTime() })}
             // defaultValue="2017-05-24T10:30"
@@ -144,14 +172,16 @@ export const AddLiveSession = () => {
               shrink: true,
             }}
           />
-
-          <Button
-            variant="contained"
-            onClick={onSave}
-            disabled={busy}
-          >
-            Add Live Session
-          </Button>
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onSave}
+              disabled={busy}
+            >
+              {editMode ? 'Edit Live Lesson' : 'Add Live Lesson'}
+            </Button>
+          </div>
         </form>
         <div>
           <List
@@ -172,7 +202,7 @@ export const AddLiveSession = () => {
                       className="fc1"
                       style={{ fontSize: '11px', width: '100%' }}
                     >
-                      {ses.topic}
+                      {`${new Date(ses.dateTime).toUTCString().split('GMT')[0]} : ${ses.topic}`}
                     </div>
 
                   </ListItem>
