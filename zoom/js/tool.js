@@ -54,9 +54,9 @@ var testTool = {
   },
   getMeetingConfig: function () {
 
-    console.log('..mkpt', window.location.href);
+    console.log('..mkpt', localStorage.getItem('mkpt'));
     var params = window.location.href.split('&a=');
-    console.log('..mkpt',params);
+    // var uni = (window.parent.origin === "http://localhost:3000" || window.parent.origin.startsWith('https://akshara.lk/')) ? getStringFromHash(params[2]): 'asd';
     return {
       mn: parseInt(getStringFromHash(params[1])),
       name: getStringFromHash(params[3]),

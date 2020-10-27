@@ -165,7 +165,8 @@ function getStringFromHash (s) {
 
 })();
 
-$( document ).ready(function() {
-  console.log( "ready!" );
-  document.getElementById('join_meeting').click()
+$( document ).ready(function() {     
+  window.addEventListener("message", (e)=> {
+    document.getElementById('join_meeting').click();
+  }, false);
 });

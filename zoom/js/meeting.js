@@ -68,8 +68,6 @@ function getStringFromHash (s) {
       leaveUrl: meetingConfig.leaveUrl,
       webEndpoint: meetingConfig.webEndpoint,
       success: function () {
-        console.log(meetingConfig);
-        console.log("signature", signature);
         $.i18n.reload(meetingConfig.lang);
         ZoomMtg.join({
           meetingNumber: meetingConfig.meetingNumber,
@@ -101,6 +99,7 @@ function getStringFromHash (s) {
     ZoomMtg.inMeetingServiceListener('onUserJoin', function (data) {
       console.log('inMeetingServiceListener onUserJoin', data);
       document.getElementsByClassName('meeting-info-icon__icon')[0].style.display='none'
+
     });
   
     ZoomMtg.inMeetingServiceListener('onUserLeave', function (data) {

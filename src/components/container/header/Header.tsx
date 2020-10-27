@@ -110,7 +110,14 @@ export const Header:React.FC = () => {
           color="inherit"
           onClick={handleLogin}
         >
-          {user?.name ? <span className={classes.userName}>{user?.name}</span> : 'Login'}
+          {user?.name ? (
+            <span
+              className={classes.userName}
+              id="fullName"
+            >
+              {user?.name}
+            </span>
+) : 'Login'}
         </Button>
         { user && user.photo && (
           <img

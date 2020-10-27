@@ -27,6 +27,15 @@ export const Zoom: React.FC = () => {
   const [lesson, setLesson] = useState<ILiveLesson>();
   const [isFullScr, setFullScr] = useState<boolean>(false);
 
+  const activateIframe = () => {
+    setTimeout(() => {
+      const ele = document.getElementsByTagName('iframe');
+      if (ele && ele.length > 0 && ele[0]) {
+        ele[0].contentWindow?.postMessage({ message: 'getAppData', value: 'asd' }, '*');
+      }
+    }, 2000);
+  };
+
   const processVideo = async () => {
     const lesson = await getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId);
     if (!lesson) return;
@@ -35,12 +44,14 @@ export const Zoom: React.FC = () => {
 
     if (lesson.price === 0) {
       setLesson(lesson);
+      activateIframe();
     } else {
       if (email) {
         const user = await getDocWithId<IUser>(Entity.USERS, email);
         user?.liveLessons.forEach((les) => {
           if (les.id === lesson.id) {
             setLesson(lesson);
+            activateIframe();
           }
         });
       } else {
