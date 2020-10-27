@@ -5,9 +5,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../../../../App';
 import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
+import { formattedTime } from '../../../../helper/util';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
-import { ILesson, ILiveLesson } from '../../../../interfaces/ILesson';
+import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import classes from './AddLiveSession.module.scss';
 
@@ -35,8 +36,6 @@ export const AddLiveSession = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<ICourse>();
 
-  const [attachments, setAttachments] = useState<string[]>([]);
-
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
 
@@ -49,6 +48,7 @@ export const AddLiveSession = () => {
 
   const onSave = () => {
     setBusy(true);
+
     addDoc(Entity.LESSONS_LIVE, { ...session, ownerEmail: email }).then((data) => {
       showSnackbar('Live Session Added');
       getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {}).then((data) => setSessions(data));
@@ -62,7 +62,7 @@ export const AddLiveSession = () => {
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
     getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
       .then((data) => data && setCourses(data));
-  }, []);
+  }, [email]);
 
   const onCourseChange = (id: string) => {
     setSessionProps({ courseId: id });
@@ -96,7 +96,7 @@ export const AddLiveSession = () => {
               className={`${classes.input} fc1`}
               labelId="label1"
               id="id1"
-              value={selectedCourse}
+              value={selectedCourse?.id ?? ''}
               disabled={busy}
               onChange={(e) => onCourseChange(e.target.value as string)}
             >
@@ -120,7 +120,7 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="topic"
             label="Topic"
-            value={session?.topic}
+            value={session.topic}
             onChange={(e) => setSessionProps({ topic: e.target.value })}
           />
 
@@ -128,7 +128,24 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="desc"
             label="Description"
+            value={session.description}
             onChange={(e) => setSessionProps({ description: e.target.value })}
+          />
+
+          <TextField
+            className={classes.input}
+            id="mid"
+            label="Meeting Id"
+            value={session.meetingId}
+            onChange={(e) => setSessionProps({ meetingId: e.target.value })}
+          />
+
+          <TextField
+            className={classes.input}
+            id="pwd"
+            label="Password"
+            value={session.pwd}
+            onChange={(e) => setSessionProps({ pwd: e.target.value })}
           />
 
           <TextField
@@ -136,6 +153,7 @@ export const AddLiveSession = () => {
             id="price"
             label="Price"
             type="number"
+            value={session.price}
             onChange={(e) => setSessionProps({ price: e.target.value })}
           />
 
@@ -143,6 +161,7 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="duration"
             label="Duration"
+            value={session.duration}
             onChange={(e) => setSessionProps({ duration: e.target.value })}
           />
 
@@ -154,10 +173,10 @@ export const AddLiveSession = () => {
             rows={3}
             variant="outlined"
             disabled={busy}
-            value={attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
+            value={session.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
             onChange={(e) => {
               console.log(e.target.value);
-              setAttachments(e.target.value.split('\n'));
+              setSessionProps({ attachments: e.target.value.split('\n') });
             }}
           />
 
@@ -165,7 +184,11 @@ export const AddLiveSession = () => {
             id="datetime-local"
             label="Date and Time"
             type="datetime-local"
-            onChange={(e) => setSessionProps({ dateTime: new Date(e.target.value).getTime() })}
+            value={formattedTime(new Date(session?.dateTime ?? new Date().getTime()))}
+            onChange={(e) => {
+              console.log(e.target.value);
+              setSessionProps({ dateTime: new Date(e.target.value).getTime() });
+            }}
             // defaultValue="2017-05-24T10:30"
             className={classes.textField}
             InputLabelProps={{
@@ -202,7 +225,7 @@ export const AddLiveSession = () => {
                       className="fc1"
                       style={{ fontSize: '11px', width: '100%' }}
                     >
-                      {`${new Date(ses.dateTime).toUTCString().split('GMT')[0]} : ${ses.topic}`}
+                      {`${new Date(ses.dateTime).toString().split('GMT')[0]} : ${ses.topic}`}
                     </div>
 
                   </ListItem>

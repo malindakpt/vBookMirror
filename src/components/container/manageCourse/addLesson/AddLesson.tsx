@@ -49,7 +49,6 @@ export const AddLesson = () => {
   const [editingLesson, setEditingLesson] = useState<IVideoLesson>();
 
   const [topic, setTopic] = useState<string>('');
-  const [watchCount, setWatchCount] = useState<number>(2);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
@@ -73,7 +72,6 @@ export const AddLesson = () => {
     setEditMode(false);
     setUploadProgress(0);
     setTopic('');
-    setWatchCount(2);
     setKeywords('');
     setDescription('');
     setAttachments([]);
