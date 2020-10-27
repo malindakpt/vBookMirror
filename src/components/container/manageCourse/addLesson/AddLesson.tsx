@@ -14,7 +14,7 @@ import {
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
-import { ILesson } from '../../../../interfaces/ILesson';
+import { IVideoLesson } from '../../../../interfaces/ILesson';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
@@ -40,13 +40,13 @@ export const AddLesson = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
-  const [allLessons, setAllLessons] = useState<ILesson[]>([]);
+  const [allLessons, setAllLessons] = useState<IVideoLesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
 
-  const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
+  const [courseLessons, setCourseLessons] = useState<IVideoLesson[]>([]);
 
   // Component state
-  const [editingLesson, setEditingLesson] = useState<ILesson>();
+  const [editingLesson, setEditingLesson] = useState<IVideoLesson>();
 
   const [topic, setTopic] = useState<string>('');
   const [watchCount, setWatchCount] = useState<number>(2);
@@ -91,13 +91,13 @@ export const AddLesson = () => {
     // }
   };
 
-  const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: ILesson[]) => {
+  const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: IVideoLesson[]) => {
     if (!_courseId || _courseId === '') { return; }
 
     setCourseId(_courseId);
     const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
 
-    const orderedLessons: ILesson[] = [];
+    const orderedLessons: IVideoLesson[] = [];
     for (const lessonId of selectedCourse.lessons) {
       const less = _allLessons.find((l) => l.id === lessonId);
       if (less) {
@@ -112,7 +112,7 @@ export const AddLesson = () => {
   useEffect(() => {
     Promise.all([
       getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email }),
-      getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: email }),
+      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
     ]).then((values) => {
       const [courses, lessons] = values;
 
@@ -186,7 +186,7 @@ export const AddLesson = () => {
     if (editMode) {
       if (!editingLesson) return;
       // Replicate changes of here for all #LessonModify
-      const less: ILesson = {
+      const less: IVideoLesson = {
         ...editingLesson,
         ...{
           topic,
@@ -201,7 +201,7 @@ export const AddLesson = () => {
           price,
         },
       };
-      updateDoc(Entity.LESSONS, editingLesson.id, less).then(() => {
+      updateDoc(Entity.LESSONS_VIDEO, editingLesson.id, less).then(() => {
         showSnackbar(`${editingLesson.topic} modified successfully`);
         addNew();
         fetchData();
@@ -212,11 +212,10 @@ export const AddLesson = () => {
       const selectedCourse = courses.filter((c) => c.id === courseId)[0];
       // When you make a change here, replicate that on edit, copyLesson mode also
       // Replicate changes of here for all #LessonModify
-      const lesson: ILesson = {
+      const lesson: IVideoLesson = {
         id: '',
         date,
         topic,
-        watchCount,
         description,
         attachments,
         keywords: `${selectedCourse.examYear}`,
@@ -225,10 +224,10 @@ export const AddLesson = () => {
         videoId,
         price,
         courseId,
-        subCount: 0,
         ownerEmail: email,
+        isLive: false,
       };
-      lesson.id = await addDoc(Entity.LESSONS, lesson);
+      lesson.id = await addDoc(Entity.LESSONS_VIDEO, lesson);
       const { lessons } = courses.filter((c) => c.id === courseId)[0];
 
       updateDoc(Entity.COURSES, courseId, { lessons: [...lessons, lesson.id] }).then(() => {
@@ -299,10 +298,9 @@ export const AddLesson = () => {
 
   // copyLessonMode
   // Replicate changes of here for all #LessonModify
-  const copyLesson = (les: ILesson) => {
+  const copyLesson = (les: IVideoLesson) => {
     setEditingLesson(les);
     setTopic(les.topic);
-    setWatchCount(les.watchCount);
     setKeywords(les.keywords);
     setDescription(les.description);
     setAttachments(les.attachments);

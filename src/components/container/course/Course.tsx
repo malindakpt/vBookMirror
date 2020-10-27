@@ -8,14 +8,13 @@ import {
   getDocsWithProps, addDoc, updateDoc, getDocWithId, Entity, addDocWithId,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
-import { ILesson } from '../../../interfaces/ILesson';
+import { ILesson2, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
 import { AlertDialog } from '../../presentational/snackbar/AlertDialog';
 import { paymentJS, startPay } from '../../../helper/payment';
-import appConfig from '../../../data/Config';
-import { ILiveSession } from '../../../interfaces/ILiveSession';
+import Config from '../../../data/Config';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -24,8 +23,8 @@ export const Course: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
 
   const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
-  const [lessons, setLessons] = useState<ILesson[]>([]);
-  const [liveLessons, setLiveLessons] = useState<ILiveSession[]>([]);
+  const [lessons, setLessons] = useState<IVideoLesson[]>([]);
+  const [liveLessons, setLiveLessons] = useState<ILiveLesson[]>([]);
 
   const [accepted, setAccepted] = useState<boolean>(false);
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
@@ -35,8 +34,8 @@ export const Course: React.FC = () => {
       // Check the lessons paid by user
       getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }),
       // All lessons related to courseId
-      getDocsWithProps<ILesson[]>(Entity.LESSONS, { courseId, ownerEmail: email }),
-      getDocsWithProps<ILiveSession[]>(Entity.LIVE_SESSIONS, { courseId, ownerEmail: email }),
+      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId, ownerEmail: email }),
+      getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId, ownerEmail: email }),
       // Find the lesson order of the course
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
@@ -45,7 +44,7 @@ export const Course: React.FC = () => {
       if (liveLessons) { setLiveLessons(liveLessons); }
 
       if (users && lessons && liveLessons && course) {
-        const lessons4Course: ILesson[] = [];
+        const lessons4Course: IVideoLesson[] = [];
         course?.lessons.forEach((lesId) => {
           const les = lessons.find((l) => l.id === lesId);
           if (les) {
@@ -62,8 +61,8 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-  const freeOrPurchased = (lesson: ILesson) => (!lesson.price)
-    || ((user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < lesson.watchCount)));
+  const freeOrPurchased = (lesson: ILesson2) => (!lesson.price)
+    || ((user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < Config.allowedWatchCount)));
 
   const handlePaymentSuccess = async (amount: number, date: number, lessonId: string) => {
     if (!email) return;
@@ -112,7 +111,7 @@ export const Course: React.FC = () => {
     }
   };
 
-  const handleSelectLesson = (lesson: ILesson) => {
+  const handleSelectLesson = (lesson: ILesson2) => {
     if (freeOrPurchased(lesson)) {
       if (lesson.price > 0) {
         setDisplayAlert(true);
@@ -123,7 +122,7 @@ export const Course: React.FC = () => {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
 
-        if (appConfig.isProd) {
+        if (Config.isProd) {
           console.log('Payment cancelled');
           showSnackbar('Payment cancelled');
         } else {
@@ -136,7 +135,7 @@ export const Course: React.FC = () => {
       paymentJS.onCompleted = function onDismissed() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-        if (appConfig.isProd) {
+        if (Config.isProd) {
           console.log('Succeed');
           showSnackbar('Sorry, Payment gateway is under maintanance. Please contact us for inquiries');
         } else {
@@ -151,7 +150,7 @@ export const Course: React.FC = () => {
     }
   };
 
-  const getRemain = (lesson: ILesson) => user?.lessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
+  const getRemain = (lesson: ILesson2) => user?.lessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
 
   return (
     <div className="container">
@@ -220,7 +219,8 @@ export const Course: React.FC = () => {
                 CategoryImg={OndemandVideoIcon}
                 title1={`${lesson.topic}`}
                 title2={`${lesson.description}`}
-                title3={lesson.price > 0 ? `Watched: ${getRemain(lesson)}/${lesson.watchCount}` : 'Free'}
+                title3={lesson.price > 0
+                  ? `Watched: ${getRemain(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                 title4={`${lesson.duration} mins`}
                 navURL={freeOrPurchased(lesson)
                    && (accepted || lesson.price === 0) ? `${courseId}/${lesson.id}` : `${courseId}`}

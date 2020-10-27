@@ -5,7 +5,7 @@ import {
   addDoc, Entity, getDocsWithProps,
 } from '../../../data/Store';
 import { teacherPortion } from '../../../helper/util';
-import { ILesson } from '../../../interfaces/ILesson';
+import { ILesson2 } from '../../../interfaces/ILesson';
 import { IPayment } from '../../../interfaces/IPayment';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import classes from './Payments.module.scss';
@@ -18,7 +18,7 @@ export const Payments = () => {
   const [studentPayments, setStudentPayments] = useState<{[id: string]: number}>({});
   const [teacherPayments, setTeacherPayments] = useState<{[id: string]: number}>({});
 
-  const [teacherLessons, setTeacherLsssons] = useState<{[id: string]: ILesson}>({});
+  const [teacherLessons, setTeacherLsssons] = useState<{[id: string]: ILesson2}>({});
   const [payments, setPayments] = useState<IPayment[]>([]);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export const Payments = () => {
   }, []);
 
   const checkBal = (teacher: ITeacher) => {
-    getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: teacher.ownerEmail }).then((data) => {
+    getDocsWithProps<ILesson2[]>(Entity.LESSONS_VIDEO, { ownerEmail: teacher.ownerEmail }).then((data) => {
       const lessonMap: any = {};
       data.forEach((less) => {
         lessonMap[less.id] = less;

@@ -9,6 +9,7 @@ const APP_CONFIG_DEV = {
   measurementId: 'G-4SS7PQK8D5',
 
   watchedTimeout: 3000,
+  allowedWatchCount: 2,
   isProd: false,
 };
 
@@ -23,6 +24,7 @@ const APP_CONFIG_PROD = {
   measurementId: 'G-23MFY9WDH7',
 
   watchedTimeout: 20000,
+  allowedWatchCount: 2,
   isProd: true,
 };
 
