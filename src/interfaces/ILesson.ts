@@ -17,7 +17,7 @@ export interface IVideoLesson extends ILesson {
 }
 
 export interface ILiveLesson extends ILesson {
-  meetingId: string;
+  // meetingId: string;
   dateTime: number;
-  pwd: string;
+  // pwd: string;
 }

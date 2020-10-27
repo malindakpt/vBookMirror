@@ -15,5 +15,21 @@
     .editor {
         display: grid;
         grid-gap: 10px;
+
+        .twoColumn{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
     }
+
+    .meetInfo{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 10px;
+
+        .input2{
+            // max-width: 100px;
+        }
+    }
+
 }

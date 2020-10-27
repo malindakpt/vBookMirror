@@ -1,36 +1,40 @@
 import {
-  Button, Divider, FormControl, InputLabel, List, ListItem, MenuItem, Select, TextField,
+  Button, Divider, FormControl, FormControlLabel, InputLabel, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
 import React, { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../../../../App';
-import { addDoc, Entity, getDocsWithProps } from '../../../../data/Store';
+import {
+  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
+} from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { formattedTime } from '../../../../helper/util';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
+import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveSession.module.scss';
 
+const fresh = {
+  id: '',
+  topic: '',
+  description: '',
+  duration: 0,
+  keywords: '',
+  attachments: [],
+  courseId: '',
+  price: 0,
+  ownerEmail: '',
+  meetingId: '',
+  dateTime: new Date().getTime(),
+  pwd: '',
+};
 export const AddLiveSession = () => {
   const { showSnackbar, email } = useContext(AppContext);
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const [busy, setBusy] = useState<boolean>(false);
-  const [session, setSession] = useState<ILiveLesson>({
-    id: '',
-    topic: '',
-    description: '',
-    duration: 0,
-    keywords: '',
-    attachments: [],
-    courseId: '',
-    price: 0,
-    ownerEmail: '',
-    meetingId: '',
-    dateTime: new Date().getTime(),
-    pwd: '',
-  });
+  const [session, setSession] = useState<ILiveLesson>(fresh);
   const [sessions, setSessions] = useState<ILiveLesson[]>([]);
 
   const [courses, setCourses] = useState<ICourse[]>([]);
@@ -38,6 +42,10 @@ export const AddLiveSession = () => {
 
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
+  const [teacher, setTeacher] = useState<ITeacher>();
+
+  const [zoomMeetingId, setZoomMeetingId] = useState<string>('');
+  const [zoomPwd, setZoomPwd] = useState<string>('');
 
   const setSessionProps = (obj: any) => {
     setSession((prev) => {
@@ -46,22 +54,21 @@ export const AddLiveSession = () => {
     });
   };
 
-  const onSave = () => {
-    setBusy(true);
-
-    addDoc(Entity.LESSONS_LIVE, { ...session, ownerEmail: email }).then((data) => {
-      showSnackbar('Live Session Added');
-      getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {}).then((data) => setSessions(data));
-      setBusy(false);
-    });
-  };
-
   useEffect(() => {
     // fetch unrelated data
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
-      .then((data) => data && setCourses(data));
+    if (email) {
+      getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => {
+        if (data) {
+          setZoomMeetingId(data.zoomMeetingId);
+          setZoomPwd(data.zoomPwd);
+          setTeacher(data);
+        }
+      });
+      getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+      getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+      getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
+        .then((data) => data && setCourses(data));
+    }
   }, [email]);
 
   const onCourseChange = (id: string) => {
@@ -71,8 +78,46 @@ export const AddLiveSession = () => {
       .then((data) => data && setSessions(data));
   };
 
-  const copyLesson = (sess: ILiveLesson) => {
+  const editLesson = (sess: ILiveLesson) => {
     setSessionProps(sess);
+    setEditMode(true);
+  };
+
+  const addNew = () => {
+    setSessionProps(fresh);
+    setEditMode(false);
+  };
+
+  const onSave = () => {
+    setBusy(true);
+
+    if (editMode) {
+      updateDoc(Entity.LESSONS_LIVE, session.id, session).then((data) => {
+        showSnackbar('Live Session Edited');
+        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId: selectedCourse?.id }).then((data) => setSessions(data));
+        setBusy(false);
+        addNew();
+      });
+    } else {
+      addDoc(Entity.LESSONS_LIVE, { ...session, ownerEmail: email }).then((data) => {
+        showSnackbar('Live Session Added');
+        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId: selectedCourse?.id }).then((data) => setSessions(data));
+        setBusy(false);
+        addNew();
+      });
+    }
+  };
+
+  const saveAuth = () => {
+    setBusy(true);
+    if (teacher && email) {
+      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, zoomMeetingId, zoomPwd }).then((data) => {
+        showSnackbar('Changed Credentials');
+        getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
+        setBusy(false);
+        addNew();
+      });
+    }
   };
 
   return (
@@ -85,6 +130,32 @@ export const AddLiveSession = () => {
           autoComplete="off"
           className={classes.editor}
         >
+          <RadioGroup
+            className={classes.twoColumn}
+            aria-label="editMode"
+            name="editMode"
+            value={editMode}
+            onChange={(e: any) => {
+              if (e.target.value === 'false') {
+                addNew();
+              } else {
+                showSnackbar('Select a lesson from the lessons list');
+              }
+            }}
+          >
+            <FormControlLabel
+              value={false}
+              control={<Radio />}
+              label="Add New Lesson"
+              disabled={busy}
+            />
+            <FormControlLabel
+              value
+              control={<Radio />}
+              label="Edit lesson"
+              disabled={busy}
+            />
+          </RadioGroup>
           <FormControl className={classes.input}>
             <InputLabel
               id="demo-simple-select-label"
@@ -130,22 +201,6 @@ export const AddLiveSession = () => {
             label="Description"
             value={session.description}
             onChange={(e) => setSessionProps({ description: e.target.value })}
-          />
-
-          <TextField
-            className={classes.input}
-            id="mid"
-            label="Meeting Id"
-            value={session.meetingId}
-            onChange={(e) => setSessionProps({ meetingId: e.target.value })}
-          />
-
-          <TextField
-            className={classes.input}
-            id="pwd"
-            label="Password"
-            value={session.pwd}
-            onChange={(e) => setSessionProps({ pwd: e.target.value })}
           />
 
           <TextField
@@ -205,8 +260,36 @@ export const AddLiveSession = () => {
               {editMode ? 'Edit Live Lesson' : 'Add Live Lesson'}
             </Button>
           </div>
+
         </form>
         <div>
+          <div className={classes.meetInfo}>
+            <TextField
+              className={classes.input2}
+              id="mid"
+              label="Zoom Meeting Id"
+              disabled={!teacher}
+              value={zoomMeetingId}
+              onChange={(e) => setZoomMeetingId(e.target.value)}
+            />
+
+            <TextField
+              className={classes.input2}
+              id="pwd"
+              label="Password"
+              disabled={!teacher}
+              value={zoomPwd}
+              onChange={(e) => setZoomPwd(e.target.value)}
+            />
+            <div />
+            <Button
+              color="primary"
+              onClick={saveAuth}
+              disabled={busy}
+            >
+              Save Auth
+            </Button>
+          </div>
           <List
             component="nav"
             aria-label="main mailbox folders"
@@ -219,7 +302,7 @@ export const AddLiveSession = () => {
                 >
                   <ListItem
                     button
-                    onClick={() => { setEditMode(true); copyLesson(ses); }}
+                    onClick={() => { setEditMode(true); editLesson(ses); }}
                   >
                     <div
                       className="fc1"
