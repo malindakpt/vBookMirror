@@ -23,17 +23,23 @@ import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
 import { AddLiveSession } from '../container/manageCourse/addLiveSession/AddLiveSession';
+import { Zoom } from '../container/zoom/Zoom';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
   ['/intro/:id', Intro, 'Intro', false],
-  ['/teacher/:teacherId', Teacher, 'Teacher', false],
+
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
+  ['/teacher/:teacherId', Teacher, 'Teacher', false],
+
+  ['/:examId/:subjectId/:courseId/live/:lessonId', Zoom, 'Lesson', false],
   ['/:examId/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
+
   ['/:examId/:subjectId/:courseId', Course, 'Course', false],
   ['/:examId/:subjectId', Courses, 'Courses', false],
   ['/:examId/', Subjects, 'Subjects', false],
+
   ['/', Exams, 'Exams', true],
 ];
 

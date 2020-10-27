@@ -1,0 +1,63 @@
+.root {
+  margin: auto;
+  max-width: 900px;
+
+  .fsButton{
+    position: fixed;
+    z-index: 1;
+    top: 10px;
+    left: calc(50% - 75px);
+    width: 150px;
+    background-color: #ffffff4d;
+    color: black;
+
+    &:hover{
+      background-color: white;
+    }
+  }
+
+  .fullScr {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .topic {
+    font-size: 22px;
+    margin: 0px 10px;
+  }
+
+  .desc {
+    font-size: 16px;
+    margin: 0px 10px 10px 10px; 
+  }
+
+  .attachments {
+    padding-left: 10px;
+    padding-bottom: 50px;
+    color: white;
+
+    li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 50%;
+
+      a {
+        color: white;
+      }
+    }
+  }
+
+  button {
+    float: right;
+    background: #3fb56e;
+    color: #fff;
+    border: none;
+    padding: 4px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  }
+}

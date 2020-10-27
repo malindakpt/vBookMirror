@@ -62,7 +62,11 @@ export const Course: React.FC = () => {
   }, [email]);
 
   const freeOrPurchased = (lesson: ILesson) => (!lesson.price)
-    || ((user?.videoLessons.find((les) => les.id === lesson.id && les.watchedCount < Config.allowedWatchCount)));
+    || ((user?.videoLessons.find((les) => les.id
+       === lesson.id && les.watchedCount < Config.allowedWatchCount)));
+
+  const readyToGo = (liveLess: ILiveLesson) => (!liveLess.price)
+    || (user?.liveLessons?.find((les) => les.id === liveLess.id));
 
   const handlePaymentSuccess = async (amount: number, date: number, lessonId: string) => {
     if (!email) return;
@@ -151,7 +155,47 @@ export const Course: React.FC = () => {
     }
   };
 
-  const getRemain = (lesson: ILesson) => user?.videoLessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
+  const handleLiveSelectLesson = (lesson: ILiveLesson) => {
+    if (readyToGo(lesson)) {
+      if (lesson.price > 0) {
+        setDisplayAlert(true);
+      }
+    } else {
+      const dd = new Date().getTime();
+      paymentJS.onDismissed = function onDismissed() {
+        // Note: Prompt user to pay again or show an error page
+        // TODO: Remove this code
+
+        if (Config.isProd) {
+          console.log('Payment cancelled');
+          showSnackbar('Payment cancelled');
+        } else {
+          console.log('Succeed');
+          showSnackbar('Dev Payment Succeed');
+          handlePaymentSuccess(lesson.price, dd, lesson.id);
+        }
+        // handlePaymentSuccess(lesson.price, dd, lesson.id);
+      };
+      paymentJS.onCompleted = function onDismissed() {
+        // Note: Prompt user to pay again or show an error page
+        // TODO: Remove this code
+        if (Config.isProd) {
+          console.log('Succeed');
+          showSnackbar('Sorry, Payment gateway is under maintanance. Please contact us for inquiries');
+        } else {
+          console.log('Succeed');
+          showSnackbar('Dev Payment Succeed');
+          handlePaymentSuccess(lesson.price, dd, lesson.id);
+        }
+      };
+
+      // Show payment dialog
+      startPay(email, lesson.id, lesson.price, dd);
+    }
+  };
+
+  const getRemain = (lesson: ILesson) => user
+        ?.videoLessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
 
   return (
     <div className="container">
@@ -159,7 +203,7 @@ export const Course: React.FC = () => {
         liveLessons.map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (live.price) {
-            if (freeOrPurchased(live)) {
+            if (readyToGo(live)) {
               status = 'yes';
             } else {
               status = 'no';
@@ -169,11 +213,11 @@ export const Course: React.FC = () => {
           }
           return (
             <div
-              // onClick={() => handleSelectLesson(live)}
+              onClick={() => handleLiveSelectLesson(live)}
               key={live.id}
               role="button"
               tabIndex={0}
-              // onKeyDown={() => handleSelectLesson(lesson)}
+              onKeyDown={() => handleSelectLesson(live)}
             >
               <Category
                 id={live.id}
@@ -185,8 +229,7 @@ export const Course: React.FC = () => {
                 title5="Live"
                 title6={`${live.duration} mins`}
                 // navURL=""
-                navURL={freeOrPurchased(live)
-                   && (accepted || live.price === 0) ? `${courseId}/${live.id}` : `${courseId}`}
+                navURL={readyToGo(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>
