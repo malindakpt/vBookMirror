@@ -29,6 +29,8 @@ export const Header:React.FC = () => {
     }
 
     setEmail(email);
+    Util.fullName = result.displayName;
+
     setUser({
       name: result.displayName,
       photo: result.photoURL,

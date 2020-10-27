@@ -58,9 +58,9 @@ var testTool = {
     var params = window.location.href.split('&a=');
     console.log('..mkpt',params);
     return {
-      mn: parseInt(getStringFromHash(params[2])),
-      name: getStringFromHash(params[1]),
-      pwd: getStringFromHash(params[3]),
+      mn: parseInt(getStringFromHash(params[1])),
+      name: getStringFromHash(params[3]),
+      pwd: getStringFromHash(params[2]),
       role: parseInt(document.getElementById("meeting_role").value, 10),
       email: testTool.b64EncodeUnicode(
         document.getElementById("meeting_email").value

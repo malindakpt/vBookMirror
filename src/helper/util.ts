@@ -1,5 +1,7 @@
 export class Util {
     public static invokeLogin: any = null;
+
+    public static fullName = 'Unknown';
 }
 
 export const teacherPortion = (commission:number, amount: number) => Math.round((amount

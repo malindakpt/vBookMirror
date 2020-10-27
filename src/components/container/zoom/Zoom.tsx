@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
 import React, {
-  useContext, useEffect, useRef, useState,
+  useContext, useEffect, useState,
 } from 'react';
 
 import { Button } from '@material-ui/core';
@@ -13,11 +13,10 @@ import { ITeacher } from '../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../interfaces/ILesson';
 import { Entity, getDocWithId } from '../../../data/Store';
 import { IUser } from '../../../interfaces/IUser';
-import { getHashFromString } from '../../../helper/util';
+import { getHashFromString, Util } from '../../../helper/util';
 
 export const Zoom: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
-  const timerRef = useRef<any>();
 
   // disble context menu for avoid right click
   document.addEventListener('contextmenu', (event) => event.preventDefault());
@@ -52,10 +51,6 @@ export const Zoom: React.FC = () => {
 
   useEffect(() => {
     processVideo();
-
-    return () => {
-      clearInterval(timerRef.current);
-    };
     // eslint-disable-next-line
   }, []);
 
@@ -80,8 +75,10 @@ export const Zoom: React.FC = () => {
       {teacher && (
       <iframe
         className={isFullScr ? classes.fullScr : ''}
-        src={`${Config.zoomURL}?&a=${'ReactName'}&a=${
-          getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}`}
+        src={`${Config.zoomURL}?&a=${
+          getHashFromString(teacher.zoomMeetingId)}&a=${
+          getHashFromString(teacher.zoomPwd)}&a=${
+          getHashFromString(Util.fullName)}`}
         name="iframe_a"
         height="300px"
         width="100%"
