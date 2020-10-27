@@ -32,6 +32,7 @@ export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG
 
 console.log(process.env.REACT_APP_ENV);
 
+export const ZOOM_URL = 'https://smsm-54fa3.web.app/';
 export const ADMIN_EMAIL = 'contact.akshara.lk@gmail.com';
 export const OBS_DOWNLOAD = 'https://drive.google.com/file/d/1NOqkKwhl1FVuHE7Z52FB4qn7iE2U-_6b/view?usp=sharing';
 export const OBS_HELP_DOC = '';
