@@ -98,8 +98,15 @@ function getStringFromHash (s) {
 
     ZoomMtg.inMeetingServiceListener('onUserJoin', function (data) {
       console.log('inMeetingServiceListener onUserJoin', data);
-      document.getElementsByClassName('meeting-info-icon__icon')[0].style.display='none'
-
+      var ele1 = document.getElementsByClassName('meeting-info-icon__icon');
+      var ele2 = document.getElementsByClassName('e2e-encryption-indicator__encrypt-indicator e2e-encryption-indicator__encrypt-indicator--2');
+      
+      if (ele1 && ele1.length > 0) {
+        ele1[0].parentElement.removeChild(ele1[0]);
+      }
+      if (ele2 && ele2.length > 0) {
+        ele2[0].parentElement.removeChild(ele2[0]);
+      }
     });
   
     ZoomMtg.inMeetingServiceListener('onUserLeave', function (data) {
