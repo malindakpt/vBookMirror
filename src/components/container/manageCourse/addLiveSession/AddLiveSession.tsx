@@ -11,7 +11,7 @@ import { getObject } from '../../../../data/StoreHelper';
 import { formattedTime } from '../../../../helper/util';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
-import { ILiveLesson } from '../../../../interfaces/ILesson';
+import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveSession.module.scss';
@@ -29,6 +29,7 @@ const fresh = {
   meetingId: '',
   dateTime: new Date().getTime(),
   pwd: '',
+  status: LiveMeetingStatus.NOT_STARTED,
 };
 export const AddLiveSession = () => {
   const { showSnackbar, email } = useContext(AppContext);
@@ -123,6 +124,18 @@ export const AddLiveSession = () => {
     }
   };
 
+  const startMeeting = (less: ILiveLesson) => {
+    setBusy(true);
+    if (teacher && email && editMode) {
+      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, runningLessonId: less.id }).then((data) => {
+        showSnackbar(`${less.topic} started`);
+        getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
+        setBusy(false);
+        // addNew();
+      });
+    }
+  };
+
   return (
     <>
       <div
@@ -133,32 +146,7 @@ export const AddLiveSession = () => {
           autoComplete="off"
           className={classes.editor}
         >
-          <RadioGroup
-            className={classes.twoColumn}
-            aria-label="editMode"
-            name="editMode"
-            value={editMode}
-            onChange={(e: any) => {
-              if (e.target.value === 'false') {
-                addNew();
-              } else {
-                showSnackbar('Select a lesson from the lessons list');
-              }
-            }}
-          >
-            <FormControlLabel
-              value={false}
-              control={<Radio />}
-              label="Add New Lesson"
-              disabled={busy}
-            />
-            <FormControlLabel
-              value
-              control={<Radio />}
-              label="Edit lesson"
-              disabled={busy}
-            />
-          </RadioGroup>
+
           <FormControl className={classes.input}>
             <InputLabel
               id="demo-simple-select-label"
@@ -190,6 +178,33 @@ export const AddLiveSession = () => {
             </Select>
           </FormControl>
 
+          <RadioGroup
+            className={classes.twoColumn}
+            aria-label="editMode"
+            name="editMode"
+            value={editMode}
+            onChange={(e: any) => {
+              if (e.target.value === 'false') {
+                addNew();
+              } else {
+                showSnackbar('Select a lesson from the lessons list');
+              }
+            }}
+          >
+            <FormControlLabel
+              value={false}
+              control={<Radio />}
+              label="Add New Lesson"
+              disabled={busy}
+            />
+            <FormControlLabel
+              value
+              control={<Radio />}
+              label="Edit lesson"
+              disabled={busy}
+            />
+          </RadioGroup>
+
           <TextField
             className={classes.input}
             id="topic"
@@ -218,7 +233,8 @@ export const AddLiveSession = () => {
           <TextField
             className={classes.input}
             id="duration"
-            label="Duration"
+            label="Duration in Hours(Lesson will not be visble to students after the duration)"
+            type="number"
             value={session.duration}
             onChange={(e) => setSessionProps({ duration: e.target.value })}
           />
@@ -284,7 +300,13 @@ export const AddLiveSession = () => {
               value={zoomPwd}
               onChange={(e) => setZoomPwd(e.target.value)}
             />
-            <div />
+            <Button
+              color="primary"
+              onClick={() => startMeeting(session)}
+              disabled={busy || !editMode || teacher?.runningLessonId === session.id}
+            >
+              {teacher?.runningLessonId === session.id ? 'Started....' : 'Start Meeting'}
+            </Button>
             <Button
               color="primary"
               onClick={saveAuth}

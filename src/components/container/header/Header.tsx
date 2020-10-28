@@ -47,6 +47,7 @@ export const Header:React.FC = () => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((u: any) => {
+      console.log('AuthChanged');
       if (u) {
         setUserDetails(u);
       } else {
