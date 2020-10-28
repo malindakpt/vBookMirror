@@ -23,7 +23,7 @@ import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
 import { AddLiveSession } from '../container/manageCourse/addLiveSession/AddLiveSession';
-import { Zoom } from '../container/zoom/Zoom';
+import { LiveLesson } from '../container/liveLesson/LiveLesson';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -33,7 +33,7 @@ export const commonRoutes: routeConfig = [
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
 
-  ['/:examId/:subjectId/:courseId/live/:lessonId', Zoom, 'Lesson', false],
+  ['/:examId/:subjectId/:courseId/live/:lessonId', LiveLesson, 'Lesson', false],
   ['/:examId/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
 
   ['/:examId/:subjectId/:courseId', Course, 'Course', false],

@@ -6,7 +6,7 @@ import React, {
 
 import { Button } from '@material-ui/core';
 import { AppContext } from '../../../App';
-import classes from './Zoom.module.scss';
+import classes from './LiveLesson.module.scss';
 import Config from '../../../data/Config';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../interfaces/ITeacher';
@@ -15,7 +15,7 @@ import { Entity, getDocWithId } from '../../../data/Store';
 import { IUser } from '../../../interfaces/IUser';
 import { getHashFromString, Util } from '../../../helper/util';
 
-export const Zoom: React.FC = () => {
+export const LiveLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
 
   // disble context menu for avoid right click
