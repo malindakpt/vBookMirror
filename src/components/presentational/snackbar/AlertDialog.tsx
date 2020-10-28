@@ -6,11 +6,26 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+const msgs = [
+  {
+    en: 'Per a payment you are allowed to watch this lesson for 2 times. Continue to watch, if you can manage to watch the full video now. Else please try again at any time when you can manage to watch full video.',
+    si: ' එක්  මුදල් ගෙවීමක් සඳහා මෙම පාඩම වාර 2ක්  නැරඹිය හැකිය. ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම් පමණක් ඉදිරියට යන්න. නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම වේලාවක උත්සහ කරන්න.',
+
+  },
+  {
+    en: 'Accept the microphone access from the next window and there after you can mute the microphone',
+    si: 'මීලග පිටුවෙන්  Microphone සක්‍රීය කිරීමට අවශ්‍ය වුවහොත්  එය සක්‍රිය කිරීමට ඉඩ දෙන්න.  සම්බන්දතාව ගොඩනැගුනු පසුව Microphone විසන්ධි කල හැකිය.',
+  },
+];
+export enum AlertMode {
+  VIDEO, LIVE, NONE
+}
 export interface Props {
   onAccept: () => void;
   onCancel: () => void;
+  type: AlertMode;
 }
-export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel }) => {
+export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel, type }) => {
   const [open, setOpen] = React.useState(true);
 
   const handleClose = () => {
@@ -29,15 +44,10 @@ export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel }) => {
         <DialogTitle id="alert-dialog-title">Please confirm</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            එක්  මුදල් ගෙවීමක් සඳහා මෙම පාඩම වාර 2ක්  නැරඹිය හැකිය.
-            ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම් පමණක් ඉදිරියට යන්න.
-            නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම වේලාවක උත්සහ කරන්න.
-
+            {msgs[type].si}
           </DialogContentText>
           <DialogContentText id="alert-dialog-description">
-            Per a payment you are allowed to watch this lesson for 2 times.
-            Continue to watch, if you can manage to watch the full video now. Else please try again
-            at any time when you can manage to watch full video.
+            {msgs[type].en}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

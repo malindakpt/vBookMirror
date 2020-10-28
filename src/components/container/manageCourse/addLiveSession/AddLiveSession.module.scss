@@ -22,6 +22,12 @@
         }
     }
 
+    .running {
+        background: #6200ff;
+        color: white;
+        padding: 2px;
+    }
+
     .meetInfo{
         display: grid;
         grid-template-columns: 1fr 1fr;

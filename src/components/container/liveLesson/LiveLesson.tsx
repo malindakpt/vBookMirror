@@ -94,9 +94,9 @@ export const LiveLesson: React.FC = () => {
           height="300px"
           width="100%"
           allow="camera *;microphone *"
-          title="Iframe Example"
+          title="Live Lessons"
         />
-      ) : <div className={classes.notStarted}>Session Not Started Yet</div>}
+      ) : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
       {lesson?.attachments && (
       <div className={classes.attachments}>

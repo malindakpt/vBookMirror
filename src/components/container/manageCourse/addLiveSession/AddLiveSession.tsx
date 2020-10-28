@@ -36,7 +36,7 @@ export const AddLiveSession = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const [busy, setBusy] = useState<boolean>(false);
-  const [session, setSession] = useState<ILiveLesson>(fresh);
+  const [liveLesson, setLiveLesson] = useState<ILiveLesson>(fresh);
   const [sessions, setSessions] = useState<ILiveLesson[]>([]);
 
   const [courses, setCourses] = useState<ICourse[]>([]);
@@ -50,7 +50,7 @@ export const AddLiveSession = () => {
   const [zoomPwd, setZoomPwd] = useState<string>('');
 
   const setSessionProps = (obj: any) => {
-    setSession((prev) => {
+    setLiveLesson((prev) => {
       const newObj = { ...prev, ...obj };
       return newObj;
     });
@@ -94,7 +94,7 @@ export const AddLiveSession = () => {
     setBusy(true);
 
     if (editMode) {
-      updateDoc(Entity.LESSONS_LIVE, session.id, session).then((data) => {
+      updateDoc(Entity.LESSONS_LIVE, liveLesson.id, liveLesson).then((data) => {
         showSnackbar('Live Session Edited');
         getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setSessions(data));
@@ -102,7 +102,7 @@ export const AddLiveSession = () => {
         addNew();
       });
     } else {
-      addDoc(Entity.LESSONS_LIVE, { ...session, ownerEmail: email }).then((data) => {
+      addDoc(Entity.LESSONS_LIVE, { ...liveLesson, ownerEmail: email }).then((data) => {
         showSnackbar('Live Session Added');
         getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setSessions(data));
@@ -127,7 +127,8 @@ export const AddLiveSession = () => {
   const startMeeting = (less: ILiveLesson) => {
     setBusy(true);
     if (teacher && email && editMode) {
-      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, runningLessonId: less.id }).then((data) => {
+      const lesId = teacher?.runningLessonId === less.id ? '' : less.id;
+      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, runningLessonId: lesId }).then((data) => {
         showSnackbar(`${less.topic} started`);
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
@@ -209,7 +210,7 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="topic"
             label="Topic"
-            value={session.topic}
+            value={liveLesson.topic}
             onChange={(e) => setSessionProps({ topic: e.target.value })}
           />
 
@@ -217,7 +218,7 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="desc"
             label="Description"
-            value={session.description}
+            value={liveLesson.description}
             onChange={(e) => setSessionProps({ description: e.target.value })}
           />
 
@@ -226,7 +227,7 @@ export const AddLiveSession = () => {
             id="price"
             label="Price"
             type="number"
-            value={session.price}
+            value={liveLesson.price}
             onChange={(e) => setSessionProps({ price: Number(e.target.value) })}
           />
 
@@ -235,7 +236,7 @@ export const AddLiveSession = () => {
             id="duration"
             label="Duration in Hours(Lesson will not be visble to students after the duration)"
             type="number"
-            value={session.duration}
+            value={liveLesson.duration}
             onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
           />
 
@@ -247,7 +248,7 @@ export const AddLiveSession = () => {
             rows={3}
             variant="outlined"
             disabled={busy}
-            value={session.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
+            value={liveLesson.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
             onChange={(e) => {
               console.log(e.target.value);
               setSessionProps({ attachments: e.target.value.split('\n') });
@@ -258,7 +259,7 @@ export const AddLiveSession = () => {
             id="datetime-local"
             label="Date and Time"
             type="datetime-local"
-            value={formattedTime(new Date(session?.dateTime ?? new Date().getTime()))}
+            value={formattedTime(new Date(liveLesson?.dateTime ?? new Date().getTime()))}
             onChange={(e) => {
               console.log(e.target.value);
               setSessionProps({ dateTime: new Date(e.target.value).getTime() });
@@ -302,10 +303,10 @@ export const AddLiveSession = () => {
             />
             <Button
               color="primary"
-              onClick={() => startMeeting(session)}
-              disabled={busy || !editMode || teacher?.runningLessonId === session.id}
+              onClick={() => startMeeting(liveLesson)}
+              disabled={busy || !editMode}
             >
-              {teacher?.runningLessonId === session.id ? 'Started....' : 'Start Meeting'}
+              {teacher?.runningLessonId === liveLesson.id ? 'Finish Meeting' : 'Start Meeting'}
             </Button>
             <Button
               color="primary"
@@ -329,7 +330,7 @@ export const AddLiveSession = () => {
                     onClick={() => { setEditMode(true); editLesson(ses); }}
                   >
                     <div
-                      className="fc1"
+                      className={teacher?.runningLessonId === ses.id ? classes.running : ''}
                       style={{ fontSize: '11px', width: '100%' }}
                     >
                       {`${new Date(ses.dateTime).toString().split('GMT')[0]} : ${ses.topic}`}
