@@ -15,6 +15,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import { AlertDialog } from '../../presentational/snackbar/AlertDialog';
 import { paymentJS, startPay } from '../../../helper/payment';
 import Config from '../../../data/Config';
+import { isLiveLessonRunning } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -200,7 +201,7 @@ export const Course: React.FC = () => {
   return (
     <div className="container">
       {
-        liveLessons.sort((a, b) => a.dateTime - b.dateTime).map((live) => {
+        liveLessons.filter((l) => isLiveLessonRunning(l)).sort((a, b) => a.dateTime - b.dateTime).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (live.price) {
             if (readyToGo(live)) {

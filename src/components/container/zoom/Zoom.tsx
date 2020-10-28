@@ -83,20 +83,20 @@ export const Zoom: React.FC = () => {
           { isFullScr ? 'Exit' : 'Full Screen'}
         </Button>
       </div>
-      {teacher && (
-      <iframe
-        className={isFullScr ? classes.fullScr : ''}
-        src={`${Config.zoomURL}?&a=${
-          getHashFromString(teacher.zoomMeetingId)}&a=${
-          getHashFromString(teacher.zoomPwd)}&a=${
-          getHashFromString(Util.fullName)}`}
-        name="iframe_a"
-        height="300px"
-        width="100%"
-        allow="camera *;microphone *"
-        title="Iframe Example"
-      />
-      )}
+      {teacher && teacher.runningLessonId === lesson?.id ? (
+        <iframe
+          className={isFullScr ? classes.fullScr : ''}
+          src={`${Config.zoomURL}?&a=${
+            getHashFromString(teacher.zoomMeetingId)}&a=${
+            getHashFromString(teacher.zoomPwd)}&a=${
+            getHashFromString(Util.fullName)}`}
+          name="iframe_a"
+          height="300px"
+          width="100%"
+          allow="camera *;microphone *"
+          title="Iframe Example"
+        />
+      ) : <div className={classes.notStarted}>Session Not Started Yet</div>}
 
       {lesson?.attachments && (
       <div className={classes.attachments}>

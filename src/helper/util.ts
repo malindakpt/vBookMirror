@@ -1,3 +1,5 @@
+import { ILiveLesson } from '../interfaces/ILesson';
+
 export class Util {
     public static invokeLogin: any = null;
 
@@ -8,6 +10,12 @@ export const teacherPortion = (commission:number, amount: number) => Math.round(
         * ((100 - commission) / 100)));
 
 export const round = (num: number) => Math.round(num * 10) / 10;
+
+export const isLiveLessonRunning = (l: ILiveLesson) => {
+  const now = new Date().getTime();
+  const finish = l.dateTime + l.duration * 60 * 60 * 1000;
+  return now < finish;
+};
 
 export const formattedTime = (x: Date) => {
   const mmm = x.getMonth() + 1;

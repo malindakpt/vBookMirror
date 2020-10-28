@@ -1,28 +1,28 @@
-@import '../../../mixins.scss';
+@import "../../../mixins.scss";
 
 .root {
   margin: auto;
   max-width: 900px;
 
-   .fsButton{
-      position: fixed;
-      z-index: 99999;
-      top: -2px;
-      left: calc(50% - 55px);
-      width: 110px;
-      background-color: white;
-      color: black;
-      font-size: 8px;
-      border-radius: 0px;
-      padding-bottom: 0px;
+  .fsButton {
+    position: fixed;
+    z-index: 99999;
+    top: -2px;
+    left: calc(50% - 55px);
+    width: 110px;
+    background-color: white;
+    color: black;
+    font-size: 8px;
+    border-radius: 0px;
+    padding-bottom: 0px;
 
-      @include mobile {
-      }
-
-      &:hover{
-        background-color: white;
-      }
+    @include mobile {
     }
+
+    &:hover {
+      background-color: white;
+    }
+  }
 
   .fullScr {
     position: fixed;
@@ -31,7 +31,7 @@
     height: 100%;
     width: 100%;
   }
-  
+
   .topic {
     font-size: 22px;
     margin: 0px 10px;
@@ -39,7 +39,14 @@
 
   .desc {
     font-size: 16px;
-    margin: 0px 10px 10px 10px; 
+    margin: 0px 10px 10px 10px;
+  }
+
+  .notStarted {
+    text-align: center;
+    color: red;
+    padding-top: 100px;
+    font-weight: bold;
   }
 
   .attachments {
@@ -66,6 +73,6 @@
     border: none;
     padding: 4px 20px;
     cursor: pointer;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   }
 }

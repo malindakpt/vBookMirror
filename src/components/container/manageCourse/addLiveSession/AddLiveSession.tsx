@@ -20,7 +20,7 @@ const fresh = {
   id: '',
   topic: '',
   description: '',
-  duration: 0,
+  duration: 2,
   keywords: '',
   attachments: [],
   courseId: '',
@@ -227,7 +227,7 @@ export const AddLiveSession = () => {
             label="Price"
             type="number"
             value={session.price}
-            onChange={(e) => setSessionProps({ price: e.target.value })}
+            onChange={(e) => setSessionProps({ price: Number(e.target.value) })}
           />
 
           <TextField
@@ -236,7 +236,7 @@ export const AddLiveSession = () => {
             label="Duration in Hours(Lesson will not be visble to students after the duration)"
             type="number"
             value={session.duration}
-            onChange={(e) => setSessionProps({ duration: e.target.value })}
+            onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
           />
 
           <TextField
@@ -274,9 +274,9 @@ export const AddLiveSession = () => {
               variant="contained"
               color="primary"
               onClick={onSave}
-              disabled={busy}
+              disabled={busy || !selectedCourse}
             >
-              {editMode ? 'Edit Live Lesson' : 'Add Live Lesson'}
+              {editMode ? 'Save Changes' : 'Add Live Lesson'}
             </Button>
           </div>
 
@@ -312,7 +312,7 @@ export const AddLiveSession = () => {
               onClick={saveAuth}
               disabled={busy}
             >
-              Save Auth
+              Change Credentials
             </Button>
           </div>
           <List
