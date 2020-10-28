@@ -34,8 +34,8 @@ export const Course: React.FC = () => {
       // Check the lessons paid by user
       getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }),
       // All lessons related to courseId
-      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId, ownerEmail: email }),
-      getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId, ownerEmail: email }),
+      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
+      getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
       // Find the lesson order of the course
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
