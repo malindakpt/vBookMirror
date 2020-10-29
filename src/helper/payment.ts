@@ -7,9 +7,9 @@ export const paymentJS = payhere;
 const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number) => ({
   sandbox: !Config.isProd,
   merchant_id: Config.isProd ? '216030' : '1215643', // Replace your Merchant ID
-  return_url: undefined, // Important
-  cancel_url: undefined, // Important
-  notify_url: 'http://sample.com/notify',
+  return_url: 'https://akshara.lk/notify/1',
+  cancel_url: 'https://akshara.lk/notify/2',
+  notify_url: 'https://akshara.lk/notify/3',
   order_id: 'ItemNo12345',
   items: 'අක්ෂර.lk',
   amount: `${amount}`,
@@ -32,7 +32,7 @@ const getPaymentObj = (email: string, lessonId: string, amount: number, dd:numbe
 //   // Note: Prompt user to pay again or show an error page
 //   // TODO: Remove this code
 //   console.log('Payment dismissed completed.');
-//   const dd = new Date().getTime();
+//   const dd = new Date().gecdtTime();
 // //   onSuccess(amount, dd);
 // };
 

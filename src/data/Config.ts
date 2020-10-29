@@ -25,7 +25,7 @@ const APP_CONFIG_PROD = {
   appId: '1:613661168552:web:46b655f214b7d0bc18c39d',
   measurementId: 'G-23MFY9WDH7',
 
-  watchedTimeout: 20000,
+  watchedTimeout: 2000,
   allowedWatchCount: 2,
   isProd: true,
   zoomURL: 'https://smsm-54fa3.web.app',

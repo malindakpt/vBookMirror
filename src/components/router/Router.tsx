@@ -24,11 +24,13 @@ import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
 import { AddLiveSession } from '../container/manageCourse/addLiveSession/AddLiveSession';
 import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
+import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
   ['/intro/:id', Intro, 'Intro', false],
+  ['/notify/:type', NotifyPayment, 'Notify', false],
 
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
