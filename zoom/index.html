@@ -154,7 +154,11 @@
     <script src="js/index.js"></script>
 
     <script>
-
+        $( document ).ready(function() {  
+            window.addEventListener("message", (e)=> {
+                document.getElementById('join_meeting').click();
+            }, false);
+        });
 
     </script>
 </body>

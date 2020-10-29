@@ -27,13 +27,24 @@ export const LiveLesson: React.FC = () => {
   const [lesson, setLesson] = useState<ILiveLesson>();
   const [isFullScr, setFullScr] = useState<boolean>(false);
 
-  const activateIframe = () => {
-    setTimeout(() => {
-      const ele = document.getElementsByTagName('iframe');
-      if (ele && ele.length > 0 && ele[0]) {
+  const sendStartAction = () => {
+    const ele = document.getElementsByTagName('iframe');
+    if (ele && ele.length > 0 && ele[0]) {
         ele[0].contentWindow?.postMessage({ message: 'getAppData', value: 'asd' }, '*');
-      }
-    }, 2000);
+    }
+  };
+
+  const activateIframe = () => {
+    sendStartAction();
+    const glob: any = window;
+    glob.timer = setInterval(() => {
+      console.log('send start mkpt');
+      sendStartAction();
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(glob.timer);
+    }, 30000);
   };
 
   const processVideo = async () => {

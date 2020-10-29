@@ -164,9 +164,3 @@ function getStringFromHash (s) {
 
 
 })();
-
-$( document ).ready(function() {     
-  window.addEventListener("message", (e)=> {
-    document.getElementById('join_meeting').click();
-  }, false);
-});
