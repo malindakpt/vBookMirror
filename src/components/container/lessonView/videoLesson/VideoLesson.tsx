@@ -4,18 +4,18 @@ import React, {
   useContext, useEffect, useRef, useState,
 } from 'react';
 import ReactWhatsapp from 'react-whatsapp';
-import classes from './Lesson.module.scss';
-import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
+import classes from './VideoLesson.module.scss';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import {
   Entity, getDocWithId, updateDoc,
-} from '../../../data/Store';
-import { ILesson, IVideoLesson } from '../../../interfaces/ILesson';
-import { ITeacher } from '../../../interfaces/ITeacher';
-import { IUser } from '../../../interfaces/IUser';
-import { AppContext } from '../../../App';
-import Config from '../../../data/Config';
+} from '../../../../data/Store';
+import { ILesson, IVideoLesson } from '../../../../interfaces/ILesson';
+import { ITeacher } from '../../../../interfaces/ITeacher';
+import { IUser } from '../../../../interfaces/IUser';
+import { AppContext } from '../../../../App';
+import Config from '../../../../data/Config';
 
-export const Lesson: React.FC = () => {
+export const VideoLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
   const timerRef = useRef<any>();
 

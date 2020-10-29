@@ -288,7 +288,7 @@ export const Course: React.FC = () => {
                   ? `Watched: ${getRemain(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                 title6={`${lesson.duration} mins`}
                 navURL={freeOrPurchased(lesson)
-                   && (accepted || lesson.price === 0) ? `${courseId}/${lesson.id}` : `${courseId}`}
+                   && (accepted || lesson.price === 0) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                 status={status}
               />
             </div>

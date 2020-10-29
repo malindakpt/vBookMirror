@@ -16,14 +16,14 @@ import { EditExam } from '../container/manageCourse/editExam/EditExam';
 import { AddExam } from '../container/manageCourse/addExam/AddExam';
 import { AddTeacher } from '../container/manageCourse/addTeacher/AddTeacher';
 import { AddCourse } from '../container/manageCourse/addCourse/AddCourse';
-import { Lesson } from '../container/lesson/Lesson';
+import { VideoLesson } from '../container/lessonView/videoLesson/VideoLesson';
 import { AppContext } from '../../App';
 import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
 import { AddLiveSession } from '../container/manageCourse/addLiveSession/AddLiveSession';
-import { LiveLesson } from '../container/liveLesson/LiveLesson';
+import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -33,8 +33,8 @@ export const commonRoutes: routeConfig = [
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
 
-  ['/:examId/:subjectId/:courseId/live/:lessonId', LiveLesson, 'Lesson', false],
-  ['/:examId/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
+  ['/:examId/:subjectId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
+  ['/:examId/:subjectId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],
 
   ['/:examId/:subjectId/:courseId', Course, 'Course', false],
   ['/:examId/:subjectId', Courses, 'Courses', false],
@@ -44,8 +44,8 @@ export const commonRoutes: routeConfig = [
 ];
 
 export const teacherRoutes: routeConfig = [
-  ['/addLesson', AddLesson, 'Add Lessons', true],
-  ['/addLive', AddLiveSession, 'Add Live Session', true],
+  ['/addLesson', AddLesson, 'Video Lessons', true],
+  ['/addLive', AddLiveSession, 'Live Lessons', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 

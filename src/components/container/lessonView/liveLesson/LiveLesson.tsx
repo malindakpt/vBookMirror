@@ -5,15 +5,15 @@ import React, {
 } from 'react';
 
 import { Button } from '@material-ui/core';
-import { AppContext } from '../../../App';
+import { AppContext } from '../../../../App';
 import classes from './LiveLesson.module.scss';
-import Config from '../../../data/Config';
-import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { ITeacher } from '../../../interfaces/ITeacher';
-import { ILiveLesson } from '../../../interfaces/ILesson';
-import { Entity, getDocWithId } from '../../../data/Store';
-import { IUser } from '../../../interfaces/IUser';
-import { getHashFromString, Util } from '../../../helper/util';
+import Config from '../../../../data/Config';
+import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
+import { ITeacher } from '../../../../interfaces/ITeacher';
+import { ILiveLesson } from '../../../../interfaces/ILesson';
+import { Entity, getDocWithId } from '../../../../data/Store';
+import { IUser } from '../../../../interfaces/IUser';
+import { getHashFromString, Util } from '../../../../helper/util';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
