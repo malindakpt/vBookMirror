@@ -3,9 +3,10 @@ import {
   List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
 import React, { useEffect, useState, useContext } from 'react';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { AppContext } from '../../../../App';
 import {
-  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
+  addDoc, deleteDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { formattedTime } from '../../../../helper/util';
@@ -37,7 +38,7 @@ export const AddLiveSession = () => {
 
   const [busy, setBusy] = useState<boolean>(false);
   const [liveLesson, setLiveLesson] = useState<ILiveLesson>(fresh);
-  const [sessions, setSessions] = useState<ILiveLesson[]>([]);
+  const [liveLessons, setLiveLessons] = useState<ILiveLesson[]>([]);
 
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<ICourse>();
@@ -78,7 +79,7 @@ export const AddLiveSession = () => {
     setSessionProps({ courseId: id });
     setSelectedCourse(courses.find((c) => c.id === id));
     getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
-      .then((data) => data && setSessions(data));
+      .then((data) => data && setLiveLessons(data));
   };
 
   const editLesson = (sess: ILiveLesson) => {
@@ -92,13 +93,17 @@ export const AddLiveSession = () => {
   };
 
   const onSave = () => {
-    setBusy(true);
+    if (liveLesson.topic.length < 5 || liveLesson.description.length < 5) {
+      showSnackbar('Topic and description should be more than 5 charactors');
+      return;
+    }
 
+    setBusy(true);
     if (editMode) {
       updateDoc(Entity.LESSONS_LIVE, liveLesson.id, liveLesson).then((data) => {
         showSnackbar('Live Session Edited');
         getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
-          { courseId: selectedCourse?.id }).then((data) => setSessions(data));
+          { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
         addNew();
       });
@@ -106,7 +111,7 @@ export const AddLiveSession = () => {
       addDoc(Entity.LESSONS_LIVE, { ...liveLesson, ownerEmail: email }).then((data) => {
         showSnackbar('Live Session Added');
         getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
-          { courseId: selectedCourse?.id }).then((data) => setSessions(data));
+          { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
         addNew();
       });
@@ -135,6 +140,28 @@ export const AddLiveSession = () => {
         setBusy(false);
         // addNew();
       });
+    }
+  };
+
+  const deleteLesson = (lesson: ILiveLesson) => {
+    if (selectedCourse) {
+      if ((lesson.dateTime + 24 * 60 * 60 * 1000) < (new Date().getTime())) {
+        setBusy(true);
+        deleteDoc(Entity.LESSONS_LIVE, lesson.id).then(() => {
+          setBusy(true);
+          getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {
+            ownerEmail: email,
+            courseId: selectedCourse.id,
+          })
+            .then((data) => {
+              data && setLiveLessons(data);
+              setBusy(false);
+              showSnackbar('Lesson Deleted');
+            });
+        });
+      } else {
+        showSnackbar('You can delete lessons after 24 hours of start time');
+      }
     }
   };
 
@@ -331,7 +358,7 @@ export const AddLiveSession = () => {
             aria-label="main mailbox folders"
           >
             {
-              sessions.sort((a, b) => a.dateTime - b.dateTime).map((ses) => (
+              liveLessons.sort((a, b) => a.dateTime - b.dateTime).map((ses) => (
                 <div
                   key={ses.id}
                 >
@@ -339,10 +366,16 @@ export const AddLiveSession = () => {
                     button
                     onClick={() => { setEditMode(true); editLesson(ses); }}
                   >
+
+                    <DeleteForeverIcon onClick={(e) => {
+                      deleteLesson(ses); e.stopPropagation();
+                    }}
+                    />
                     <div
                       className={teacher?.zoomRunningLessonId === ses.id ? classes.running : ''}
                       style={{ fontSize: '11px', width: '100%' }}
                     >
+
                       {`${new Date(ses.dateTime).toString().split('GMT')[0]} : ${ses.topic}`}
                     </div>
 
