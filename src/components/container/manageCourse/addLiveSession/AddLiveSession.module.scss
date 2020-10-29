@@ -1,0 +1,41 @@
+@import '../../../../mixins.scss';
+
+.root {
+    max-width: 800px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
+
+    @include mobile {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+
+    .editor {
+        display: grid;
+        grid-gap: 10px;
+
+        .twoColumn{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .running {
+        background: #6200ff;
+        color: white;
+        padding: 2px;
+    }
+
+    .meetInfo{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 10px;
+
+        .input2{
+            // max-width: 100px;
+        }
+    }
+
+}

@@ -1,18 +1,31 @@
+export enum LiveMeetingStatus {
+  NOT_STARTED,
+  RUNNING,
+  FINISHED,
+  CANCELLED
+}
+
 export interface ILesson {
     id: string;
     topic: string;
-    // partNo: string;
     description: string;
-    videoURL: string;
-    videoId: string;
+
     duration: number;
     keywords: string;
-    date: number;
     attachments: string[],
-    watchCount: number;
-    subCount: number;
-    // meta information
     courseId: string;
     price: number;
     ownerEmail: string;
   }
+
+export interface IVideoLesson extends ILesson {
+  videoURL: string;
+  videoId: string;
+}
+
+export interface ILiveLesson extends ILesson {
+  // meetingId: string;
+  dateTime: number;
+  status: LiveMeetingStatus;
+  // pwd: string;
+}

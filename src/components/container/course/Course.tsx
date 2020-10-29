@@ -1,19 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
+import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
   getDocsWithProps, addDoc, updateDoc, getDocWithId, Entity, addDocWithId,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
-import { ILesson } from '../../../interfaces/ILesson';
+import { ILesson, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
-import { AlertDialog } from '../../presentational/snackbar/AlertDialog';
+import { AlertDialog, AlertMode } from '../../presentational/snackbar/AlertDialog';
 import { paymentJS, startPay } from '../../../helper/payment';
-import appConfig from '../../../data/Config';
+import Config from '../../../data/Config';
+import { isLiveLessonRunning } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -22,44 +24,52 @@ export const Course: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
 
   const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
-  const [lessons, setLessons] = useState<ILesson[]>([]);
+  const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
+  const [liveLessons, setLiveLessons] = useState<ILiveLesson[]>([]);
 
   const [accepted, setAccepted] = useState<boolean>(false);
-  const [displayAlert, setDisplayAlert] = useState<boolean>(false);
+  const [displayAlert, setDisplayAlert] = useState<AlertMode>(AlertMode.NONE);
 
   useEffect(() => {
     Promise.all([
       // Check the lessons paid by user
       getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }),
       // All lessons related to courseId
-      getDocsWithProps<ILesson[]>(Entity.LESSONS, { courseId }),
+      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
+      getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
       // Find the lesson order of the course
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
-      const [users, lessons, course] = result;
+      const [users, videoLessons, liveLessons, course] = result;
 
-      if (users && lessons && course) {
-        const lessons4Course: ILesson[] = [];
+      if (liveLessons) { setLiveLessons(liveLessons); }
+
+      if (users && videoLessons && liveLessons && course) {
+        const lessons4Course: IVideoLesson[] = [];
         course?.lessons.forEach((lesId) => {
-          const les = lessons.find((l) => l.id === lesId);
+          const les = videoLessons.find((l) => l.id === lesId);
           if (les) {
             lessons4Course.push(les);
           } else {
             console.error('lesson not found', lesId);
           }
         });
-        lessons?.filter((less) => course?.lessons.includes(less.id));
+        videoLessons?.filter((less) => course?.lessons.includes(less.id));
         setUser(users[0]);
-        setLessons(lessons4Course);
+        setVideoLessons(lessons4Course);
       }
     });
     // eslint-disable-next-line
   }, [email]);
 
   const freeOrPurchased = (lesson: ILesson) => (!lesson.price)
-    || ((user?.lessons.find((les) => les.id === lesson.id && les.watchedCount < lesson.watchCount)));
+    || ((user?.videoLessons?.find((les) => les.id
+       === lesson.id && les.watchedCount < Config.allowedWatchCount)));
 
-  const handlePaymentSuccess = async (amount: number, date: number, lessonId: string) => {
+  const readyToGo = (liveLess: ILiveLesson) => (!liveLess.price)
+    || (user?.liveLessons?.find((les) => les.id === liveLess.id));
+
+  const handlePaymentSuccess = async (amount: number, date: number, lessonId: string, isLive: boolean) => {
     if (!email) return;
 
     let editableUser = user;
@@ -68,10 +78,11 @@ export const Course: React.FC = () => {
       editableUser = {
         id: email,
         ownerEmail: email,
-        lessons: [],
+        videoLessons: [],
+        liveLessons: [],
       };
     }
-    const lesson = lessons.find((l) => l.id === lessonId);
+    const lesson = isLive ? liveLessons.find((l) => l.id === lessonId) : videoLessons.find((l) => l.id === lessonId);
 
     if (!lesson) return;
 
@@ -79,16 +90,34 @@ export const Course: React.FC = () => {
       amount, date, ownerEmail: email, paidFor: lesson.ownerEmail, lessonId,
     });
 
-    const alreadyPurchased = editableUser.lessons.findIndex((sub) => sub.id === lesson.id);
-    if (alreadyPurchased > -1) {
-      editableUser.lessons[alreadyPurchased].watchedCount = 0;
-      editableUser.lessons[alreadyPurchased].paymentRef = paymentRef;
+    const lessonArray = isLive ? editableUser.liveLessons : editableUser.videoLessons;
+    // TODO: remove old purchases at here
+    const alreadyPurchased = lessonArray?.findIndex((sub) => sub.id === lesson.id);
+    if (!isLive && alreadyPurchased > -1) {
+      lessonArray[alreadyPurchased].watchedCount = 0;
+      lessonArray[alreadyPurchased].paymentRef = paymentRef;
     } else {
-      editableUser.lessons.push({
-        id: lessonId,
-        paymentRef,
-        watchedCount: 0,
-      });
+      if (lessonArray) {
+        lessonArray.push({
+          id: lessonId,
+          paymentRef,
+          watchedCount: 0,
+        });
+      } else {
+        if (isLive) {
+          editableUser.liveLessons = [{
+            id: lessonId,
+            paymentRef,
+            watchedCount: 0,
+          }];
+        } else {
+          editableUser.videoLessons = [{
+            id: lessonId,
+            paymentRef,
+            watchedCount: 0,
+          }];
+        }
+      }
     }
     // This fails(permission), non product owners tries to edit value
     // updateDoc(Entity.LESSONS, lessonId, { subCount: firebase.firestore.FieldValue.increment(1) });
@@ -106,37 +135,40 @@ export const Course: React.FC = () => {
     }
   };
 
-  const handleSelectLesson = (lesson: ILesson) => {
+  const handleVideoSelectLesson = (lesson: ILesson) => {
     if (freeOrPurchased(lesson)) {
       if (lesson.price > 0) {
-        setDisplayAlert(true);
+        setDisplayAlert(AlertMode.VIDEO);
       }
     } else {
       const dd = new Date().getTime();
+      // Handle dismiss
       paymentJS.onDismissed = function onDismissed() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
 
-        if (appConfig.isProd) {
+        if (Config.isProd) {
           console.log('Payment cancelled');
           showSnackbar('Payment cancelled');
         } else {
           console.log('Succeed');
           showSnackbar('Dev Payment Succeed');
-          handlePaymentSuccess(lesson.price, dd, lesson.id);
+          handlePaymentSuccess(lesson.price, dd, lesson.id, false);
         }
         // handlePaymentSuccess(lesson.price, dd, lesson.id);
       };
-      paymentJS.onCompleted = function onDismissed() {
+
+      // Handle onComplete
+      paymentJS.onCompleted = function onCompleted() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-        if (appConfig.isProd) {
+        if (Config.isProd) {
           console.log('Succeed');
           showSnackbar('Sorry, Payment gateway is under maintanance. Please contact us for inquiries');
         } else {
           console.log('Succeed');
           showSnackbar('Dev Payment Succeed');
-          handlePaymentSuccess(lesson.price, dd, lesson.id);
+          handlePaymentSuccess(lesson.price, dd, lesson.id, false);
         }
       };
 
@@ -145,12 +177,88 @@ export const Course: React.FC = () => {
     }
   };
 
-  const getRemain = (lesson: ILesson) => user?.lessons.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
+  const handleLiveSelectLesson = (lesson: ILiveLesson) => {
+    if (readyToGo(lesson)) {
+      if (lesson.price > 0) {
+        setDisplayAlert(AlertMode.LIVE);
+      }
+    } else {
+      const dd = new Date().getTime();
+      paymentJS.onDismissed = function onDismissed() {
+        // Note: Prompt user to pay again or show an error page
+        // TODO: Remove this code
+
+        if (Config.isProd) {
+          console.log('Payment cancelled');
+          showSnackbar('Payment cancelled');
+        } else {
+          console.log('Succeed');
+          showSnackbar('Dev Payment Succeed');
+          handlePaymentSuccess(lesson.price, dd, lesson.id, true);
+        }
+        // handlePaymentSuccess(lesson.price, dd, lesson.id);
+      };
+      paymentJS.onCompleted = function onDismissed() {
+        // Note: Prompt user to pay again or show an error page
+        // TODO: Remove this code
+        if (Config.isProd) {
+          console.log('Succeed');
+          showSnackbar('Sorry, Payment gateway is under maintanance. Please contact us for inquiries');
+        } else {
+          console.log('Succeed');
+          showSnackbar('Dev Payment Succeed');
+          handlePaymentSuccess(lesson.price, dd, lesson.id, true);
+        }
+      };
+
+      // Show payment dialog
+      startPay(email, lesson.id, lesson.price, dd);
+    }
+  };
+
+  const getRemain = (lesson: ILesson) => user
+        ?.videoLessons?.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
 
   return (
     <div className="container">
       {
-        lessons?.map((lesson, idx) => {
+        liveLessons.filter((l) => isLiveLessonRunning(l)).sort((a, b) => a.dateTime - b.dateTime).map((live) => {
+          let status: 'yes' | 'no' | 'none' | undefined;
+          if (live.price) {
+            if (readyToGo(live)) {
+              status = 'yes';
+            } else {
+              status = 'no';
+            }
+          } else {
+            status = 'none';
+          }
+          return (
+            <div
+              onClick={() => handleLiveSelectLesson(live)}
+              key={live.id}
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => handleVideoSelectLesson(live)}
+            >
+              <Category
+                id={live.id}
+                CategoryImg={DesktopWindowsIcon}
+                title1={`${live.topic}`}
+                title2={`${live.description}`}
+                title3={`${new Date(live.dateTime).toString().split('GMT')[0]}`}
+                // title3={live.price > 0 ? `Watched: ${getRemain(live)}/${lesson.watchCount}` : 'Free'}
+                title5="Live"
+                title6={`${live.duration} hrs`}
+                navURL={readyToGo(live) && (accepted || live.price === 0) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                status={status}
+              />
+            </div>
+          );
+        })
+      }
+      {
+        videoLessons?.map((lesson, idx) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (lesson.price) {
             if (freeOrPurchased(lesson)) {
@@ -164,11 +272,11 @@ export const Course: React.FC = () => {
 
           return (
             <div
-              onClick={() => handleSelectLesson(lesson)}
+              onClick={() => handleVideoSelectLesson(lesson)}
               key={idx}
               role="button"
               tabIndex={0}
-              onKeyDown={() => handleSelectLesson(lesson)}
+              onKeyDown={() => handleVideoSelectLesson(lesson)}
             >
               <Category
                 id={lesson.id}
@@ -176,8 +284,9 @@ export const Course: React.FC = () => {
                 CategoryImg={OndemandVideoIcon}
                 title1={`${lesson.topic}`}
                 title2={`${lesson.description}`}
-                title3={lesson.price > 0 ? `Watched: ${getRemain(lesson)}/${lesson.watchCount}` : 'Free'}
-                title4={`${lesson.duration} mins`}
+                title3={lesson.price > 0
+                  ? `Watched: ${getRemain(lesson)}/${Config.allowedWatchCount}` : 'Free'}
+                title6={`${lesson.duration} mins`}
                 navURL={freeOrPurchased(lesson)
                    && (accepted || lesson.price === 0) ? `${courseId}/${lesson.id}` : `${courseId}`}
                 status={status}
@@ -187,15 +296,16 @@ export const Course: React.FC = () => {
         })
       }
 
-      {displayAlert && !accepted && (
+      {displayAlert !== AlertMode.NONE && !accepted && (
       <AlertDialog
+        type={displayAlert}
         onAccept={() => {
           setAccepted(true);
         }}
 
         onCancel={() => {
           setAccepted(false);
-          setDisplayAlert(false);
+          setDisplayAlert(AlertMode.NONE);
         }}
       />
       )}

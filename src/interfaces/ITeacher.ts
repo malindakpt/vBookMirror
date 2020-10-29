@@ -6,4 +6,9 @@ export interface ITeacher {
     ownerEmail: string;
     url: string;
     commission: number;
+
+    zoomMeetingId: string;
+    zoomPwd: string;
+    zoomMaxCount: number;
+    zoomRunningLessonId: string;
 }

@@ -24,7 +24,7 @@ export const Subscriptions = () => {
 
       Promise.all([
         getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: email }),
-        getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: email }),
+        getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
       ]).then(([payments, lessons]) => {
         const lessonMap: LessMap = {};
         let total = 0;

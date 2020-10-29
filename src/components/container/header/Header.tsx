@@ -29,6 +29,8 @@ export const Header:React.FC = () => {
     }
 
     setEmail(email);
+    Util.fullName = result.displayName;
+
     setUser({
       name: result.displayName,
       photo: result.photoURL,
@@ -45,6 +47,7 @@ export const Header:React.FC = () => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((u: any) => {
+      console.log('AuthChanged');
       if (u) {
         setUserDetails(u);
       } else {
@@ -108,7 +111,14 @@ export const Header:React.FC = () => {
           color="inherit"
           onClick={handleLogin}
         >
-          {user?.name ? <span className={classes.userName}>{user?.name}</span> : 'Login'}
+          {user?.name ? (
+            <span
+              className={classes.userName}
+              id="fullName"
+            >
+              {user?.name}
+            </span>
+) : 'Login'}
         </Button>
         { user && user.photo && (
           <img

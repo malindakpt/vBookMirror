@@ -9,7 +9,10 @@ const APP_CONFIG_DEV = {
   measurementId: 'G-4SS7PQK8D5',
 
   watchedTimeout: 3000,
+  allowedWatchCount: 2,
   isProd: false,
+  // zoomURL: 'http://127.0.0.1:8887',
+  zoomURL: 'https://smsm-54fa3.web.app',
 };
 
 const APP_CONFIG_PROD = {
@@ -23,7 +26,9 @@ const APP_CONFIG_PROD = {
   measurementId: 'G-23MFY9WDH7',
 
   watchedTimeout: 20000,
+  allowedWatchCount: 2,
   isProd: true,
+  zoomURL: 'https://smsm-54fa3.web.app',
 };
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;

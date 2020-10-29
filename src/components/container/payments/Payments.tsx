@@ -26,7 +26,7 @@ export const Payments = () => {
   }, []);
 
   const checkBal = (teacher: ITeacher) => {
-    getDocsWithProps<ILesson[]>(Entity.LESSONS, { ownerEmail: teacher.ownerEmail }).then((data) => {
+    getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: teacher.ownerEmail }).then((data) => {
       const lessonMap: any = {};
       data.forEach((less) => {
         lessonMap[less.id] = less;

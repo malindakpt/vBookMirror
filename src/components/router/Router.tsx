@@ -22,22 +22,30 @@ import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
+import { AddLiveSession } from '../container/manageCourse/addLiveSession/AddLiveSession';
+import { LiveLesson } from '../container/liveLesson/LiveLesson';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
   ['/intro/:id', Intro, 'Intro', false],
-  ['/teacher/:teacherId', Teacher, 'Teacher', false],
+
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
+  ['/teacher/:teacherId', Teacher, 'Teacher', false],
+
+  ['/:examId/:subjectId/:courseId/live/:lessonId', LiveLesson, 'Lesson', false],
   ['/:examId/:subjectId/:courseId/:lessonId', Lesson, 'Lesson', false],
+
   ['/:examId/:subjectId/:courseId', Course, 'Course', false],
   ['/:examId/:subjectId', Courses, 'Courses', false],
   ['/:examId/', Subjects, 'Subjects', false],
+
   ['/', Exams, 'Exams', true],
 ];
 
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddLesson, 'Add Lessons', true],
+  ['/addLive', AddLiveSession, 'Add Live Session', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 

@@ -9,11 +9,11 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
   Entity, getDocWithId, updateDoc,
 } from '../../../data/Store';
-import { ILesson } from '../../../interfaces/ILesson';
+import { ILesson, IVideoLesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IUser } from '../../../interfaces/IUser';
 import { AppContext } from '../../../App';
-import appConfig from '../../../data/Config';
+import Config from '../../../data/Config';
 
 export const Lesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -25,17 +25,17 @@ export const Lesson: React.FC = () => {
   useBreadcrumb();
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
-  const [lesson, setLesson] = useState<ILesson>();
+  const [lesson, setLesson] = useState<IVideoLesson>();
 
   const [warn, setWarn] = useState<string>('');
 
   const startExpireLessonForUser = (user: IUser, lesson: ILesson) => {
     timerRef.current = setTimeout(() => {
-      user.lessons.forEach((less, idx) => {
+      user.videoLessons.forEach((less, idx) => {
         if (less.id === lesson.id) {
-          user.lessons[idx].watchedCount += 1;
+          user.videoLessons[idx].watchedCount += 1;
 
-          const remain = lesson.watchCount - user.lessons[idx].watchedCount;
+          const remain = Config.allowedWatchCount - user.videoLessons[idx].watchedCount;
 
           const msg = remain < 1 ? 'This is the last watch time for your payment.'
             : `You can watch this lesson ${remain} more time in the future`;
@@ -46,11 +46,11 @@ export const Lesson: React.FC = () => {
           });
         }
       });
-    }, appConfig.watchedTimeout);
+    }, Config.watchedTimeout);
   };
 
   const processVideo = async () => {
-    const lesson = await getDocWithId<ILesson>(Entity.LESSONS, lessonId);
+    const lesson = await getDocWithId<IVideoLesson>(Entity.LESSONS_VIDEO, lessonId);
     if (!lesson) return;
 
     getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
@@ -61,8 +61,8 @@ export const Lesson: React.FC = () => {
     } else {
       if (email) {
         const user = await getDocWithId<IUser>(Entity.USERS, email);
-        user?.lessons.forEach((les) => {
-          if (les.id === lesson.id && les.watchedCount < lesson.watchCount) {
+        user?.videoLessons.forEach((les) => {
+          if (les.id === lesson.id && les.watchedCount < Config.allowedWatchCount) {
             setWarn('Do not reload this page');
             setLesson(lesson);
             setTimeout(() => {

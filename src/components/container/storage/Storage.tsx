@@ -4,7 +4,7 @@ import classes from './Storage.module.scss';
 import {
   deleteVideo, Entity, getDocsWithProps, listAllVideos,
 } from '../../../data/Store';
-import { ILesson } from '../../../interfaces/ILesson';
+import { IVideoLesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 
@@ -14,7 +14,7 @@ export const Storage = () => {
 
   useEffect(() => {
     setVds([]);
-    getDocsWithProps<ILesson[]>(Entity.LESSONS, {}).then((lessons) => {
+    getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, {}).then((lessons) => {
       getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((teachers) => {
         teachers.forEach((teacher) => {
           listAllVideos(teacher.ownerEmail).then((videos) => {
