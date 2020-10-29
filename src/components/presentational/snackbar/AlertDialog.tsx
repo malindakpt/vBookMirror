@@ -13,8 +13,8 @@ const msgs = [
 
   },
   {
-    en: 'Accept the microphone access from the next window and there after you can mute the microphone',
-    si: 'මීලග පිටුවෙන්  Microphone සක්‍රීය කිරීමට අවශ්‍ය වුවහොත්  එය සක්‍රිය කිරීමට ඉඩ දෙන්න.  සම්බන්දතාව ගොඩනැගුනු පසුව Microphone විසන්ධි කල හැකිය.',
+    en: 'Accept the microphone access from the next window(otherwise you will not here the voice of the teacher) and there after you can mute the microphone',
+    si: 'මීලග පිටුවෙන්  Microphone සක්‍රීය කිරීමට අවශ්‍ය වුවහොත්  එය සක්‍රිය කිරීමට ඉඩ දෙන්න(Allow Microphone)(නැතිනම්  ඔබට ගුරුවරයාගේ හඬ ඇසෙන්නේ නැත ).  සම්බන්දතාව ගොඩනැගුනු පසුව Microphone විසන්ධි කල හැකිය.',
   },
 ];
 export enum AlertMode {

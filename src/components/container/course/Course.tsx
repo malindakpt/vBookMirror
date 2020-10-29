@@ -137,9 +137,7 @@ export const Course: React.FC = () => {
 
   const handleVideoSelectLesson = (lesson: ILesson) => {
     if (freeOrPurchased(lesson)) {
-      if (lesson.price > 0) {
-        setDisplayAlert(AlertMode.VIDEO);
-      }
+      setDisplayAlert(AlertMode.VIDEO);
     } else {
       const dd = new Date().getTime();
       // Handle dismiss
@@ -179,9 +177,7 @@ export const Course: React.FC = () => {
 
   const handleLiveSelectLesson = (lesson: ILiveLesson) => {
     if (readyToGo(lesson)) {
-      if (lesson.price > 0) {
-        setDisplayAlert(AlertMode.LIVE);
-      }
+      setDisplayAlert(AlertMode.LIVE);
     } else {
       const dd = new Date().getTime();
       paymentJS.onDismissed = function onDismissed() {
@@ -250,7 +246,7 @@ export const Course: React.FC = () => {
                 // title3={live.price > 0 ? `Watched: ${getRemain(live)}/${lesson.watchCount}` : 'Free'}
                 title5="Live"
                 title6={`${live.duration} hrs`}
-                navURL={readyToGo(live) && (accepted || live.price === 0) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                navURL={accepted && readyToGo(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>
