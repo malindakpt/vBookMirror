@@ -1,11 +1,12 @@
+import Config from '../data/Config';
 import { Util } from './util';
 // @ts-ignore
 // eslint-disable-next-line no-undef
 export const paymentJS = payhere;
 
 const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number) => ({
-  sandbox: true,
-  merchant_id: '1215643', // Replace your Merchant ID
+  sandbox: !Config.isProd,
+  merchant_id: Config.isProd ? '216030' : '1215643', // Replace your Merchant ID
   return_url: undefined, // Important
   cancel_url: undefined, // Important
   notify_url: 'http://sample.com/notify',

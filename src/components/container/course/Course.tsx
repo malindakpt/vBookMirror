@@ -146,8 +146,8 @@ export const Course: React.FC = () => {
         // TODO: Remove this code
 
         if (Config.isProd) {
-          console.log('Payment cancelled');
-          showSnackbar('Payment cancelled');
+          console.log('Payment Cancelled');
+          showSnackbar('Payment Cancelled');
         } else {
           console.log('Succeed');
           showSnackbar('Dev Payment Succeed');
@@ -160,14 +160,9 @@ export const Course: React.FC = () => {
       paymentJS.onCompleted = function onCompleted() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-        if (Config.isProd) {
-          console.log('Succeed');
-          showSnackbar('Sorry, Payment gateway is under maintanance. Please contact us for inquiries');
-        } else {
-          console.log('Succeed');
-          showSnackbar('Dev Payment Succeed');
-          handlePaymentSuccess(lesson.price, dd, lesson.id, false);
-        }
+        console.log('Payment Succeed');
+        showSnackbar('Payment Succeed');
+        handlePaymentSuccess(lesson.price, dd, lesson.id, false);
       };
 
       // Show payment dialog
@@ -183,28 +178,21 @@ export const Course: React.FC = () => {
       paymentJS.onDismissed = function onDismissed() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-
         if (Config.isProd) {
-          console.log('Payment cancelled');
-          showSnackbar('Payment cancelled');
+          console.log('Payment Cancelled');
+          showSnackbar('Payment Cancelled');
         } else {
-          console.log('Succeed');
-          showSnackbar('Dev Payment Succeed');
+          console.log('Fake Dev Payment Succeed');
+          showSnackbar('Fake Dev Payment Succeed');
           handlePaymentSuccess(lesson.price, dd, lesson.id, true);
         }
-        // handlePaymentSuccess(lesson.price, dd, lesson.id);
       };
       paymentJS.onCompleted = function onDismissed() {
         // Note: Prompt user to pay again or show an error page
         // TODO: Remove this code
-        if (Config.isProd) {
-          console.log('Succeed');
-          showSnackbar('Sorry, Payment gateway is under maintanance. Please contact us for inquiries');
-        } else {
-          console.log('Succeed');
-          showSnackbar('Dev Payment Succeed');
-          handlePaymentSuccess(lesson.price, dd, lesson.id, true);
-        }
+        console.log('Payment Succeed');
+        showSnackbar('Payment Succeed');
+        handlePaymentSuccess(lesson.price, dd, lesson.id, true);
       };
 
       // Show payment dialog
