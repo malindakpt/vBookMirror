@@ -9,5 +9,6 @@ export interface ITeacher {
 
     zoomMeetingId: string;
     zoomPwd: string;
-    runningLessonId: string;
+    zoomMaxCount: number;
+    zoomRunningLessonId: string;
 }

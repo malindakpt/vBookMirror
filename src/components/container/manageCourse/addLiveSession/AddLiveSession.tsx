@@ -48,6 +48,7 @@ export const AddLiveSession = () => {
 
   const [zoomMeetingId, setZoomMeetingId] = useState<string>('');
   const [zoomPwd, setZoomPwd] = useState<string>('');
+  const [zoomMaxCount, setZoomMaxCount] = useState<number>(100);
 
   const setSessionProps = (obj: any) => {
     setLiveLesson((prev) => {
@@ -127,8 +128,8 @@ export const AddLiveSession = () => {
   const startMeeting = (less: ILiveLesson) => {
     setBusy(true);
     if (teacher && email && editMode) {
-      const lesId = teacher?.runningLessonId === less.id ? '' : less.id;
-      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, runningLessonId: lesId }).then((data) => {
+      const lesId = teacher?.zoomRunningLessonId === less.id ? '' : less.id;
+      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, zoomRunningLessonId: lesId }).then((data) => {
         showSnackbar(`${less.topic} started`);
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
@@ -301,19 +302,28 @@ export const AddLiveSession = () => {
               value={zoomPwd}
               onChange={(e) => setZoomPwd(e.target.value)}
             />
+
+            <TextField
+              className={classes.input2}
+              id="max"
+              label="Max Students"
+              disabled={!teacher}
+              value={zoomMaxCount}
+              onChange={(e) => setZoomMaxCount(Number(e.target.value))}
+            />
             <Button
               color="primary"
               onClick={() => startMeeting(liveLesson)}
               disabled={busy || !editMode}
             >
-              {teacher?.runningLessonId === liveLesson.id ? 'Finish Meeting' : 'Start Meeting'}
+              {teacher?.zoomRunningLessonId === liveLesson.id ? 'Finish Meeting' : 'Start Meeting'}
             </Button>
             <Button
               color="primary"
               onClick={saveAuth}
               disabled={busy}
             >
-              Change Credentials
+              Save Meet Info
             </Button>
           </div>
           <List
@@ -330,7 +340,7 @@ export const AddLiveSession = () => {
                     onClick={() => { setEditMode(true); editLesson(ses); }}
                   >
                     <div
-                      className={teacher?.runningLessonId === ses.id ? classes.running : ''}
+                      className={teacher?.zoomRunningLessonId === ses.id ? classes.running : ''}
                       style={{ fontSize: '11px', width: '100%' }}
                     >
                       {`${new Date(ses.dateTime).toString().split('GMT')[0]} : ${ses.topic}`}

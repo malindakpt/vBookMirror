@@ -83,7 +83,7 @@ export const LiveLesson: React.FC = () => {
           { isFullScr ? 'Exit' : 'Full Screen'}
         </Button>
       </div>
-      {teacher && teacher.runningLessonId === lesson?.id ? (
+      {teacher && teacher.zoomRunningLessonId === lesson?.id ? (
         <iframe
           className={isFullScr ? classes.fullScr : ''}
           src={`${Config.zoomURL}?&a=${
