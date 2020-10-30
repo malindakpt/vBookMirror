@@ -29,7 +29,7 @@ const fresh: ILiveLesson = {
   ownerEmail: '',
   dateTime: new Date().getTime(),
   status: LiveMeetingStatus.NOT_STARTED,
-  subscriptionCount: 0,
+  subCount: 0,
 };
 export const AddLiveLesson = () => {
   const { showSnackbar, email } = useContext(AppContext);

@@ -216,7 +216,7 @@ export const AddVideoLesson = () => {
         price,
         courseId,
         ownerEmail: email,
-        subscriptionCount: 0,
+        subCount: 0,
       };
       lesson.id = await addDoc(Entity.LESSONS_VIDEO, lesson);
       const { videoLessonOrder } = courses.filter((c) => c.id === courseId)[0];

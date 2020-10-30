@@ -17,7 +17,7 @@ export interface ILesson {
     price: number;
     ownerEmail: string;
 
-    subscriptionCount: number;
+    subCount: number;
   }
 
 export interface IVideoLesson extends ILesson {

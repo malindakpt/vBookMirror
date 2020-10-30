@@ -78,7 +78,7 @@ app.post('/notify/3', (req: any, res: any) => {
     });
     const entity = lessonType === 'LIVE' ? 'LESSONS_LIVE' : 'LESSONS_VIDEO';
     db.collection(entity).doc(lessonId).update({
-      subscriptionCount: admin.firestore.FieldValue.increment(1),
+      subCount: admin.firestore.FieldValue.increment(1),
     });
   }
   res.send({

@@ -2,10 +2,11 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
+import firebase from 'firebase';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
-  getDocsWithProps, addDoc, getDocWithId, Entity,
+  getDocsWithProps, addDoc, getDocWithId, Entity, updateDoc,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
 import { ILesson, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
@@ -94,8 +95,12 @@ export const Course: React.FC = () => {
           showSnackbar('Payment Cancelled');
         } else {
           console.log('Succeed');
+          /// /////////FAKE UPDATE START////////////
           addDoc(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id, ownerEmail: email });
+          const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
+          updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
           checkPaymentStatus();
+          /// ////////FAKE UPDATE END///////////////
           showSnackbar('Fake Dev Payment Succeed');
         }
       };
