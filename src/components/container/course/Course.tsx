@@ -102,7 +102,11 @@ export const Course: React.FC = () => {
     }
 
     if (readyToGoVideo(lesson)) {
-      setDisplayAlert(isLive ? AlertMode.LIVE : AlertMode.VIDEO);
+      if (isLive) {
+        setAccepted(true);
+      } else {
+        setDisplayAlert(AlertMode.VIDEO);
+      }
     } else {
       const dd = new Date().getTime();
       paymentJS.onDismissed = function onDismissed() {
@@ -185,7 +189,7 @@ export const Course: React.FC = () => {
                 title3={timeF}
                 title5="Live"
                 title6={`${live.duration} hrs`}
-                navURL={accepted && readyToGoLive(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                navURL={readyToGoLive(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>

@@ -13,6 +13,7 @@ import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
 import { getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
+import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -26,6 +27,7 @@ export const LiveLesson: React.FC = () => {
   const [lesson, setLesson] = useState<ILiveLesson>();
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [isFullScr, setFullScr] = useState<boolean>(false);
+  const [micWarn, setMicWarn] = useState<boolean>(true);
 
   const sendStartAction = () => {
     const ele = document.getElementsByTagName('iframe');
@@ -94,27 +96,24 @@ export const LiveLesson: React.FC = () => {
         <div className={classes.desc}>
           {lesson?.description}
         </div>
-        <div>
-          <div
-            className={`${classes.fsButton} ${isFullScr ? classes.exit : ''}`}
-            // onClick={() => {
-            //   setFullScr(!isFullScr);
-            // }}
-          >
-            {isFullScr ? <FullscreenExitIcon onClick={() => setFullScr(false)} /> : <FullscreenIcon onClick={() => setFullScr(true)} />}
-          </div>
-        </div>
         {teacher && teacher.zoomRunningLessonId === lesson.id ? (
-          <iframe
-            className={isFullScr ? classes.fullScr : ''}
-            src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${
-              getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
-            name="iframe_a"
-            height="300px"
-            width="100%"
-            allow="camera *;microphone *"
-            title="Live Lessons"
-          />
+          <>
+            <div
+              className={`${classes.fsButton} ${isFullScr ? classes.exit : ''}`}
+            >
+              {isFullScr ? <FullscreenExitIcon onClick={() => setFullScr(false)} /> : <FullscreenIcon onClick={() => setFullScr(true)} />}
+            </div>
+            <iframe
+              className={isFullScr ? classes.fullScr : ''}
+              src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${
+                getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+              name="iframe_a"
+              height="300px"
+              width="100%"
+              allow="camera *;microphone *"
+              title="Live Lessons"
+            />
+          </>
         ) : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
         {lesson.attachments && (
@@ -134,6 +133,19 @@ export const LiveLesson: React.FC = () => {
         )}
       </div>
       ) }
+      {micWarn && (
+      <AlertDialog
+        type={AlertMode.LIVE}
+        onAccept={() => {
+          setMicWarn(false);
+        }}
+
+        onCancel={() => {
+          // setAccepted(false);
+          // setDisplayAlert(AlertMode.NONE);
+        }}
+      />
+      )}
     </div>
   );
 };
