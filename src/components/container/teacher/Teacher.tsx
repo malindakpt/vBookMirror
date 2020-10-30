@@ -10,6 +10,8 @@ import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import classes from './Teacher.module.scss';
+import im1 from '../../../images/im1.png';
+import im2 from '../../../images/im3.png';
 
 export const Teacher = () => {
   useBreadcrumb();
@@ -33,13 +35,24 @@ export const Teacher = () => {
   }, [teacherId]);
 
   return (
-    <div className={classes.container}>
+    <div className={classes.root}>
       {teacher && (
-      <div className={classes.name}>
-        {` ${teacher?.name}`}
+      <div className={classes.teacher}>
+        <span className={classes.name}>{` ${teacher?.name}`}</span>
+        {/* <span className={classes.phone}>{` ${teacher?.phone}`}</span> */}
+        <span className={classes.phone}>{` ${teacher?.ownerEmail}`}</span>
       </div>
       )}
-      {
+      <div className={classes.container}>
+        <div>
+          <img
+            alt="left"
+            src={im1}
+            className={classes.img}
+          />
+        </div>
+        <>
+          {
                 courses.map((c) => {
                   const subj = getObject(subjects, c.subjectId);
                   const exam = getObject(exams, c.examId);
@@ -54,6 +67,15 @@ export const Teacher = () => {
                   );
                 })
             }
+        </>
+        <div>
+          <img
+            alt="left"
+            src={im2}
+            className={classes.img}
+          />
+        </div>
+      </div>
     </div>
   );
 };
