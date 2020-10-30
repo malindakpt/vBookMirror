@@ -3,10 +3,10 @@ import {
   List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
 import React, { useEffect, useState, useContext } from 'react';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { AppContext } from '../../../../App';
 import {
-  addDoc, deleteDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
+  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { formattedTime } from '../../../../helper/util';
@@ -92,6 +92,7 @@ export const AddLiveLesson = () => {
 
   const addNew = () => {
     setSessionProps(fresh);
+    if (selectedCourse) { setSessionProps({ courseId: selectedCourse.id }); }
     setEditMode(false);
   };
 
@@ -143,32 +144,49 @@ export const AddLiveLesson = () => {
         showSnackbar(`${less.topic} ${lesId ? 'Started' : 'Stopped'}`);
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
-        // addNew();
+        if (lesId) {
+          window.open(`https://us04web.zoom.us/j/${zoomMeetingId}?pwd=${zoomPwd}`, '_blank');
+        }
       });
     }
   };
 
-  const deleteLesson = (lesson: ILiveLesson) => {
-    if (selectedCourse) {
-      if ((lesson.dateTime + 24 * 60 * 60 * 1000) < (new Date().getTime())) {
-        setBusy(true);
-        deleteDoc(Entity.LESSONS_LIVE, lesson.id).then(() => {
-          setBusy(true);
-          getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {
-            ownerEmail: email,
-            courseId: selectedCourse.id,
-          })
-            .then((data) => {
-              data && setLiveLessons(data);
-              setBusy(false);
-              showSnackbar('Lesson Deleted');
-            });
-        });
-      } else {
-        showSnackbar('You can delete lessons after 24 hours of start time');
+  const copyLessonURL = (lessonId: string) => {
+    if (teacher && selectedCourse) {
+      const copyText: any = document.getElementById('copyInput');
+
+      if (copyText) {
+        const link = `${window.location.host}/teacher/${teacher.url}/${selectedCourse.id}/live/${lessonId}`;
+        copyText.value = link;
+        copyText.select();
+        // copyText.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        showSnackbar(`Lesson URL copied! ${link}`);
       }
     }
   };
+
+  // const deleteLesson = (lesson: ILiveLesson) => {
+  //   if (selectedCourse) {
+  //     if ((lesson.dateTime + 24 * 60 * 60 * 1000) < (new Date().getTime())) {
+  //       setBusy(true);
+  //       deleteDoc(Entity.LESSONS_LIVE, lesson.id).then(() => {
+  //         setBusy(true);
+  //         getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {
+  //           ownerEmail: email,
+  //           courseId: selectedCourse.id,
+  //         })
+  //           .then((data) => {
+  //             data && setLiveLessons(data);
+  //             setBusy(false);
+  //             showSnackbar('Lesson Deleted');
+  //           });
+  //       });
+  //     } else {
+  //       showSnackbar('You can delete lessons after 24 hours of start time');
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -270,7 +288,7 @@ export const AddLiveLesson = () => {
           <TextField
             className={classes.input}
             id="duration"
-            label="Duration in Hours(Lesson will not be visble to students after the duration)"
+            label="Duration in Hours(Lesson will not be visible to students after the duration)"
             type="number"
             disabled={disabled}
             value={liveLesson.duration}
@@ -317,6 +335,13 @@ export const AddLiveLesson = () => {
             >
               {editMode ? 'Save Changes' : 'Add Live Lesson'}
             </Button>
+            <input
+              type="text"
+              value=""
+              onChange={() => {}}
+              id="copyInput"
+              style={{ width: '1px' }}
+            />
           </div>
 
         </form>
@@ -371,25 +396,26 @@ export const AddLiveLesson = () => {
             aria-label="main mailbox folders"
           >
             {
-              liveLessons.sort((a, b) => a.dateTime - b.dateTime).map((ses) => (
+              liveLessons.sort((a, b) => a.dateTime - b.dateTime).map((liveLesson) => (
                 <div
-                  key={ses.id}
+                  key={liveLesson.id}
                 >
                   <ListItem
                     button
-                    onClick={() => { setEditMode(true); editLesson(ses); }}
+                    onClick={() => { setEditMode(true); editLesson(liveLesson); }}
                   >
 
-                    <DeleteForeverIcon onClick={(e) => {
-                      deleteLesson(ses); e.stopPropagation();
+                    <FileCopyIcon onClick={(e) => {
+                      // deleteLesson(ses); e.stopPropagation();
+                      copyLessonURL(liveLesson.id); e.stopPropagation();
                     }}
                     />
                     <div
-                      className={teacher?.zoomRunningLessonId === ses.id ? classes.running : ''}
+                      className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
                       style={{ fontSize: '11px', width: '100%' }}
                     >
 
-                      {`${new Date(ses.dateTime).toString().split('GMT')[0]} : ${ses.topic}`}
+                      {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
                     </div>
 
                   </ListItem>
