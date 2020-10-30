@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
-import firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
