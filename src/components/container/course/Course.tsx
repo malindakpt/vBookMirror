@@ -107,8 +107,9 @@ export const Course: React.FC = () => {
       const dd = new Date().getTime();
       paymentJS.onDismissed = function onDismissed() {
         if (Config.isProd) {
-          console.log('Payment Cancelled');
-          showSnackbar('Payment Cancelled');
+          console.log('Payment Dismissed');
+          showSnackbar('Payment Dismissed. Please refrsh the page after few seconds to update payments');
+          updatePayments(lesson.id);
         } else {
           console.log('Succeed');
           /// /////////FAKE UPDATE START////////////

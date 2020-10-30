@@ -1,5 +1,5 @@
 // prod
-export const privateKey1 = {
+export const privateKey = {
   type: 'service_account',
   project_id: 'akshara-8630e',
   private_key_id: 'f2d7315ffb71c7c414db9ed45e694cee31d5e2f0',
@@ -12,7 +12,7 @@ export const privateKey1 = {
   client_x509_cert_url: 'https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-epyf1%40akshara-8630e.iam.gserviceaccount.com',
 };
 // dev
-export const privateKey = {
+export const privateKey1 = {
   type: 'service_account',
   project_id: 'smsm-54fa3',
   private_key_id: 'edca19e067a434634e1dbd2510431ec307f7b790',
