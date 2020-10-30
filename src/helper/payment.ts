@@ -7,9 +7,9 @@ export const paymentJS = payhere;
 const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number) => ({
   sandbox: !Config.isProd,
   merchant_id: Config.isProd ? '216030' : '1215643', // Replace your Merchant ID
-  return_url: 'https://akshara.lk/notify/1',
-  cancel_url: 'https://akshara.lk/notify/2',
-  notify_url: 'https://akshara.lk/notify/3',
+  return_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/1',
+  cancel_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/2',
+  notify_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/3',
   order_id: 'ItemNo12345',
   items: 'අක්ෂර.lk',
   amount: `${amount}`,

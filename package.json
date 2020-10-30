@@ -29,7 +29,6 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
-    "@zoomus/websdk": "^1.8.1",
     "clsx": "^1.1.1",
     "firebase": "^7.17.1",
     "node-sass": "^4.14.1",
