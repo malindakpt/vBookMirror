@@ -22,6 +22,7 @@ export const Subscriptions = () => {
     if (email) {
       getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
 
+      // TODO: add live lessons here
       Promise.all([
         getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { paidFor: email }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),

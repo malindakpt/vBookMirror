@@ -4,13 +4,13 @@ import { Util } from './util';
 // eslint-disable-next-line no-undef
 export const paymentJS = payhere;
 
-const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number) => ({
+const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number, isLive: boolean) => ({
   sandbox: !Config.isProd,
   merchant_id: Config.isProd ? '216030' : '1215643', // Replace your Merchant ID
   return_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/1',
   cancel_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/2',
   notify_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/3',
-  order_id: `${lessonId}`,
+  order_id: `${lessonId}#${isLive ? 'LIVE' : 'VIDEO'}`,
   items: 'අක්ෂර.lk',
   amount: `${amount}`,
   currency: 'LKR',
@@ -48,12 +48,13 @@ const getPaymentObj = (email: string, lessonId: string, amount: number, dd:numbe
 //   // TODO Note: validate the payment and show success or failure page to the customer
 // };
 
-export const startPay = (email: string|null, lessonId: string, amount: number, dd: number) => {
+export const startPay = (email: string|null, lessonId: string,
+  amount: number, dd: number, isLive: boolean) => {
   if (!email) {
     if (Util.invokeLogin) {
       Util.invokeLogin();
     }
   } else {
-    paymentJS.startPayment(getPaymentObj(email, lessonId, amount, dd));
+    paymentJS.startPayment(getPaymentObj(email, lessonId, amount, dd, isLive));
   }
 };

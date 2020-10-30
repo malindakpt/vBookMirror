@@ -90,7 +90,7 @@ export const AddLesson = () => {
     const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
 
     const orderedLessons: IVideoLesson[] = [];
-    for (const lessonId of selectedCourse.lessons) {
+    for (const lessonId of selectedCourse.videoLessonOrder) {
       const less = _allLessons.find((l) => l.id === lessonId);
       if (less) {
         orderedLessons.push(less);
@@ -219,9 +219,9 @@ export const AddLesson = () => {
         subscriptionCount: 0,
       };
       lesson.id = await addDoc(Entity.LESSONS_VIDEO, lesson);
-      const { lessons } = courses.filter((c) => c.id === courseId)[0];
+      const { videoLessonOrder } = courses.filter((c) => c.id === courseId)[0];
 
-      updateDoc(Entity.COURSES, courseId, { lessons: [...lessons, lesson.id] }).then(() => {
+      updateDoc(Entity.COURSES, courseId, { videoLessonOrder: [...videoLessonOrder, lesson.id] }).then(() => {
         showSnackbar('Lesson Added');
         addNew();
         fetchData();
@@ -326,13 +326,13 @@ export const AddLesson = () => {
   const saveLessonsOrder = () => {
     setCourseOrderChaged(false);
     const courseLessonIds = courseLessons.map((less) => less.id);
-    updateDoc(Entity.COURSES, courseId, { lessons: courseLessonIds })
+    updateDoc(Entity.COURSES, courseId, { videoLessonOrder: courseLessonIds })
       .then(() => {
         showSnackbar('Lessons order updated');
         setCourses((prev) => {
           const clone = [...prev];
           const idx = clone.findIndex((c) => c.id === courseId);
-          clone[idx].lessons = courseLessonIds;
+          clone[idx].videoLessonOrder = courseLessonIds;
           return clone;
         });
       });

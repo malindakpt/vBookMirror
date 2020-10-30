@@ -36,6 +36,7 @@ export const AddLiveSession = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const [busy, setBusy] = useState<boolean>(false);
+
   const [liveLesson, setLiveLesson] = useState<ILiveLesson>(fresh);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[]>([]);
 
@@ -49,6 +50,8 @@ export const AddLiveSession = () => {
   const [zoomMeetingId, setZoomMeetingId] = useState<string>('');
   const [zoomPwd, setZoomPwd] = useState<string>('');
   const [zoomMaxCount, setZoomMaxCount] = useState<number>(100);
+
+  const disabled = busy || !selectedCourse;
 
   const setSessionProps = (obj: any) => {
     setLiveLesson((prev) => {
@@ -223,13 +226,13 @@ export const AddLiveSession = () => {
               value={false}
               control={<Radio />}
               label="Add New Lesson"
-              disabled={busy}
+              disabled={disabled}
             />
             <FormControlLabel
               value
               control={<Radio />}
               label="Edit lesson"
-              disabled={busy}
+              disabled={disabled}
             />
           </RadioGroup>
 
@@ -237,6 +240,7 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="topic"
             label="Topic"
+            disabled={disabled}
             value={liveLesson.topic}
             onChange={(e) => setSessionProps({ topic: e.target.value })}
           />
@@ -245,6 +249,7 @@ export const AddLiveSession = () => {
             className={classes.input}
             id="desc"
             label="Description"
+            disabled={disabled}
             value={liveLesson.description}
             onChange={(e) => setSessionProps({ description: e.target.value })}
           />
@@ -254,6 +259,7 @@ export const AddLiveSession = () => {
             id="price"
             label="Price"
             type="number"
+            disabled={disabled}
             value={liveLesson.price}
             onChange={(e) => setSessionProps({ price: Number(e.target.value) })}
           />
@@ -263,6 +269,7 @@ export const AddLiveSession = () => {
             id="duration"
             label="Duration in Hours(Lesson will not be visble to students after the duration)"
             type="number"
+            disabled={disabled}
             value={liveLesson.duration}
             onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
           />
@@ -274,7 +281,7 @@ export const AddLiveSession = () => {
             multiline
             rows={3}
             variant="outlined"
-            disabled={busy}
+            disabled={disabled}
             value={liveLesson.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
             onChange={(e) => {
               console.log(e.target.value);
@@ -286,6 +293,7 @@ export const AddLiveSession = () => {
             id="datetime-local"
             label="Date and Time"
             type="datetime-local"
+            disabled={disabled}
             value={formattedTime(new Date(liveLesson?.dateTime ?? new Date().getTime()))}
             onChange={(e) => {
               console.log(e.target.value);
@@ -302,7 +310,7 @@ export const AddLiveSession = () => {
               variant="contained"
               color="primary"
               onClick={onSave}
-              disabled={busy || !selectedCourse}
+              disabled={disabled}
             >
               {editMode ? 'Save Changes' : 'Add Live Lesson'}
             </Button>

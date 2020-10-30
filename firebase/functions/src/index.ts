@@ -60,21 +60,25 @@ app.post('/notify/2', (req: any, res: any) => {
 
 app.post('/notify/3', (req: any, res: any) => {
   const { body } = req;
+  const [lessonId, lessonType] = body.order_id.split('#');
 
   if (body.status_code === StatusCode.SUCCESS) {
     const payment = {
       amount: body.payhere_amount,
       ownerEmail: body.custom_1,
       paidFor: body.custom_2,
-      lessonId: body.order_id,
+      lessonId,
       paymentRef: body.payment_id,
       paymentObject: body,
     };
     console.log(req.body);
     db.collection('PAYMENTS_STUDENTS').add(payment).then((ref) => {
-      // ok
     }).catch((err) => {
-      console.log(err, req.bosy);
+      console.log(err, req.body);
+    });
+    const entity = lessonType === 'LIVE' ? 'LESSONS_LIVE' : 'LESSONS_VIDEO';
+    db.collection(entity).doc(lessonId).update({
+      subscriptionCount: admin.firestore.FieldValue.increment(1),
     });
   }
   res.send({

@@ -49,7 +49,7 @@ export const Course: React.FC = () => {
       const [videoLessons, liveLessons, course] = result;
 
       const orderedVL: IVideoLesson[] = [];
-      course?.lessons?.forEach((c) => {
+      course?.videoLessonOrder?.forEach((c) => {
         const videoLessonObj = videoLessons?.find((vl) => vl.id === c);
         videoLessonObj && orderedVL.push(videoLessonObj);
       });
@@ -80,7 +80,7 @@ export const Course: React.FC = () => {
 
   const handleLessonSelection = (lesson: ILesson, isLive: boolean) => {
     if (!email) {
-      showSnackbar('Login using your gmail id');
+      showSnackbar('Please login with your gmail address');
       return;
     }
 
@@ -105,7 +105,7 @@ export const Course: React.FC = () => {
         showSnackbar('Payment Succeed. Updating payments');
         checkPaymentStatus();
       };
-      startPay(email, lesson.id, lesson.price, dd);
+      startPay(email, lesson.id, lesson.price, dd, isLive);
     }
   };
 

@@ -52,7 +52,7 @@ export const AddCourse = () => {
     setBusy(true);
     const newCourse: ICourse = {
       id: '',
-      lessons: [],
+      videoLessonOrder: [],
       examId,
       examYear: '',
       subjectId,
