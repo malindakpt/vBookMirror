@@ -13,7 +13,7 @@
     "copy": "xcopy \".\\build\" \"firebase\\public\\\" /e /y",
     "postbuild": "rimraf build/**/*.map",
     "uploadzoom": "cd firebase-smsm && firebase deploy",
-    "upload": "cd firebase && firebase deploy",
+    "upload": "cd firebase && firebase deploy --only hosting",
     "host": "npm run build && npm run clean && npm run copy && npm run upload",
     "hostzoom": "npm run cleanzoom && npm run copyzoom && npm run uploadzoom",
     "hostfunc": "cd firebase && firebase deploy --only functions"

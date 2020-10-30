@@ -140,7 +140,7 @@ export const AddLiveLesson = () => {
     if (teacher && email && editMode) {
       const lesId = teacher?.zoomRunningLessonId === less.id ? '' : less.id;
       updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, zoomRunningLessonId: lesId }).then((data) => {
-        showSnackbar(`${less.topic} started`);
+        showSnackbar(`${less.topic} ${lesId ? 'Started' : 'Stopped'}`);
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
         // addNew();
@@ -349,18 +349,21 @@ export const AddLiveLesson = () => {
               onChange={(e) => setZoomMaxCount(Number(e.target.value))}
             />
             <Button
+              variant="contained"
               color="primary"
               onClick={() => startMeeting(liveLesson)}
               disabled={busy || !editMode}
             >
               {teacher?.zoomRunningLessonId === liveLesson.id ? 'Finish Meeting' : 'Start Meeting'}
             </Button>
+            <div />
             <Button
+              variant="contained"
               color="primary"
               onClick={saveAuth}
               disabled={busy}
             >
-              Save Meet Info
+              Save Zoom Config
             </Button>
           </div>
           <List
