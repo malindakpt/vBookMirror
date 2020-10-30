@@ -21,7 +21,8 @@ export const Course: React.FC = () => {
 
   const { email, showSnackbar } = useContext(AppContext);
 
-  const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
+  // Two routest for this page. (teacher profile)Consider both when reading params
+  const { courseId } = useParams<any>();
 
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);

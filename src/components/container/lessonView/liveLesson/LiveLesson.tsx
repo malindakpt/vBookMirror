@@ -106,7 +106,8 @@ export const LiveLesson: React.FC = () => {
         {teacher && teacher.zoomRunningLessonId === lesson.id ? (
           <iframe
             className={isFullScr ? classes.fullScr : ''}
-            src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+            src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${
+              getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
             name="iframe_a"
             height="300px"
             width="100%"

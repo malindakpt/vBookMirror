@@ -17,7 +17,7 @@ import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveSession.module.scss';
 
-const fresh = {
+const fresh: ILiveLesson = {
   id: '',
   topic: '',
   description: '',
@@ -27,10 +27,9 @@ const fresh = {
   courseId: '',
   price: 0,
   ownerEmail: '',
-  meetingId: '',
   dateTime: new Date().getTime(),
-  pwd: '',
   status: LiveMeetingStatus.NOT_STARTED,
+  subscriptionCount: 0,
 };
 export const AddLiveSession = () => {
   const { showSnackbar, email } = useContext(AppContext);

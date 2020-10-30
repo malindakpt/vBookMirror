@@ -16,6 +16,8 @@ export interface ILesson {
     courseId: string;
     price: number;
     ownerEmail: string;
+
+    subscriptionCount: number;
   }
 
 export interface IVideoLesson extends ILesson {
@@ -27,5 +29,4 @@ export interface ILiveLesson extends ILesson {
   // meetingId: string;
   dateTime: number;
   status: LiveMeetingStatus;
-  // pwd: string;
 }
