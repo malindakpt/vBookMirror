@@ -24,8 +24,10 @@ export const Course: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
 
   const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
+  // const [course, setCourse] = useState<ICourse>();
+
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
-  const [liveLessons, setLiveLessons] = useState<ILiveLesson[]>([]);
+  const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);
 
   const [payments, setPayments] = useState<IPayment[]>([]);
 
@@ -44,9 +46,16 @@ export const Course: React.FC = () => {
     Promise.all([
       getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
       getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
+      getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
-      const [videoLessons, liveLessons] = result;
-      setVideoLessons(videoLessons);
+      const [videoLessons, liveLessons, course] = result;
+
+      const orderedVL: IVideoLesson[] = [];
+      course?.lessons?.forEach((c) => {
+        const videoLessonObj = videoLessons?.find((vl) => vl.id === c);
+        videoLessonObj && orderedVL.push(videoLessonObj);
+      });
+      setVideoLessons(orderedVL);
       setLiveLessons(liveLessons);
     });
     // eslint-disable-next-line
@@ -196,7 +205,7 @@ export const Course: React.FC = () => {
   return (
     <div className="container">
       {
-        liveLessons.sort(
+        liveLessons?.sort(
           (a, b) => a.dateTime - b.dateTime,
         ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;

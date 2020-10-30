@@ -76,6 +76,11 @@ export const LiveLesson: React.FC = () => {
 
   useEffect(() => {
     processVideo();
+
+    const glob: any = window;
+    return () => {
+      clearInterval(glob.timer);
+    };
     // eslint-disable-next-line
   }, []);
 
