@@ -15,7 +15,8 @@
     "uploadzoom": "cd firebase-smsm && firebase deploy",
     "upload": "cd firebase && firebase deploy",
     "host": "npm run build && npm run clean && npm run copy && npm run upload",
-    "hostzoom": "npm run cleanzoom && npm run copyzoom && npm run uploadzoom"
+    "hostzoom": "npm run cleanzoom && npm run copyzoom && npm run uploadzoom",
+    "hostfunc": "cd firebase && firebase deploy --only functions"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
