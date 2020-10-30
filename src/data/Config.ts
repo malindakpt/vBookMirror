@@ -8,8 +8,8 @@ const APP_CONFIG_DEV = {
   appId: '1:794082939900:web:9967e6ea91936c2016d879',
   measurementId: 'G-4SS7PQK8D5',
 
-  watchedTimeout: 3000,
-  allowedWatchCount: 1,
+  watchedTimeout: 2000,
+  allowedWatchCount: 2,
   isProd: false,
   // zoomURL: 'http://127.0.0.1:8887',
   zoomURL: 'https://smsm-54fa3.web.app',
@@ -25,8 +25,8 @@ const APP_CONFIG_PROD = {
   appId: '1:613661168552:web:46b655f214b7d0bc18c39d',
   measurementId: 'G-23MFY9WDH7',
 
-  watchedTimeout: 2000,
-  allowedWatchCount: 1,
+  watchedTimeout: 3000,
+  allowedWatchCount: 2,
   isProd: true,
   zoomURL: 'https://smsm-54fa3.web.app',
 };
