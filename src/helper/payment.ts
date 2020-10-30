@@ -4,13 +4,13 @@ import { Util } from './util';
 // eslint-disable-next-line no-undef
 export const paymentJS = payhere;
 
-const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number, isLive: boolean) => ({
+const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number) => ({
   sandbox: !Config.isProd,
   merchant_id: Config.isProd ? '216030' : '1215643', // Replace your Merchant ID
   return_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/1',
   cancel_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/2',
   notify_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/3',
-  order_id: `${lessonId}#${isLive ? 'LIVE' : 'VIDEO'}`,
+  order_id: `${lessonId}`,
   items: 'අක්ෂර.lk',
   amount: `${amount}`,
   currency: 'LKR',
@@ -49,12 +49,12 @@ const getPaymentObj = (email: string, lessonId: string, amount: number, dd:numbe
 // };
 
 export const startPay = (email: string|null, lessonId: string,
-  amount: number, dd: number, isLive: boolean) => {
+  amount: number, dd: number) => {
   if (!email) {
     if (Util.invokeLogin) {
       Util.invokeLogin();
     }
   } else {
-    paymentJS.startPayment(getPaymentObj(email, lessonId, amount, dd, isLive));
+    paymentJS.startPayment(getPaymentObj(email, lessonId, amount, dd));
   }
 };

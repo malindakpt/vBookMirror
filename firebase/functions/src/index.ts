@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 import { privateKey } from './config';
+import { Entity, getDocsWithProps } from './util';
 
 const cors = require('cors');
 
@@ -60,26 +61,38 @@ app.post('/notify/2', (req: any, res: any) => {
 
 app.post('/notify/3', (req: any, res: any) => {
   const { body } = req;
-  const [lessonId, lessonType] = body.order_id.split('#');
+  // const [lessonId, lessonType, maxCount] = body.order_id.split('#');
 
   if (body.status_code === StatusCode.SUCCESS) {
     const payment = {
+      date: new Date().getTime(),
       amount: body.payhere_amount,
       ownerEmail: body.custom_1,
       paidFor: body.custom_2,
-      lessonId,
+      lessonId: body.order_id,
       paymentRef: body.payment_id,
       paymentObject: body,
     };
     console.log(req.body);
-    db.collection('PAYMENTS_STUDENTS').add(payment).then((ref) => {
+
+    // Update payments
+    db.collection(Entity.PAYMENTS_STUDENTS).add(payment).then((ref) => {
     }).catch((err) => {
       console.log(err, req.body);
     });
-    const entity = lessonType === 'LIVE' ? 'LESSONS_LIVE' : 'LESSONS_VIDEO';
-    db.collection(entity).doc(lessonId).update({
-      subCount: admin.firestore.FieldValue.increment(1),
-    });
+
+    // // Update subCount
+    // const entity = lessonType === 'LIVE' ? 'LESSONS_LIVE' : 'LESSONS_VIDEO';
+    // db.collection(entity).doc(lessonId).update({
+    //   subCount: admin.firestore.FieldValue.increment(1),
+    // });
+
+    // // Check Max subCount
+    // getDocsWithProps(db, Entity.PAYMENTS_STUDENTS, { lessonId }).catch((payments) => {
+    //   if (payments && payments.length > maxCount) {
+
+    //   }
+    // });
   }
   res.send({
     res: 'ok',

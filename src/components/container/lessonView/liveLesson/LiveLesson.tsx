@@ -1,8 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
-import React, {
-  useContext, useEffect, useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { Button } from '@material-ui/core';
 import { AppContext } from '../../../../App';
@@ -12,7 +10,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
-import { getHashFromString, Util } from '../../../../helper/util';
+import { checkRefund, getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 
 export const LiveLesson: React.FC = () => {
@@ -39,7 +37,9 @@ export const LiveLesson: React.FC = () => {
     setLesson(lesson);
     setFreeOrPurchased(true);
     sendStartAction();
+
     const glob: any = window;
+
     glob.timer = setInterval(() => {
       console.log('send start mkpt');
       sendStartAction();
@@ -58,6 +58,7 @@ export const LiveLesson: React.FC = () => {
         if (email) {
           getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
             { lessonId, ownerEmail: email }).then((data) => {
+            // TODO:  Check refundable lessons here
             if (data && data.length > 0) {
               startVideoRendering(lesson);
             }
@@ -68,14 +69,13 @@ export const LiveLesson: React.FC = () => {
       } else {
         startVideoRendering(lesson);
       }
-      // Fetch techer for show teache info and running lesson ID
+      // Fetch techer for show teache info and check is this running lesson ID
       getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
     });
   };
 
   useEffect(() => {
     processVideo();
-
     const glob: any = window;
     return () => {
       clearInterval(glob.timer);

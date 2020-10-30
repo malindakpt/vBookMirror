@@ -16,6 +16,8 @@ import { IPayment } from '../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../presentational/snackbar/AlertDialog';
 import { paymentJS, startPay } from '../../../helper/payment';
 import Config from '../../../data/Config';
+import { ITeacher } from '../../../interfaces/ITeacher';
+import { checkRefund } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -24,6 +26,7 @@ export const Course: React.FC = () => {
 
   // Two routest for this page. (teacher profile)Consider both when reading params
   const { courseId } = useParams<any>();
+  // const [course, setCourse] = useState<ICourse>();
 
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);
@@ -33,11 +36,15 @@ export const Course: React.FC = () => {
   const [accepted, setAccepted] = useState<boolean>(false);
   const [displayAlert, setDisplayAlert] = useState<AlertMode>(AlertMode.NONE);
 
+  // const [payLesson, setPayLesson] = useState<ILesson>();
+  const [teacher, setTeacher] = useState<ITeacher>();
+  // const [refundPayment, setRefundPayment] = useState<IPayment>();
+
   useEffect(() => {
     getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }).then((user) => {
       if (user) {
         getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
-          setPayments(payments);
+          setPayments(payments.filter((p) => !p.disabled));
         });
       }
     });
@@ -56,6 +63,11 @@ export const Course: React.FC = () => {
       });
       setVideoLessons(orderedVL);
       setLiveLessons(liveLessons);
+      // course && setCourse(course);
+
+      course && getDocWithId<ITeacher>(Entity.TEACHERS, course.ownerEmail).then((teacher) => {
+        teacher && setTeacher(teacher);
+      });
     });
     // eslint-disable-next-line
   }, [email]);
@@ -67,13 +79,17 @@ export const Course: React.FC = () => {
   const readyToGoLive = (liveLess: ILiveLesson) => (!liveLess.price)
     || (payments?.find((pay) => pay.lessonId === liveLess.id));
 
-  const checkPaymentStatus = async () => {
+  const updatePayments = async (lessonId: string) => {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     for (let i = 0; i < 3; i += 1) {
       console.log('payment status');
+
+      // TODO : enhance this logic
+      if (email && teacher) { checkRefund(email, lessonId, teacher.zoomMaxCount, showSnackbar); }
+
       // eslint-disable-next-line no-await-in-loop
-      const payments = await getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
-      setPayments(payments);
+      const myPayments = await getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
+      setPayments(myPayments);
       // eslint-disable-next-line no-await-in-loop
       await sleep(1000);
     }
@@ -99,7 +115,7 @@ export const Course: React.FC = () => {
           addDoc(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id, ownerEmail: email });
           const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
           updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
-          checkPaymentStatus();
+          updatePayments(lesson.id);
           /// ////////FAKE UPDATE END///////////////
           showSnackbar('Fake Dev Payment Succeed');
         }
@@ -108,9 +124,26 @@ export const Course: React.FC = () => {
       paymentJS.onCompleted = function onCompleted() {
         console.log('Payment Succeed');
         showSnackbar('Payment Succeed. Updating payments');
-        checkPaymentStatus();
+        updatePayments(lesson.id);
       };
-      startPay(email, lesson.id, lesson.price, dd, isLive);
+
+      if (isLive) {
+        // course && getDocWithId<ITeacher>(Entity.TEACHERS, course?.ownerEmail).then((teacher) => {
+        if (teacher) {
+          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => {
+            if (data && data.length >= teacher.zoomMaxCount) {
+              // TODO: send a notification to teacher
+              showSnackbar('This live session is full. Please contact the teacher');
+            } else {
+              // setPayLesson(lesson);
+              startPay(email, lesson.id, lesson.price, dd);
+            }
+          });
+        }
+        // });
+      } else {
+        startPay(email, lesson.id, lesson.price, dd);
+      }
     }
   };
 
