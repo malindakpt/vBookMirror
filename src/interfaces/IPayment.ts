@@ -6,5 +6,5 @@ export interface IPayment {
     paidFor: string; // for calculating teacher salary
     ownerEmail: string;
     paymentRef: string;
-    paymentObject: string;
+    paymentObject: any;
 }

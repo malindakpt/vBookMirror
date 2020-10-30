@@ -69,71 +69,71 @@ export const Course: React.FC = () => {
   const readyToGo = (liveLess: ILiveLesson) => (!liveLess.price)
     || (user?.liveLessons?.find((les) => les.id === liveLess.id));
 
-  const handlePaymentSuccess = async (amount: number, date: number, lessonId: string, isLive: boolean) => {
-    if (!email) return;
+  // const handlePaymentSuccess = async (amount: number, date: number, lessonId: string, isLive: boolean) => {
+  //   if (!email) return;
 
-    let editableUser = user;
+  //   let editableUser = user;
 
-    if (!editableUser) {
-      editableUser = {
-        id: email,
-        ownerEmail: email,
-        videoLessons: [],
-        liveLessons: [],
-      };
-    }
-    const lesson = isLive ? liveLessons.find((l) => l.id === lessonId) : videoLessons.find((l) => l.id === lessonId);
+  //   if (!editableUser) {
+  //     editableUser = {
+  //       id: email,
+  //       ownerEmail: email,
+  //       videoLessons: [],
+  //       liveLessons: [],
+  //     };
+  //   }
+  //   const lesson = isLive ? liveLessons.find((l) => l.id === lessonId) : videoLessons.find((l) => l.id === lessonId);
 
-    if (!lesson) return;
+  //   if (!lesson) return;
 
-    const paymentRef = await addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS, {
-      amount, date, ownerEmail: email, paidFor: lesson.ownerEmail, lessonId,
-    });
+  //   const paymentRef = await addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_STUDENTS, {
+  //     amount, date, ownerEmail: email, paidFor: lesson.ownerEmail, lessonId,
+  //   });
 
-    const lessonArray = isLive ? editableUser.liveLessons : editableUser.videoLessons;
-    // TODO: remove old purchases at here
-    const alreadyPurchased = lessonArray?.findIndex((sub) => sub.id === lesson.id);
-    if (!isLive && alreadyPurchased > -1) {
-      lessonArray[alreadyPurchased].watchedCount = 0;
-      lessonArray[alreadyPurchased].paymentRef = paymentRef;
-    } else {
-      if (lessonArray) {
-        lessonArray.push({
-          id: lessonId,
-          paymentRef,
-          watchedCount: 0,
-        });
-      } else {
-        if (isLive) {
-          editableUser.liveLessons = [{
-            id: lessonId,
-            paymentRef,
-            watchedCount: 0,
-          }];
-        } else {
-          editableUser.videoLessons = [{
-            id: lessonId,
-            paymentRef,
-            watchedCount: 0,
-          }];
-        }
-      }
-    }
-    // This fails(permission), non product owners tries to edit value
-    // updateDoc(Entity.LESSONS, lessonId, { subCount: firebase.firestore.FieldValue.increment(1) });
+  //   const lessonArray = isLive ? editableUser.liveLessons : editableUser.videoLessons;
+  //   // TODO: remove old purchases at here
+  //   const alreadyPurchased = lessonArray?.findIndex((sub) => sub.id === lesson.id);
+  //   if (!isLive && alreadyPurchased > -1) {
+  //     lessonArray[alreadyPurchased].watchedCount = 0;
+  //     lessonArray[alreadyPurchased].paymentRef = paymentRef;
+  //   } else {
+  //     if (lessonArray) {
+  //       lessonArray.push({
+  //         id: lessonId,
+  //         paymentRef,
+  //         watchedCount: 0,
+  //       });
+  //     } else {
+  //       if (isLive) {
+  //         editableUser.liveLessons = [{
+  //           id: lessonId,
+  //           paymentRef,
+  //           watchedCount: 0,
+  //         }];
+  //       } else {
+  //         editableUser.videoLessons = [{
+  //           id: lessonId,
+  //           paymentRef,
+  //           watchedCount: 0,
+  //         }];
+  //       }
+  //     }
+  //   }
+  //   // This fails(permission), non product owners tries to edit value
+  //   // updateDoc(Entity.LESSONS, lessonId, { subCount: firebase.firestore.FieldValue.increment(1) });
 
-    if (user) {
-      updateDoc(Entity.USERS, editableUser.id, editableUser).then(() => {
-        setUser(editableUser);
-        showSnackbar('Payment success');
-      });
-    } else { // this check is to fix ts issue below
-      addDocWithId(Entity.USERS, editableUser.ownerEmail, editableUser).then(() => {
-        setUser(editableUser);
-        showSnackbar('Payment success');
-      });
-    }
-  };
+  //   if (user) {
+  //     updateDoc(Entity.USERS, editableUser.id, editableUser).then(() => {
+  //       setUser(editableUser);
+  //       showSnackbar('Payment success');
+  //     });
+  //   } else { // this check is to fix ts issue below
+  //     addDocWithId(Entity.USERS, editableUser.ownerEmail, editableUser).then(() => {
+  //       setUser(editableUser);
+  //       showSnackbar('Payment success');
+  //     });
+  //   }
+  // };
 
   const handleVideoSelectLesson = (lesson: ILesson) => {
     if (freeOrPurchased(lesson)) {
@@ -151,7 +151,7 @@ export const Course: React.FC = () => {
         } else {
           console.log('Succeed');
           showSnackbar('Dev Payment Succeed');
-          handlePaymentSuccess(lesson.price, dd, lesson.id, false);
+          // handlePaymentSuccess(lesson.price, dd, lesson.id, false);
         }
         // handlePaymentSuccess(lesson.price, dd, lesson.id);
       };
@@ -162,7 +162,7 @@ export const Course: React.FC = () => {
         // TODO: Remove this code
         console.log('Payment Succeed');
         showSnackbar('Payment Succeed');
-        handlePaymentSuccess(lesson.price, dd, lesson.id, false);
+        // handlePaymentSuccess(lesson.price, dd, lesson.id, false);
       };
 
       // Show payment dialog
@@ -184,7 +184,7 @@ export const Course: React.FC = () => {
         } else {
           console.log('Fake Dev Payment Succeed');
           showSnackbar('Fake Dev Payment Succeed');
-          handlePaymentSuccess(lesson.price, dd, lesson.id, true);
+          // handlePaymentSuccess(lesson.price, dd, lesson.id, true);
         }
       };
       paymentJS.onCompleted = function onDismissed() {
@@ -192,7 +192,7 @@ export const Course: React.FC = () => {
         // TODO: Remove this code
         console.log('Payment Succeed');
         showSnackbar('Payment Succeed');
-        handlePaymentSuccess(lesson.price, dd, lesson.id, true);
+        // handlePaymentSuccess(lesson.price, dd, lesson.id, true);
       };
 
       // Show payment dialog

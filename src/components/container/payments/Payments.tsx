@@ -34,7 +34,7 @@ export const Payments = () => {
       setTeacherLsssons(lessonMap);
     });
 
-    getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: teacher.ownerEmail }).then((data) => {
+    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { paidFor: teacher.ownerEmail }).then((data) => {
       setPayments(data);
       const total = data.length > 0
         ? data.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount : 0;
@@ -66,7 +66,7 @@ export const Payments = () => {
 
     if (email) {
       addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_TEACHER, {
-        ownerEmail: email, paidFor: teacherEmail, date, amount, lessonId: '',
+        ownerEmail: email, paidFor: teacherEmail, date, amount, lessonId: '', paymentObject: {}, paymentRef: '',
       }).then(() => {
         showSnackbar(`Payment done:${amount}`);
         setBusy(false);

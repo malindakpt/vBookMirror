@@ -23,7 +23,7 @@ export const Subscriptions = () => {
       getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
 
       Promise.all([
-        getDocsWithProps<IPayment[]>(Entity.PAYMENTS, { paidFor: email }),
+        getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { paidFor: email }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
       ]).then(([payments, lessons]) => {
         const lessonMap: LessMap = {};
