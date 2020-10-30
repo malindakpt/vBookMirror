@@ -36,15 +36,11 @@ export const useBreadcrumb = () => {
       ['Exams', '/'],
     ];
 
-    if (!teacherId) {
+    if (!teacherId && examId !== 'teacher') {
       if (examId) {
         const text = keyMap[examId] ? `${keyMap[examId].name} ${keyMap[examId].type ?? ''}` : 'Subjects';
         bcs.push([text, `/${examId}`]);
       }
-      // if (year) {
-      //   const text = keyMap[year] ? `${keyMap[year].name}` : 'Subjects';
-      //   bcs.push([text, `/${examId}/${year}`]);
-      // }
       if (subjectId) {
         const text = keyMap[subjectId] ? `${keyMap[subjectId].name}` : 'Tutors';
         bcs.push([text, `/${examId}/${subjectId}`]);
