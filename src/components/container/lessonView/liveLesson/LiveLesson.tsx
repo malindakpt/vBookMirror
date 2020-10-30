@@ -2,7 +2,8 @@
 import { useParams } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react';
 
-import { Button } from '@material-ui/core';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import { AppContext } from '../../../../App';
 import classes from './LiveLesson.module.scss';
 import Config from '../../../../data/Config';
@@ -94,14 +95,14 @@ export const LiveLesson: React.FC = () => {
           {lesson?.description}
         </div>
         <div>
-          <Button
-            className={classes.fsButton}
-            onClick={() => {
-              setFullScr(!isFullScr);
-            }}
+          <div
+            className={`${classes.fsButton} ${isFullScr ? classes.exit : ''}`}
+            // onClick={() => {
+            //   setFullScr(!isFullScr);
+            // }}
           >
-            {isFullScr ? 'Exit' : 'Full Screen'}
-          </Button>
+            {isFullScr ? <FullscreenExitIcon onClick={() => setFullScr(false)} /> : <FullscreenIcon onClick={() => setFullScr(true)} />}
+          </div>
         </div>
         {teacher && teacher.zoomRunningLessonId === lesson.id ? (
           <iframe

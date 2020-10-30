@@ -5,16 +5,22 @@
   max-width: 900px;
 
   .fsButton {
-    position: fixed;
+    position: relative;
     z-index: 99999;
-    top: -2px;
-    left: calc(50% - 55px);
-    width: 110px;
+    top: 43px;
+    left: calc(100% - 28px);
+    width: 24px;
     background-color: white;
     color: black;
     font-size: 8px;
     border-radius: 0px;
     padding-bottom: 0px;
+
+    &.exit {
+      position: fixed;
+      top: 12px;
+      right: 4px;
+    }
 
     @include mobile {
     }
@@ -30,7 +36,10 @@
     top: 0px;
     height: 100%;
     width: 100%;
+
+  
   }
+
 
   .topic {
     font-size: 22px;
