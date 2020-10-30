@@ -10,7 +10,7 @@ const getPaymentObj = (email: string, lessonId: string, amount: number, dd:numbe
   return_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/1',
   cancel_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/2',
   notify_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/3',
-  order_id: 'ItemNo12345',
+  order_id: `${lessonId}`,
   items: 'අක්ෂර.lk',
   amount: `${amount}`,
   currency: 'LKR',
@@ -24,8 +24,8 @@ const getPaymentObj = (email: string, lessonId: string, amount: number, dd:numbe
   // delivery_address: 'No. 46, Galle road, Kalutara South',
   // delivery_city: 'Kalutara',
   // delivery_country: 'Sri Lanka',
-  custom_1: `${dd}`,
-  // custom_2: '',
+  custom_1: `${email}`,
+  custom_2: `${lessonId}`,
 });
 
 // paymentJS.onDismissed = function onDismissed() {

@@ -3,6 +3,8 @@ export interface IPayment {
     date: number;
     amount: number;
     lessonId: string;
-    paidFor: string;
+    paidFor: string; // for calculating teacher salary
     ownerEmail: string;
+    paymentRef: string;
+    paymentObject: string;
 }

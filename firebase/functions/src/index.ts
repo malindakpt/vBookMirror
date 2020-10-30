@@ -28,6 +28,14 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+enum StatusCode {
+  CHARGED_BACK = -3,
+  FAILED = -2,
+  CANCELLED = -1,
+  PENDING = 0,
+  SUCCESS = '2'
+}
+
 app.post('/notify/1', (req: any, res: any) => {
   const ref = req.body.merchant_id;
   //   const ref2 = req.param('payhere_amount');
@@ -51,12 +59,26 @@ app.post('/notify/2', (req: any, res: any) => {
 });
 
 app.post('/notify/3', (req: any, res: any) => {
-  const ref = req.body.merchant_id;
-  //   const ref2 = req.param('payhere_amount');
-  const out = `3a: ${ref}   `;
-  console.log(req.body);
+  const { body } = req;
+
+  if (body.status_code === StatusCode.SUCCESS) {
+    const payment = {
+      amount: body.payhere_amount,
+      ownerEmail: body.custom_1,
+      paidFor: body.custom_2,
+      lessonId: body.order_id,
+      paymentRef: body.payment_id,
+      paymentObject: body,
+    };
+    console.log(req.body);
+    db.collection('PAYMENTS_STUDENTS').add(payment).then((ref) => {
+      // ok
+    }).catch((err) => {
+      console.log(err, req.bosy);
+    });
+  }
   res.send({
-    res: out,
+    res: 'ok',
   });
 });
 
