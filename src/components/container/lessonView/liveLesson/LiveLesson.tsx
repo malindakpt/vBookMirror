@@ -10,7 +10,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
-import { checkRefund, getHashFromString, Util } from '../../../../helper/util';
+import { getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 
 export const LiveLesson: React.FC = () => {
