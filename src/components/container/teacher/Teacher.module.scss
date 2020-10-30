@@ -1,4 +1,4 @@
-@import '../../../mixins.scss';
+@import "../../../mixins.scss";
 
 .root {
   .teacher {
@@ -7,7 +7,7 @@
     background: #ffa50040;
     padding: 18px 88px;
 
-    @include mobile{
+    @include mobile {
       text-align: center;
       padding: 18px 0px;
     }
@@ -23,6 +23,10 @@
     margin: auto;
     display: grid;
 
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+
     .name {
       background: #07116d;
       color: white;
@@ -31,8 +35,27 @@
       font-size: 25px;
     }
 
-    .img{
-      width: 100px;
+    .center {
+      width: 100%;
+      @include mobile {
+        // width: unset;
+      }
+    }
+
+    .cimg1 {
+      @include mobile {
+        display: none;
+      }
+      .img1 {
+        width: 75%;
+        display: block;
+        margin: auto;
+      }
+      .img2 {
+        width: 50%;
+        display: block;
+        margin: auto;
+      }
     }
   }
 }
