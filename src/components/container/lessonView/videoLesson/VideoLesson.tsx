@@ -11,7 +11,6 @@ import {
 } from '../../../../data/Store';
 import { ILesson, IVideoLesson } from '../../../../interfaces/ILesson';
 import { ITeacher } from '../../../../interfaces/ITeacher';
-import { IUser } from '../../../../interfaces/IUser';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
@@ -27,7 +26,6 @@ export const VideoLesson: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<IVideoLesson>();
-  const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [warn, setWarn] = useState<string>('');
 
   const startExpireLessonForUser = (payment: IPayment, lesson: ILesson) => {
@@ -63,7 +61,6 @@ export const VideoLesson: React.FC = () => {
 
   const startVideoRendering = (lesson: IVideoLesson) => {
     setLesson(lesson);
-    setFreeOrPurchased(true);
     setTimeout(() => {
       // eslint-disable-next-line
       // @ts-ignore
@@ -93,21 +90,6 @@ export const VideoLesson: React.FC = () => {
               startExpireLessonForUser(data[0], lesson);
             }
           });
-          //   const user = await getDocWithId<IUser>(Entity.USERS, email);
-          // user?.videoLessons.forEach((les) => {
-          //   if (les.id === lesson.id && les.watchedCount < Config.allowedWatchCount) {
-          //     setWarn('Do not reload this page');
-          //     setLesson(lesson);
-          //     setTimeout(() => {
-          //       // eslint-disable-next-line
-          //       // @ts-ignore
-          //       document.getElementById('player').src = '';
-          //     }, 1000);
-
-          //     startExpireLessonForUser(user, lesson);
-
-          //     // window.onbeforeunload = () => 'You spent a remaining watch time. Are you sure to exit?';
-          // }
         } else {
           showSnackbar('Please login with your gmail address');
         }
@@ -146,7 +128,6 @@ export const VideoLesson: React.FC = () => {
         <source
           id="player"
           src={lesson?.videoURL}
-          // src={vidSrc}
           type="video/mp4"
         />
       </video>

@@ -5,7 +5,7 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
-  getDocsWithProps, addDoc, updateDoc, getDocWithId, Entity, addDocWithId,
+  getDocsWithProps, addDoc, getDocWithId, Entity,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
 import { ILesson, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
@@ -15,16 +15,13 @@ import { IPayment } from '../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../presentational/snackbar/AlertDialog';
 import { paymentJS, startPay } from '../../../helper/payment';
 import Config from '../../../data/Config';
-import { isLiveLessonRunning } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
 
-  const [user, setUser] = useState<IUser>();
   const { email, showSnackbar } = useContext(AppContext);
 
   const { courseId } = useParams<any>(); // Two routest for this page. Consider both when reading params
-  // const [course, setCourse] = useState<ICourse>();
 
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);
@@ -61,140 +58,52 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-  const freeOrPurchased = (lesson: ILesson) => (!lesson.price)
+  const readyToGoVideo = (lesson: ILesson) => (!lesson.price)
     || ((payments?.find((pay) => pay.lessonId
        === lesson.id && ((pay.watchedCount ?? 0) < Config.allowedWatchCount))));
 
-  const readyToGo = (liveLess: ILiveLesson) => (!liveLess.price)
+  const readyToGoLive = (liveLess: ILiveLesson) => (!liveLess.price)
     || (payments?.find((pay) => pay.lessonId === liveLess.id));
 
-  // const handlePaymentSuccess = async (amount: number, date: number, lessonId: string, isLive: boolean) => {
-  //   if (!email) return;
+  const checkPaymentStatus = async () => {
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    for (let i = 0; i < 3; i += 1) {
+      console.log('payment status');
+      // eslint-disable-next-line no-await-in-loop
+      const payments = await getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
+      setPayments(payments);
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(1000);
+    }
+  };
 
-  //   let editableUser = user;
+  const handleLessonSelection = (lesson: ILesson, isLive: boolean) => {
+    if (!email) {
+      showSnackbar('Login using your gmail id');
+      return;
+    }
 
-  //   if (!editableUser) {
-  //     editableUser = {
-  //       id: email,
-  //       ownerEmail: email,
-  //       videoLessons: [],
-  //       liveLessons: [],
-  //     };
-  //   }
-  //   const lesson = isLive ? liveLessons.find((l) => l.id === lessonId) : videoLessons.find((l) => l.id === lessonId);
-
-  //   if (!lesson) return;
-
-  //   const paymentRef = await addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_STUDENTS, {
-  //     amount, date, ownerEmail: email, paidFor: lesson.ownerEmail, lessonId,
-  //   });
-
-  //   const lessonArray = isLive ? editableUser.liveLessons : editableUser.videoLessons;
-  //   // TODO: remove old purchases at here
-  //   const alreadyPurchased = lessonArray?.findIndex((sub) => sub.id === lesson.id);
-  //   if (!isLive && alreadyPurchased > -1) {
-  //     lessonArray[alreadyPurchased].watchedCount = 0;
-  //     lessonArray[alreadyPurchased].paymentRef = paymentRef;
-  //   } else {
-  //     if (lessonArray) {
-  //       lessonArray.push({
-  //         id: lessonId,
-  //         paymentRef,
-  //         watchedCount: 0,
-  //       });
-  //     } else {
-  //       if (isLive) {
-  //         editableUser.liveLessons = [{
-  //           id: lessonId,
-  //           paymentRef,
-  //           watchedCount: 0,
-  //         }];
-  //       } else {
-  //         editableUser.videoLessons = [{
-  //           id: lessonId,
-  //           paymentRef,
-  //           watchedCount: 0,
-  //         }];
-  //       }
-  //     }
-  //   }
-  //   // This fails(permission), non product owners tries to edit value
-  //   // updateDoc(Entity.LESSONS, lessonId, { subCount: firebase.firestore.FieldValue.increment(1) });
-
-  //   if (user) {
-  //     updateDoc(Entity.USERS, editableUser.id, editableUser).then(() => {
-  //       setUser(editableUser);
-  //       showSnackbar('Payment success');
-  //     });
-  //   } else { // this check is to fix ts issue below
-  //     addDocWithId(Entity.USERS, editableUser.ownerEmail, editableUser).then(() => {
-  //       setUser(editableUser);
-  //       showSnackbar('Payment success');
-  //     });
-  //   }
-  // };
-
-  const handleVideoSelectLesson = (lesson: ILesson) => {
-    if (freeOrPurchased(lesson)) {
-      setDisplayAlert(AlertMode.VIDEO);
+    if (readyToGoVideo(lesson)) {
+      setDisplayAlert(isLive ? AlertMode.LIVE : AlertMode.VIDEO);
     } else {
       const dd = new Date().getTime();
-      // Handle dismiss
       paymentJS.onDismissed = function onDismissed() {
-        // Note: Prompt user to pay again or show an error page
-        // TODO: Remove this code
-
         if (Config.isProd) {
           console.log('Payment Cancelled');
           showSnackbar('Payment Cancelled');
         } else {
           console.log('Succeed');
-          showSnackbar('Dev Payment Succeed');
-          // handlePaymentSuccess(lesson.price, dd, lesson.id, false);
-        }
-        // handlePaymentSuccess(lesson.price, dd, lesson.id);
-      };
-
-      // Handle onComplete
-      paymentJS.onCompleted = function onCompleted() {
-        // Note: Prompt user to pay again or show an error page
-        // TODO: Remove this code
-        console.log('Payment Succeed');
-        showSnackbar('Payment Succeed');
-        // handlePaymentSuccess(lesson.price, dd, lesson.id, false);
-      };
-
-      // Show payment dialog
-      startPay(email, lesson.id, lesson.price, dd);
-    }
-  };
-
-  const handleLiveSelectLesson = (lesson: ILiveLesson) => {
-    if (readyToGo(lesson)) {
-      setDisplayAlert(AlertMode.LIVE);
-    } else {
-      const dd = new Date().getTime();
-      paymentJS.onDismissed = function onDismissed() {
-        // Note: Prompt user to pay again or show an error page
-        // TODO: Remove this code
-        if (Config.isProd) {
-          console.log('Payment Cancelled');
-          showSnackbar('Payment Cancelled');
-        } else {
-          console.log('Fake Dev Payment Succeed');
+          addDoc(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id, ownerEmail: email });
+          checkPaymentStatus();
           showSnackbar('Fake Dev Payment Succeed');
-          // handlePaymentSuccess(lesson.price, dd, lesson.id, true);
         }
       };
-      paymentJS.onCompleted = function onDismissed() {
-        // Note: Prompt user to pay again or show an error page
-        // TODO: Remove this code
-        console.log('Payment Succeed');
-        showSnackbar('Payment Succeed');
-        // handlePaymentSuccess(lesson.price, dd, lesson.id, true);
-      };
 
-      // Show payment dialog
+      paymentJS.onCompleted = function onCompleted() {
+        console.log('Payment Succeed');
+        showSnackbar('Payment Succeed. Updating payments');
+        checkPaymentStatus();
+      };
       startPay(email, lesson.id, lesson.price, dd);
     }
   };
@@ -210,7 +119,7 @@ export const Course: React.FC = () => {
         ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (live.price) {
-            if (readyToGo(live)) {
+            if (readyToGoLive(live)) {
               status = 'yes';
             } else {
               status = 'no';
@@ -220,11 +129,11 @@ export const Course: React.FC = () => {
           }
           return (
             <div
-              onClick={() => handleLiveSelectLesson(live)}
+              onClick={() => handleLessonSelection(live, true)}
               key={live.id}
               role="button"
               tabIndex={0}
-              onKeyDown={() => handleVideoSelectLesson(live)}
+              onKeyDown={() => handleLessonSelection(live, true)}
             >
               <Category
                 id={live.id}
@@ -234,7 +143,7 @@ export const Course: React.FC = () => {
                 title3={`${new Date(live.dateTime).toString().split('GMT')[0]}`}
                 title5="Live"
                 title6={`${live.duration} hrs`}
-                navURL={accepted && readyToGo(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                navURL={accepted && readyToGoLive(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>
@@ -245,7 +154,7 @@ export const Course: React.FC = () => {
         videoLessons?.map((lesson, idx) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (lesson.price) {
-            if (freeOrPurchased(lesson)) {
+            if (readyToGoVideo(lesson)) {
               status = 'yes';
             } else {
               status = 'no';
@@ -256,11 +165,11 @@ export const Course: React.FC = () => {
 
           return (
             <div
-              onClick={() => handleVideoSelectLesson(lesson)}
+              onClick={() => handleLessonSelection(lesson, false)}
               key={idx}
               role="button"
               tabIndex={0}
-              onKeyDown={() => handleVideoSelectLesson(lesson)}
+              onKeyDown={() => handleLessonSelection(lesson, false)}
             >
               <Category
                 id={lesson.id}
@@ -271,7 +180,7 @@ export const Course: React.FC = () => {
                 title3={lesson.price > 0
                   ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                 title6={`${lesson.duration} mins`}
-                navURL={freeOrPurchased(lesson)
+                navURL={readyToGoVideo(lesson)
                    && (accepted || lesson.price === 0) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                 status={status}
               />
