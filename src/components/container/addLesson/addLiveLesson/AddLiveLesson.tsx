@@ -15,7 +15,7 @@ import { IExam } from '../../../../interfaces/IExam';
 import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
-import classes from './AddLiveSession.module.scss';
+import classes from './AddLiveLesson.module.scss';
 
 const fresh: ILiveLesson = {
   id: '',
@@ -31,7 +31,7 @@ const fresh: ILiveLesson = {
   status: LiveMeetingStatus.NOT_STARTED,
   subscriptionCount: 0,
 };
-export const AddLiveSession = () => {
+export const AddLiveLesson = () => {
   const { showSnackbar, email } = useContext(AppContext);
   const [editMode, setEditMode] = useState<boolean>(false);
 

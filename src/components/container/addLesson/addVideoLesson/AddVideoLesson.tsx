@@ -8,7 +8,7 @@ import {
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
-import classes from './AddLesson.module.scss';
+import classes from './AddVideoLesson.module.scss';
 import {
   addDoc, deleteVideo, Entity, getDocsWithProps, updateDoc, uploadVideoToServer,
 } from '../../../../data/Store';
@@ -23,7 +23,7 @@ import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import { OBS_DOWNLOAD, OBS_HELP_DOC, OBS_HELP_VIDEO } from '../../../../data/Config';
 import { round } from '../../../../helper/util';
 
-export const AddLesson = () => {
+export const AddVideoLesson = () => {
   useBreadcrumb();
   const [busy, setBusy] = useState<boolean>(false);
   const [onDataFetch, fetchData] = useForcedUpdate();

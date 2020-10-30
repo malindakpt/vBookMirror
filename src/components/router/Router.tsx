@@ -10,7 +10,7 @@ import { Courses } from '../container/courses/Courses';
 import { Course } from '../container/course/Course';
 import { Storage } from '../container/storage/Storage';
 import { BreadcrumbBar } from '../presentational/breadcrumbs/BreadcrumbBar';
-import { AddLesson } from '../container/manageCourse/addLesson/AddLesson';
+import { AddVideoLesson } from '../container/addLesson/addVideoLesson/AddVideoLesson';
 import { AddSubject } from '../container/manageCourse/addSubject/AddSubject';
 import { EditExam } from '../container/manageCourse/editExam/EditExam';
 import { AddExam } from '../container/manageCourse/addExam/AddExam';
@@ -22,7 +22,7 @@ import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
-import { AddLiveSession } from '../container/manageCourse/addLiveSession/AddLiveSession';
+import { AddLiveLesson } from '../container/addLesson/addLiveLesson/AddLiveLesson';
 import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
 import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 
@@ -46,8 +46,8 @@ export const commonRoutes: routeConfig = [
 ];
 
 export const teacherRoutes: routeConfig = [
-  ['/addLesson', AddLesson, 'Video Lessons', true],
-  ['/addLive', AddLiveSession, 'Live Lessons', true],
+  ['/addLesson', AddVideoLesson, 'Video Lessons', true],
+  ['/addLive', AddLiveLesson, 'Live Lessons', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 
