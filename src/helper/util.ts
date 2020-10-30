@@ -50,7 +50,11 @@ export const formattedTime = (x: Date) => {
 };
 
 export const getHashFromString = (s: string) => {
+  if (!s) {
+    return '';
+  }
   let res = '';
+
   s.split('').forEach((c) => {
     const code = c.charCodeAt(0) + 103;
     res += code;
@@ -59,7 +63,11 @@ export const getHashFromString = (s: string) => {
 };
 
 export const getStringFromHash = (s: string) => {
+  if (!s) {
+    return '';
+  }
   let res = '';
+
   while (s.length > 0) {
     const code = Number(s.substr(0, 3)) - 103;
     res += String.fromCharCode(code);

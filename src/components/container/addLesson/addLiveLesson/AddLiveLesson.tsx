@@ -63,12 +63,12 @@ export const AddLiveLesson = () => {
   useEffect(() => {
     // fetch unrelated data
     if (email) {
-      getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => {
-        if (data) {
-          setZoomMeetingId(data.zoomMeetingId);
-          setZoomPwd(data.zoomPwd);
-          setZoomMaxCount(data.zoomMaxCount);
-          setTeacher(data);
+      getDocWithId<ITeacher>(Entity.TEACHERS, email).then((teacher) => {
+        if (teacher) {
+          setZoomMeetingId(teacher.zoomMeetingId ?? '');
+          setZoomPwd(teacher.zoomPwd ?? '');
+          setZoomMaxCount(teacher.zoomMaxCount ?? 100);
+          setTeacher(teacher);
         }
       });
       getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));

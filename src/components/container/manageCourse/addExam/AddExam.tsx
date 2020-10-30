@@ -32,6 +32,11 @@ export const AddExam = () => {
   }, [onUpdate]);
 
   const onSave = () => {
+    if (!exam?.type || !exam.name) {
+      showSnackbar('Invalid inputs');
+      return;
+    }
+
     setBusy(true);
     if (exam) {
       exam.createdAt = new Date().getTime();
@@ -52,14 +57,14 @@ export const AddExam = () => {
       >
         <TextField
           className={classes.input}
-          id="subjectName"
+          id="examName"
           label="Exam Name"
           onChange={(e) => setExamProps({ name: e.target.value })}
         />
 
         <TextField
           className={classes.input}
-          id="subjectName"
+          id="type"
           label="Type Theory/Revision"
           onChange={(e) => setExamProps({ type: e.target.value })}
         />
