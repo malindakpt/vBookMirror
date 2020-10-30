@@ -133,6 +133,8 @@ export const Course: React.FC = () => {
           } else {
             status = 'none';
           }
+          const time = new Date(live.dateTime).toString().split('GMT')[0];
+          const timeF = time.substring(0, time.length - 4);
           return (
             <div
               onClick={() => handleLessonSelection(live, true)}
@@ -146,7 +148,7 @@ export const Course: React.FC = () => {
                 CategoryImg={DesktopWindowsIcon}
                 title1={`${live.topic}`}
                 title2={`${live.description}`}
-                title3={`${new Date(live.dateTime).toString().split('GMT')[0]}`}
+                title3={timeF}
                 title5="Live"
                 title6={`${live.duration} hrs`}
                 navURL={accepted && readyToGoLive(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
