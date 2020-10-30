@@ -27,47 +27,37 @@ export const Course: React.FC = () => {
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[]>([]);
 
+  const [payments, setPayments] = useState<IPayment[]>([]);
+
   const [accepted, setAccepted] = useState<boolean>(false);
   const [displayAlert, setDisplayAlert] = useState<AlertMode>(AlertMode.NONE);
 
   useEffect(() => {
+    getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }).then((user) => {
+      if (user) {
+        getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
+          setPayments(payments);
+        });
+      }
+    });
+
     Promise.all([
-      // Check the lessons paid by user
-      getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }),
-      // All lessons related to courseId
       getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
       getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
-      // Find the lesson order of the course
-      getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
-      const [users, videoLessons, liveLessons, course] = result;
-
-      if (liveLessons) { setLiveLessons(liveLessons); }
-
-      if (users && videoLessons && liveLessons && course) {
-        const lessons4Course: IVideoLesson[] = [];
-        course?.lessons.forEach((lesId) => {
-          const les = videoLessons.find((l) => l.id === lesId);
-          if (les) {
-            lessons4Course.push(les);
-          } else {
-            console.error('lesson not found', lesId);
-          }
-        });
-        videoLessons?.filter((less) => course?.lessons.includes(less.id));
-        setUser(users[0]);
-        setVideoLessons(lessons4Course);
-      }
+      const [videoLessons, liveLessons] = result;
+      setVideoLessons(videoLessons);
+      setLiveLessons(liveLessons);
     });
     // eslint-disable-next-line
   }, [email]);
 
   const freeOrPurchased = (lesson: ILesson) => (!lesson.price)
-    || ((user?.videoLessons?.find((les) => les.id
-       === lesson.id && les.watchedCount < Config.allowedWatchCount)));
+    || ((payments?.find((pay) => pay.lessonId
+       === lesson.id && ((pay.watchedCount ?? 0) < Config.allowedWatchCount))));
 
   const readyToGo = (liveLess: ILiveLesson) => (!liveLess.price)
-    || (user?.liveLessons?.find((les) => les.id === liveLess.id));
+    || (payments?.find((pay) => pay.lessonId === liveLess.id));
 
   // const handlePaymentSuccess = async (amount: number, date: number, lessonId: string, isLive: boolean) => {
   //   if (!email) return;
@@ -200,13 +190,15 @@ export const Course: React.FC = () => {
     }
   };
 
-  const getRemain = (lesson: ILesson) => user
-        ?.videoLessons?.find((l) => l.id === lesson.id)?.watchedCount ?? 0;
+  const watchedCount = (lesson: ILesson) => payments?.find(
+    (pay) => pay.lessonId === lesson.id)?.watchedCount ?? 0;
 
   return (
     <div className="container">
       {
-        liveLessons.filter((l) => isLiveLessonRunning(l)).sort((a, b) => a.dateTime - b.dateTime).map((live) => {
+        liveLessons.sort(
+          (a, b) => a.dateTime - b.dateTime,
+        ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (live.price) {
             if (readyToGo(live)) {
@@ -231,7 +223,6 @@ export const Course: React.FC = () => {
                 title1={`${live.topic}`}
                 title2={`${live.description}`}
                 title3={`${new Date(live.dateTime).toString().split('GMT')[0]}`}
-                // title3={live.price > 0 ? `Watched: ${getRemain(live)}/${lesson.watchCount}` : 'Free'}
                 title5="Live"
                 title6={`${live.duration} hrs`}
                 navURL={accepted && readyToGo(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
@@ -269,7 +260,7 @@ export const Course: React.FC = () => {
                 title1={`${lesson.topic}`}
                 title2={`${lesson.description}`}
                 title3={lesson.price > 0
-                  ? `Watched: ${getRemain(lesson)}/${Config.allowedWatchCount}` : 'Free'}
+                  ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                 title6={`${lesson.duration} mins`}
                 navURL={freeOrPurchased(lesson)
                    && (accepted || lesson.price === 0) ? `${courseId}/video/${lesson.id}` : `${courseId}`}

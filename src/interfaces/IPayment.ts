@@ -7,4 +7,7 @@ export interface IPayment {
     ownerEmail: string;
     paymentRef: string;
     paymentObject: any;
+
+    disabled?: boolean;
+    watchedCount?: number;
 }

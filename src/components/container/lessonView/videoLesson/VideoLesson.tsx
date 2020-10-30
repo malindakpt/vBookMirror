@@ -7,13 +7,14 @@ import ReactWhatsapp from 'react-whatsapp';
 import classes from './VideoLesson.module.scss';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import {
-  Entity, getDocWithId, updateDoc,
+  Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { ILesson, IVideoLesson } from '../../../../interfaces/ILesson';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { IUser } from '../../../../interfaces/IUser';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
+import { IPayment } from '../../../../interfaces/IPayment';
 
 export const VideoLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -26,60 +27,92 @@ export const VideoLesson: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<IVideoLesson>();
-
+  const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [warn, setWarn] = useState<string>('');
 
-  const startExpireLessonForUser = (user: IUser, lesson: ILesson) => {
+  const startExpireLessonForUser = (payment: IPayment, lesson: ILesson) => {
     timerRef.current = setTimeout(() => {
-      user.videoLessons.forEach((less, idx) => {
-        if (less.id === lesson.id) {
-          user.videoLessons[idx].watchedCount += 1;
-
-          const remain = Config.allowedWatchCount - user.videoLessons[idx].watchedCount;
-
-          const msg = remain < 1 ? 'This is the last watch time for your payment.'
-            : `You can watch this lesson ${remain} more time in the future`;
-
-          setWarn(msg);
-          updateDoc(Entity.USERS, user.ownerEmail, user).then(() => {
-            // showSnackbar(msg);
-          });
-        }
+      const watchedCount = payment?.watchedCount ?? 0;
+      const changes = {
+        watchedCount: watchedCount + 1,
+        disabled: watchedCount + 1 === Config.allowedWatchCount,
+      };
+      updateDoc(Entity.PAYMENTS_STUDENTS, payment.id, { ...payment, ...changes }).then(() => {
+        const remain = Config.allowedWatchCount - changes.watchedCount;
+        const msg = remain < 1 ? 'This is the last watch time for your payment.'
+          : `You can watch this lesson ${remain} more time in the future`;
+        setWarn(msg);
       });
+      // user.videoLessons.forEach((less, idx) => {
+      //   if (less.id === lesson.id) {
+      //     user.videoLessons[idx].watchedCount += 1;
+
+      //     const remain = Config.allowedWatchCount - user.videoLessons[idx].watchedCount;
+
+      //     const msg = remain < 1 ? 'This is the last watch time for your payment.'
+      //       : `You can watch this lesson ${remain} more time in the future`;
+
+      //     setWarn(msg);
+      //     updateDoc(Entity.USERS, user.ownerEmail, user).then(() => {
+      //       // showSnackbar(msg);
+      //     });
+      //   }
+      // });
     }, Config.watchedTimeout);
   };
 
+  const startVideoRendering = (lesson: IVideoLesson) => {
+    setLesson(lesson);
+    setFreeOrPurchased(true);
+    setTimeout(() => {
+      // eslint-disable-next-line
+      // @ts-ignore
+      document.getElementById('player').src = '';
+    }, 1000);
+  };
+
   const processVideo = async () => {
-    const lesson = await getDocWithId<IVideoLesson>(Entity.LESSONS_VIDEO, lessonId);
-    if (!lesson) return;
+    getDocWithId<IVideoLesson>(Entity.LESSONS_VIDEO, lessonId).then((lesson) => {
+      if (!lesson) return;
 
-    getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
+      getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
 
-    if (lesson.price === 0) {
-      setLesson(lesson);
-      setWarn('Free Video');
-    } else {
-      if (email) {
-        const user = await getDocWithId<IUser>(Entity.USERS, email);
-        user?.videoLessons.forEach((les) => {
-          if (les.id === lesson.id && les.watchedCount < Config.allowedWatchCount) {
-            setWarn('Do not reload this page');
-            setLesson(lesson);
-            setTimeout(() => {
-              // eslint-disable-next-line
-              // @ts-ignore
-              document.getElementById('player').src = '';
-            }, 1000);
-
-            startExpireLessonForUser(user, lesson);
-
-            // window.onbeforeunload = () => 'You spent a remaining watch time. Are you sure to exit?';
-          }
-        });
+      if (lesson.price === 0) {
+        startVideoRendering(lesson);
+        setWarn('Free Video');
       } else {
-        showSnackbar('Please login with your gmail address');
+        if (email) {
+          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+            {
+              lessonId,
+              ownerEmail: email,
+            }).then((data) => {
+            if (data && data.length > 0) {
+              startVideoRendering(lesson);
+              setWarn('Do not reload this page');
+              startExpireLessonForUser(data[0], lesson);
+            }
+          });
+          //   const user = await getDocWithId<IUser>(Entity.USERS, email);
+          // user?.videoLessons.forEach((les) => {
+          //   if (les.id === lesson.id && les.watchedCount < Config.allowedWatchCount) {
+          //     setWarn('Do not reload this page');
+          //     setLesson(lesson);
+          //     setTimeout(() => {
+          //       // eslint-disable-next-line
+          //       // @ts-ignore
+          //       document.getElementById('player').src = '';
+          //     }, 1000);
+
+          //     startExpireLessonForUser(user, lesson);
+
+          //     // window.onbeforeunload = () => 'You spent a remaining watch time. Are you sure to exit?';
+          // }
+        } else {
+          showSnackbar('Please login with your gmail address');
+        }
       }
-    }
+    });
   };
 
   useEffect(() => {

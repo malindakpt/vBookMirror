@@ -11,9 +11,10 @@ import Config from '../../../../data/Config';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
-import { Entity, getDocWithId } from '../../../../data/Store';
+import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
 import { IUser } from '../../../../interfaces/IUser';
 import { getHashFromString, Util } from '../../../../helper/util';
+import { IPayment } from '../../../../interfaces/IPayment';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -25,16 +26,19 @@ export const LiveLesson: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILiveLesson>();
+  const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [isFullScr, setFullScr] = useState<boolean>(false);
 
   const sendStartAction = () => {
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
-        ele[0].contentWindow?.postMessage({ message: 'getAppData', value: 'asd' }, '*');
+      ele[0].contentWindow?.postMessage({ message: 'getAppData', value: 'asd' }, '*');
     }
   };
 
-  const activateIframe = () => {
+  const startVideoRendering = (lesson: ILiveLesson) => {
+    setLesson(lesson);
+    setFreeOrPurchased(true);
     sendStartAction();
     const glob: any = window;
     glob.timer = setInterval(() => {
@@ -48,27 +52,26 @@ export const LiveLesson: React.FC = () => {
   };
 
   const processVideo = async () => {
-    const lesson = await getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId);
-    if (!lesson) return;
+    getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
+      if (!lesson) return;
 
-    getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
-
-    if (lesson.price === 0) {
-      setLesson(lesson);
-      activateIframe();
-    } else {
-      if (email) {
-        const user = await getDocWithId<IUser>(Entity.USERS, email);
-        user?.liveLessons.forEach((les) => {
-          if (les.id === lesson.id) {
-            setLesson(lesson);
-            activateIframe();
-          }
-        });
+      if (lesson.price) {
+        if (email) {
+          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+            { lessonId, ownerEmail: email }).then((data) => {
+            if (data && data.length > 0) {
+              startVideoRendering(lesson);
+            }
+          });
+        } else {
+          showSnackbar('Please login with your gmail address');
+        }
       } else {
-        showSnackbar('Please login with your gmail address');
+        startVideoRendering(lesson);
       }
-    }
+      // Fetch techer for show teache info and running lesson ID
+      getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
+    });
   };
 
   useEffect(() => {
@@ -78,52 +81,53 @@ export const LiveLesson: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.topic}>
-        {lesson?.topic}
-      </div>
-      <div className={classes.desc}>
-        {lesson?.description}
-      </div>
+      {freeOrPurchased && lesson && (
       <div>
-        <Button
-          className={classes.fsButton}
-          onClick={() => {
-            setFullScr(!isFullScr);
-          }}
-        >
-          { isFullScr ? 'Exit' : 'Full Screen'}
-        </Button>
-      </div>
-      {teacher && teacher.zoomRunningLessonId === lesson?.id ? (
-        <iframe
-          className={isFullScr ? classes.fullScr : ''}
-          src={`${Config.zoomURL}?&a=${
-            getHashFromString(teacher.zoomMeetingId)}&a=${
-            getHashFromString(teacher.zoomPwd)}&a=${
-            getHashFromString(Util.fullName)}`}
-          name="iframe_a"
-          height="300px"
-          width="100%"
-          allow="camera *;microphone *"
-          title="Live Lessons"
-        />
-      ) : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
+        <div className={classes.topic}>
+          {lesson.topic}
+        </div>
+        <div className={classes.desc}>
+          {lesson?.description}
+        </div>
+        <div>
+          <Button
+            className={classes.fsButton}
+            onClick={() => {
+              setFullScr(!isFullScr);
+            }}
+          >
+            {isFullScr ? 'Exit' : 'Full Screen'}
+          </Button>
+        </div>
+        {teacher && teacher.zoomRunningLessonId === lesson.id ? (
+          <iframe
+            className={isFullScr ? classes.fullScr : ''}
+            src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+            name="iframe_a"
+            height="300px"
+            width="100%"
+            allow="camera *;microphone *"
+            title="Live Lessons"
+          />
+        ) : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
-      {lesson?.attachments && (
-      <div className={classes.attachments}>
-        {lesson.attachments.map((atta) => (
-          <li key={atta}>
-            <a
-              href={atta}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {atta}
-            </a>
-          </li>
-        ))}
+        {lesson.attachments && (
+        <div className={classes.attachments}>
+          {lesson.attachments.map((atta) => (
+            <li key={atta}>
+              <a
+                href={atta}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {atta}
+              </a>
+            </li>
+          ))}
+        </div>
+        )}
       </div>
-)}
+      ) }
     </div>
   );
 };
