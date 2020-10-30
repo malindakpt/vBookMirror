@@ -67,6 +67,7 @@ export const AddLiveLesson = () => {
         if (data) {
           setZoomMeetingId(data.zoomMeetingId);
           setZoomPwd(data.zoomPwd);
+          setZoomMaxCount(data.zoomMaxCount);
           setTeacher(data);
         }
       });
@@ -123,7 +124,9 @@ export const AddLiveLesson = () => {
   const saveAuth = () => {
     setBusy(true);
     if (teacher && email) {
-      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, zoomMeetingId, zoomPwd }).then((data) => {
+      updateDoc(Entity.TEACHERS, teacher.id, {
+        ...teacher, zoomMeetingId, zoomPwd, zoomMaxCount,
+      }).then((data) => {
         showSnackbar('Changed Credentials');
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
