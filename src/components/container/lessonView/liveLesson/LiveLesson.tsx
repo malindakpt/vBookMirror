@@ -11,7 +11,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
-import { getHashFromString, Util } from '../../../../helper/util';
+import { getHashFromString, promptPayment, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 
@@ -57,23 +57,29 @@ export const LiveLesson: React.FC = () => {
     getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
       if (!lesson) return;
 
-      if (lesson.price) {
-        if (email) {
-          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
-            { lessonId, ownerEmail: email }).then((data) => {
-            // TODO:  Check refundable lessons here
-            if (data && data.length > 0) {
-              startVideoRendering(lesson);
-            }
-          });
-        } else {
-          showSnackbar('Please login with your gmail address');
-        }
-      } else {
-        startVideoRendering(lesson);
-      }
       // Fetch techer for show teache info and check is this running lesson ID
-      getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((data) => data && setTeacher(data));
+      getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((teacher) => {
+        teacher && setTeacher(teacher);
+
+        if (lesson.price) {
+          if (email) {
+            getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+              { lessonId, ownerEmail: email }).then((data) => {
+            // TODO:  Check refundable lessons here
+              if (data && data.length > 0) {
+                startVideoRendering(lesson);
+              } else {
+                teacher && promptPayment(email, teacher, lesson, true,
+                  () => console.log('Update UI'), showSnackbar);
+              }
+            });
+          } else {
+            showSnackbar('Please login with your gmail address');
+          }
+        } else {
+          startVideoRendering(lesson);
+        }
+      });
     });
   };
 
