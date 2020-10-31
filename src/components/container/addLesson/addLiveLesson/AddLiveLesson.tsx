@@ -17,6 +17,17 @@ import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
 
+export enum JOIN_MODES {
+  ONLY_AKSHARA,
+  AKSHARA_LK_AND_APP,
+  ONLY_APP
+}
+export const joinModes = [
+  [JOIN_MODES.ONLY_AKSHARA, 'Web Only'],
+  [JOIN_MODES.AKSHARA_LK_AND_APP, 'Web or Installed App'],
+  [JOIN_MODES.ONLY_APP, 'Only Installed App'],
+];
+
 const fresh: ILiveLesson = {
   id: '',
   topic: '',
@@ -50,6 +61,7 @@ export const AddLiveLesson = () => {
   const [zoomMeetingId, setZoomMeetingId] = useState<string>('');
   const [zoomPwd, setZoomPwd] = useState<string>('');
   const [zoomMaxCount, setZoomMaxCount] = useState<number>(100);
+  const [zoomJoinMode, setZoomJoinMode] = useState<number>(0);
 
   const disabled = busy || !selectedCourse;
 
@@ -68,6 +80,7 @@ export const AddLiveLesson = () => {
           setZoomMeetingId(teacher.zoomMeetingId ?? '');
           setZoomPwd(teacher.zoomPwd ?? '');
           setZoomMaxCount(teacher.zoomMaxCount ?? 100);
+          setZoomJoinMode(teacher.zoomJoinMode ?? JOIN_MODES.AKSHARA_LK_AND_APP);
           setTeacher(teacher);
         }
       });
@@ -126,7 +139,7 @@ export const AddLiveLesson = () => {
     setBusy(true);
     if (teacher && email) {
       updateDoc(Entity.TEACHERS, teacher.id, {
-        ...teacher, zoomMeetingId, zoomPwd, zoomMaxCount,
+        ...teacher, zoomMeetingId, zoomPwd, zoomMaxCount, zoomJoinMode,
       }).then((data) => {
         showSnackbar('Changed Credentials');
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
@@ -373,15 +386,32 @@ export const AddLiveLesson = () => {
               value={zoomMaxCount}
               onChange={(e) => setZoomMaxCount(Number(e.target.value))}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => startMeeting(liveLesson)}
-              disabled={busy || !editMode}
-            >
-              {teacher?.zoomRunningLessonId === liveLesson.id ? 'Finish Meeting' : 'Start Meeting'}
-            </Button>
-            <div />
+
+            <FormControl className={classes.input}>
+              <InputLabel
+                id="demo-simple-select-label"
+                className="fc1"
+              >
+                Join Mode
+              </InputLabel>
+              <Select
+                className={`${classes.input} fc1`}
+                labelId="label1"
+                id="id1"
+                value={zoomJoinMode}
+                disabled={busy}
+                onChange={(e) => setZoomJoinMode(e.target.value as number)}
+              >
+                {joinModes.map((mode) => (
+                  <MenuItem
+                    value={mode[0]}
+                    key={mode[0]}
+                  >
+                    {mode[1]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Button
               variant="contained"
               color="primary"
@@ -390,6 +420,15 @@ export const AddLiveLesson = () => {
             >
               Save Zoom Config
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => startMeeting(liveLesson)}
+              disabled={busy || !editMode}
+            >
+              {teacher?.zoomRunningLessonId === liveLesson.id ? 'Finish Meeting' : 'Start Meeting'}
+            </Button>
+
           </div>
           <List
             component="nav"
