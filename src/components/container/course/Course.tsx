@@ -17,7 +17,7 @@ import { AlertDialog, AlertMode } from '../../presentational/snackbar/AlertDialo
 import { paymentJS, startPay } from '../../../helper/payment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
-import { checkRefund } from '../../../helper/util';
+import { checkRefund, promptPayment } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -36,9 +36,7 @@ export const Course: React.FC = () => {
   const [accepted, setAccepted] = useState<boolean>(false);
   const [displayAlert, setDisplayAlert] = useState<AlertMode>(AlertMode.NONE);
 
-  // const [payLesson, setPayLesson] = useState<ILesson>();
   const [teacher, setTeacher] = useState<ITeacher>();
-  // const [refundPayment, setRefundPayment] = useState<IPayment>();
 
   useEffect(() => {
     getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }).then((user) => {
@@ -81,7 +79,7 @@ export const Course: React.FC = () => {
 
   const updatePayments = async (lessonId: string) => {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < 5; i += 1) {
       console.log('payment status');
 
       // TODO : enhance this logic
@@ -103,52 +101,13 @@ export const Course: React.FC = () => {
 
     if (readyToGoVideo(lesson)) {
       if (isLive) {
+        // This is not needed
         setAccepted(true);
       } else {
         setDisplayAlert(AlertMode.VIDEO);
       }
     } else {
-      const dd = new Date().getTime();
-      paymentJS.onDismissed = function onDismissed() {
-        if (Config.isProd) {
-          console.log('Payment Dismissed');
-          showSnackbar('Payment Dismissed. Please refrsh the page after few seconds to update payments');
-          updatePayments(lesson.id);
-        } else {
-          console.log('Succeed');
-          /// /////////FAKE UPDATE START////////////
-          addDoc(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id, ownerEmail: email });
-          const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
-          updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
-          updatePayments(lesson.id);
-          /// ////////FAKE UPDATE END///////////////
-          showSnackbar('Fake Dev Payment Succeed');
-        }
-      };
-
-      paymentJS.onCompleted = function onCompleted() {
-        console.log('Payment Succeed');
-        showSnackbar('Payment Succeed. Updating payments');
-        updatePayments(lesson.id);
-      };
-
-      if (isLive) {
-        // course && getDocWithId<ITeacher>(Entity.TEACHERS, course?.ownerEmail).then((teacher) => {
-        if (teacher) {
-          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => {
-            if (data && data.length >= teacher.zoomMaxCount) {
-              // TODO: send a notification to teacher
-              showSnackbar('This live session is full. Please contact the teacher');
-            } else {
-              // setPayLesson(lesson);
-              startPay(email, lesson.id, lesson.price, dd);
-            }
-          });
-        }
-        // });
-      } else {
-        startPay(email, lesson.id, lesson.price, dd);
-      }
+      teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);
     }
   };
 

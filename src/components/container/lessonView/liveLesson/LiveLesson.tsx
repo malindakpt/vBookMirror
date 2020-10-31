@@ -70,7 +70,11 @@ export const LiveLesson: React.FC = () => {
                 startVideoRendering(lesson);
               } else {
                 teacher && promptPayment(email, teacher, lesson, true,
-                  () => console.log('Update UI'), showSnackbar);
+                  () => {
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 10000);
+                  }, showSnackbar);
               }
             });
           } else {

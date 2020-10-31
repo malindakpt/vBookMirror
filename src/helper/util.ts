@@ -86,7 +86,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
   paymentJS.onDismissed = function onDismissed() {
     if (Config.isProd) {
       console.log('Payment Dismissed');
-      showSnackbar('Payment Dismissed. Please refrsh the page after few seconds to update payments');
+      showSnackbar('Please wait.. Payment Dismissed and it will take few seconds to update the payement.');
       onComplete(lesson.id);
     } else {
       console.log('Succeed');
@@ -96,13 +96,14 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
       onComplete(lesson.id);
       /// ////////FAKE UPDATE END///////////////
-      showSnackbar('Fake Dev Payment Succeed');
+
+      showSnackbar('DEV TEST.. Payment Succeeded and it will take few seconds to update the payement.');
     }
   };
 
   paymentJS.onCompleted = function onCompleted() {
     console.log('Payment Succeed');
-    showSnackbar('Payment Succeed. Updating payments');
+    showSnackbar('Please wait.. Payment Succeeded and it will take few seconds to update the payement.');
     onComplete(lesson.id);
   };
 
