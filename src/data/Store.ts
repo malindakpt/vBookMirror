@@ -27,15 +27,15 @@ export enum Entity {
 const app = firebase.initializeApp(appConfig);
 const db = firebase.firestore(app);
 const storage = firebase.storage(app);
-const store: {[key: string]: any} = {};
+// const store: {[key: string]: any} = {};
 
-const clearStore = (entityName: string) => {
-  for (const key of Object.keys(store)) {
-    if (key.startsWith(entityName)) {
-      store[key] = null;
-    }
-  }
-};
+// const clearStore = (entityName: string) => {
+//   for (const key of Object.keys(store)) {
+//     if (key.startsWith(entityName)) {
+//       store[key] = null;
+//     }
+//   }
+// };
 
 // TODO: clear data store for all edit data queries
 
@@ -142,7 +142,7 @@ export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((re
 
   db.collection(entityName).add(saveObj).then((docRef: any) => {
     // console.log(docRef.id);
-    clearStore(entityName);
+    // clearStore(entityName);
     resolve(docRef.id);
   }).catch((err) => {
     console.error(err);
@@ -152,7 +152,7 @@ export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((re
 
 export const deleteDoc = (entityName: Entity, id: string) => new Promise<boolean>((resolve, reject) => {
   db.collection(entityName).doc(id).delete().then(() => {
-    clearStore(entityName);
+    // clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
@@ -167,7 +167,7 @@ export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new P
   delete saveObj.id; // Allow id auto generation and remove exsting id params
 
   db.collection(entityName).doc(id).set(saveObj).then((data: any) => {
-    clearStore(entityName);
+    // clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
@@ -178,7 +178,7 @@ export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new P
 
 export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promise((resolve, reject) => {
   db.collection(entityName).doc(id).update(obj).then((data: any) => {
-    clearStore(entityName);
+    // clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
@@ -187,21 +187,21 @@ export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promi
     });
 });
 
-const generateRequestKey = (
-  entityName: string, conditions: any,
-) => `${entityName}-${JSON.stringify(conditions)}}`;
+// const generateRequestKey = (
+//   entityName: string, conditions: any,
+// ) => `${entityName}-${JSON.stringify(conditions)}}`;
 
 export const getDocsWithProps = <T>(
   entityName: Entity,
   conditions: any,
 ): Promise<T> => new Promise((resolves, reject) => {
-    const cachedResponse = store[generateRequestKey(entityName, conditions)];
-    if (cachedResponse) {
-      // Resolve result from cache and skip network
-      console.log('ch');
-      resolves(cachedResponse);
-      return;
-    }
+    // const cachedResponse = store[generateRequestKey(entityName, conditions)];
+    // if (cachedResponse) {
+    //   // Resolve result from cache and skip network
+    //   console.log('ch');
+    //   resolves(cachedResponse);
+    //   return;
+    // }
 
     const ref = db.collection(entityName);
     let query: any;
@@ -233,7 +233,7 @@ export const getDocsWithProps = <T>(
           results.push(v);
         });
         // Store result in cache and resolve
-        store[generateRequestKey(entityName, conditions)] = results;
+        // store[generateRequestKey(entityName, conditions)] = results;
         resolves(results);
       })
       .catch((err: any) => {
