@@ -2,11 +2,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
-import * as firebase from 'firebase/app';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
-  getDocsWithProps, addDoc, getDocWithId, Entity, updateDoc,
+  getDocsWithProps, getDocWithId, Entity,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
 import { ILesson, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
@@ -14,7 +13,6 @@ import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../presentational/snackbar/AlertDialog';
-import { paymentJS, startPay } from '../../../helper/payment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { checkRefund, promptPayment } from '../../../helper/util';
