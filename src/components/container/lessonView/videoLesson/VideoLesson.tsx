@@ -14,6 +14,7 @@ import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
+import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 
 export const VideoLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -25,8 +26,12 @@ export const VideoLesson: React.FC = () => {
   useBreadcrumb();
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
+
+  const [tempLesson, setTempLesson] = useState<IVideoLesson>();
   const [lesson, setLesson] = useState<IVideoLesson>();
+
   const [warn, setWarn] = useState<string>('');
+  const [alert, setAlert] = useState<boolean>(false);
 
   const startExpireLessonForUser = (payment: IPayment, lesson: ILesson) => {
     timerRef.current = setTimeout(() => {
@@ -38,24 +43,9 @@ export const VideoLesson: React.FC = () => {
       updateDoc(Entity.PAYMENTS_STUDENTS, payment.id, { ...payment, ...changes }).then(() => {
         const remain = Config.allowedWatchCount - changes.watchedCount;
         const msg = remain < 1 ? 'This is the last watch time for your payment.'
-          : `You can watch this lesson ${remain} more time in the future`;
+          : `You can watch this lesson ${remain} more times in the future`;
         setWarn(msg);
       });
-      // user.videoLessons.forEach((less, idx) => {
-      //   if (less.id === lesson.id) {
-      //     user.videoLessons[idx].watchedCount += 1;
-
-      //     const remain = Config.allowedWatchCount - user.videoLessons[idx].watchedCount;
-
-      //     const msg = remain < 1 ? 'This is the last watch time for your payment.'
-      //       : `You can watch this lesson ${remain} more time in the future`;
-
-      //     setWarn(msg);
-      //     updateDoc(Entity.USERS, user.ownerEmail, user).then(() => {
-      //       // showSnackbar(msg);
-      //     });
-      //   }
-      // });
     }, Config.watchedTimeout);
   };
 
@@ -66,6 +56,24 @@ export const VideoLesson: React.FC = () => {
       // @ts-ignore
       document.getElementById('player').src = '';
     }, 1000);
+  };
+
+  const onAcceptAlert = () => {
+    if (email && tempLesson) {
+      getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+        {
+          lessonId,
+          ownerEmail: email,
+        }).then((data) => {
+        if (data && data.length > 0) {
+          startVideoRendering(tempLesson);
+          setWarn('Do not reload this page');
+          startExpireLessonForUser(data[0], tempLesson);
+        }
+      });
+    } else {
+      showSnackbar('Please login with your gmail address');
+    }
   };
 
   const processVideo = async () => {
@@ -79,17 +87,8 @@ export const VideoLesson: React.FC = () => {
         setWarn('Free Video');
       } else {
         if (email) {
-          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
-            {
-              lessonId,
-              ownerEmail: email,
-            }).then((data) => {
-            if (data && data.length > 0) {
-              startVideoRendering(lesson);
-              setWarn('Do not reload this page');
-              startExpireLessonForUser(data[0], lesson);
-            }
-          });
+          setAlert(true);
+          setTempLesson(lesson);
         } else {
           showSnackbar('Please login with your gmail address');
         }
@@ -158,6 +157,21 @@ export const VideoLesson: React.FC = () => {
         ))}
       </div>
 )}
+
+      {alert && (
+      <AlertDialog
+        type={AlertMode.VIDEO}
+        onAccept={() => {
+          setAlert(false);
+          onAcceptAlert();
+        }}
+
+        onCancel={() => {
+          // setAccepted(false);
+          // setDisplayAlert(AlertMode.NONE);
+        }}
+      />
+      )}
     </div>
   );
 };

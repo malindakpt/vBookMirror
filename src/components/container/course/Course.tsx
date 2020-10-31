@@ -12,7 +12,6 @@ import { ILesson, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson'
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
-import { AlertDialog, AlertMode } from '../../presentational/snackbar/AlertDialog';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { checkRefund, promptPayment } from '../../../helper/util';
@@ -24,15 +23,11 @@ export const Course: React.FC = () => {
 
   // Two routest for this page. (teacher profile)Consider both when reading params
   const { courseId } = useParams<any>();
-  // const [course, setCourse] = useState<ICourse>();
 
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);
 
   const [payments, setPayments] = useState<IPayment[]>([]);
-
-  const [accepted, setAccepted] = useState<boolean>(false);
-  const [displayAlert, setDisplayAlert] = useState<AlertMode>(AlertMode.NONE);
 
   const [teacher, setTeacher] = useState<ITeacher>();
 
@@ -98,12 +93,12 @@ export const Course: React.FC = () => {
     }
 
     if (readyToGoVideo(lesson)) {
-      if (isLive) {
-        // This is not needed
-        setAccepted(true);
-      } else {
-        setDisplayAlert(AlertMode.VIDEO);
-      }
+      // if (isLive) {
+      //   // This is not needed
+      //   setAccepted(true);
+      // } else {
+      //   setDisplayAlert(AlertMode.VIDEO);
+      // }
     } else {
       teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);
     }
@@ -183,28 +178,13 @@ export const Course: React.FC = () => {
                 title3={lesson.price > 0
                   ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                 title6={`${lesson.duration} mins`}
-                navURL={readyToGoVideo(lesson)
-                   && (accepted || lesson.price === 0) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
+                navURL={readyToGoVideo(lesson) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                 status={status}
               />
             </div>
           );
         })
       }
-
-      {displayAlert !== AlertMode.NONE && !accepted && (
-      <AlertDialog
-        type={displayAlert}
-        onAccept={() => {
-          setAccepted(true);
-        }}
-
-        onCancel={() => {
-          setAccepted(false);
-          setDisplayAlert(AlertMode.NONE);
-        }}
-      />
-      )}
     </div>
   );
 };
