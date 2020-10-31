@@ -9,6 +9,7 @@ const APP_CONFIG_DEV = {
   measurementId: 'G-4SS7PQK8D5',
 
   watchedTimeout: 2000,
+  realoadTimeoutAferSuccessPay: 10000,
   allowedWatchCount: 2,
   isProd: false,
   // zoomURL: 'http://127.0.0.1:8887',
@@ -26,6 +27,7 @@ const APP_CONFIG_PROD = {
   measurementId: 'G-23MFY9WDH7',
 
   watchedTimeout: 3000,
+  realoadTimeoutAferSuccessPay: 5000,
   allowedWatchCount: 2,
   isProd: true,
   zoomURL: 'https://smsm-54fa3.web.app',

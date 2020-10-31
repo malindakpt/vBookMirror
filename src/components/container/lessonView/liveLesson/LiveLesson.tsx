@@ -73,7 +73,7 @@ export const LiveLesson: React.FC = () => {
                   () => {
                     setTimeout(() => {
                       window.location.reload();
-                    }, 10000);
+                    }, Config.realoadTimeoutAferSuccessPay);
                   }, showSnackbar);
               }
             });

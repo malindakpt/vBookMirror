@@ -9,12 +9,13 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { ILesson, IVideoLesson } from '../../../../interfaces/ILesson';
+import { IVideoLesson } from '../../../../interfaces/ILesson';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
+import { promptPayment } from '../../../../helper/util';
 
 export const VideoLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -33,7 +34,7 @@ export const VideoLesson: React.FC = () => {
   const [warn, setWarn] = useState<string>('');
   const [alert, setAlert] = useState<boolean>(false);
 
-  const startExpireLessonForUser = (payment: IPayment, lesson: ILesson) => {
+  const startExpireLessonForUser = (payment: IPayment) => {
     timerRef.current = setTimeout(() => {
       const watchedCount = payment?.watchedCount ?? 0;
       const changes = {
@@ -59,16 +60,25 @@ export const VideoLesson: React.FC = () => {
   };
 
   const onAcceptAlert = () => {
-    if (email && tempLesson) {
+    if (email && tempLesson && teacher) {
       getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
         {
           lessonId,
           ownerEmail: email,
         }).then((data) => {
         if (data && data.length > 0) {
-          startVideoRendering(tempLesson);
-          setWarn('Do not reload this page');
-          startExpireLessonForUser(data[0], tempLesson);
+          const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0) < Config.allowedWatchCount));
+          if (validPayment) {
+            startVideoRendering(tempLesson);
+            setWarn('Do not reload this page');
+            startExpireLessonForUser(validPayment);
+          } else {
+            promptPayment(email, teacher, tempLesson, false, () => {
+              setTimeout(() => {
+                window.location.reload();
+              }, Config.realoadTimeoutAferSuccessPay);
+            }, showSnackbar);
+          }
         }
       });
     } else {
