@@ -92,14 +92,7 @@ export const Course: React.FC = () => {
       return;
     }
 
-    if (readyToGoVideo(lesson)) {
-      // if (isLive) {
-      //   // This is not needed
-      //   setAccepted(true);
-      // } else {
-      //   setDisplayAlert(AlertMode.VIDEO);
-      // }
-    } else {
+    if (!readyToGoVideo(lesson)) {
       teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);
     }
   };
@@ -107,10 +100,11 @@ export const Course: React.FC = () => {
   const watchedCount = (lesson: ILesson) => payments?.find(
     (pay) => pay.lessonId === lesson.id)?.watchedCount ?? 0;
 
+  const now = new Date().getTime();
   return (
     <div className="container">
       {
-        liveLessons?.sort(
+        liveLessons?.filter((le) => le.dateTime > now).sort(
           (a, b) => a.dateTime - b.dateTime,
         ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;

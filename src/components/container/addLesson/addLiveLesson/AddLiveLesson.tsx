@@ -186,6 +186,47 @@ export const AddLiveLesson = () => {
     }
   };
 
+  const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => a.dateTime - b.dateTime).map((liveLesson) => (
+    <div
+      key={liveLesson.id}
+    >
+      <ListItem
+        button
+        onClick={() => { setEditMode(true); editLesson(liveLesson); }}
+      >
+
+        {teacher?.zoomRunningLessonId === liveLesson.id ? (
+          <StopIcon onClick={(e) => {
+            startMeeting(liveLesson); e.stopPropagation();
+          }}
+          />
+          ) : (
+            <PlayCircleOutlineIcon
+              className={classes.play}
+              onClick={(e) => {
+                startMeeting(liveLesson); e.stopPropagation();
+              }}
+            />
+          )}
+
+        <div
+          className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
+          style={{ fontSize: '11px', width: '100%' }}
+        >
+          {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
+        </div>
+        <FileCopyIcon onClick={(e) => {
+          copyLessonURL(liveLesson.id); e.stopPropagation();
+        }}
+        />
+      </ListItem>
+      <Divider />
+    </div>
+  ))
+  );
+
+  const now = new Date().getTime();
+
   return (
     <>
       <div
@@ -194,154 +235,155 @@ export const AddLiveLesson = () => {
         <form
           noValidate
           autoComplete="off"
-          className={classes.editor}
         >
 
-          <FormControl className={classes.input}>
-            <InputLabel
-              id="demo-simple-select-label"
-              className="fc1"
+          <div className={classes.editor}>
+
+            <FormControl className={classes.input}>
+              <InputLabel
+                id="demo-simple-select-label"
+                className="fc1"
+              >
+                Select Course
+              </InputLabel>
+              <Select
+                className={`${classes.input} fc1`}
+                labelId="label1"
+                id="id1"
+                value={selectedCourse?.id ?? ''}
+                disabled={busy}
+                onChange={(e) => onCourseChange(e.target.value as string)}
+              >
+                {courses.map((course) => {
+                  const subject = getObject(subjects, course.subjectId);
+                  const exam = getObject(exams, course.examId);
+
+                  return (
+                    <MenuItem
+                      value={course.id}
+                      key={course.id}
+                    >
+                      {`${exam?.name}-${exam?.type}-${subject?.name}`}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+
+            <RadioGroup
+              className={classes.twoColumn}
+              aria-label="editMode"
+              name="editMode"
+              value={editMode}
+              onChange={(e: any) => {
+                if (e.target.value === 'false') {
+                  addNew();
+                } else {
+                  showSnackbar('Select a lesson from the lessons list');
+                }
+              }}
             >
-              Select Course
-            </InputLabel>
-            <Select
-              className={`${classes.input} fc1`}
-              labelId="label1"
-              id="id1"
-              value={selectedCourse?.id ?? ''}
-              disabled={busy}
-              onChange={(e) => onCourseChange(e.target.value as string)}
-            >
-              {courses.map((course) => {
-                const subject = getObject(subjects, course.subjectId);
-                const exam = getObject(exams, course.examId);
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label="Add New Lesson"
+                disabled={disabled}
+              />
+              <FormControlLabel
+                value
+                control={<Radio />}
+                label="Edit lesson"
+                disabled={disabled}
+              />
+            </RadioGroup>
 
-                return (
-                  <MenuItem
-                    value={course.id}
-                    key={course.id}
-                  >
-                    {`${exam?.name}-${exam?.type}-${subject?.name}`}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-
-          <RadioGroup
-            className={classes.twoColumn}
-            aria-label="editMode"
-            name="editMode"
-            value={editMode}
-            onChange={(e: any) => {
-              if (e.target.value === 'false') {
-                addNew();
-              } else {
-                showSnackbar('Select a lesson from the lessons list');
-              }
-            }}
-          >
-            <FormControlLabel
-              value={false}
-              control={<Radio />}
-              label="Add New Lesson"
+            <TextField
+              className={classes.input}
+              id="topic"
+              label="Topic"
               disabled={disabled}
+              value={liveLesson.topic}
+              onChange={(e) => setSessionProps({ topic: e.target.value })}
             />
-            <FormControlLabel
-              value
-              control={<Radio />}
-              label="Edit lesson"
+
+            <TextField
+              className={classes.input}
+              id="desc"
+              label="Description"
               disabled={disabled}
+              value={liveLesson.description}
+              onChange={(e) => setSessionProps({ description: e.target.value })}
             />
-          </RadioGroup>
 
-          <TextField
-            className={classes.input}
-            id="topic"
-            label="Topic"
-            disabled={disabled}
-            value={liveLesson.topic}
-            onChange={(e) => setSessionProps({ topic: e.target.value })}
-          />
+            <TextField
+              className={classes.input}
+              id="price"
+              label="Price"
+              type="number"
+              disabled={disabled || Config.paymentDisabled}
+              value={liveLesson.price}
+              onChange={(e) => setSessionProps({ price: Number(e.target.value) })}
+            />
 
-          <TextField
-            className={classes.input}
-            id="desc"
-            label="Description"
-            disabled={disabled}
-            value={liveLesson.description}
-            onChange={(e) => setSessionProps({ description: e.target.value })}
-          />
+            <TextField
+              className={classes.input}
+              id="duration"
+              label="Duration in Hours(Lesson will not be visible to students after the duration)"
+              type="number"
+              disabled={disabled}
+              value={liveLesson.duration}
+              onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
+            />
 
-          <TextField
-            className={classes.input}
-            id="price"
-            label="Price"
-            type="number"
-            disabled={disabled || Config.paymentDisabled}
-            value={liveLesson.price}
-            onChange={(e) => setSessionProps({ price: Number(e.target.value) })}
-          />
+            <TextField
+              className={classes.inputMulti}
+              id="standard-multiline-static"
+              label="Add GoogleDrive links as separate lines"
+              multiline
+              rows={3}
+              variant="outlined"
+              disabled={disabled}
+              value={liveLesson.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setSessionProps({ attachments: e.target.value.split('\n') });
+              }}
+            />
 
-          <TextField
-            className={classes.input}
-            id="duration"
-            label="Duration in Hours(Lesson will not be visible to students after the duration)"
-            type="number"
-            disabled={disabled}
-            value={liveLesson.duration}
-            onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
-          />
-
-          <TextField
-            className={classes.inputMulti}
-            id="standard-multiline-static"
-            label="Add GoogleDrive links as separate lines"
-            multiline
-            rows={3}
-            variant="outlined"
-            disabled={disabled}
-            value={liveLesson.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
-            onChange={(e) => {
-              console.log(e.target.value);
-              setSessionProps({ attachments: e.target.value.split('\n') });
-            }}
-          />
-
-          <TextField
-            id="datetime-local"
-            label="Date and Time"
-            type="datetime-local"
-            disabled={disabled}
-            value={formattedTime(new Date(liveLesson?.dateTime ?? new Date().getTime()))}
-            onChange={(e) => {
-              console.log(e.target.value);
-              setSessionProps({ dateTime: new Date(e.target.value).getTime() });
-            }}
+            <TextField
+              id="datetime-local"
+              label="Date and Time"
+              type="datetime-local"
+              disabled={disabled}
+              value={formattedTime(new Date(liveLesson?.dateTime ?? new Date().getTime()))}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setSessionProps({ dateTime: new Date(e.target.value).getTime() });
+              }}
             // defaultValue="2017-05-24T10:30"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <div>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={onSave}
-              disabled={disabled}
-            >
-              {editMode ? 'Save Changes' : 'Add Live Lesson'}
-            </Button>
-            <input
-              type="text"
-              value=""
-              onChange={() => {}}
-              id="copyInput"
-              style={{ width: '1px', position: 'fixed', left: '-100px' }}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onSave}
+                disabled={disabled}
+              >
+                {editMode ? 'Save Changes' : 'Add Live Lesson'}
+              </Button>
+              <input
+                type="text"
+                value=""
+                onChange={() => {}}
+                id="copyInput"
+                style={{ width: '1px', position: 'fixed', left: '-100px' }}
+              />
+            </div>
           </div>
-
         </form>
         <div>
           <div className={classes.meetInfo}>
@@ -412,43 +454,10 @@ export const AddLiveLesson = () => {
             aria-label="main mailbox folders"
           >
             {
-              liveLessons.sort((a, b) => a.dateTime - b.dateTime).map((liveLesson) => (
-                <div
-                  key={liveLesson.id}
-                >
-                  <ListItem
-                    button
-                    onClick={() => { setEditMode(true); editLesson(liveLesson); }}
-                  >
-
-                    {teacher?.zoomRunningLessonId === liveLesson.id ? (
-                      <StopIcon onClick={(e) => {
-                        startMeeting(liveLesson); e.stopPropagation();
-                      }}
-                      />
-                      ) : (
-                        <PlayCircleOutlineIcon
-                          className={classes.play}
-                          onClick={(e) => {
-                            startMeeting(liveLesson); e.stopPropagation();
-                          }}
-                        />
-                      )}
-
-                    <div
-                      className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
-                      style={{ fontSize: '11px', width: '100%' }}
-                    >
-                      {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
-                    </div>
-                    <FileCopyIcon onClick={(e) => {
-                      copyLessonURL(liveLesson.id); e.stopPropagation();
-                    }}
-                    />
-                  </ListItem>
-                  <Divider />
-                </div>
-              ))
+             renderLessonList(liveLessons.filter((l) => l.dateTime >= now))
+            }
+            {
+             renderLessonList(liveLessons.filter((l) => l.dateTime < now))
             }
           </List>
         </div>
