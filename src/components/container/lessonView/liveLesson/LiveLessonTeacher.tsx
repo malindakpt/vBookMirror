@@ -13,6 +13,18 @@ import { getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import logo from '../../../../images/logo.png';
 
+interface StudentConnection {
+  [key: string]: {
+    // email: string;
+    name: string;
+    count: number;
+  }
+}
+interface ZoomUser{
+  userName: string;
+  userId: string;
+}
+
 export const LiveLessonTeacher: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
 
@@ -23,8 +35,14 @@ export const LiveLessonTeacher: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILiveLesson>();
-  const [userNames, setUserNames] = useState<{userName: string, userId: string}[]>([]);
+  const [userNames, setUserNames] = useState<ZoomUser[]>([]);
   const [paymentForLesson, setPaymentsForLesson] = useState<IPayment[]>([]);
+  const [nonPaid, setNonPaid] = useState<ZoomUser[]>([]);
+
+  const [users, setUsers] = useState< StudentConnection >({});
+  const [connected, setConnected] = useState<boolean>(false);
+  const [reloadText, setReloadText] = useState<string>('Reload');
+  const [connectingText, setConnectingText] = useState<string>('Connecting to meeting...');
 
   const sendStartAction = () => {
     const ele = document.getElementsByTagName('iframe');
@@ -34,45 +52,74 @@ export const LiveLessonTeacher: React.FC = () => {
   };
 
   const stopLive = () => {
+    setReloadText('Disconnecting...');
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
       ele[0].contentWindow?.postMessage({ type: 'STOP', value: '' }, '*');
     }
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
   };
 
-  const startVideoRendering = (lesson: ILiveLesson) => {
+  const updateNewStudents = (zUsers: ZoomUser[]) => {
+    const userMap: StudentConnection = {};
+    for (const u of zUsers) {
+      if (!userMap[u.userName]) {
+        userMap[u.userName] = {
+          count: 0,
+          name: u.userName,
+        };
+      }
+      userMap[u.userName].count += 1;
+    }
+    setUsers(userMap);
+  };
+
+  const startVideoRendering = (lesson: ILiveLesson, userNames: ZoomUser[]) => {
     sendStartAction();
+    const glob: any = window;
     window.addEventListener('message', (e) => {
       const atts = e.data;
       if (atts.type === 'CONNECT') {
-        // const mems = atts?.data?.result?.attendeesList;
-        // if (mems) {
-        //   console.log('mkpt3 CONNECT', atts.data);
-        //   setUserNames(mems);
-        // }
+        setConnected(true);
       } else if (atts.type === 'JOIN') {
+        glob.count = glob.count ? glob.count + 1 : 1;
         setUserNames((prev) => {
           const clone = [...prev, atts.data];
+          updateNewStudents(clone);
           return clone;
         });
-        console.log('mkpt3 JOIN', atts.data);
-        const uId = atts.data.userName;
 
+        const zUser: ZoomUser = atts.data;
         if (lesson && (lesson?.price > 0)) {
-          const userPayment = paymentForLesson.find((pay) => pay.ownerEmail === uId);
-          // eslint-disable-next-line no-new
-          !userPayment && new Notification('Invalid user detected', { body: uId, icon: logo });
+          const userPayment = paymentForLesson.find((pay) => pay.ownerEmail === zUser.userName);
+          if (!userPayment) {
+            setNonPaid((prev) => {
+              const clone = [...prev, zUser];
+              const teacherUsers = clone.filter((u) => u.userName === zUser.userName);
+              if (teacherUsers?.length > 2) {
+                // eslint-disable-next-line no-new
+                new Notification('Not Paid User Detected', { body: zUser.userName, icon: logo });
+              }
+              return clone;
+            });
+          }
         }
       } else if (atts.type === 'LEAVE') {
         const luser = atts.data;
         setUserNames((prev) => {
           const clone = [...prev.filter((user) => user.userName !== luser.userName)];
+          updateNewStudents(clone);
+          return clone;
+        });
+        setNonPaid((prev) => {
+          const clone = [...prev.filter((user) => user.userName !== luser.userName)];
+          updateNewStudents(clone);
           return clone;
         });
       }
     }, false);
-
-    const glob: any = window;
 
     glob.timer = setInterval(() => {
       console.log('send start mkpt');
@@ -81,7 +128,11 @@ export const LiveLessonTeacher: React.FC = () => {
 
     setTimeout(() => {
       clearInterval(glob.timer);
-    }, 30000);
+      if (glob.count === 0) {
+        setConnectingText('Could not connect to meeting. Reloading...');
+        window.location.reload();
+      }
+    }, 15000);
   };
 
   const processVideo = async () => {
@@ -96,7 +147,7 @@ export const LiveLessonTeacher: React.FC = () => {
             { lessonId }).then((data) => {
             setLesson(lesson);
             setPaymentsForLesson(data);
-            startVideoRendering(lesson);
+            startVideoRendering(lesson, userNames);
           });
         } else {
           showSnackbar('Please login with your gmail address');
@@ -108,6 +159,14 @@ export const LiveLessonTeacher: React.FC = () => {
   useEffect(() => {
     Notification.requestPermission().then((result) => {
       console.log(result);
+    });
+    window.addEventListener('beforeunload', (event) => {
+      console.log('Unmount');
+      stopLive();
+      // Cancel the event as stated by the standard.
+      // event.preventDefault();
+      // Older browsers supported custom message
+      event.returnValue = '';
     });
     processVideo();
     const glob: any = window;
@@ -126,11 +185,14 @@ export const LiveLessonTeacher: React.FC = () => {
         name="iframe_a"
         height="300px"
         width="100%"
+        style={{ visibility: 'hidden' }}
         allow="camera *;microphone *"
         title="Live Lessons"
       />
     </>
   );
+
+  console.log('Usernames mkpt', userNames);
 
   return (
     <div className={classes.root}>
@@ -142,24 +204,45 @@ export const LiveLessonTeacher: React.FC = () => {
         <div className={classes.desc}>
           {lesson?.description}
         </div>
+
+        {connected && (
+        <Button onClick={() => {
+          stopLive();
+        }}
+        >
+          {reloadText}
+        </Button>
+        )}
+          {!connected && (
+          <Button>
+
+            {connectingText}
+          </Button>
+          )}
+
         <div className={classes.check}>
-          <table>
+          <table className={classes.payList}>
             <tbody>
-              {userNames.map((user) => (
-                <tr key={user.userId}>
-                  <td>{user.userId}</td>
-                  <td>{user.userName}</td>
+              {
+                nonPaid.filter((np) => np.userName !== Util.fullName).map((usr) => (
+                  <tr key={usr.userId}>
+                    <td>{usr.userId}</td>
+                    <td>{usr.userName}</td>
+                    <td>Not Paid</td>
+                  </tr>
+                ))
+              }
+              {paymentForLesson.sort((a, b) => (users[a.ownerName]?.count ?? 0) - (users[b.ownerName]?.count ?? 0)).map((pay) => (
+                <tr key={pay.id}>
+                  <td>{pay.ownerEmail}</td>
+                  <td>{pay.ownerName}</td>
+                  <td>{users[pay.ownerName]?.count ?? 0}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <Button onClick={() => {
-          stopLive();
-        }}
-        >
-          STOP CONNECTION
-        </Button>
+
         {teacher && teacher.zoomRunningLessonId === lesson.id
           ? getIframe(teacher)
           : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
