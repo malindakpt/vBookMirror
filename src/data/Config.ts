@@ -15,6 +15,7 @@ const APP_CONFIG_DEV = {
   isProd: false,
   zoomURL: 'http://127.0.0.1:8887',
   paymentDisabled: true,
+  techPhone: '0771141194',
   // zoomURL: 'https://smsm-54fa3.web.app',
 };
 
@@ -34,6 +35,7 @@ const APP_CONFIG_PROD = {
   isProd: true,
   zoomURL: 'https://smsm-54fa3.web.app',
   paymentDisabled: true,
+  techPhone: '0771141194',
 };
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;

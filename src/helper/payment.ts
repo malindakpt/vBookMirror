@@ -1,10 +1,10 @@
 import Config from '../data/Config';
-import { Util } from './util';
+import { DEFAULT_FULL_NAME, Util } from './util';
 // @ts-ignore
 // eslint-disable-next-line no-undef
 export const paymentJS = payhere;
 
-const getPaymentObj = (email: string, lessonId: string, amount: number, dd:number) => ({
+const getPaymentObj = (email: string, name: string, lessonId: string, amount: number, dd:number) => ({
   sandbox: !Config.isProd,
   merchant_id: Config.isProd ? '216030' : '1215643', // Replace your Merchant ID
   return_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/1',
@@ -25,7 +25,7 @@ const getPaymentObj = (email: string, lessonId: string, amount: number, dd:numbe
   // delivery_city: 'Kalutara',
   // delivery_country: 'Sri Lanka',
   custom_1: `${email}`,
-  custom_2: `${lessonId}`,
+  custom_2: `${name}`,
 });
 
 // paymentJS.onDismissed = function onDismissed() {
@@ -48,13 +48,15 @@ const getPaymentObj = (email: string, lessonId: string, amount: number, dd:numbe
 //   // TODO Note: validate the payment and show success or failure page to the customer
 // };
 
-export const startPay = (email: string|null, lessonId: string,
+export const startPay = (email: string|null, name: string, lessonId: string,
   amount: number, dd: number) => {
   if (!email) {
     if (Util.invokeLogin) {
       Util.invokeLogin();
+    } else if (!Util.fullName || Util.fullName === DEFAULT_FULL_NAME) {
+      alert(`Error with the name related to your email. Please contact ${Config.techPhone}`);
     }
   } else {
-    paymentJS.startPayment(getPaymentObj(email, lessonId, amount, dd));
+    paymentJS.startPayment(getPaymentObj(email, name, lessonId, amount, dd));
   }
 };

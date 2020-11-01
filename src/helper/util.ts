@@ -8,10 +8,11 @@ import { IPayment } from '../interfaces/IPayment';
 import { ITeacher } from '../interfaces/ITeacher';
 import { paymentJS, startPay } from './payment';
 
+export const DEFAULT_FULL_NAME = 'Unknown';
 export class Util {
     public static invokeLogin: any = null;
 
-    public static fullName = 'Unknown';
+    public static fullName = DEFAULT_FULL_NAME;
 }
 
 export const checkRefund = (email: string, lessonId: string,
@@ -114,10 +115,10 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
         showSnackbar('This live session is full. Please contact the teacher');
       } else {
         // setPayLesson(lesson);
-        startPay(email, lesson.id, lesson.price, dd);
+        startPay(email, Util.fullName, lesson.id, lesson.price, dd);
       }
     });
   } else {
-    startPay(email, lesson.id, lesson.price, dd);
+    startPay(email, Util.fullName, lesson.id, lesson.price, dd);
   }
 };

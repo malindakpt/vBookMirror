@@ -61,16 +61,16 @@ app.post('/notify/2', (req: any, res: any) => {
 
 app.post('/notify/3', (req: any, res: any) => {
   const { body } = req;
-  // const [lessonId, lessonType, maxCount] = body.order_id.split('#');
-
   if (body.status_code === StatusCode.SUCCESS) {
     const payment = {
       date: new Date().getTime(),
       amount: body.payhere_amount,
       ownerEmail: body.custom_1,
-      paidFor: body.custom_2,
+      ownerName: body.custom_2,
+      paidFor: 'Lesson purchase',
       lessonId: body.order_id,
       paymentRef: body.payment_id,
+      status: body.status_code,
       paymentObject: body,
     };
     console.log(req.body);
@@ -80,19 +80,6 @@ app.post('/notify/3', (req: any, res: any) => {
     }).catch((err) => {
       console.log(err, req.body);
     });
-
-    // // Update subCount
-    // const entity = lessonType === 'LIVE' ? 'LESSONS_LIVE' : 'LESSONS_VIDEO';
-    // db.collection(entity).doc(lessonId).update({
-    //   subCount: admin.firestore.FieldValue.increment(1),
-    // });
-
-    // // Check Max subCount
-    // getDocsWithProps(db, Entity.PAYMENTS_STUDENTS, { lessonId }).catch((payments) => {
-    //   if (payments && payments.length > maxCount) {
-
-    //   }
-    // });
   }
   res.send({
     res: 'ok',

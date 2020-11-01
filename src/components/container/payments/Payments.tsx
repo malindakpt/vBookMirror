@@ -73,6 +73,8 @@ export const Payments = () => {
         lessonId: '',
         paymentObject: {},
         paymentRef: '',
+        ownerName: '',
+        status: 'OK',
       }).then(() => {
         showSnackbar(`Payment done:${amount}`);
         setBusy(false);
