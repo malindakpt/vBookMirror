@@ -23,7 +23,7 @@ export const LiveLessonTeacher: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILiveLesson>();
-  const [userNames, setUserNames] = useState<{userName: string}[]>([]);
+  const [userNames, setUserNames] = useState<{userName: string, userId: string}[]>([]);
   const [paymentForLesson, setPaymentsForLesson] = useState<IPayment[]>([]);
 
   const sendStartAction = () => {
@@ -40,7 +40,7 @@ export const LiveLessonTeacher: React.FC = () => {
     }
   };
 
-  const startVideoRendering = () => {
+  const startVideoRendering = (lesson: ILiveLesson) => {
     sendStartAction();
     window.addEventListener('message', (e) => {
       const atts = e.data;
@@ -96,7 +96,7 @@ export const LiveLessonTeacher: React.FC = () => {
             { lessonId }).then((data) => {
             setLesson(lesson);
             setPaymentsForLesson(data);
-            startVideoRendering();
+            startVideoRendering(lesson);
           });
         } else {
           showSnackbar('Please login with your gmail address');
@@ -144,7 +144,14 @@ export const LiveLessonTeacher: React.FC = () => {
         </div>
         <div className={classes.check}>
           <table>
-            {userNames.map((user) => <tr>{user.userName}</tr>)}
+            <tbody>
+              {userNames.map((user) => (
+                <tr key={user.userId}>
+                  <td>{user.userId}</td>
+                  <td>{user.userName}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
         <Button onClick={() => {
