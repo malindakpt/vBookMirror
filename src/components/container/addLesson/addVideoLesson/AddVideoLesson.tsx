@@ -20,7 +20,7 @@ import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
-import { OBS_DOWNLOAD, OBS_HELP_DOC, OBS_HELP_VIDEO } from '../../../../data/Config';
+import Config, { OBS_DOWNLOAD, OBS_HELP_DOC, OBS_HELP_VIDEO } from '../../../../data/Config';
 import { round } from '../../../../helper/util';
 
 export const AddVideoLesson = () => {
@@ -489,7 +489,7 @@ export const AddVideoLesson = () => {
               type="number"
               label="Price"
               value={price}
-              disabled={disabled}
+              disabled={disabled || Config.paymentDisabled}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
             <Button

@@ -18,6 +18,7 @@ import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
+import Config from '../../../../data/Config';
 
 export enum JOIN_MODES {
   ONLY_AKSHARA,
@@ -273,7 +274,7 @@ export const AddLiveLesson = () => {
             id="price"
             label="Price"
             type="number"
-            disabled={disabled}
+            disabled={disabled || Config.paymentDisabled}
             value={liveLesson.price}
             onChange={(e) => setSessionProps({ price: Number(e.target.value) })}
           />
