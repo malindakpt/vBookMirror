@@ -82,7 +82,7 @@ export const Course: React.FC = () => {
       const myPayments = await getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
       setPayments(myPayments);
       // eslint-disable-next-line no-await-in-loop
-      await sleep(1000);
+      await sleep(2000);
     }
   };
 
