@@ -17,8 +17,6 @@ export interface Props {
   type: AlertMode;
 }
 export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel, type }) => {
-  const [open, setOpen] = React.useState(true);
-
   const handleClose = () => {
     // setOpen(false);
     onCancel();
@@ -43,7 +41,7 @@ export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel, type }) => {
   return (
     <div>
       <Dialog
-        open={open}
+        open
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

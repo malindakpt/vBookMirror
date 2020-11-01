@@ -23,7 +23,6 @@ export const LiveLessonTeacher: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILiveLesson>();
-  const [freeLesson, setFreeLesson] = useState<boolean>(false);
   const [userNames, setUserNames] = useState<{userName: string}[]>([]);
   const [paymentForLesson, setPaymentsForLesson] = useState<IPayment[]>([]);
 
@@ -90,8 +89,6 @@ export const LiveLessonTeacher: React.FC = () => {
   const processVideo = async () => {
     getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
       if (!lesson) return;
-
-      setFreeLesson(lesson.price === 0);
 
       getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((teacher) => {
         teacher && setTeacher(teacher);

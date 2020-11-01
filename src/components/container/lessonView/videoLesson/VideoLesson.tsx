@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import React, {
   useContext, useEffect, useRef, useState,
 } from 'react';
@@ -18,6 +18,7 @@ import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDi
 import { promptPayment } from '../../../../helper/util';
 
 export const VideoLesson: React.FC = () => {
+  const history = useHistory();
   const { email, showSnackbar } = useContext(AppContext);
   const timerRef = useRef<any>();
 
@@ -177,8 +178,8 @@ export const VideoLesson: React.FC = () => {
         }}
 
         onCancel={() => {
-          // setAccepted(false);
-          // setDisplayAlert(AlertMode.NONE);
+          setAlert(false);
+          history.goBack();
         }}
       />
       )}
