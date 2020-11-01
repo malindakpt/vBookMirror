@@ -4,6 +4,8 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState, useContext } from 'react';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import StopIcon from '@material-ui/icons/Stop';
 import { AppContext } from '../../../../App';
 import {
   addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
@@ -16,6 +18,17 @@ import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
+
+export enum JOIN_MODES {
+  ONLY_AKSHARA,
+  AKSHARA_LK_AND_APP,
+  ONLY_APP
+}
+export const joinModes = [
+  [JOIN_MODES.ONLY_AKSHARA, 'Web Only'],
+  [JOIN_MODES.AKSHARA_LK_AND_APP, 'Web or Installed App'],
+  [JOIN_MODES.ONLY_APP, 'Installed App Only'],
+];
 
 const fresh: ILiveLesson = {
   id: '',
@@ -50,6 +63,7 @@ export const AddLiveLesson = () => {
   const [zoomMeetingId, setZoomMeetingId] = useState<string>('');
   const [zoomPwd, setZoomPwd] = useState<string>('');
   const [zoomMaxCount, setZoomMaxCount] = useState<number>(100);
+  const [zoomJoinMode, setZoomJoinMode] = useState<number>(0);
 
   const disabled = busy || !selectedCourse;
 
@@ -68,6 +82,7 @@ export const AddLiveLesson = () => {
           setZoomMeetingId(teacher.zoomMeetingId ?? '');
           setZoomPwd(teacher.zoomPwd ?? '');
           setZoomMaxCount(teacher.zoomMaxCount ?? 100);
+          setZoomJoinMode(teacher.zoomJoinMode ?? JOIN_MODES.AKSHARA_LK_AND_APP);
           setTeacher(teacher);
         }
       });
@@ -126,7 +141,7 @@ export const AddLiveLesson = () => {
     setBusy(true);
     if (teacher && email) {
       updateDoc(Entity.TEACHERS, teacher.id, {
-        ...teacher, zoomMeetingId, zoomPwd, zoomMaxCount,
+        ...teacher, zoomMeetingId, zoomPwd, zoomMaxCount, zoomJoinMode,
       }).then((data) => {
         showSnackbar('Changed Credentials');
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
@@ -138,7 +153,7 @@ export const AddLiveLesson = () => {
 
   const startMeeting = (less: ILiveLesson) => {
     setBusy(true);
-    if (teacher && email && editMode) {
+    if (teacher && email) {
       const lesId = teacher?.zoomRunningLessonId === less.id ? '' : less.id;
       updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, zoomRunningLessonId: lesId }).then((data) => {
         showSnackbar(`${less.topic} ${lesId ? 'Started' : 'Stopped'}`);
@@ -165,28 +180,6 @@ export const AddLiveLesson = () => {
       }
     }
   };
-
-  // const deleteLesson = (lesson: ILiveLesson) => {
-  //   if (selectedCourse) {
-  //     if ((lesson.dateTime + 24 * 60 * 60 * 1000) < (new Date().getTime())) {
-  //       setBusy(true);
-  //       deleteDoc(Entity.LESSONS_LIVE, lesson.id).then(() => {
-  //         setBusy(true);
-  //         getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, {
-  //           ownerEmail: email,
-  //           courseId: selectedCourse.id,
-  //         })
-  //           .then((data) => {
-  //             data && setLiveLessons(data);
-  //             setBusy(false);
-  //             showSnackbar('Lesson Deleted');
-  //           });
-  //       });
-  //     } else {
-  //       showSnackbar('You can delete lessons after 24 hours of start time');
-  //     }
-  //   }
-  // };
 
   return (
     <>
@@ -373,22 +366,40 @@ export const AddLiveLesson = () => {
               value={zoomMaxCount}
               onChange={(e) => setZoomMaxCount(Number(e.target.value))}
             />
+
+            <FormControl className={classes.input}>
+              <InputLabel
+                id="demo-simple-select-label"
+                className="fc1"
+              >
+                Join Mode
+              </InputLabel>
+              <Select
+                className={`${classes.input} fc1`}
+                labelId="label1"
+                id="id1"
+                value={zoomJoinMode}
+                disabled={busy}
+                onChange={(e) => setZoomJoinMode(e.target.value as number)}
+              >
+                {joinModes.map((mode) => (
+                  <MenuItem
+                    value={mode[0]}
+                    key={mode[0]}
+                  >
+                    {mode[1]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Button
-              variant="contained"
-              color="primary"
-              onClick={() => startMeeting(liveLesson)}
-              disabled={busy || !editMode}
-            >
-              {teacher?.zoomRunningLessonId === liveLesson.id ? 'Finish Meeting' : 'Start Meeting'}
-            </Button>
-            <div />
-            <Button
-              variant="contained"
+              // variant="contained"
               color="primary"
               onClick={saveAuth}
               disabled={busy}
+              style={{ gridColumn: '2/4' }}
             >
-              Save Zoom Config
+              Change Zoom Config
             </Button>
           </div>
           <List
@@ -405,19 +416,30 @@ export const AddLiveLesson = () => {
                     onClick={() => { setEditMode(true); editLesson(liveLesson); }}
                   >
 
-                    <FileCopyIcon onClick={(e) => {
-                      // deleteLesson(ses); e.stopPropagation();
-                      copyLessonURL(liveLesson.id); e.stopPropagation();
-                    }}
-                    />
+                    {teacher?.zoomRunningLessonId === liveLesson.id ? (
+                      <StopIcon onClick={(e) => {
+                        startMeeting(liveLesson); e.stopPropagation();
+                      }}
+                      />
+                      ) : (
+                        <PlayCircleOutlineIcon
+                          className={classes.play}
+                          onClick={(e) => {
+                            startMeeting(liveLesson); e.stopPropagation();
+                          }}
+                        />
+                      )}
+
                     <div
                       className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
                       style={{ fontSize: '11px', width: '100%' }}
                     >
-
                       {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
                     </div>
-
+                    <FileCopyIcon onClick={(e) => {
+                      copyLessonURL(liveLesson.id); e.stopPropagation();
+                    }}
+                    />
                   </ListItem>
                   <Divider />
                 </div>

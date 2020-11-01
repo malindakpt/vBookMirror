@@ -36,8 +36,6 @@
     top: 0px;
     height: 100%;
     width: 100%;
-
-  
   }
 
 
@@ -76,12 +74,14 @@
   }
 
   button {
-    float: right;
-    background: #3fb56e;
+    background: #413fb5;
     color: #fff;
     border: none;
     padding: 4px 20px;
     cursor: pointer;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: auto;
+    display: block;
+    margin-top: 50px;
   }
 }

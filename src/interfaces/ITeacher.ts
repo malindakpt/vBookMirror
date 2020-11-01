@@ -11,4 +11,5 @@ export interface ITeacher {
     zoomPwd: string;
     zoomMaxCount: number;
     zoomRunningLessonId: string;
+    zoomJoinMode: number;
 }

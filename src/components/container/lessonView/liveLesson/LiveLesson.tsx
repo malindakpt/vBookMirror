@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import { Button } from '@material-ui/core';
 import { AppContext } from '../../../../App';
 import classes from './LiveLesson.module.scss';
 import Config from '../../../../data/Config';
@@ -14,6 +15,7 @@ import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
 import { getHashFromString, promptPayment, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
+import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -73,7 +75,7 @@ export const LiveLesson: React.FC = () => {
                   () => {
                     setTimeout(() => {
                       window.location.reload();
-                    }, 10000);
+                    }, Config.realoadTimeoutAferSuccessPay);
                   }, showSnackbar);
               }
             });
@@ -96,6 +98,54 @@ export const LiveLesson: React.FC = () => {
     // eslint-disable-next-line
   }, []);
 
+  const getButton = (teacher: ITeacher) => (
+    <Button onClick={() => {
+      window.open(`https://us04web.zoom.us/j/${teacher.zoomMeetingId}?pwd=${teacher.zoomPwd}`, '_blank');
+    }}
+    >
+      JOIN WITH ZOOM APP
+    </Button>
+  );
+
+  const getIframe = (teacher: ITeacher) => (
+    <>
+      <div
+        className={`${classes.fsButton} ${isFullScr ? classes.exit : ''}`}
+      >
+        {isFullScr ? <FullscreenExitIcon onClick={() => setFullScr(false)} />
+          : <FullscreenIcon onClick={() => setFullScr(true)} />}
+      </div>
+      <iframe
+        className={isFullScr ? classes.fullScr : ''}
+        src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${
+          getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+        name="iframe_a"
+        height="300px"
+        width="100%"
+        allow="camera *;microphone *"
+        title="Live Lessons"
+      />
+    </>
+  );
+
+  const getDisplay = (teacher: ITeacher) => {
+    switch (teacher.zoomJoinMode) {
+      case JOIN_MODES.ONLY_AKSHARA:
+        return getIframe(teacher);
+      case JOIN_MODES.AKSHARA_LK_AND_APP:
+        return (
+          <>
+            {getIframe(teacher)}
+            {getButton(teacher)}
+          </>
+        );
+      case JOIN_MODES.ONLY_APP:
+        return getButton(teacher);
+      default:
+        return getButton(teacher);
+    }
+  };
+
   return (
     <div className={classes.root}>
       {freeOrPurchased && lesson && (
@@ -106,25 +156,9 @@ export const LiveLesson: React.FC = () => {
         <div className={classes.desc}>
           {lesson?.description}
         </div>
-        {teacher && teacher.zoomRunningLessonId === lesson.id ? (
-          <>
-            <div
-              className={`${classes.fsButton} ${isFullScr ? classes.exit : ''}`}
-            >
-              {isFullScr ? <FullscreenExitIcon onClick={() => setFullScr(false)} /> : <FullscreenIcon onClick={() => setFullScr(true)} />}
-            </div>
-            <iframe
-              className={isFullScr ? classes.fullScr : ''}
-              src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${
-                getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
-              name="iframe_a"
-              height="300px"
-              width="100%"
-              allow="camera *;microphone *"
-              title="Live Lessons"
-            />
-          </>
-        ) : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
+        {teacher && teacher.zoomRunningLessonId === lesson.id
+          ? getDisplay(teacher)
+          : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
         {lesson.attachments && (
         <div className={classes.attachments}>
