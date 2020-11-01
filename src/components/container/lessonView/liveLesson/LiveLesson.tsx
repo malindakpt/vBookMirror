@@ -30,7 +30,7 @@ export const LiveLesson: React.FC = () => {
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [isFullScr, setFullScr] = useState<boolean>(false);
   // TODO: revert this
-  const [micWarn, setMicWarn] = useState<boolean>(false);
+  const [copyLessonWarn, setCopyLessonWarn] = useState<boolean>(false);
   const [showInView, setShowInView] = useState<boolean>(false);
 
   const sendStartAction = () => {
@@ -97,6 +97,21 @@ export const LiveLesson: React.FC = () => {
     });
   };
 
+  const copyName = () => {
+    if (email) {
+      const { fullName } = Util;
+      const copyText: any = document.getElementById('copyInput');
+
+      if (copyText) {
+        copyText.value = fullName;
+        copyText.select();
+        // copyText.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        showSnackbar(`Your name '${fullName}' is copied. Paste it when login to zoom`);
+      }
+    }
+  };
+
   useEffect(() => {
     processVideo();
     const glob: any = window;
@@ -109,7 +124,8 @@ export const LiveLesson: React.FC = () => {
 
   const getAppButton = (teacher: ITeacher) => (
     <Button onClick={() => {
-      window.open(`https://us04web.zoom.us/j/${teacher.zoomMeetingId}?pwd=${teacher.zoomPwd}`, '_blank');
+      setCopyLessonWarn(true);
+      copyName();
     }}
     >
       JOIN WITH ZOOM APP
@@ -212,16 +228,22 @@ export const LiveLesson: React.FC = () => {
         )}
       </div>
       ) }
-      {micWarn && (
+      <input
+        type="text"
+        value=""
+        onChange={() => {}}
+        id="copyInput"
+        style={{ width: '1px', position: 'fixed', left: '-100px' }}
+      />
+      {copyLessonWarn && (
       <AlertDialog
-        type={AlertMode.LIVE}
+        type={AlertMode.COPY_NAME}
         onAccept={() => {
-          setMicWarn(false);
+          setCopyLessonWarn(false);
+          window.open(`https://us04web.zoom.us/j/${teacher?.zoomMeetingId}?pwd=${teacher?.zoomPwd}`, '_blank');
         }}
-
         onCancel={() => {
-          // setAccepted(false);
-          // setDisplayAlert(AlertMode.NONE);
+          setCopyLessonWarn(false);
         }}
       />
       )}

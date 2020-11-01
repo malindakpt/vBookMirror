@@ -5,20 +5,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { Util } from '../../../helper/util';
 
-const msgs = [
-  {
-    en: 'Per a payment you are allowed to watch this lesson for 2 times. Continue to watch, if you can manage to watch the full video now. Else please try again at any time when you can manage to watch full video.',
-    si: ' එක්  මුදල් ගෙවීමක් සඳහා මෙම පාඩම වාර 2ක්  නැරඹිය හැකිය. ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම් පමණක් ඉදිරියට යන්න. නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම වේලාවක උත්සහ කරන්න.',
-
-  },
-  {
-    en: 'Accept the microphone access from here(otherwise you will not here the voice of the teacher) and there after you can mute the microphone',
-    si: 'Microphone සක්‍රීය කිරීමට අවශ්‍ය වුවහොත්  එය සක්‍රිය කිරීමට ඉඩ දෙන්න(Allow Microphone)(නැතිනම් ඔබට ගුරුවරයාගේ හඬ ඇසෙන්නේ නැත ).  සම්බන්දතාව ගොඩනැගුනු පසුව Microphone විසන්ධි කල හැකිය.',
-  },
-];
 export enum AlertMode {
-  VIDEO, LIVE, NONE
+  VIDEO, LIVE, COPY_NAME
 }
 export interface Props {
   onAccept: () => void;
@@ -29,9 +19,25 @@ export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel, type }) => {
   const [open, setOpen] = React.useState(true);
 
   const handleClose = () => {
-    setOpen(false);
+    // setOpen(false);
     onCancel();
   };
+
+  const msgs = [
+    {
+      en: 'Per a payment you are allowed to watch this lesson for 2 times. Continue to watch, if you can manage to watch the full video now. Else please try again at any time when you can manage to watch full video.',
+      si: ' එක්  මුදල් ගෙවීමක් සඳහා මෙම පාඩම වාර 2ක්  නැරඹිය හැකිය. ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම් පමණක් ඉදිරියට යන්න. නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම වේලාවක උත්සහ කරන්න.',
+
+    },
+    {
+      en: 'Accept the microphone access from here(otherwise you will not here the voice of the teacher) and there after you can mute the microphone',
+      si: 'Microphone සක්‍රීය කිරීමට අවශ්‍ය වුවහොත්  එය සක්‍රිය කිරීමට ඉඩ දෙන්න(Allow Microphone)(නැතිනම් ඔබට ගුරුවරයාගේ හඬ ඇසෙන්නේ නැත ).  සම්බන්දතාව ගොඩනැගුනු පසුව Microphone විසන්ධි කල හැකිය.',
+    },
+    {
+      en: `Please use '${Util.fullName}' to connect to Zoom meeting. (Otherwise your payment will not be validated)`,
+      si: `'${Util.fullName}' යන  නමම  Zoom වෙත connect වීමටද භාවිතා කරන්න. නැතහොත් ඔබගේ මුදල් ගෙවීම වලංගු වන්නේ නැත .`,
+    },
+  ];
 
   return (
     <div>

@@ -163,7 +163,7 @@ export const AddLiveLesson = () => {
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
         if (lesId) {
-          history.push('/liveStat/'+lesId);
+          history.push(`/liveStat/${lesId}`);
           window.open(`https://us04web.zoom.us/j/${zoomMeetingId}?pwd=${zoomPwd}`, '_blank');
         }
       });
@@ -337,7 +337,7 @@ export const AddLiveLesson = () => {
               value=""
               onChange={() => {}}
               id="copyInput"
-              style={{ width: '1px' }}
+              style={{ width: '1px', position: 'fixed', left: '-100px' }}
             />
           </div>
 
