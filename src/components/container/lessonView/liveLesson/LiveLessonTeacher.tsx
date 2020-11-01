@@ -63,8 +63,6 @@ export const LiveLessonTeacher: React.FC = () => {
           // eslint-disable-next-line no-new
           !userPayment && new Notification('Invalid user detected', { body: uId, icon: logo });
         }
-        // eslint-disable-next-line no-new
-        new Notification('Invalid user detected', { body: uId, icon: logo });
       } else if (atts.type === 'LEAVE') {
         const luser = atts.data;
         setUserNames((prev) => {

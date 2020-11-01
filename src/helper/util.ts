@@ -87,7 +87,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
   paymentJS.onDismissed = function onDismissed() {
     if (Config.isProd) {
       console.log('Payment Dismissed');
-      showSnackbar('ඔබගේ මුදල් ගෙවීම සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+      showSnackbar('ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
       onComplete(lesson.id);
     } else {
       console.log('Succeed');
@@ -98,13 +98,13 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       onComplete(lesson.id);
       /// ////////FAKE UPDATE END///////////////
 
-      showSnackbar('DEV: ඔබගේ මුදල් ගෙවීම සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+      showSnackbar('DEV: ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න.. Payment is processing. Please refresh the page after 2 minutes');
     }
   };
 
   paymentJS.onCompleted = function onCompleted() {
     console.log('Payment Succeed');
-    showSnackbar('ඔබගේ මුදල් ගෙවීම සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+    showSnackbar('ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
     onComplete(lesson.id);
   };
 
