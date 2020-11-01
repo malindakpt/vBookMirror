@@ -343,7 +343,7 @@ export const AddLiveLesson = () => {
             <TextField
               className={classes.input2}
               id="mid"
-              label="Zoom Meeting Id"
+              label="Meeting Id"
               disabled={!teacher}
               value={zoomMeetingId}
               onChange={(e) => setZoomMeetingId(e.target.value)}
