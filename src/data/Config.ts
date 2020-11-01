@@ -13,8 +13,9 @@ const APP_CONFIG_DEV = {
   realoadTimeoutAferSuccessPay: 10000,
   allowedWatchCount: 2,
   isProd: false,
-  // zoomURL: 'http://127.0.0.1:8887',
-  zoomURL: 'https://smsm-54fa3.web.app',
+  zoomURL: 'http://127.0.0.1:8887',
+  paymentDisabled: true,
+  // zoomURL: 'https://smsm-54fa3.web.app',
 };
 
 const APP_CONFIG_PROD = {
@@ -32,6 +33,7 @@ const APP_CONFIG_PROD = {
   allowedWatchCount: 2,
   isProd: true,
   zoomURL: 'https://smsm-54fa3.web.app',
+  paymentDisabled: true,
 };
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;
