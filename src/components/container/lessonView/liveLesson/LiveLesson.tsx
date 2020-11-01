@@ -183,7 +183,7 @@ export const LiveLesson: React.FC = () => {
     switch (teacher.zoomJoinMode) {
       case JOIN_MODES.ONLY_AKSHARA:
         return getInViewButton(teacher);
-      case JOIN_MODES.AKSHARA_LK_AND_APP:
+      case JOIN_MODES.AKSHARA_AND_APP:
         return (
           <>
             {getInViewButton(teacher)}

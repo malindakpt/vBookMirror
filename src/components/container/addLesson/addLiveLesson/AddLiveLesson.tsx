@@ -22,14 +22,15 @@ import classes from './AddLiveLesson.module.scss';
 import Config from '../../../../data/Config';
 
 export enum JOIN_MODES {
+  ONLY_APP,
   ONLY_AKSHARA,
-  AKSHARA_LK_AND_APP,
-  ONLY_APP
+  AKSHARA_AND_APP,
+
 }
 export const joinModes = [
+  [JOIN_MODES.ONLY_APP, 'App Only'],
   [JOIN_MODES.ONLY_AKSHARA, 'Web Only'],
-  [JOIN_MODES.AKSHARA_LK_AND_APP, 'Web or Installed App'],
-  [JOIN_MODES.ONLY_APP, 'Installed App Only'],
+  [JOIN_MODES.AKSHARA_AND_APP, 'Web or App'],
 ];
 
 const fresh: ILiveLesson = {
@@ -66,7 +67,7 @@ export const AddLiveLesson = () => {
   const [zoomMeetingId, setZoomMeetingId] = useState<string>('');
   const [zoomPwd, setZoomPwd] = useState<string>('');
   const [zoomMaxCount, setZoomMaxCount] = useState<number>(100);
-  const [zoomJoinMode, setZoomJoinMode] = useState<number>(0);
+  const [zoomJoinMode, setZoomJoinMode] = useState<number>(JOIN_MODES.ONLY_APP);
 
   const disabled = busy || !selectedCourse;
 
@@ -85,7 +86,7 @@ export const AddLiveLesson = () => {
           setZoomMeetingId(teacher.zoomMeetingId ?? '');
           setZoomPwd(teacher.zoomPwd ?? '');
           setZoomMaxCount(teacher.zoomMaxCount ?? 100);
-          setZoomJoinMode(teacher.zoomJoinMode ?? JOIN_MODES.AKSHARA_LK_AND_APP);
+          setZoomJoinMode(teacher.zoomJoinMode ?? JOIN_MODES.ONLY_APP);
           setTeacher(teacher);
         }
       });
@@ -401,7 +402,7 @@ export const AddLiveLesson = () => {
               color="primary"
               onClick={saveAuth}
               disabled={busy}
-              style={{ gridColumn: '2/4' }}
+              style={{ gridColumn: '2/4', color: 'white' }}
             >
               Change Zoom Config
             </Button>
