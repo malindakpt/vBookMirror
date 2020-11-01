@@ -25,6 +25,7 @@ import { Intro } from '../container/intro/Intro';
 import { AddLiveLesson } from '../container/addLesson/addLiveLesson/AddLiveLesson';
 import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
 import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
+import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLessonTeacher';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -48,6 +49,7 @@ export const commonRoutes: routeConfig = [
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddVideoLesson, 'Video Lessons', true],
   ['/addLive', AddLiveLesson, 'Live Lessons', true],
+  ['/liveStat/:lessonId', LiveLessonTeacher, 'Live Statistics', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 

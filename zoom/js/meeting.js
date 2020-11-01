@@ -61,43 +61,52 @@ function getStringFromHash (s) {
   // ZoomMtg.setZoomJSLib("https://source.zoom.us/1.8.1/lib", "/av"); // CDN version defaul
   if (meetingConfig.china)
     ZoomMtg.setZoomJSLib("https://jssdk.zoomus.cn/1.8.1/lib", "/av"); // china cdn option
-  ZoomMtg.preLoadWasm();
-  ZoomMtg.prepareJssdk();
-  function beginJoin(signature) {
-    ZoomMtg.init({
-      leaveUrl: meetingConfig.leaveUrl,
-      webEndpoint: meetingConfig.webEndpoint,
-      success: function () {
-        $.i18n.reload(meetingConfig.lang);
-        ZoomMtg.join({
-          meetingNumber: meetingConfig.meetingNumber,
-          userName: meetingConfig.userName,
-          signature: signature,
-          apiKey: meetingConfig.apiKey,
-          userEmail: meetingConfig.userEmail,
-          passWord: meetingConfig.passWord,
-          success: function (res) {
-            console.log("join meeting success");
-            console.log("get attendeelist");
-            ZoomMtg.getAttendeeslist({});
-            ZoomMtg.getCurrentUser({
-              success: function (res) {
-                console.log("success getCurrentUser", res.result.currentUser);
-              },
-            });
-          },
-          error: function (res) {
-            console.log(res);
-          },
-        });
-      },
-      error: function (res) {
-        console.log(res);
-      },
-    });
+    ZoomMtg.preLoadWasm();
+    ZoomMtg.prepareJssdk();
+    function beginJoin(signature) {
+      ZoomMtg.init({
+        leaveUrl: meetingConfig.leaveUrl,
+        webEndpoint: meetingConfig.webEndpoint,
+        success: function () {
+          $.i18n.reload(meetingConfig.lang);
+          ZoomMtg.join({
+            meetingNumber: meetingConfig.meetingNumber,
+            userName: meetingConfig.userName,
+            signature: signature,
+            apiKey: meetingConfig.apiKey,
+            userEmail: meetingConfig.userEmail,
+            passWord: meetingConfig.passWord,
+            success: function (res) {
+              console.log("join meeting success");
+              console.log("get attendeelist");
+              ZoomMtg.getAttendeeslist({
+                success: function (res) {
+                  window.parent.postMessage({type: 'CONNECT', data: res} , '*');
+                },
+              });
+              ZoomMtg.getCurrentUser({
+                success: function (res) {
+                  console.log("success getCurrentUser", res.result.currentUser);
+                },
+              });
+            },
+            error: function (res) {
+              console.log(res);
+            },
+          });
+        },
+        error: function (res) {
+          console.log(res);
+        },
+      });
 
     ZoomMtg.inMeetingServiceListener('onUserJoin', function (data) {
-      console.log('inMeetingServiceListener onUserJoin', data);
+      
+      console.log('mkpt inMeetingServiceListener onUserJoin', data);
+      // window.parent.postMessage({ message: 'getAppData', value: {type: 'JOIN', data: data} }, '*');
+      window.parent.postMessage({type: 'JOIN', data: data} , '*');
+
+     
       var ele1 = document.getElementsByClassName('meeting-info-icon__icon');
       var ele2 = document.getElementsByClassName('e2e-encryption-indicator__encrypt-indicator e2e-encryption-indicator__encrypt-indicator--2');
       
@@ -111,6 +120,7 @@ function getStringFromHash (s) {
   
     ZoomMtg.inMeetingServiceListener('onUserLeave', function (data) {
       console.log('inMeetingServiceListener onUserLeave', data);
+      window.parent.postMessage({type: 'LEAVE', data: data} , '*');
     });
   
     ZoomMtg.inMeetingServiceListener('onUserIsInWaitingRoom', function (data) {

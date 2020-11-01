@@ -6,6 +6,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
+import { useHistory } from 'react-router-dom';
 import { AppContext } from '../../../../App';
 import {
   addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
@@ -46,6 +47,7 @@ const fresh: ILiveLesson = {
   subCount: 0,
 };
 export const AddLiveLesson = () => {
+  const history = useHistory();
   const { showSnackbar, email } = useContext(AppContext);
   const [editMode, setEditMode] = useState<boolean>(false);
 
@@ -161,6 +163,7 @@ export const AddLiveLesson = () => {
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
         if (lesId) {
+          history.push('/liveStat/'+lesId);
           window.open(`https://us04web.zoom.us/j/${zoomMeetingId}?pwd=${zoomPwd}`, '_blank');
         }
       });

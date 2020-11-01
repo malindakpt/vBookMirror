@@ -28,6 +28,18 @@
           console.log("simd check", res);
         });
     </script>
+
+<script>
+    $( document ).ready(function() { 
+        window.addEventListener("message", (e)=> {
+            if (e.data.type === 'START'){
+                document.getElementById('join_meeting').click();
+            }else if (e.data.type === 'STOP'){
+                ZoomMtg.leaveMeeting({});
+            }
+        }, false);
+    });
+</script>
 </body>
 
 </html>
