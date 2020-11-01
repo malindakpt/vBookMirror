@@ -94,8 +94,16 @@ export const AddTeacher = () => {
           className={classes.input}
           type="number"
           id="commission"
-          label="Commission Rate"
+          label="Video Commission Rate"
           onChange={(e) => setTeacherProps({ commission: Number(e.target.value) })}
+        />
+
+        <TextField
+          className={classes.input}
+          type="number"
+          id="commissionLive"
+          label="Live Commission Rate"
+          onChange={(e) => setTeacherProps({ commissionLive: Number(e.target.value) })}
         />
 
         <Button

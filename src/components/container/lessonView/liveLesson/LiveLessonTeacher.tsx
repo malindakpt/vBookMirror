@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react';
+import { Button } from '@material-ui/core';
 import { AppContext } from '../../../../App';
 import classes from './LiveLesson.module.scss';
 import Config from '../../../../data/Config';
@@ -22,7 +23,7 @@ export const LiveLessonTeacher: React.FC = () => {
   const { lessonId } = useParams<any>();
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [lesson, setLesson] = useState<ILiveLesson>();
-  const [showInView, setShowInView] = useState<boolean>(false);
+  const [freeLesson, setFreeLesson] = useState<boolean>(false);
   const [userNames, setUserNames] = useState<{userName: string}[]>([]);
   const [paymentForLesson, setPaymentsForLesson] = useState<IPayment[]>([]);
 
@@ -45,20 +46,30 @@ export const LiveLessonTeacher: React.FC = () => {
     window.addEventListener('message', (e) => {
       const atts = e.data;
       if (atts.type === 'CONNECT') {
-        const mems = atts?.data?.result?.attendeesList;
-        if (mems) {
-          setUserNames(mems);
-        }
+        // const mems = atts?.data?.result?.attendeesList;
+        // if (mems) {
+        //   console.log('mkpt3 CONNECT', atts.data);
+        //   setUserNames(mems);
+        // }
       } else if (atts.type === 'JOIN') {
         setUserNames((prev) => {
           const clone = [...prev, atts.data];
           return clone;
         });
+        console.log('mkpt3 JOIN', atts.data);
+        const uId = atts.data.userName;
+
+        if (lesson && (lesson?.price > 0)) {
+          const userPayment = paymentForLesson.find((pay) => pay.ownerEmail === uId);
+          // eslint-disable-next-line no-new
+          !userPayment && new Notification('Invalid user detected', { body: uId, icon: logo });
+        }
         // eslint-disable-next-line no-new
-        new Notification('Invalid user detected', { body: atts.data.userName, icon: logo });
+        new Notification('Invalid user detected', { body: uId, icon: logo });
       } else if (atts.type === 'LEAVE') {
+        const luser = atts.data;
         setUserNames((prev) => {
-          const clone = [...prev, atts.data];
+          const clone = [...prev.filter((user) => user.userName !== luser.userName)];
           return clone;
         });
       }
@@ -79,6 +90,8 @@ export const LiveLessonTeacher: React.FC = () => {
   const processVideo = async () => {
     getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
       if (!lesson) return;
+
+      setFreeLesson(lesson.price === 0);
 
       getDocWithId<ITeacher>(Entity.TEACHERS, lesson.ownerEmail).then((teacher) => {
         teacher && setTeacher(teacher);
@@ -139,6 +152,12 @@ export const LiveLessonTeacher: React.FC = () => {
             {userNames.map((user) => <tr>{user.userName}</tr>)}
           </table>
         </div>
+        <Button onClick={() => {
+          stopLive();
+        }}
+        >
+          STOP CONNECTION
+        </Button>
         {teacher && teacher.zoomRunningLessonId === lesson.id
           ? getIframe(teacher)
           : <div className={classes.notStarted}>Meeting Not Started Yet</div>}

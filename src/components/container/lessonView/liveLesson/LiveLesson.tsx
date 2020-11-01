@@ -29,20 +29,26 @@ export const LiveLesson: React.FC = () => {
   const [lesson, setLesson] = useState<ILiveLesson>();
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [isFullScr, setFullScr] = useState<boolean>(false);
-  const [micWarn, setMicWarn] = useState<boolean>(true);
+  // TODO: revert this
+  const [micWarn, setMicWarn] = useState<boolean>(false);
+  const [showInView, setShowInView] = useState<boolean>(false);
 
   const sendStartAction = () => {
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
-      ele[0].contentWindow?.postMessage({ message: 'getAppData', value: 'asd' }, '*');
+      ele[0].contentWindow?.postMessage({ type: 'START', value: '' }, '*');
     }
   };
 
-  const startVideoRendering = (lesson: ILiveLesson) => {
-    setLesson(lesson);
-    setFreeOrPurchased(true);
-    sendStartAction();
+  const stopLive = () => {
+    const ele = document.getElementsByTagName('iframe');
+    if (ele && ele.length > 0 && ele[0]) {
+      ele[0].contentWindow?.postMessage({ type: 'STOP', value: '' }, '*');
+    }
+  };
 
+  const startVideoRendering = () => {
+    sendStartAction();
     const glob: any = window;
 
     glob.timer = setInterval(() => {
@@ -69,7 +75,8 @@ export const LiveLesson: React.FC = () => {
               { lessonId, ownerEmail: email }).then((data) => {
             // TODO:  Check refundable lessons here
               if (data && data.length > 0) {
-                startVideoRendering(lesson);
+                setLesson(lesson);
+                setFreeOrPurchased(true);
               } else {
                 teacher && promptPayment(email, teacher, lesson, true,
                   () => {
@@ -83,7 +90,8 @@ export const LiveLesson: React.FC = () => {
             showSnackbar('Please login with your gmail address');
           }
         } else {
-          startVideoRendering(lesson);
+          setLesson(lesson);
+          setFreeOrPurchased(true);
         }
       });
     });
@@ -93,12 +101,13 @@ export const LiveLesson: React.FC = () => {
     processVideo();
     const glob: any = window;
     return () => {
+      stopLive();
       clearInterval(glob.timer);
     };
     // eslint-disable-next-line
   }, []);
 
-  const getButton = (teacher: ITeacher) => (
+  const getAppButton = (teacher: ITeacher) => (
     <Button onClick={() => {
       window.open(`https://us04web.zoom.us/j/${teacher.zoomMeetingId}?pwd=${teacher.zoomPwd}`, '_blank');
     }}
@@ -128,21 +137,47 @@ export const LiveLesson: React.FC = () => {
     </>
   );
 
+  const getInViewButton = (teacher: ITeacher) => (
+    showInView ? (
+      <>
+        {getIframe(teacher)}
+        <Button onClick={() => {
+          setShowInView(true);
+          stopLive();
+        }}
+        >
+          DISCONNECT FROM LESSON
+        </Button>
+      </>
+    ) : (
+      <>
+        <Button onClick={() => {
+          setShowInView(true);
+          startVideoRendering();
+        }}
+        >
+          CONNECT TO LESSON
+        </Button>
+      </>
+
+    )
+  );
+
   const getDisplay = (teacher: ITeacher) => {
     switch (teacher.zoomJoinMode) {
       case JOIN_MODES.ONLY_AKSHARA:
-        return getIframe(teacher);
+        return getInViewButton(teacher);
       case JOIN_MODES.AKSHARA_LK_AND_APP:
         return (
           <>
-            {getIframe(teacher)}
-            {getButton(teacher)}
+            {getInViewButton(teacher)}
+            {getAppButton(teacher)}
           </>
         );
       case JOIN_MODES.ONLY_APP:
-        return getButton(teacher);
+        return getAppButton(teacher);
       default:
-        return getButton(teacher);
+        return getAppButton(teacher);
     }
   };
 
