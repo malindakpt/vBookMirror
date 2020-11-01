@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const APP_CONFIG_DEV = {
   apiKey: 'AIzaSyC5pq-lAQWmVEVmrI0iwQ2bUJvSKp4tXaY',
   authDomain: 'smsm-54fa3.firebaseapp.com',
