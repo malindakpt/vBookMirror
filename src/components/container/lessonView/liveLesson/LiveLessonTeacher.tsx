@@ -41,7 +41,7 @@ export const LiveLessonTeacher: React.FC = () => {
 
   const [users, setUsers] = useState< StudentConnection >({});
   const [connected, setConnected] = useState<boolean>(false);
-  const [reloadText, setReloadText] = useState<string>('Reload');
+  // const [reloadText, setReloadText] = useState<string>('Reload');
   const [sentStartCommands, setSentStartCommands] = useState<number>(0);
   const [connectingText, setConnectingText] = useState<string>('Connecting to meeting...');
 
@@ -55,7 +55,7 @@ export const LiveLessonTeacher: React.FC = () => {
 
   const stopLive = () => {
     console.log('Stopping connection');
-    setReloadText('Disconnecting...');
+    // setReloadText('Disconnecting...');
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
       ele[0].contentWindow?.postMessage({ type: 'STOP', value: '' }, '*');
@@ -79,7 +79,7 @@ export const LiveLessonTeacher: React.FC = () => {
     setUsers(userMap);
   };
 
-  const startVideoRendering = (lesson: ILiveLesson, userNames: ZoomUser[]) => {
+  const startVideoRendering = (lesson: ILiveLesson, userNames: ZoomUser[], paymentForLesson: IPayment[]) => {
     sendStartAction();
     const glob: any = window;
     window.addEventListener('message', (e) => {
@@ -96,7 +96,7 @@ export const LiveLessonTeacher: React.FC = () => {
 
         const zUser: ZoomUser = atts.data;
         if (lesson && (lesson?.price > 0)) {
-          const userPayment = paymentForLesson.find((pay) => pay.ownerEmail === zUser.userName);
+          const userPayment = paymentForLesson.find((pay) => pay.ownerName === zUser.userName);
           if (!userPayment) {
             setNonPaid((prev) => {
               const clone = [...prev, zUser];
@@ -131,13 +131,13 @@ export const LiveLessonTeacher: React.FC = () => {
       }
     }, false);
 
-    glob.timer = setInterval(() => {
+    glob.startTimer = setInterval(() => {
       console.log('send start mkpt');
       sendStartAction();
     }, 1000);
 
     setTimeout(() => {
-      clearInterval(glob.timer);
+      clearInterval(glob.startTimer);
       if (!glob.count) {
         glob.removeEventListener('beforeunload', glob.beforeunload);
         setConnectingText('Could not connect to meeting. Reloading...');
@@ -158,7 +158,7 @@ export const LiveLessonTeacher: React.FC = () => {
             { lessonId }).then((data) => {
             setLesson(lesson);
             setPaymentsForLesson(data);
-            startVideoRendering(lesson, userNames);
+            startVideoRendering(lesson, userNames, data);
           });
         } else {
           showSnackbar('Please login with your gmail address');
@@ -216,14 +216,14 @@ export const LiveLessonTeacher: React.FC = () => {
           {lesson?.description}
         </div>
 
-        {connected && (
+        {/* {connected && (
         <Button onClick={() => {
           stopLive();
         }}
         >
           {reloadText}
         </Button>
-        )}
+        )} */}
         {/* {connected && (
         <Button onClick={() => {
           stopLive();
@@ -255,6 +255,9 @@ export const LiveLessonTeacher: React.FC = () => {
                   </tr>
                 ))
               }
+              <br />
+              <br />
+              <h2>All Payments</h2>
               {paymentForLesson.sort((a, b) => (users[a.ownerName]?.count ?? 0) - (users[b.ownerName]?.count ?? 0)).map((pay) => (
                 <tr key={pay.id}>
                   <td>{pay.ownerEmail}</td>

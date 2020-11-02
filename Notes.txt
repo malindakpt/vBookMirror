@@ -3,3 +3,6 @@ Commission calcualte to student
 Open Stat page from live lesson view
 Remove on before unload when it tried to refresh itself
 Minimum payment validation for lesson changes
+
+
+link to start meeting is invalid from teacher

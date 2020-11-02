@@ -104,7 +104,7 @@ export const Course: React.FC = () => {
   return (
     <div className="container">
       {
-        liveLessons?.filter((le) => le.dateTime > now).sort(
+        liveLessons?.filter((le) => ((le.dateTime + le.duration * 3600000) > now)).sort(
           (a, b) => a.dateTime - b.dateTime,
         ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;

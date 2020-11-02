@@ -166,7 +166,7 @@ export const AddLiveLesson = () => {
         setBusy(false);
         if (lesId) {
           history.push(`/liveStat/${lesId}`);
-          window.open(`https://us04web.zoom.us/j/${zoomMeetingId}?pwd=${zoomPwd}`, '_blank');
+          // window.open(`https://us04web.zoom.us/j/${zoomMeetingId}?pwd=${zoomPwd}`, '_blank');
         }
       });
     }
