@@ -7,6 +7,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
 import { useHistory } from 'react-router-dom';
+import InputIcon from '@material-ui/icons/Input';
 import { AppContext } from '../../../../App';
 import {
   addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
@@ -217,6 +218,10 @@ export const AddLiveLesson = () => {
         </div>
         <FileCopyIcon onClick={(e) => {
           copyLessonURL(liveLesson.id); e.stopPropagation();
+        }}
+        />
+        <InputIcon onClick={(e) => {
+          history.push(`/liveStat/${liveLesson.id}`); e.stopPropagation();
         }}
         />
       </ListItem>

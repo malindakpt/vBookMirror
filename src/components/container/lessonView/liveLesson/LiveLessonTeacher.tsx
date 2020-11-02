@@ -54,14 +54,15 @@ export const LiveLessonTeacher: React.FC = () => {
   };
 
   const stopLive = () => {
+    console.log('Stopping connection');
     setReloadText('Disconnecting...');
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
       ele[0].contentWindow?.postMessage({ type: 'STOP', value: '' }, '*');
     }
-    setTimeout(() => {
-      window.location.reload();
-    }, 3000);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 3000);
   };
 
   const updateNewStudents = (zUsers: ZoomUser[]) => {
@@ -182,6 +183,7 @@ export const LiveLessonTeacher: React.FC = () => {
     processVideo();
 
     return () => {
+      glob.removeEventListener('beforeunload', glob.beforeunload);
       stopLive();
       clearInterval(glob.timer);
     };
