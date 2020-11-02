@@ -14,7 +14,7 @@ const APP_CONFIG_DEV = {
   allowedWatchCount: 2,
   isProd: false,
   zoomURL: 'http://127.0.0.1:8887',
-  paymentDisabled: true,
+  paymentDisabled: false,
   techPhone: '0771141194',
   // zoomURL: 'https://smsm-54fa3.web.app',
 };
@@ -34,7 +34,7 @@ const APP_CONFIG_PROD = {
   allowedWatchCount: 2,
   isProd: true,
   zoomURL: 'https://smsm-54fa3.web.app',
-  paymentDisabled: true,
+  paymentDisabled: false,
   techPhone: '0771141194',
 };
 
