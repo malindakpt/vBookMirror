@@ -1,6 +1,6 @@
 function getStringFromHash (s) {
   let res = '';
-  while (s.length > 0) {
+  while (s && s.length > 0) {
     const code = Number(s.substr(0, 3)) - 103;
     res = res + String.fromCharCode(code);
     s = s.substr(3);

@@ -24,7 +24,7 @@ interface ZoomUser{
   userName: string;
   userId: string;
 }
-
+const REPEAT_START_TIMES = 25;
 export const LiveLessonTeacher: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
 
@@ -42,9 +42,11 @@ export const LiveLessonTeacher: React.FC = () => {
   const [users, setUsers] = useState< StudentConnection >({});
   const [connected, setConnected] = useState<boolean>(false);
   const [reloadText, setReloadText] = useState<string>('Reload');
+  const [sentStartCommands, setSentStartCommands] = useState<number>(0);
   const [connectingText, setConnectingText] = useState<string>('Connecting to meeting...');
 
   const sendStartAction = () => {
+    setSentStartCommands((prev) => prev + 1);
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
       ele[0].contentWindow?.postMessage({ type: 'START', value: '' }, '*');
@@ -97,11 +99,18 @@ export const LiveLessonTeacher: React.FC = () => {
           if (!userPayment) {
             setNonPaid((prev) => {
               const clone = [...prev, zUser];
-              const teacherUsers = clone.filter((u) => u.userName === zUser.userName);
-              if (teacherUsers?.length > 2) {
+              // Handle users logged in with teacher's name
+              if (Util.fullName === zUser.userName) {
+                const userCountWithTeacherName = clone.filter((u) => u.userName === Util.fullName);
+                if (userCountWithTeacherName?.length > 2) {
+                  // eslint-disable-next-line no-new
+                  new Notification('Non Paid User Detected', { body: zUser.userName, icon: logo });
+                }
+              } else {
                 // eslint-disable-next-line no-new
-                new Notification('Not Paid User Detected', { body: zUser.userName, icon: logo });
+                new Notification('Non Paid User Detected', { body: zUser.userName, icon: logo });
               }
+
               return clone;
             });
           }
@@ -128,11 +137,12 @@ export const LiveLessonTeacher: React.FC = () => {
 
     setTimeout(() => {
       clearInterval(glob.timer);
-      if (glob.count === 0) {
+      if (!glob.count) {
+        glob.removeEventListener('beforeunload', glob.beforeunload);
         setConnectingText('Could not connect to meeting. Reloading...');
         window.location.reload();
       }
-    }, 15000);
+    }, REPEAT_START_TIMES * 1000);
   };
 
   const processVideo = async () => {
@@ -157,19 +167,20 @@ export const LiveLessonTeacher: React.FC = () => {
   };
 
   useEffect(() => {
+    const glob: any = window;
     Notification.requestPermission().then((result) => {
       console.log(result);
     });
-    window.addEventListener('beforeunload', (event) => {
-      console.log('Unmount');
+
+    glob.beforeunload = (event: any) => {
+      console.log('Unmounting...');
       stopLive();
-      // Cancel the event as stated by the standard.
-      // event.preventDefault();
-      // Older browsers supported custom message
       event.returnValue = '';
-    });
+    };
+
+    window.addEventListener('beforeunload', glob.beforeunload);
     processVideo();
-    const glob: any = window;
+
     return () => {
       stopLive();
       clearInterval(glob.timer);
@@ -192,8 +203,6 @@ export const LiveLessonTeacher: React.FC = () => {
     </>
   );
 
-  console.log('Usernames mkpt', userNames);
-
   return (
     <div className={classes.root}>
       { lesson && (
@@ -213,10 +222,22 @@ export const LiveLessonTeacher: React.FC = () => {
           {reloadText}
         </Button>
         )}
+        {/* {connected && (
+        <Button onClick={() => {
+          stopLive();
+          window.removeEventListener('beforeunload', (window as any).beforeunload);
+          setTimeout(() => {
+            window.close();
+          }, 1000);
+        }}
+        >
+          Close this window
+        </Button>
+        )} */}
+
           {!connected && (
           <Button>
-
-            {connectingText}
+            {`${connectingText} ${REPEAT_START_TIMES - sentStartCommands}`}
           </Button>
           )}
 

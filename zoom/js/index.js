@@ -1,15 +1,17 @@
 function getHashFromString (s){
   let res = '';
-  s.split('').forEach((c) => {
-    const code = c.charCodeAt(0) + 103;
-    res = res + code;
-  });
+  if(s){
+      s.split('').forEach((c) => {
+      const code = c.charCodeAt(0) + 103;
+      res = res + code;
+    });
+  }
   return res;
 };
 
 function getStringFromHash (s) {
   let res = '';
-  while (s.length > 0) {
+  while (s && s.length > 0) {
     const code = Number(s.substr(0, 3)) - 103;
     res = res + String.fromCharCode(code);
     s = s.substr(3);
