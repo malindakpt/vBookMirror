@@ -220,10 +220,12 @@ export const AddLiveLesson = () => {
           copyLessonURL(liveLesson.id); e.stopPropagation();
         }}
         />
+        {teacher?.zoomRunningLessonId === liveLesson.id && (
         <InputIcon onClick={(e) => {
           history.push(`/liveStat/${liveLesson.id}`); e.stopPropagation();
         }}
         />
+)}
       </ListItem>
       <Divider />
     </div>

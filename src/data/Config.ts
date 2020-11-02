@@ -38,8 +38,8 @@ const APP_CONFIG_PROD = {
   techPhone: '0771141194',
 };
 
-// export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;
-export default APP_CONFIG_PROD;
+export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;
+// export default APP_CONFIG_PROD;
 
 console.log(process.env.REACT_APP_ENV);
 
