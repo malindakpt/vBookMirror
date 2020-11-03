@@ -10,3 +10,5 @@ Minimum payment validation for lesson changes
 link to start meeting is invalid from teacher
 
 Test alert for multi user login with same invalid
+
+test payments to teacher calculations

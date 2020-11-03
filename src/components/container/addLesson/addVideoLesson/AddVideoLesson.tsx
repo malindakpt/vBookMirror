@@ -446,7 +446,7 @@ export const AddVideoLesson = () => {
                   <div className={classes.note}>
                     Max 5Mb allowed for 1 minute of the video.
                     <br />
-                    Eg: If video length is 1 hour(60 minutes), size should be less than 300Mb.
+                    Eg: If video length is 1 hour(60 minutes), size should be less than 300Mb.(Call 0771141194 for support)
                   </div>
                 </div>
                 <video

@@ -32,8 +32,11 @@ export const checkRefund = (email: string, lessonId: string,
   });
 };
 
-export const teacherPortion = (commissionVideo:number, amount: number) => Math.round((amount
-        * ((100 - commissionVideo) / 100)));
+export const teacherPortion = (commission:number, amount: number) => Math.round((amount
+        * ((100 * commission) / (100 + commission))));
+
+export const payable = (commissionRate:number, amount: number) => Math.round((amount
+          * ((100 + commissionRate) / 100)));
 
 export const round = (num: number) => Math.round(num * 10) / 10;
 
@@ -117,10 +120,10 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
         showSnackbar('This live session is full. Please contact the teacher');
       } else {
         // setPayLesson(lesson);
-        startPay(email, Util.fullName, lesson.id, lesson.price, dd);
+        startPay(email, Util.fullName, lesson.id, payable(teacher.commissionLive, lesson.price), dd);
       }
     });
   } else {
-    startPay(email, Util.fullName, lesson.id, lesson.price, dd);
+    startPay(email, Util.fullName, lesson.id, payable(teacher.commissionVideo, lesson.price), dd);
   }
 };
