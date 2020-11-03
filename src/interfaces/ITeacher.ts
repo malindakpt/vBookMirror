@@ -5,7 +5,7 @@ export interface ITeacher {
     phoneChat: string;
     ownerEmail: string;
     url: string;
-    commission: number;
+    commissionVideo: number;
     commissionLive: number;
 
     zoomMeetingId: string;

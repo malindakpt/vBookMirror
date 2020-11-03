@@ -32,8 +32,8 @@ export const checkRefund = (email: string, lessonId: string,
   });
 };
 
-export const teacherPortion = (commission:number, amount: number) => Math.round((amount
-        * ((100 - commission) / 100)));
+export const teacherPortion = (commissionVideo:number, amount: number) => Math.round((amount
+        * ((100 - commissionVideo) / 100)));
 
 export const round = (num: number) => Math.round(num * 10) / 10;
 
@@ -92,7 +92,9 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
     } else {
       console.log('Succeed');
       /// /////////FAKE UPDATE START////////////
-      addDoc(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id, ownerEmail: email });
+      addDoc(Entity.PAYMENTS_STUDENTS, {
+        lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price,
+      });
       const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
       updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
       onComplete(lesson.id);

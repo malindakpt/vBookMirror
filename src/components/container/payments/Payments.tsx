@@ -40,7 +40,7 @@ export const Payments = () => {
         ? data.reduce((a, b) => ({ ...a, amount: a.amount + b.amount })).amount : 0;
       setStudentPayments((prev) => {
         const clone = { ...prev };
-        clone[teacher.ownerEmail] = teacherPortion(teacher.commission, total);
+        clone[teacher.ownerEmail] = teacherPortion(teacher.commissionVideo, total);
         return clone;
       });
     });

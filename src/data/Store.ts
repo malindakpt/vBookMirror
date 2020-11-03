@@ -177,7 +177,10 @@ export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new P
 });
 
 export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promise((resolve, reject) => {
-  db.collection(entityName).doc(id).update(obj).then((data: any) => {
+  const saveObj = { ...obj };
+  // @ts-ignore
+  delete saveObj.id; // Allow id auto generation and remove exsting id params
+  db.collection(entityName).doc(id).update(saveObj).then((data: any) => {
     // clearStore(entityName);
     resolve(true);
   })
