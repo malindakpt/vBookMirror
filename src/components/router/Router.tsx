@@ -22,7 +22,7 @@ import { Subscriptions } from '../container/subscriptions/Subscriptions';
 import { Payments } from '../container/payments/Payments';
 import { Teacher } from '../container/teacher/Teacher';
 import { Intro } from '../container/intro/Intro';
-import { AddLiveLesson } from '../container/addLesson/addLiveLesson/AddLiveLesson';
+// import { AddLiveLesson } from '../container/addLesson/addLiveLesson/AddLiveLesson';
 import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
 import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLessonTeacher';
@@ -48,7 +48,7 @@ export const commonRoutes: routeConfig = [
 
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddVideoLesson, 'Video Lessons', true],
-  ['/addLive', AddLiveLesson, 'Live Lessons', true],
+  // ['/addLive', AddLiveLesson, 'Live Lessons', true],
   ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
   ['/profile', Subscriptions, 'Profile', true],
 ];

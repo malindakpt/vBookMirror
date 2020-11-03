@@ -86,7 +86,7 @@ export const getStringFromHash = (s: string) => {
 
 export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
   isLive: boolean, onComplete: (lessonId: string) => void, showSnackbar: (msg: string) => void) => {
-  const dd = new Date().getTime();
+  // const dd = new Date().getTime();
   paymentJS.onDismissed = function onDismissed() {
     if (Config.isProd) {
       console.log('Payment Dismissed');
@@ -120,10 +120,10 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
         showSnackbar('This live session is full. Please contact the teacher');
       } else {
         // setPayLesson(lesson);
-        startPay(email, Util.fullName, lesson.id, payable(teacher.commissionLive, lesson.price), dd);
+        startPay(email, Util.fullName, lesson.id, payable(teacher.commissionLive, lesson.price), teacher.ownerEmail);
       }
     });
   } else {
-    startPay(email, Util.fullName, lesson.id, payable(teacher.commissionVideo, lesson.price), dd);
+    startPay(email, Util.fullName, lesson.id, payable(teacher.commissionVideo, lesson.price), teacher.ownerEmail);
   }
 };
