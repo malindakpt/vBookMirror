@@ -64,7 +64,7 @@ export const Teacher = () => {
                       key={c.id}
                     >
                       <Category
-                        title1={`${subj?.name} [${exam?.type}]`}
+                        title1={`${subj?.name} ${exam?.type}`}
                         title2={`${exam?.name}`}
                         navURL={`${teacherId}/${c.id}`}
                         CategoryImg={CategoryIcon}
