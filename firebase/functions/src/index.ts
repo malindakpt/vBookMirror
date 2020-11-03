@@ -65,7 +65,7 @@ app.post('/notify/3', (req: any, res: any) => {
     const [lessonId, paidFor] = body.order_id.split('##');
     const payment = {
       date: new Date().getTime(),
-      amount: body.payhere_amount,
+      amount: Number(body.payhere_amount),
       ownerEmail: body.custom_1,
       ownerName: body.custom_2,
       paidFor,
