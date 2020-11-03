@@ -118,7 +118,7 @@ export const AddLiveLesson = () => {
 
   const onSave = () => {
     if (liveLesson.topic.length < 5 || liveLesson.description.length < 5
-      || (liveLesson.price > 0 && liveLesson.price < 51)) {
+      || (liveLesson.price > 0 && liveLesson.price < 50)) {
       showSnackbar('Topic and description should be more than 5 charactors. Price should 0 or more than 50');
       return;
     }

@@ -33,7 +33,7 @@ export const checkRefund = (email: string, lessonId: string,
 };
 
 export const teacherPortion = (commission:number, amount: number) => Math.round((amount
-        * ((100 * commission) / (100 + commission))));
+        * ((100) / (100 + commission))));
 
 export const payable = (commissionRate:number, amount: number) => Math.round((amount
           * ((100 + commissionRate) / 100)));
