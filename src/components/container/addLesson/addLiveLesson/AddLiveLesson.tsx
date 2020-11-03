@@ -117,8 +117,9 @@ export const AddLiveLesson = () => {
   };
 
   const onSave = () => {
-    if (liveLesson.topic.length < 5 || liveLesson.description.length < 5) {
-      showSnackbar('Topic and description should be more than 5 charactors');
+    if (liveLesson.topic.length < 5 || liveLesson.description.length < 5
+      || (liveLesson.price > 0 && liveLesson.price < 51)) {
+      showSnackbar('Topic and description should be more than 5 charactors. Price should 0 or more than 50');
       return;
     }
 
@@ -166,7 +167,6 @@ export const AddLiveLesson = () => {
         setBusy(false);
         if (lesId) {
           history.push(`/liveStat/${lesId}`);
-          // window.open(`https://us04web.zoom.us/j/${zoomMeetingId}?pwd=${zoomPwd}`, '_blank');
         }
       });
     }

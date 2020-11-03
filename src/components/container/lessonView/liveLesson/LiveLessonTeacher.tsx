@@ -55,14 +55,10 @@ export const LiveLessonTeacher: React.FC = () => {
 
   const stopLive = () => {
     console.log('Stopping connection');
-    // setReloadText('Disconnecting...');
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
       ele[0].contentWindow?.postMessage({ type: 'STOP', value: '' }, '*');
     }
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 3000);
   };
 
   const updateNewStudents = (zUsers: ZoomUser[]) => {
@@ -75,6 +71,10 @@ export const LiveLessonTeacher: React.FC = () => {
         };
       }
       userMap[u.userName].count += 1;
+      if (userMap[u.userName].count > 1) {
+        // eslint-disable-next-line no-new
+        new Notification('More users logged with same name', { body: userMap[u.userName].name, icon: logo });
+      }
     }
     setUsers(userMap);
   };
@@ -255,9 +255,8 @@ export const LiveLessonTeacher: React.FC = () => {
                   </tr>
                 ))
               }
-              <br />
-              <br />
-              <h2>All Payments</h2>
+
+              <tr><td>Paid students for this lesson</td></tr>
               {paymentForLesson.sort((a, b) => (users[a.ownerName]?.count ?? 0) - (users[b.ownerName]?.count ?? 0)).map((pay) => (
                 <tr key={pay.id}>
                   <td>{pay.ownerEmail}</td>

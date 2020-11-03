@@ -239,6 +239,10 @@ export const AddVideoLesson = () => {
       showSnackbar('Description should have minimum length of 5');
       return false;
     }
+    if (price > 0 && price < 51) {
+      showSnackbar('Price can be 0 or more than 50');
+      return false;
+    }
     return true;
   };
 
