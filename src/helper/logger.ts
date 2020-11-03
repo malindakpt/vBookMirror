@@ -11,12 +11,14 @@ export enum Page {
 
 export const sendLog = (page: Page, info: string, error: boolean = false) => {
   const log: ILog = {
+    id: '',
     page,
     screen: `${window.screen.availWidth}`,
     browser: navigator.userAgent,
     info,
     time: new Date().getTime(),
     error,
+    createdAt: new Date().getTime(),
   };
   if (window.location.host === 'akshara.lk' && !localStorage.getItem('log_off')) {
     addDoc(Entity.LOGS, log);

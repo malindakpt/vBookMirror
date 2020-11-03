@@ -136,7 +136,7 @@ export const uploadVideoToServer = (file: any, email: string, vId: string): Subj
 };
 
 export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((resolve, reject) => {
-  const saveObj = { ...obj };
+  const saveObj = { ...obj, createdAt: new Date().getTime() };
   // @ts-ignore
   delete saveObj.id; // Allow id auto generation and remove exsting id params
 
@@ -162,7 +162,7 @@ export const deleteDoc = (entityName: Entity, id: string) => new Promise<boolean
 });
 
 export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve, reject) => {
-  const saveObj = { ...obj };
+  const saveObj = { ...obj, createdAt: new Date().getTime() };
   // @ts-ignore
   delete saveObj.id; // Allow id auto generation and remove exsting id params
 
@@ -177,9 +177,10 @@ export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new P
 });
 
 export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promise((resolve, reject) => {
-  const saveObj = { ...obj };
+  const saveObj = { ...obj, updatedAt: new Date().getTime() };
   // @ts-ignore
   delete saveObj.id; // Allow id auto generation and remove exsting id params
+
   db.collection(entityName).doc(id).update(saveObj).then((data: any) => {
     // clearStore(entityName);
     resolve(true);

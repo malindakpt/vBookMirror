@@ -1,5 +1,6 @@
-export interface IPayment {
-    id: string;
+import { IBase } from './IBase';
+
+export interface IPayment extends IBase {
     date: number;
     amount: number;
     lessonId: string;

@@ -65,7 +65,8 @@ export const Payments = () => {
     const date = new Date().getTime();
 
     if (email) {
-      addDoc<Omit<IPayment, 'id'>>(Entity.PAYMENTS_TEACHER, {
+      addDoc<IPayment>(Entity.PAYMENTS_TEACHER, {
+        id: '',
         ownerEmail: email,
         paidFor: teacherEmail,
         date,
@@ -75,6 +76,7 @@ export const Payments = () => {
         paymentRef: '',
         ownerName: '',
         status: 'OK',
+        createdAt: 0,
       }).then(() => {
         showSnackbar(`Payment done:${amount}`);
         setBusy(false);

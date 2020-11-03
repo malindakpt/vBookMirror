@@ -1,6 +1,7 @@
 import { Page } from '../helper/logger';
+import { IBase } from './IBase';
 
-export interface ILog {
+export interface ILog extends IBase {
     time: number;
     info: string;
     browser: string;

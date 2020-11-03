@@ -1,5 +1,6 @@
-export interface ITeacher {
-    id: string;
+import { IBase } from './IBase';
+
+export interface ITeacher extends IBase {
     name: string;
     phone: string;
     phoneChat: string;

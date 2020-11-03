@@ -14,3 +14,7 @@ Test alert for multi user login with same invalid
 test payments to teacher calculations
 
 Zoom max count test 99 -1 100
+
+show lesson name when payments qith akshara.lk title
+
+show a ' paynet can delay' msg when directly load  a paid lesson. 

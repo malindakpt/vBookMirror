@@ -1,3 +1,5 @@
+import { IBase } from './IBase';
+
 export enum LiveMeetingStatus {
   NOT_STARTED,
   RUNNING,
@@ -5,8 +7,7 @@ export enum LiveMeetingStatus {
   CANCELLED
 }
 
-export interface ILesson {
-    id: string;
+export interface ILesson extends IBase {
     topic: string;
     description: string;
 
