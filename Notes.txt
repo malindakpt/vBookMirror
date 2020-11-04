@@ -1,5 +1,5 @@
-Calculate teacher payments for live classes
-Commission calcualte to student
+
+
 Open Stat page from live lesson view
 Remove on before unload when it tried to refresh itself
 
@@ -15,6 +15,7 @@ test payments to teacher calculations
 
 Zoom max count test 99 -1 100
 
-show lesson name when payments qith akshara.lk title
-
 show a ' paynet can delay' msg when directly load  a paid lesson. 
+
+
+Calculate payble to upper roundabler
