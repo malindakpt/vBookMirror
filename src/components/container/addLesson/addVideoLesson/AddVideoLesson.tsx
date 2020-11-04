@@ -23,6 +23,8 @@ import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import Config, { OBS_DOWNLOAD, OBS_HELP_DOC, OBS_HELP_VIDEO } from '../../../../data/Config';
 import { round } from '../../../../helper/util';
 
+const ALLOWED_SIZE_FOR_MIN = 6;
+
 export const AddVideoLesson = () => {
   useBreadcrumb();
   const [busy, setBusy] = useState<boolean>(false);
@@ -123,7 +125,6 @@ export const AddVideoLesson = () => {
   }, [onDataFetch]);
 
   const onFileSelect = (e: any) => {
-    const allowedSizeFor1min = 5;
     // TODO: Handle if file is not selected from file explorer
     const file: File = e.target.files[0];
     const videoNode = document.querySelector('video');
@@ -137,8 +138,8 @@ export const AddVideoLesson = () => {
         setTimeout(() => {
           const duration = round(videoNode.duration / 60);
           const uploadedSizePer1min = (size / duration);
-          if (uploadedSizePer1min > allowedSizeFor1min) {
-            const allowedSize = round(allowedSizeFor1min * duration);
+          if (uploadedSizePer1min > ALLOWED_SIZE_FOR_MIN) {
+            const allowedSize = round(ALLOWED_SIZE_FOR_MIN * duration);
             showSnackbar(`Maximum ${allowedSize}Mb allowed for 
                 ${duration} minutes video. But this file is ${round(size)}Mb`);
 

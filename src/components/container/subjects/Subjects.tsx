@@ -20,7 +20,7 @@ export const Subjects = () => {
     let filtered = subjects.filter((sub) => exam?.subjectIds?.includes(sub.id));
 
     // Remove testing lesson from actual users
-    if (email !== 'malindakpt@gmail.com') {
+    if (email !== 'malindakpt@gmail.com' && email !== 'rasikadri@gmail.com') {
       filtered = filtered.filter((sub) => sub.name !== 'Test');
     }
 
