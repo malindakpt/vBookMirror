@@ -63,6 +63,8 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
+  const amIOwnerOfLesson = (lesson: ILesson) => email === lesson.ownerEmail;
+
   const readyToGoVideo = (lesson: ILesson) => (!lesson.price)
     || ((payments?.find((pay) => pay.lessonId
        === lesson.id && ((pay.watchedCount ?? 0) < Config.allowedWatchCount))));
@@ -135,7 +137,7 @@ export const Course: React.FC = () => {
                 title3={timeF}
                 title5="Live"
                 title6={`${live.duration} hrs`}
-                navURL={readyToGoLive(live) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                navURL={(readyToGoLive(live) || amIOwnerOfLesson(live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>
@@ -172,7 +174,7 @@ export const Course: React.FC = () => {
                 title3={lesson.price > 0
                   ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                 title6={`${lesson.duration} mins`}
-                navURL={readyToGoVideo(lesson) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
+                navURL={(readyToGoVideo(lesson) || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                 status={status}
               />
             </div>

@@ -1,8 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import classes from './Intro.module.scss';
-import imgDash from '../../../images/ssDashboard.png';
-import imgSubs from '../../../images/ssSubscriptions.png';
 
 export const Intro: React.FC = () => {
   const { id } = useParams<any>();

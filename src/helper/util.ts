@@ -93,6 +93,9 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       showSnackbar('ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
       onComplete(lesson.id);
     } else {
+      if (!Config.payOnDismiss) {
+        return;
+      }
       console.log('Succeed');
       /// /////////FAKE UPDATE START////////////
       addDoc(Entity.PAYMENTS_STUDENTS, {

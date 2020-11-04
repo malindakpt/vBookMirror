@@ -17,6 +17,9 @@ const APP_CONFIG_DEV = {
   paymentDisabled: false,
   techPhone: '0771141194',
   zoomURL: 'https://smsm-54fa3.web.app',
+
+  // Variables valid only for dev
+  payOnDismiss: true,
 };
 
 const APP_CONFIG_PROD = {
@@ -36,6 +39,8 @@ const APP_CONFIG_PROD = {
   zoomURL: 'https://smsm-54fa3.web.app',
   paymentDisabled: false,
   techPhone: '0771141194',
+
+  payOnDismiss: false,
 };
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;

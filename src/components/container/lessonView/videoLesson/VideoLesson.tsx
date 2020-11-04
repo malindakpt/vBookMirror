@@ -51,6 +51,8 @@ export const VideoLesson: React.FC = () => {
     }, Config.watchedTimeout);
   };
 
+  const amIOwnerOfLesson = (lesson: IVideoLesson) => email === lesson.ownerEmail;
+
   const startVideoRendering = (lesson: IVideoLesson) => {
     setLesson(lesson);
     setTimeout(() => {
@@ -69,10 +71,13 @@ export const VideoLesson: React.FC = () => {
         }).then((data) => {
         if (data && data.length > 0) {
           const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0) < Config.allowedWatchCount));
-          if (validPayment) {
+          if (validPayment || amIOwnerOfLesson(tempLesson)) {
             startVideoRendering(tempLesson);
             setWarn('Do not reload this page');
-            startExpireLessonForUser(validPayment);
+
+            if (validPayment) {
+              startExpireLessonForUser(validPayment);
+            }
           } else {
             promptPayment(email, teacher, tempLesson, false, () => {
               setTimeout(() => {
