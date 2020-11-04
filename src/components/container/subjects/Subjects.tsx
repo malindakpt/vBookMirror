@@ -7,6 +7,7 @@ import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { ISubject } from '../../../interfaces/ISubject';
 import { IExam } from '../../../interfaces/IExam';
 import { AppContext } from '../../../App';
+import { isTester } from '../../../data/Config';
 
 export const Subjects = () => {
   const { examId } = useParams<any>();
@@ -20,7 +21,7 @@ export const Subjects = () => {
     let filtered = subjects.filter((sub) => exam?.subjectIds?.includes(sub.id));
 
     // Remove testing lesson from actual users
-    if (email !== 'malindakpt@gmail.com' && email !== 'rasikadri@gmail.com') {
+    if (!isTester(email)) {
       filtered = filtered.filter((sub) => sub.name !== 'Test');
     }
 

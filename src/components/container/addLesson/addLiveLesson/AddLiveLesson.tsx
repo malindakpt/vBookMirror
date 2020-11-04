@@ -20,7 +20,7 @@ import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
-import Config from '../../../../data/Config';
+import Config, { isTester } from '../../../../data/Config';
 
 export enum JOIN_MODES {
   ONLY_APP,
@@ -235,7 +235,7 @@ export const AddLiveLesson = () => {
 
   const now = new Date().getTime();
 
-  return (
+  return isTester(email) ? (
     <>
       <div
         className={classes.root}
@@ -472,5 +472,5 @@ export const AddLiveLesson = () => {
       </div>
 
     </>
-  );
+  ) : (<h2>This feature is not enabled yet</h2>);
 };

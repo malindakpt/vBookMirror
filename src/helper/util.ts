@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import * as firebase from 'firebase/app';
 import Config from '../data/Config';
 import {
