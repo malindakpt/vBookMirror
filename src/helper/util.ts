@@ -123,10 +123,12 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
         showSnackbar('This live session is full. Please contact the teacher');
       } else {
         // setPayLesson(lesson);
-        startPay(email, Util.fullName, lesson.id, payable(teacher.commissionLive, lesson.price), teacher.ownerEmail);
+        startPay(email, Util.fullName, lesson, payable(teacher.commissionLive,
+          lesson.price), teacher.ownerEmail);
       }
     });
   } else {
-    startPay(email, Util.fullName, lesson.id, payable(teacher.commissionVideo, lesson.price), teacher.ownerEmail);
+    startPay(email, Util.fullName, lesson, payable(teacher.commissionVideo,
+      lesson.price), teacher.ownerEmail);
   }
 };
