@@ -70,7 +70,7 @@ app.post('/notify/3', (req: any, res: any) => {
       ownerName: body.custom_2,
       paidFor,
       lessonId,
-      paymentType,
+      paymentType: Number(paymentType),
       paymentRef: body.payment_id,
       status: body.status_code,
       paymentObject: body,
