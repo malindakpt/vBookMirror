@@ -62,7 +62,7 @@ app.post('/notify/2', (req: any, res: any) => {
 app.post('/notify/3', (req: any, res: any) => {
   const { body } = req;
   if (body.status_code === StatusCode.SUCCESS) {
-    const [lessonId, paidFor] = body.order_id.split('##');
+    const [lessonId, paidFor, paymentType] = body.order_id.split('##');
     const payment = {
       date: new Date().getTime(),
       amount: Number(body.payhere_amount),
@@ -70,6 +70,7 @@ app.post('/notify/3', (req: any, res: any) => {
       ownerName: body.custom_2,
       paidFor,
       lessonId,
+      paymentType,
       paymentRef: body.payment_id,
       status: body.status_code,
       paymentObject: body,

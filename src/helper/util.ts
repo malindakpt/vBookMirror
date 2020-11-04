@@ -5,7 +5,7 @@ import {
   addDoc, Entity, getDocsWithProps, updateDoc,
 } from '../data/Store';
 import { ILesson, ILiveLesson } from '../interfaces/ILesson';
-import { IPayment } from '../interfaces/IPayment';
+import { IPayment, PaymentType } from '../interfaces/IPayment';
 import { ITeacher } from '../interfaces/ITeacher';
 import { paymentJS, startPay } from './payment';
 
@@ -125,11 +125,11 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       } else {
         // setPayLesson(lesson);
         startPay(email, Util.fullName, lesson, payable(teacher.commissionLive,
-          lesson.price), teacher.ownerEmail);
+          lesson.price), teacher.ownerEmail, PaymentType.LIVE_LESSON);
       }
     });
   } else {
     startPay(email, Util.fullName, lesson, payable(teacher.commissionVideo,
-      lesson.price), teacher.ownerEmail);
+      lesson.price), teacher.ownerEmail, PaymentType.VIDEO_LESSON);
   }
 };

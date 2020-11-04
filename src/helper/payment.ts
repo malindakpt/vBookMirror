@@ -1,17 +1,19 @@
 import Config from '../data/Config';
 import { ILesson } from '../interfaces/ILesson';
+import { PaymentType } from '../interfaces/IPayment';
 import { DEFAULT_FULL_NAME, Util } from './util';
 // @ts-ignore
 // eslint-disable-next-line no-undef
 export const paymentJS = payhere;
 
-const getPaymentObj = (email: string, name: string, lesson: ILesson, amount: number, paidFor: string) => ({
+const getPaymentObj = (email: string, name: string, lesson: ILesson,
+  amount: number, paidFor: string, type: PaymentType) => ({
   sandbox: !Config.isProd,
   merchant_id: Config.isProd ? '216030' : '1215643', // Replace your Merchant ID
   return_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/1',
   cancel_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/2',
   notify_url: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/notify/3',
-  order_id: `${lesson.id}##${paidFor}`,
+  order_id: `${lesson.id}##${paidFor}##${type}`,
   items: `${lesson.topic}`,
   amount: `${amount}`,
   currency: 'LKR',
@@ -30,7 +32,7 @@ const getPaymentObj = (email: string, name: string, lesson: ILesson, amount: num
 });
 
 export const startPay = (email: string|null, name: string, lesson: ILesson,
-  amount: number, paidFor: string) => {
+  amount: number, paidFor: string, type: PaymentType) => {
   if (!email) {
     if (Util.invokeLogin) {
       Util.invokeLogin();
@@ -38,6 +40,6 @@ export const startPay = (email: string|null, name: string, lesson: ILesson,
       alert(`Error with the name related to your email. Please contact ${Config.techPhone}`);
     }
   } else {
-    paymentJS.startPayment(getPaymentObj(email, name, lesson, amount, paidFor));
+    paymentJS.startPayment(getPaymentObj(email, name, lesson, amount, paidFor, type));
   }
 };

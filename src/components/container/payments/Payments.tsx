@@ -6,7 +6,7 @@ import {
 } from '../../../data/Store';
 import { teacherPortion } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
-import { IPayment } from '../../../interfaces/IPayment';
+import { IPayment, PaymentType } from '../../../interfaces/IPayment';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import classes from './Payments.module.scss';
 
@@ -77,6 +77,7 @@ export const Payments = () => {
         ownerName: '',
         status: 'OK',
         createdAt: 0,
+        paymentType: PaymentType.TEACHER_SALARY,
       }).then(() => {
         showSnackbar(`Payment done:${amount}`);
         setBusy(false);
