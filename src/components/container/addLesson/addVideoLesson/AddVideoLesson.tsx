@@ -348,6 +348,31 @@ export const AddVideoLesson = () => {
 
   return (
     <>
+      <p>
+        ඔබ upload  කරන  video ව OBS STUDIO  මගින්  screen recording  එකක් ලෙස පටිගත කර හැකිය.
+        නැතිනම් ඔබ විසින් ඔබගේ camera  මගින් record කල video වක් නම්,
+        එය පරිඝනකයේ media player එකක්  මගින් play කරමින්  screen recording  එකක් ලෙස පටිගත කර හැකිය.
+      </p>
+      <div className={classes.help}>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href={OBS_DOWNLOAD}
+          style={{ marginRight: '10px' }}
+        >
+          Download Screen Recorder
+        </a>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href={OBS_HELP_DOC}
+        >
+          OBS Setup Issues
+        </a>
+      </div>
+      <p>
+        OBS STUDIO හසුරුවන ආකාරය පහත video එක මගින් ඉගෙන ගත හැකිය.
+      </p>
       <form
         className={classes.root}
         noValidate
@@ -562,22 +587,6 @@ export const AddVideoLesson = () => {
               ))
             }
           </List>
-        </div>
-        <div className={classes.help}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href={OBS_DOWNLOAD}
-          >
-            Download Screen Recorder
-          </a>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href={OBS_HELP_DOC}
-          >
-            OBS Setup Issues
-          </a>
         </div>
       </form>
 

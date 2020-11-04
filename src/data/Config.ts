@@ -19,7 +19,7 @@ const APP_CONFIG_DEV = {
   zoomURL: 'https://smsm-54fa3.web.app',
 
   // Variables valid only for dev
-  payOnDismiss: true,
+  payOnDismiss: false,
 };
 
 const APP_CONFIG_PROD = {
@@ -52,3 +52,5 @@ export const ADMIN_EMAIL = 'contact.akshara.lk@gmail.com';
 export const OBS_DOWNLOAD = 'https://drive.google.com/file/d/1NOqkKwhl1FVuHE7Z52FB4qn7iE2U-_6b/view?usp=sharing';
 export const OBS_HELP_DOC = '';
 export const OBS_HELP_VIDEO = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2F2020-10-26%2006-26-23.mp4?alt=media&token=8f4a2f91-5f8f-49a9-b9cc-8639cf1fa342';
+
+export const isTester = (email: string | undefined | null) => email === 'malindakpt@gmail.com' || email === 'rasikadri@gmail.com';
