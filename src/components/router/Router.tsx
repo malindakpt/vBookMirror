@@ -43,7 +43,7 @@ export const commonRoutes: routeConfig = [
   ['/:examId/:subjectId', Courses, 'Courses', false],
   ['/:examId/', Subjects, 'Subjects', false],
 
-  ['/', Exams, 'Exams', true],
+  ['/', Exams, 'Exams', false],
 ];
 
 export const teacherRoutes: routeConfig = [

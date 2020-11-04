@@ -32,10 +32,16 @@ export const useBreadcrumb = () => {
   }, []);
 
   useEffect(() => {
-    const bcs = [
-      ['Exams', '/'],
-    ];
-
+    let bcs;
+    if (teacherId) {
+      bcs = [
+        ['Home', `/teacher/${teacherId}`],
+      ];
+    } else {
+      bcs = [
+        ['Exams', '/'],
+      ];
+    }
     if (!teacherId && examId !== 'teacher') {
       if (examId) {
         const text = keyMap[examId] ? `${keyMap[examId].name} ${keyMap[examId].type ?? ''}` : 'Subjects';
