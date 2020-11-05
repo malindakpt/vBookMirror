@@ -33,6 +33,8 @@ export const commonRoutes: routeConfig = [
   ['/intro/:id', Intro, 'Intro', false],
   ['/notify/:type', NotifyPayment, 'Notify', false],
 
+  ['/teacher/:teacherId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
+  ['/teacher/:teacherId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
 

@@ -41,21 +41,22 @@ export const useBreadcrumb = () => {
       bcs = [
         ['Exams', '/'],
       ];
-    }
-    if (!teacherId && examId !== 'teacher') {
-      if (examId) {
-        const text = keyMap[examId] ? `${keyMap[examId].name} ${keyMap[examId].type ?? ''}` : 'Subjects';
-        bcs.push([text, `/${examId}`]);
-      }
-      if (subjectId) {
-        const text = keyMap[subjectId] ? `${keyMap[subjectId].name}` : 'Tutors';
-        bcs.push([text, `/${examId}/${subjectId}`]);
-      }
-      if (courseId) {
-        const text = keyMap[courseId] && keyMap[keyMap[courseId].teacherId]
-          ? `${keyMap[keyMap[courseId].teacherId].name}` : 'Lessons';
-        bcs.push([text,
-          `/${examId}/${subjectId}/${courseId}`]);
+
+      if (!teacherId && examId !== 'teacher') {
+        if (examId) {
+          const text = keyMap[examId] ? `${keyMap[examId].name} ${keyMap[examId].type ?? ''}` : 'Subjects';
+          bcs.push([text, `/${examId}`]);
+        }
+        if (subjectId) {
+          const text = keyMap[subjectId] ? `${keyMap[subjectId].name}` : 'Tutors';
+          bcs.push([text, `/${examId}/${subjectId}`]);
+        }
+        if (courseId) {
+          const text = keyMap[courseId] && keyMap[keyMap[courseId].teacherId]
+            ? `${keyMap[keyMap[courseId].teacherId].name}` : 'Lessons';
+          bcs.push([text,
+            `/${examId}/${subjectId}/${courseId}`]);
+        }
       }
     }
     sendBreadcrumbs(bcs);

@@ -24,7 +24,8 @@ export const Header:React.FC = () => {
       email = result.email;
     }
     const temp = localStorage.getItem('mkptuser');
-    if (temp !== null && window.location.host.startsWith('local')) {
+    if (temp !== null) {
+      // if (temp !== null && window.location.host.startsWith('local')) {
       email = temp;
     }
 
