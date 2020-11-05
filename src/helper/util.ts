@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import * as firebase from 'firebase/app';
+// import * as firebase from 'firebase/app';
 import Config from '../data/Config';
 import {
   addDoc, Entity, getDocsWithProps, updateDoc,
@@ -102,7 +102,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       addDoc(Entity.PAYMENTS_STUDENTS, {
         lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price,
       });
-      const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
+      // const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
       // updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
       onComplete(lesson.id);
       /// ////////FAKE UPDATE END///////////////
