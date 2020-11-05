@@ -20,7 +20,9 @@ import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
-import Config, { OBS_DOWNLOAD, OBS_HELP_DOC, OBS_HELP_VIDEO } from '../../../../data/Config';
+import Config, {
+  AKSHARA_HELP_VIDEO, OBS_DOWNLOAD, OBS_HELP_VIDEO,
+} from '../../../../data/Config';
 import { round } from '../../../../helper/util';
 
 const ALLOWED_SIZE_FOR_MIN = 6;
@@ -357,22 +359,37 @@ export const AddVideoLesson = () => {
         <a
           rel="noopener noreferrer"
           target="_blank"
+          href={AKSHARA_HELP_VIDEO}
+          style={{ marginRight: '10px' }}
+        >
+          Video එකක් upload කරන අකාරය
+        </a>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href={OBS_HELP_VIDEO}
+          style={{ marginRight: '10px' }}
+        >
+          OBS STUDIO හසුරුවන ආකාරය
+        </a>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
           href={OBS_DOWNLOAD}
           style={{ marginRight: '10px' }}
         >
           Download Screen Recorder
         </a>
-        <a
+
+        {/* <a
           rel="noopener noreferrer"
           target="_blank"
           href={OBS_HELP_DOC}
         >
           OBS Setup Issues
-        </a>
+        </a> */}
       </div>
-      <p>
-        OBS STUDIO හසුරුවන ආකාරය පහත video එක මගින් ඉගෙන ගත හැකිය.
-      </p>
+
       <form
         className={classes.root}
         noValidate
@@ -484,7 +501,7 @@ export const AddVideoLesson = () => {
                   height="176"
                   controls
                   controlsList="nodownload"
-                  src={OBS_HELP_VIDEO}
+                  src={AKSHARA_HELP_VIDEO}
                 >
                   <track
                     kind="captions"
