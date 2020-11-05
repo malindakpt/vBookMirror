@@ -19,7 +19,7 @@ const APP_CONFIG_DEV = {
   zoomURL: 'https://smsm-54fa3.web.app',
 
   // Variables valid only for dev
-  payOnDismiss: false,
+  payOnDismiss: true,
 };
 
 const APP_CONFIG_PROD = {

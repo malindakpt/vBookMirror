@@ -103,7 +103,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
         lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price,
       });
       const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
-      updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
+      // updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
       onComplete(lesson.id);
       /// ////////FAKE UPDATE END///////////////
 
