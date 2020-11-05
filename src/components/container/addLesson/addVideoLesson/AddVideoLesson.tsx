@@ -458,17 +458,19 @@ export const AddVideoLesson = () => {
                     disabled={disabled}
                   />
                   {uploadProgress > 0 && uploadProgress < 100 && (
-                  <Button
-                    size="small"
-                    color="secondary"
-                    variant="contained"
-                    onClick={onCancelUpload}
-                  >
-                    Cancel Upload
-                    <span style={{ marginLeft: '20px' }}>
-                      {uploadProgress > 0 && uploadProgress < 100 && `${round(uploadProgress)}%`}
-                    </span>
-                  </Button>
+                    <>
+                      <span className={classes.progress}>
+                        {uploadProgress > 0 && uploadProgress < 100 && `Progress: ${round(uploadProgress)}% `}
+                      </span>
+                      <Button
+                        size="small"
+                        color="secondary"
+                        variant="contained"
+                        onClick={onCancelUpload}
+                      >
+                        Cancel Upload
+                      </Button>
+                    </>
                   )}
                   <div className={classes.note}>
                     Max 5Mb allowed for 1 minute of the video.
@@ -530,7 +532,7 @@ export const AddVideoLesson = () => {
               disabled={disabled}
               onClick={startUploadVideo}
             >
-              {editMode ? 'Edit Selected Lesson' : 'Add New Lesson'}
+              {editMode ? 'Save Changes' : 'Start Upload'}
             </Button>
           </div>
         </div>
