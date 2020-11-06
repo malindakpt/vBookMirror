@@ -8,10 +8,9 @@ import {
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
-import { useHistory } from 'react-router-dom';
 import classes from './AddVideoLesson.module.scss';
 import {
-  addDoc, deleteVideo, Entity, getDocsWithProps, updateDoc, uploadVideoToServer,
+  addDoc, Entity, getDocsWithProps, updateDoc,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
@@ -24,21 +23,12 @@ import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import Config, {
   AKSHARA_HELP_VIDEO, OBS_DOWNLOAD, OBS_HELP_VIDEO,
 } from '../../../../data/Config';
-import { round } from '../../../../helper/util';
-
-const ALLOWED_SIZE_FOR_MIN = 6;
 
 export const AddVideoLesson = () => {
   useBreadcrumb();
-  const history = useHistory();
   const [busy, setBusy] = useState<boolean>(false);
   const [onDataFetch, fetchData] = useForcedUpdate();
   const { showSnackbar, email } = useContext(AppContext);
-
-  const [uploadTask, setUploadTask] = useState<any>();
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-
-  const [uploadFile, setUploadFile] = useState<File>();
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
@@ -67,7 +57,6 @@ export const AddVideoLesson = () => {
   const addNew = () => {
     setCourseOrderChaged(false);
     setEditMode(false);
-    setUploadProgress(0);
     setTopic('');
     setKeywords('');
     setDescription('');
@@ -119,9 +108,23 @@ export const AddVideoLesson = () => {
     // eslint-disable-next-line
   }, [onDataFetch]);
 
-  const disabled = (uploadProgress > 0 && uploadProgress < 100) || !courseId || busy;
+  const disabled = !courseId || busy;
 
-  const disabledCourseSelection = (uploadProgress > 0 && uploadProgress < 100);
+  const validateLesson = (): boolean => {
+    if (!topic || topic.length < 5) {
+      showSnackbar('Topic should have minimum length of 5');
+      return false;
+    }
+    if (!description || description.length < 5) {
+      showSnackbar('Description should have minimum length of 5');
+      return false;
+    }
+    if (price > 0 && price < 50) {
+      showSnackbar('Price can be 0 or more than 50');
+      return false;
+    }
+    return true;
+  };
 
   const onSave = async () => {
     if (!email) {
@@ -129,6 +132,10 @@ export const AddVideoLesson = () => {
       setBusy(false);
       return;
     }
+    if (!validateLesson()) {
+      return;
+    }
+
     if (editMode) {
       if (!editingLesson) return;
       // Replicate changes of here for all #LessonModify
@@ -188,21 +195,6 @@ export const AddVideoLesson = () => {
     }
   };
 
-  const validateLesson = (): boolean => {
-    if (!topic || topic.length < 5) {
-      showSnackbar('Topic should have minimum length of 5');
-      return false;
-    }
-    if (!description || description.length < 5) {
-      showSnackbar('Description should have minimum length of 5');
-      return false;
-    }
-    if (price > 0 && price < 50) {
-      showSnackbar('Price can be 0 or more than 50');
-      return false;
-    }
-    return true;
-  };
   // copyLessonMode
   // Replicate changes of here for all #LessonModify
   const copyLesson = (les: IVideoLesson) => {
@@ -338,7 +330,6 @@ export const AddVideoLesson = () => {
               labelId="label1"
               id="id1"
               value={courseId}
-              disabled={disabledCourseSelection}
               onChange={(e) => onCourseChange(courses, e.target.value as string, allLessons)}
             >
               {courses.map((course) => {

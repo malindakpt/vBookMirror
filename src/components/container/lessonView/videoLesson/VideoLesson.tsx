@@ -150,8 +150,6 @@ export const VideoLesson: React.FC = () => {
             role="button"
             onKeyDown={() => {}}
             onClick={(e) => {
-              console.log('clicked');
-              const ele = document.querySelector('iframe');
               setFull((prev) => !prev);
               e.stopPropagation();
             }}
