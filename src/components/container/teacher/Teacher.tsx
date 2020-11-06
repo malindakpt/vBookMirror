@@ -20,19 +20,30 @@ export const Teacher = () => {
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [teacher, setTeacher] = useState<ITeacher| undefined>(undefined);
+  const idMap = useBreadcrumb();
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => {
+      setSubjects(data);
+      idMap(data);
+    });
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => {
+      setExams(data);
+      idMap(data);
+    });
     getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { url: teacherId }).then((data) => {
+      idMap(data);
       if (data.length > 0) {
         const teacher = data[0];
         setTeacher(teacher);
         getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: teacher.ownerEmail })
-          .then((data) => setCourses(data));
+          .then((data) => {
+            idMap(data);
+            setCourses(data);
+          });
       }
     });
-  }, [teacherId]);
+  }, [teacherId, idMap]);
 
   return (
     <div className={classes.root}>

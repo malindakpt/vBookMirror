@@ -35,8 +35,15 @@ export const useBreadcrumb = () => {
     let bcs;
     if (teacherId) {
       bcs = [
-        ['Home', `/teacher/${teacherId}`],
+        ['Subjects', `/teacher/${teacherId}`],
       ];
+
+      if (courseId) {
+        const text = keyMap[keyMap[courseId]?.subjectId]
+          ? `${keyMap[keyMap[courseId].subjectId].name}` : 'Lessons';
+        bcs.push([text,
+          `/teacher/${teacherId}/${courseId}`]);
+      }
     } else {
       bcs = [
         ['Exams', '/'],
