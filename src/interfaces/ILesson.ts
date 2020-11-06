@@ -23,7 +23,7 @@ export interface ILesson extends IBase {
 
 export interface IVideoLesson extends ILesson {
   videoURL: string;
-  videoId: string;
+  // videoId: string;
 }
 
 export interface ILiveLesson extends ILesson {
