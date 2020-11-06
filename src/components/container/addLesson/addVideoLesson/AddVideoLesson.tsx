@@ -8,6 +8,7 @@ import {
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
+import { useHistory } from 'react-router-dom';
 import classes from './AddVideoLesson.module.scss';
 import {
   addDoc, deleteVideo, Entity, getDocsWithProps, updateDoc, uploadVideoToServer,
@@ -29,6 +30,7 @@ const ALLOWED_SIZE_FOR_MIN = 6;
 
 export const AddVideoLesson = () => {
   useBreadcrumb();
+  const history = useHistory();
   const [busy, setBusy] = useState<boolean>(false);
   const [onDataFetch, fetchData] = useForcedUpdate();
   const { showSnackbar, email } = useContext(AppContext);
@@ -60,15 +62,6 @@ export const AddVideoLesson = () => {
   // const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
-
-  // const resetFileInput = () => {
-  //   // @ts-ignore
-  //   document.getElementById('uploader').value = null;
-  //   setUploadFile(undefined);
-
-  //   const videoNode = document.querySelector('video');
-  //   if (videoNode) videoNode.src = '';
-  // };
 
   // Replicate changes of here for all #LessonModify
   const addNew = () => {
@@ -210,52 +203,6 @@ export const AddVideoLesson = () => {
     }
     return true;
   };
-
-  // const uploadAndSave = (email: string, dd: number) => {
-  //   if (!uploadFile) return;
-
-  //   setUploadProgress(0);
-  //   const out = uploadVideoToServer(uploadFile, email, `${dd}`).subscribe((next) => {
-  //     setUploadTask(next.uploadTask);
-  //     if (next.downloadURL) {
-  //       // upload completed
-  //       setVideoURL(next.downloadURL);
-  //       onSave(next.downloadURL, `${dd}`, dd, duration);
-  //       out.unsubscribe();
-  //     }
-  //     if (next.progress < 100) {
-  //       setUploadProgress(next.progress);
-  //     }
-  //   });
-  // };
-
-  // const startUploadVideo = (e: any) => {
-  //   const dd = new Date().getTime();
-  //   if (!email) {
-  //     showSnackbar('Error with the logged in teacher');
-  //     return;
-  //   }
-  //   if (!validateLesson()) {
-  //     return;
-  //   }
-  //   setBusy(true);
-  //   if (editMode) {
-  //     if (uploadFile) {
-  //       deleteVideo(email, videoId).then((data) => console.log('deleted', data));
-  //       uploadAndSave(email, dd);
-  //     } else {
-  //       onSave(videoURL, videoId, dd, duration);
-  //     }
-  //   } else {
-  //     if (uploadFile) {
-  //       uploadAndSave(email, dd);
-  //     } else {
-  //       showSnackbar('Upload video not found');
-  //       setBusy(false);
-  //     }
-  //   }
-  // };
-
   // copyLessonMode
   // Replicate changes of here for all #LessonModify
   const copyLesson = (les: IVideoLesson) => {
@@ -311,19 +258,14 @@ export const AddVideoLesson = () => {
 
   return (
     <>
-      <p>
-        ඔබ upload  කරන  video ව OBS STUDIO  මගින්  screen recording  එකක් ලෙස පටිගත කර හැකිය.
-        නැතිනම් ඔබ විසින් ඔබගේ camera  මගින් record කල video වක් නම්,
-        එය පරිඝනකයේ media player එකක්  මගින් play කරමින්  screen recording  එකක් ලෙස පටිගත කර හැකිය.
-      </p>
       <div className={classes.help}>
         <a
           rel="noopener noreferrer"
           target="_blank"
           href={AKSHARA_HELP_VIDEO}
-          style={{ marginRight: '10px' }}
+          style={{ margin: '10px', fontWeight: 'bold' }}
         >
-          Video එකක් upload කරන අකාරය
+          Video upload කරන අකාරය
         </a>
         <a
           rel="noopener noreferrer"
@@ -474,7 +416,7 @@ export const AddVideoLesson = () => {
               disabled={disabled}
               onClick={onSave}
             >
-              {editMode ? 'Save Changes' : 'Start Upload'}
+              {editMode ? 'Save Changes' : 'Save New Lesson'}
             </Button>
           </div>
         </div>
@@ -484,6 +426,13 @@ export const AddVideoLesson = () => {
             component="nav"
             aria-label="main mailbox folders"
           >
+            {videoURL && editMode && (
+            <iframe
+              className={classes.player}
+              title="video"
+              src={videoURL}
+            />
+            )}
             {courseOrderChanged && (
             <ListItem
               button

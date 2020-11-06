@@ -166,7 +166,10 @@ export const VideoLesson: React.FC = () => {
           />
         </div>
       )}
-      <div className={classes.lessonInfo}>
+      <div
+        className={classes.lessonInfo}
+        style={isFull ? { display: 'none' } : {}}
+      >
         {teacher && lesson && (
         <div>
           <ReactWhatsapp
