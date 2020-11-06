@@ -454,7 +454,7 @@ export const AddLiveLesson = () => {
               disabled={busy}
               style={{ gridColumn: '2/4', color: 'white' }}
             >
-              Change Zoom Config
+              Save Meeting Settings
             </Button>
           </div>
           <List

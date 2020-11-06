@@ -54,4 +54,4 @@ export const OBS_HELP_DOC = '';
 export const OBS_HELP_VIDEO = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2F2020-10-26%2006-26-23.mp4?alt=media&token=8f4a2f91-5f8f-49a9-b9cc-8639cf1fa342';
 export const AKSHARA_HELP_VIDEO = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2F2020-11-05%2018-52-28.mp4?alt=media&token=15d6df26-fc1d-4f7b-8ab0-16bae9f5f785';
 
-export const isTester = (email: string | undefined | null) => email === 'malindakpt@gmail.com' || email === 'rasikadri@gmail.com';
+export const isTester = (email: string | undefined | null) => email === 'malindakpt@gmail.com' || email === 'rasikadri@gmail.com' || email === 'thusitha884@gmail.com';
