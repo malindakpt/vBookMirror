@@ -89,12 +89,11 @@ export const Course: React.FC = () => {
   };
 
   const handleLessonSelection = (lesson: ILesson, isLive: boolean) => {
-    if (!email) {
-      showSnackbar('Please login with your gmail address');
-      return;
-    }
-
     if (!readyToGoVideo(lesson)) {
+      if (!email) {
+        showSnackbar('Please login with your gmail address');
+        return;
+      }
       teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);
     }
   };

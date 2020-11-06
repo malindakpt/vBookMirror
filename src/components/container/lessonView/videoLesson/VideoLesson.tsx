@@ -117,12 +117,13 @@ export const VideoLesson: React.FC = () => {
   };
 
   useEffect(() => {
-    if (email) {
-      processVideo();
-    } else {
-      Util.invokeLogin();
-      showSnackbar('Please login with your gmail address and reload the page');
-    }
+    processVideo();
+    // if (email) {
+    //   processVideo();
+    // } else {
+    //   // Util.invokeLogin();
+    //   // showSnackbar('Please login with your gmail address and reload the page');
+    // }
 
     return () => {
       clearInterval(timerRef.current);
