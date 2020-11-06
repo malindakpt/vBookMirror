@@ -10,7 +10,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddVideoLesson.module.scss';
 import {
-  addDoc, Entity, getDocsWithProps, updateDoc,
+  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
@@ -23,6 +23,7 @@ import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import Config, {
   AKSHARA_HELP_VIDEO, OBS_DOWNLOAD, OBS_HELP_VIDEO,
 } from '../../../../data/Config';
+import { ITeacher } from '../../../../interfaces/ITeacher';
 
 export const AddVideoLesson = () => {
   useBreadcrumb();
@@ -38,6 +39,7 @@ export const AddVideoLesson = () => {
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [allLessons, setAllLessons] = useState<IVideoLesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
+  const [teacher, setTeacher] = useState<ITeacher>();
 
   const [courseLessons, setCourseLessons] = useState<IVideoLesson[]>([]);
 
@@ -101,10 +103,11 @@ export const AddVideoLesson = () => {
       onCourseChange(courses, courseId, lessons);
     });
 
+    if (!email) return;
     // fetch unrelated data
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-
+    getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
     // eslint-disable-next-line
   }, [onDataFetch]);
 
@@ -400,6 +403,19 @@ export const AddVideoLesson = () => {
               disabled={disabled || Config.paymentDisabled}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
+            {teacher && (
+            <div>
+              <span style={{ marginRight: '5px' }}>Profile url:</span>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`teacher/${teacher.url}`}
+              >
+                akshara.lk/teacher/
+                {teacher.url}
+              </a>
+            </div>
+            )}
             <Button
               size="small"
               variant="contained"
