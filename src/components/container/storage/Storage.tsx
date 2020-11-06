@@ -12,33 +12,6 @@ export const Storage = () => {
   const [vds, setVds] = useState<{tId: string; vidId: string}[]>([]);
   const [onUpdate, rerender] = useForcedUpdate();
 
-  useEffect(() => {
-    setVds([]);
-    getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, {}).then((lessons) => {
-      getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((teachers) => {
-        teachers.forEach((teacher) => {
-          listAllVideos(teacher.ownerEmail).then((videos) => {
-            videos?.items.forEach((vid) => {
-              const videoId = vid.fullPath.split('/')[2];
-              const lessonExists = lessons.findIndex((les) => les.videoId === videoId) > -1;
-              if (!lessonExists) {
-                setVds((prev) => {
-                  const clone = [...prev];
-                  clone.push({
-                    tId: teacher.id,
-                    vidId: videoId,
-                  });
-                  return clone;
-                });
-              }
-            });
-          });
-        });
-      });
-    });
-    // eslint-disable-next-line
-  }, [onUpdate]);
-
   return (
     <>
       <div className={classes.root}>
