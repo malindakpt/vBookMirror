@@ -21,7 +21,8 @@ export enum Entity {
   PAYMENTS_STUDENTS = 'PAYMENTS_STUDENTS', // used by BE
   PAYMENTS_TEACHER = 'PAYMENTS_TEACHER',
   REFUND_REQUESTS = 'REFUND_REQUESTS',
-  LOGS = 'LOGS'
+  LOGS = 'LOGS',
+  STUDENT_INFO = 'STUDENT_INFO'// used by BE
 }
 
 const app = firebase.initializeApp(appConfig);
@@ -264,3 +265,17 @@ export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | nul
       });
   },
 );
+
+export const sendHttp = (url: string, body: object) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...body, createdAt: new Date().getTime() }),
+  };
+  fetch(url, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Sent info');
+      // this.setState({ postId: data.id })
+    });
+};

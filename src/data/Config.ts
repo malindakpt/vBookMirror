@@ -17,6 +17,7 @@ const APP_CONFIG_DEV = {
   paymentDisabled: false,
   techPhone: '0771141194',
   zoomURL: 'https://smsm-54fa3.web.app',
+  studentUpdateUrl: 'http://localhost:4000/studentupdate',
 
   // Variables valid only for dev
   payOnDismiss: true,
@@ -39,6 +40,7 @@ const APP_CONFIG_PROD = {
   zoomURL: 'https://smsm-54fa3.web.app',
   paymentDisabled: false,
   techPhone: '0771141194',
+  studentUpdateUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/studentupdate',
 
   payOnDismiss: false,
 };
@@ -47,7 +49,7 @@ export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG
 // export default APP_CONFIG_PROD;
 
 console.log(process.env.REACT_APP_ENV);
-
+export const STUDENT_INFO_UPDATE = 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/studentupdate';
 export const ADMIN_EMAIL = 'contact.akshara.lk@gmail.com';
 export const OBS_DOWNLOAD = 'https://drive.google.com/file/d/1NOqkKwhl1FVuHE7Z52FB4qn7iE2U-_6b/view?usp=sharing';
 export const OBS_HELP_DOC = '';
