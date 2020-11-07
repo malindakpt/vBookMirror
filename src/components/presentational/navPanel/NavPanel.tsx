@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,8 +12,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/BorderClear';
 import MailIcon from '@material-ui/icons/BlurOn';
 import { Link } from 'react-router-dom';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { TextField } from '@material-ui/core';
 import { AppContext } from '../../../App';
 import { adminRoutes, teacherRoutes, commonRoutes } from '../../router/Router';
+import { Entity, getDocsWithProps } from '../../../data/Store';
+import { ITeacher } from '../../../interfaces/ITeacher';
 
 interface NavLink{
   label: string;
@@ -39,13 +43,33 @@ const useStyles = makeStyles({
 export const NavPanel = () => {
   const classes = useStyles();
   const [show, setShow] = React.useState(false);
-  const { isTeacher, isAdmin } = useContext(AppContext);
+  const {
+    isTeacher, isAdmin, setEmail, setIsTeacher,
+  } = useContext(AppContext);
+  const [teachers, setTeachers] = useState<ITeacher[]>([]);
+  const [selectedTeacher, setSelectedTeacher] = useState<ITeacher|null>();
+
+  useEffect(() => {
+    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => {
+      setTeachers(data);
+    });
+  }, []);
 
   const toggleDrawer = (open: any) => (event: any) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
     setShow(open);
+  };
+
+  const onTeacherChange = (newVal: ITeacher|null) => {
+    // const idx = teachers.findIndex((t) => t.id === newVal?.id);
+    // console.log('se', newVal);
+    if (newVal) {
+      setEmail(newVal.ownerEmail);
+      setSelectedTeacher(newVal);
+      setIsTeacher(true);
+    }
   };
 
   const linkSegment = (links: NavLink[]) => (
@@ -108,7 +132,28 @@ export const NavPanel = () => {
               0771141194
             </a>
           </div>
-
+          <div>
+            {teachers && isAdmin() && (
+            <Autocomplete
+              id="combo-box-demo"
+              value={selectedTeacher}
+              options={teachers}
+              getOptionLabel={(option: ITeacher) => option.name}
+              style={{ width: 200, height: 100, margin: 'auto' }}
+              renderInput={(params: any) => (
+                <TextField
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...params}
+                  label="Select Teacher"
+                />
+              )}
+              onChange={(event: any, newValue: ITeacher | null) => {
+                onTeacherChange(newValue);
+                console.log(newValue);
+              }}
+            />
+            )}
+          </div>
         </Drawer>
       </>
     </div>

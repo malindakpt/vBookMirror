@@ -183,7 +183,7 @@ export const VideoLesson: React.FC = () => {
             number={teacher.phoneChat}
             message={`[${lesson?.topic}]:`}
           >
-            <div>Ask Questions</div>
+            <div>Contact Teacher</div>
 
           </ReactWhatsapp>
         </div>
