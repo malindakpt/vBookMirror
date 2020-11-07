@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
+import { UnsubscribeOutlined } from '@material-ui/icons';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {
@@ -14,7 +15,7 @@ import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
-import { checkRefund, promptPayment } from '../../../helper/util';
+import { checkRefund, promptPayment, Util } from '../../../helper/util';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -91,7 +92,8 @@ export const Course: React.FC = () => {
   const handleLessonSelection = (lesson: ILesson, isLive: boolean) => {
     if (!readyToGoVideo(lesson)) {
       if (!email) {
-        showSnackbar('Please login with your gmail address');
+        // showSnackbar('Please login with your gmail address');
+        Util.invokeLogin();
         return;
       }
       teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);

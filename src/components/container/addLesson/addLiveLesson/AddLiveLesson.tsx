@@ -381,7 +381,7 @@ export const AddLiveLesson = () => {
                 onClick={onSave}
                 disabled={disabled}
               >
-                {editMode ? 'Save Changes' : 'Add Live Lesson'}
+                {editMode ? 'Save Changes' : 'Save Lesson'}
               </Button>
               <input
                 type="text"
@@ -452,7 +452,7 @@ export const AddLiveLesson = () => {
               color="primary"
               onClick={saveAuth}
               disabled={busy}
-              style={{ gridColumn: '2/4', color: 'white' }}
+              style={{ gridColumn: '2/4' }}
             >
               Save Meeting Settings
             </Button>
