@@ -48,15 +48,33 @@ app.post('/notify/1', (req: any, res: any) => {
   });
 });
 
-app.post('/notify/2', (req: any, res: any) => {
-  const ref = req.body.merchant_id;
-  //   const ref2 = req.param('payhere_amount');
-  const out = `2a: ${ref}   `;
+app.post('/studentupdate', (req: any, res: any) => {
+  const { body } = req;
 
-  console.log(out);
-  res.send({
-    res: out,
-  });
+  try {
+    const update = {
+      name: body.name,
+      ownerEmail: body.ownerEmail,
+      phone: body.phone,
+      birthYear: body.birthYear,
+      reference: body.reference,
+      createdAt: body.createdAt,
+      type: body.type,
+    };
+
+    db.collection(Entity.STUDENT_INFO).add(update).then((ref) => {
+    }).catch((err) => {
+      console.log('error studentupdate fb');
+    });
+    res.send({
+      res: 'ok',
+    });
+  } catch (e) {
+    console.log('error studentupdate catch');
+    res.send({
+      res: 'error',
+    });
+  }
 });
 
 app.post('/notify/3', (req: any, res: any) => {

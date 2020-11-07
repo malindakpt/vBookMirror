@@ -18,6 +18,7 @@ import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { promptPayment, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
+import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
@@ -139,6 +140,7 @@ export const VideoLesson: React.FC = () => {
       {lesson && (
       <CollectInfo
         reference={lesson.id}
+        lessonType={InteractionType.VIDEO_LESSON}
       />
       )}
       <div className={classes.warn}>
