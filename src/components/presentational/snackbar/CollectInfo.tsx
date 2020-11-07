@@ -82,9 +82,8 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
       >
         <DialogTitle id="alert-dialog-title">Enter student details to watch video</DialogTitle>
         <DialogContent>
-          {/* <DialogContentText id="alert-dialog-description"> */}
           <DialogContentText id="alert-dialog-description">
-            Enter student details to watch video(SI)
+            වීඩියෝව නැරඹීමට සිසුවාගේ විස්තර ඇතුලත් කරන්න
           </DialogContentText>
           <form
             noValidate
@@ -92,29 +91,33 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
           >
             <div>
               <TextField
+                className="w100"
                 id="name"
-                label="Name"
+                label="Name(නම)"
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>
               <TextField
+                className="w100"
                 id="phone"
-                label="Phone Number"
+                label="Phone Number(ජංගම දුරකථනය)"
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
             <div>
               <TextField
+                className="w100"
                 id="birthYear"
-                label="Birth Year"
+                label="Birth Year(උපන් අවුරුද්ද Eg: 2005)"
                 onChange={(e) => setBirthYear(e.target.value)}
               />
             </div>
             <div>
               <TextField
+                className="w100"
                 id="email"
-                label="Email Address"
+                label="Email Address(විද්‍යුත් තැපෑල)"
                 onChange={(e) => setOwnerEmail(e.target.value)}
               />
             </div>

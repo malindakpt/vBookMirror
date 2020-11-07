@@ -90,7 +90,7 @@ export const Subscriptions = () => {
             <tr key={0}>
               <th>Lesson</th>
               <th>Price(Now)</th>
-              <th>Subscriptions</th>
+              <th>Payments</th>
               <th>Income</th>
             </tr>
             {
