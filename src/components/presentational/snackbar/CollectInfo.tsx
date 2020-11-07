@@ -32,8 +32,13 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
   };
 
   useEffect(() => {
-    if (isTeacher === false && !getFromStorage(LocalStorageKeys.STUDENT_INFO)) {
-      setOpen(true);
+    if (isTeacher === false) {
+      const info = getFromStorage(LocalStorageKeys.STUDENT_INFO);
+      if (info) {
+        sendHttp(Config.studentUpdateUrl, info);
+      } else {
+        setOpen(true);
+      }
     }
   }, [email, isTeacher]);
 

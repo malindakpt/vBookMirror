@@ -67,12 +67,12 @@ app.post('/studentupdate', (req: any, res: any) => {
       console.log('error studentupdate fb');
     });
     res.send({
-      res: 'ok',
+      res: { status: 'ok' },
     });
   } catch (e) {
     console.log('error studentupdate catch');
     res.send({
-      res: 'error',
+      res: { status: 'error' },
     });
   }
 });

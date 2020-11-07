@@ -275,6 +275,7 @@ export const sendHttp = (url: string, body: object) => {
   fetch(url, requestOptions)
     .then((response) => response.json())
     .then((data) => {
+      console.log('Sent info');
       // this.setState({ postId: data.id })
     });
 };
