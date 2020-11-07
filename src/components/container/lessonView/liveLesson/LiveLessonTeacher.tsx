@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext, useEffect, useRef, useState,
+} from 'react';
 import { Button } from '@material-ui/core';
 import { AppContext } from '../../../../App';
 import classes from './LiveLesson.module.scss';
@@ -45,6 +47,9 @@ export const LiveLessonTeacher: React.FC = () => {
   const [sentStartCommands, setSentStartCommands] = useState<number>(0);
   const [connectingText, setConnectingText] = useState<string>('Connecting to meeting...');
 
+  const startConnectTimerRef = useRef<any>();
+  const reconnectTimerRef = useRef<any>();
+
   const sendStartAction = () => {
     setSentStartCommands((prev) => prev + 1);
     const ele = document.getElementsByTagName('iframe');
@@ -58,6 +63,7 @@ export const LiveLessonTeacher: React.FC = () => {
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
       ele[0].contentWindow?.postMessage({ type: 'STOP', value: '' }, '*');
+      console.log('Stop live msg sent');
     }
   };
 
@@ -73,7 +79,8 @@ export const LiveLessonTeacher: React.FC = () => {
       userMap[u.userName].count += 1;
       if (userMap[u.userName].count > 1) {
         // eslint-disable-next-line no-new
-        new Notification('More users logged with same name', { body: userMap[u.userName].name, icon: logo });
+        // new Notification('More users logged with same name', { body: userMap[u.userName].name, icon: logo });
+        console.error('user:', userMap[u.userName].name);
       }
     }
     setUsers(userMap);
@@ -131,15 +138,14 @@ export const LiveLessonTeacher: React.FC = () => {
       }
     }, false);
 
-    glob.startTimer = setInterval(() => {
+    startConnectTimerRef.current = setInterval(() => {
       console.log('send start mkpt');
       sendStartAction();
     }, 1000);
 
-    setTimeout(() => {
+    reconnectTimerRef.current = setTimeout(() => {
       clearInterval(glob.startTimer);
       if (!glob.count) {
-        glob.removeEventListener('beforeunload', glob.beforeunload);
         setConnectingText('Could not connect to meeting. Reloading...');
         window.location.reload();
       }
@@ -173,19 +179,12 @@ export const LiveLessonTeacher: React.FC = () => {
       console.log(result);
     });
 
-    glob.beforeunload = (event: any) => {
-      console.log('Unmounting...');
-      stopLive();
-      event.returnValue = '';
-    };
-
-    window.addEventListener('beforeunload', glob.beforeunload);
     processVideo();
 
     return () => {
-      glob.removeEventListener('beforeunload', glob.beforeunload);
+      clearInterval(startConnectTimerRef.current);
+      clearTimeout(reconnectTimerRef.current);
       stopLive();
-      clearInterval(glob.timer);
     };
     // eslint-disable-next-line
   }, []);
@@ -216,31 +215,10 @@ export const LiveLessonTeacher: React.FC = () => {
           {lesson?.description}
         </div>
 
-        {/* {connected && (
-        <Button onClick={() => {
-          stopLive();
-        }}
-        >
-          {reloadText}
-        </Button>
-        )} */}
-        {/* {connected && (
-        <Button onClick={() => {
-          stopLive();
-          window.removeEventListener('beforeunload', (window as any).beforeunload);
-          setTimeout(() => {
-            window.close();
-          }, 1000);
-        }}
-        >
-          Close this window
-        </Button>
-        )} */}
-
           {!connected && (
-          <Button>
+          <h3>
             {`${connectingText} ${REPEAT_START_TIMES - sentStartCommands}`}
-          </Button>
+          </h3>
           )}
 
         <div className={classes.check}>

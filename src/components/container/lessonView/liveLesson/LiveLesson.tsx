@@ -87,7 +87,7 @@ export const LiveLesson: React.FC = () => {
               }
             });
           } else {
-            showSnackbar('Please login with your gmail address');
+            showSnackbar('Please login with your Gmail address');
           }
         } else {
           setLesson(lesson);
@@ -123,12 +123,13 @@ export const LiveLesson: React.FC = () => {
   }, []);
 
   const getAppButton = (teacher: ITeacher) => (
-    <Button onClick={() => {
-      setCopyLessonWarn(true);
-      copyName();
-    }}
+    <Button
+      onClick={() => {
+        setCopyLessonWarn(true);
+        copyName();
+      }}
     >
-      JOIN WITH ZOOM APP
+      CONNECT FROM APP
     </Button>
   );
 
@@ -157,13 +158,13 @@ export const LiveLesson: React.FC = () => {
     showInView ? (
       <>
         {getIframe(teacher)}
-        <Button onClick={() => {
+        {/* <Button onClick={() => {
           setShowInView(true);
           stopLive();
         }}
         >
           DISCONNECT FROM LESSON
-        </Button>
+        </Button> */}
       </>
     ) : (
       <>
@@ -172,7 +173,7 @@ export const LiveLesson: React.FC = () => {
           startVideoRendering();
         }}
         >
-          CONNECT TO LESSON
+          CONNECT FROM WEB
         </Button>
       </>
 

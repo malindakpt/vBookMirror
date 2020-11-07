@@ -166,9 +166,9 @@ export const AddLiveLesson = () => {
         showSnackbar(`${less.topic} ${lesId ? 'Started' : 'Stopped'}`);
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
-        if (lesId) {
-          history.push(`/liveStat/${lesId}`);
-        }
+        // if (lesId) {
+        //   history.push(`/liveStat/${lesId}`);
+        // }
       });
     }
   };
@@ -222,11 +222,19 @@ export const AddLiveLesson = () => {
         }}
         />
         {teacher?.zoomRunningLessonId === liveLesson.id && (
-        <InputIcon onClick={(e) => {
-          history.push(`/liveStat/${liveLesson.id}`); e.stopPropagation();
-        }}
-        />
-)}
+          <>
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                history.push(`/liveStat/${liveLesson.id}`); 
+                e.stopPropagation();
+              }}
+            >
+              Check Attendance
+
+            </Button>
+          </>
+        )}
       </ListItem>
       <Divider />
     </div>

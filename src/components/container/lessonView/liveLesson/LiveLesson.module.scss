@@ -4,6 +4,10 @@
   margin: auto;
   max-width: 900px;
 
+  background: #ffffff94;
+  padding: 15px;
+  border-radius: 2px;
+
   .fsButton {
     position: relative;
     z-index: 99999;
@@ -53,8 +57,7 @@
   }
 
   .notStarted {
-    text-align: center;
-    color: white;
+    text-align: center; 
     padding-top: 100px;
     font-weight: bold;
   }
