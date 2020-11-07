@@ -17,6 +17,7 @@ import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { promptPayment, Util } from '../../../../helper/util';
+import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
@@ -135,6 +136,11 @@ export const VideoLesson: React.FC = () => {
 
   return (
     <div className={`${classes.root} ${!isFull && classes.maxWidth}`}>
+      {lesson && (
+      <CollectInfo
+        reference={lesson.id}
+      />
+      )}
       <div className={classes.warn}>
         {warn}
       </div>
