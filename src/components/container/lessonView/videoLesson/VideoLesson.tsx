@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useHistory, useParams } from 'react-router-dom';
 import React, {
@@ -60,39 +61,13 @@ export const VideoLesson: React.FC = () => {
 
   const startVideoRendering = (lesson: IVideoLesson) => {
     setLesson(lesson);
-    setTimeout(() => {
-      // eslint-disable-next-line
-      // @ts-ignore
-      document.getElementById('player').src = '';
-    }, 1000);
   };
 
   const onAcceptAlert = () => {
     if (email && tempLesson && teacher) {
-    //   getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
-    //     {
-    //       lessonId,
-    //       ownerEmail: email,
-    //     }).then((data) => {
-    //     if (data && data.length > 0) {
-    //       const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
-    //        < Config.allowedWatchCount));
-    //       if (validPayment || amIOwnerOfLesson(tempLesson)) {
       startVideoRendering(tempLesson);
       setWarn('Do not reload this page');
       startExpireLessonForUser();
-      //     if (validPayment) {
-      //       startExpireLessonForUser(validPayment);
-      //     }
-      //   } else {
-      //     promptPayment(email, teacher, tempLesson, false, () => {
-      //       setTimeout(() => {
-      //         window.location.reload();
-      //       }, Config.realoadTimeoutAferSuccessPay);
-      //     }, showSnackbar);
-      //   }
-      // }
-      // });
     } else {
       showSnackbar('Please login with your gmail address');
     }
@@ -142,12 +117,13 @@ export const VideoLesson: React.FC = () => {
   };
 
   useEffect(() => {
-    if (email) {
-      processVideo();
-    } else {
-      Util.invokeLogin();
-      showSnackbar('Please login with your gmail address and reload the page');
-    }
+    processVideo();
+    // if (email) {
+    //   processVideo();
+    // } else {
+    //   // Util.invokeLogin();
+    //   // showSnackbar('Please login with your gmail address and reload the page');
+    // }
 
     return () => {
       clearInterval(timerRef.current);
@@ -155,8 +131,10 @@ export const VideoLesson: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
+  const [isFull, setFull] = useState<boolean>(false);
+
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${!isFull && classes.maxWidth}`}>
       <div className={classes.warn}>
         {warn}
       </div>
@@ -167,48 +145,58 @@ export const VideoLesson: React.FC = () => {
         {lesson?.description}
       </div>
       {lesson?.videoURL && (
-      <video
-        width="100%"
-        height="100%"
-        controls
-        controlsList="nodownload"
-        autoPlay
+        <div className={isFull ? classes.full : classes.small}>
+          <div
+            className={classes.playerHead}
+            role="button"
+            onKeyDown={() => {}}
+            onClick={(e) => {
+              setFull((prev) => !prev);
+              e.stopPropagation();
+            }}
+          >
+            .
+
+          </div>
+          <iframe
+            className={classes.player}
+            title="video"
+            src={lesson?.videoURL}
+          />
+        </div>
+      )}
+      <div
+        className={classes.lessonInfo}
+        style={isFull ? { display: 'none' } : {}}
       >
-        <source
-          id="player"
-          src={lesson?.videoURL}
-          type="video/mp4"
-        />
-      </video>
-      )}
-      {teacher && lesson && (
-      <div>
-        <ReactWhatsapp
-          number={teacher.phoneChat}
-          message={`[${lesson?.topic}]:`}
-        >
-          <div>Ask Questions</div>
+        {teacher && lesson && (
+        <div>
+          <ReactWhatsapp
+            number={teacher.phoneChat}
+            message={`[${lesson?.topic}]:`}
+          >
+            <div>Ask Questions</div>
 
-        </ReactWhatsapp>
-      </div>
-      )}
-      {lesson?.attachments && (
-      <div className={classes.attachments}>
-        {lesson.attachments.map((atta, idx) => (
+          </ReactWhatsapp>
+        </div>
+        )}
+        {lesson?.attachments && (
+        <div className={classes.attachments}>
+          {lesson.attachments.map((atta, idx) => (
           // eslint-disable-next-line react/no-array-index-key
-          <li key={atta + idx}>
-            <a
-              href={atta}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {atta}
-            </a>
-          </li>
-        ))}
-      </div>
+            <li key={atta + idx}>
+              <a
+                href={atta}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {atta}
+              </a>
+            </li>
+          ))}
+        </div>
 )}
-
+      </div>
       {alert && payment && (
       <AlertDialog
         type={AlertMode.VIDEO}
