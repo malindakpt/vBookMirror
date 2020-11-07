@@ -62,7 +62,7 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
     if (name === '') {
       showSnackbar('Please add the Name of the student');
     } else if (phone.length !== 10) {
-      showSnackbar('Add a valid phone no(Ex: 0771234567)');
+      showSnackbar('Add a valid phone no(Eg: 0771234567)');
     // eslint-disable-next-line no-restricted-globals
     } else if (isNaN(year) || year < 2000) {
       showSnackbar('Birth year should be > 2000');
@@ -80,10 +80,10 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Enter student details to watch video</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Enter student details to watch the lesson</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            වීඩියෝව නැරඹීමට සිසුවාගේ විස්තර ඇතුලත් කරන්න
+            පාඩම සම්බන්ද කිරීමට සිසුවාගේ විස්තර ඇතුලත් කරන්න
           </DialogContentText>
           <form
             noValidate
@@ -126,12 +126,6 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
 
         </DialogContent>
         <DialogActions>
-          {/* <Button
-            onClick={handleClose}
-            color="primary"
-          >
-            CANCEL
-          </Button> */}
           <Button
             onClick={onSave}
             color="primary"
