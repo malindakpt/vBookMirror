@@ -85,10 +85,18 @@ export const getStringFromHash = (s: string) => {
   return res;
 };
 
+const showPaymentGuide = (show: boolean) => {
+  const ele = document.getElementById('payGuide');
+  if (ele) {
+    ele.style.display = show ? 'block' : 'none';
+  }
+};
+
 export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
   isLive: boolean, onComplete: (lessonId: string) => void, showSnackbar: (msg: string) => void) => {
   // const dd = new Date().getTime();
   paymentJS.onDismissed = function onDismissed() {
+    showPaymentGuide(false);
     if (Config.isProd) {
       console.log('Payment Dismissed');
       showSnackbar('ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
@@ -112,6 +120,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
   };
 
   paymentJS.onCompleted = function onCompleted() {
+    showPaymentGuide(false);
     console.log('Payment Succeed');
     showSnackbar('ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
     onComplete(lesson.id);
@@ -126,10 +135,12 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
         // setPayLesson(lesson);
         startPay(email, Util.fullName, lesson, payable(teacher.commissionLive,
           lesson.price), teacher.ownerEmail, PaymentType.LIVE_LESSON);
+        showPaymentGuide(true);
       }
     });
   } else {
     startPay(email, Util.fullName, lesson, payable(teacher.commissionVideo,
       lesson.price), teacher.ownerEmail, PaymentType.VIDEO_LESSON);
+    showPaymentGuide(true);
   }
 };

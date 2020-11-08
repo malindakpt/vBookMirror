@@ -65,8 +65,18 @@ export const adminRoutes: routeConfig = [
 
 const Router: React.FC = () => {
   const { isTeacher, isAdmin } = useContext(AppContext);
+
   return (
     <>
+      <a
+        id="payGuide"
+        className={classes.help}
+        href="https://drive.google.com/file/d/1zLrkJn_EAXvuLaHHhO_mjYRX9krvvtpl/view?usp=sharing"
+        target="_blank"
+        rel="noreferrer"
+      >
+        මුදල් ගෙවන අකාරය ඉගෙන ගන්න(Learn how to make a payment)
+      </a>
       <BreadcrumbBar />
       <div className={classes.container}>
         <div>
