@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
-import { UnsubscribeOutlined } from '@material-ui/icons';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import {

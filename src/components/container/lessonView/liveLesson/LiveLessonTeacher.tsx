@@ -171,9 +171,10 @@ export const LiveLessonTeacher: React.FC = () => {
     event.preventDefault();
     // Older browsers supported custom message
     event.returnValue = '';
+    // eslint-disable-next-line
   }, []);
 
-  const disconnectAll = () => {
+  const disconnectAll = useCallback(() => {
     sendStopAction();
 
     setDisconnected(true);
@@ -181,12 +182,13 @@ export const LiveLessonTeacher: React.FC = () => {
 
     // TODO: what is meant by false here
     window.removeEventListener('message', onMsgZoomClientListener, false);
+    // eslint-disable-next-line no-use-before-define
     window.removeEventListener('beforeunload', onBeforeunloadListener, false);
 
     setTimeout(() => {
       setConnected(false);
     }, 1000);
-  };
+  }, [onBeforeunloadListener, onMsgZoomClientListener]);
 
   const startVideoRendering = (lesson: ILiveLesson, userNames: ZoomUser[], paymentForLesson: IPayment[]) => {
     sendStartAction();

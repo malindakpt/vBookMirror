@@ -6,8 +6,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
-import { useHistory } from 'react-router-dom';
-import InputIcon from '@material-ui/icons/Input';
 import { AppContext } from '../../../../App';
 import {
   addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
@@ -50,7 +48,6 @@ const fresh: ILiveLesson = {
   createdAt: 0,
 };
 export const AddLiveLesson = () => {
-  const history = useHistory();
   const { showSnackbar, email } = useContext(AppContext);
   const [editMode, setEditMode] = useState<boolean>(false);
 
