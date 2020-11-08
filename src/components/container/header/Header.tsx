@@ -23,11 +23,6 @@ export const Header:React.FC = () => {
     } else {
       email = result.email;
     }
-    const temp = localStorage.getItem('mkptuser');
-    if (temp !== null) {
-      // if (temp !== null && window.location.host.startsWith('local')) {
-      email = temp;
-    }
 
     setEmail(email);
     Util.fullName = result.displayName;
@@ -66,6 +61,7 @@ export const Header:React.FC = () => {
       // const token = result.credential.accessToken;
       // const user2 = result.user;
       setUserDetails(result);
+      window.location.reload();
 
       // setName(user.displayName);
       // ...
