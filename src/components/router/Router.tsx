@@ -71,7 +71,7 @@ const Router: React.FC = () => {
       <a
         id="payGuide"
         className={classes.help}
-        href="https://drive.google.com/file/d/1zLrkJn_EAXvuLaHHhO_mjYRX9krvvtpl/view?usp=sharing"
+        href="https://youtu.be/9gDP0N5Gh_Q"
         target="_blank"
         rel="noopener noreferrer"
       >
