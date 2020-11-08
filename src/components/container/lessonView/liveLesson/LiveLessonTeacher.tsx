@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext, useEffect, useRef, useState,
 } from 'react';
+import { Button } from '@material-ui/core';
 import { AppContext } from '../../../../App';
 import classes from './LiveLesson.module.scss';
 import Config from '../../../../data/Config';
@@ -15,6 +16,12 @@ import { getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import logo from '../../../../images/logo.png';
 
+interface ZoomUser{
+  userName: string;
+  userId: string;
+  isHost: boolean;
+}
+
 interface StudentConnection {
   [key: string]: {
     // email: string;
@@ -22,10 +29,7 @@ interface StudentConnection {
     count: number;
   }
 }
-interface ZoomUser{
-  userName: string;
-  userId: string;
-}
+
 const REPEAT_START_TIMES = 20;
 export const LiveLessonTeacher: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -47,12 +51,10 @@ export const LiveLessonTeacher: React.FC = () => {
 
   const [users, setUsers] = useState< StudentConnection >({});
   const [connected, setConnected] = useState<boolean>(false);
-  // const [reloadText, setReloadText] = useState<string>('Reload');
+  const [disconnected, setDisconnected] = useState<boolean>(false);
   const [sentStartCommands, setSentStartCommands] = useState<number>(0);
-  const [connectingText, setConnectingText] = useState<string>('Connecting to meeting...');
 
   const startConnectTimerRef = useRef<any>();
-  // const [memberCount, setMemeberCount] = useState<number>(0);
   const memeberCount = useRef<number>(0);
 
   const sendStartAction = () => {
@@ -83,8 +85,7 @@ export const LiveLessonTeacher: React.FC = () => {
     }
   };
 
-  const updateNewStudents = (zUsers: ZoomUser[]) => {
-    console.log('Member', memeberCount.current);
+  const updateJoinedCounts = (zUsers: ZoomUser[]) => {
     const userMap: StudentConnection = {};
     for (const u of zUsers) {
       if (!userMap[u.userName]) {
@@ -103,20 +104,33 @@ export const LiveLessonTeacher: React.FC = () => {
     setUsers(userMap);
   };
 
-  const messageListener = useCallback((e) => {
+  const onBeforeunloadListener = useCallback((event) => {
+    // Cancel the event as stated by the standard.
+    event.preventDefault();
+    // Older browsers supported custom message
+    event.returnValue = '';
+  }, []);
+
+  const onMsgZoomClientListener = useCallback((e) => {
     const atts = e.data;
+    if (atts.data?.userName === Util.fullName) {
+      console.error('Teache name used to login', atts.data);
+      return;
+    }
 
     if (atts.type === 'CONNECT') {
       setConnected(true);
     } else if (atts.type === 'JOIN') {
+      setConnected(true);
+      const zUser: ZoomUser = atts.data;
+
       memeberCount.current += 1;
       setUserNames((prev) => {
         const clone = [...prev, atts.data];
-        updateNewStudents(clone);
+        updateJoinedCounts(clone);
         return clone;
       });
 
-      const zUser: ZoomUser = atts.data;
       const lesson = selectedLesson.current;
 
       if (lesson && (lesson?.price > 0)) {
@@ -146,23 +160,33 @@ export const LiveLessonTeacher: React.FC = () => {
       const luser = atts.data;
       setUserNames((prev) => {
         const clone = [...prev.filter((user) => user.userName !== luser.userName)];
-        updateNewStudents(clone);
+        updateJoinedCounts(clone);
         return clone;
       });
       setNonPaid((prev) => {
         const clone = [...prev.filter((user) => user.userName !== luser.userName)];
-        updateNewStudents(clone);
+        // updateNewStudents(clone);
         return clone;
       });
     }
   }, []);
 
+  const disconnectAll = () => {
+    setDisconnected(true);
+    clearInterval(startConnectTimerRef.current);
+
+    // TODO: what is meant by false here
+    window.removeEventListener('message', onMsgZoomClientListener, false);
+    window.removeEventListener('beforeunload', onBeforeunloadListener, false);
+
+    sendStopAction();
+    setTimeout(() => {
+      setConnected(false);
+    }, 1000);
+  };
+
   const startVideoRendering = (lesson: ILiveLesson, userNames: ZoomUser[], paymentForLesson: IPayment[]) => {
     sendStartAction();
-
-    // TODO: what is false here
-    window.addEventListener('message', messageListener, false);
-
     let startActionCount = 0;
     startConnectTimerRef.current = setInterval(() => {
       console.log('send start mkpt', startActionCount += 1);
@@ -203,19 +227,17 @@ export const LiveLessonTeacher: React.FC = () => {
   };
 
   useEffect(() => {
-    const glob: any = window;
     Notification.requestPermission().then((result) => {
       console.log(result);
     });
+    // TODO: what is false here
+    window.addEventListener('message', onMsgZoomClientListener, false);
+    window.addEventListener('beforeunload', onBeforeunloadListener, false);
 
     processVideo();
 
     return () => {
-      clearInterval(startConnectTimerRef.current);
-      // TODO: what is false here
-      window.removeEventListener('message', messageListener, false);
-      // clearTimeout(reconnectTimerRef.current);
-      sendStopAction();
+      disconnectAll();
     };
     // eslint-disable-next-line
   }, []);
@@ -228,7 +250,7 @@ export const LiveLessonTeacher: React.FC = () => {
         name="iframe_a"
         height="300px"
         width="100%"
-        style={{}}
+        style={{ visibility: 'hidden' }}
         allow="camera *;microphone *"
         title="Live Lessons"
       />
@@ -237,32 +259,40 @@ export const LiveLessonTeacher: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      { lesson && (
-      <div>
-        <div className={classes.topic}>
-          {lesson.topic}
-        </div>
-        <div className={classes.desc}>
-          {lesson?.description}
-        </div>
+      { (lesson && !disconnected) ? (
+        <div>
+          {connected && (
+          <div>
+            <h3 style={{ color: 'red' }}>Disconnect the connection before reload/close the page</h3>
+            <Button onClick={disconnectAll}>
+              Disconnect
+            </Button>
+          </div>
+          )}
+          <div className={classes.topic}>
+            {lesson.topic}
+          </div>
+          <div className={classes.desc}>
+            {lesson?.description}
+          </div>
 
           {!connected && (
           <h3>
-            {`${connectingText} ${REPEAT_START_TIMES - sentStartCommands}`}
+            {`Connecting to meeting... ${REPEAT_START_TIMES - sentStartCommands}`}
           </h3>
           )}
 
-        <div className={classes.check}>
-          <table className={classes.payList}>
-            <tr><th>Not paid students for this lesson</th></tr>
-            {/* <thead>
+          <div className={classes.check}>
+            <table className={classes.payList}>
+              <tr><th>Not paid students for this lesson</th></tr>
+              {/* <thead>
               <th>Student Email</th>
               <th>User Name</th>
               <th>Status</th>
             </thead> */}
-            <tbody>
-              {
-                nonPaid.filter((np) => np.userName !== Util.fullName).map((usr) => (
+              <tbody>
+                {
+                nonPaid.map((usr) => (
                   <tr key={usr.userId}>
                     <td>{usr.userId}</td>
                     <td>{usr.userName}</td>
@@ -271,40 +301,40 @@ export const LiveLessonTeacher: React.FC = () => {
                 ))
               }
 
-              <tr><th>Paid students for this lesson</th></tr>
-              {paymentForLesson.sort((a, b) => (users[a.ownerName]?.count ?? 0)
+                <tr><th>Paid students for this lesson</th></tr>
+                {paymentForLesson.sort((b, a) => (users[a.ownerName]?.count ?? 0)
                      - (users[b.ownerName]?.count ?? 0)).map((pay) => (
                        <tr key={pay.id}>
                          <td>{pay.ownerEmail}</td>
                          <td>{pay.ownerName}</td>
                          <td>{users[pay.ownerName]?.count ?? 0}</td>
                        </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        {teacher && teacher.zoomRunningLessonId === lesson.id
-          ? getIframe(teacher)
-          : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
+          {teacher && teacher.zoomRunningLessonId === lesson.id
+            ? getIframe(teacher)
+            : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
-        {lesson.attachments && (
-        <div className={classes.attachments}>
-          {lesson.attachments.map((atta) => (
-            <li key={atta}>
-              <a
-                href={atta}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {atta}
-              </a>
-            </li>
-          ))}
+          {lesson.attachments && (
+          <div className={classes.attachments}>
+            {lesson.attachments.map((atta) => (
+              <li key={atta}>
+                <a
+                  href={atta}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {atta}
+                </a>
+              </li>
+            ))}
+          </div>
+          )}
         </div>
-        )}
-      </div>
-      ) }
+      ) : <h3>Disconnected</h3> }
     </div>
   );
 };
