@@ -42,8 +42,17 @@
     width: 100%;
   }
 
+  table{
+    th{
+      text-align: left;
+      color: #473ab7;
+      padding-top: 20px;
+    }
+  }
+
   .payList {
     margin: auto;
+    width: 100%;
   }
 
   .topic {

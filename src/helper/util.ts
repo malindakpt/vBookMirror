@@ -100,7 +100,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       console.log('Succeed');
       /// /////////FAKE UPDATE START////////////
       addDoc(Entity.PAYMENTS_STUDENTS, {
-        lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price,
+        lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price, ownerName: Util.fullName,
       });
       // const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
       // updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
