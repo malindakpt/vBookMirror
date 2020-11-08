@@ -98,11 +98,15 @@ export const VideoLesson: React.FC = () => {
               const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
                   < Config.allowedWatchCount));
 
-              if (validPayment || amIOwnerOfLesson(lesson)) {
+              if (validPayment) {
                 setAlert(true);
                 setPayment(validPayment);
                 setTempLesson(lesson);
+              } else if (amIOwnerOfLesson(lesson)) {
+                setWarn('Watch as owner');
+                startVideoRendering(lesson);
               } else {
+                setWarn('මුදල් ගෙවියයුතු පාඩමකි.  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid lesson. Please try again in 2 miniutes if you have paid already');
                 promptPayment(email, teacher, lesson, false, () => {
                   // DO not reload this page since it can cause to reset your watch count
                 }, showSnackbar);
