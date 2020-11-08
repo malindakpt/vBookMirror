@@ -188,20 +188,21 @@ export const AddLiveLesson = () => {
     }
   };
 
-  const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => a.dateTime - b.dateTime).map((liveLesson) => (
-    <div
-      key={liveLesson.id}
-    >
-      <ListItem
-        button
-        onClick={() => { setEditMode(true); editLesson(liveLesson); }}
-      >
+  const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => a.dateTime
+   - b.dateTime).map((liveLesson) => (
+     <div
+       key={liveLesson.id}
+     >
+       <ListItem
+         button
+         onClick={() => { setEditMode(true); editLesson(liveLesson); }}
+       >
 
-        {teacher?.zoomRunningLessonId === liveLesson.id ? (
-          <StopIcon onClick={(e) => {
-            startMeeting(liveLesson); e.stopPropagation();
-          }}
-          />
+         {teacher?.zoomRunningLessonId === liveLesson.id ? (
+           <StopIcon onClick={(e) => {
+             startMeeting(liveLesson); e.stopPropagation();
+           }}
+           />
           ) : (
             <PlayCircleOutlineIcon
               className={classes.play}
@@ -211,33 +212,36 @@ export const AddLiveLesson = () => {
             />
           )}
 
-        <div
-          className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
-          style={{ fontSize: '11px', width: '100%' }}
-        >
-          {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
-        </div>
-        <FileCopyIcon onClick={(e) => {
-          copyLessonURL(liveLesson.id); e.stopPropagation();
-        }}
-        />
-        {teacher?.zoomRunningLessonId === liveLesson.id && (
-          <>
-            <Button
-              variant="contained"
-              onClick={(e) => {
-                history.push(`/liveStat/${liveLesson.id}`); 
+         <div
+           className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
+           style={{ fontSize: '11px', width: '100%' }}
+         >
+           {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
+         </div>
+         <FileCopyIcon onClick={(e) => {
+           copyLessonURL(liveLesson.id); e.stopPropagation();
+         }}
+         />
+         {teacher?.zoomRunningLessonId === liveLesson.id && (
+         <>
+           <Button
+             variant="contained"
+             color="secondary"
+             onClick={(e) => {
+               // history.push(`/liveStat/${liveLesson.id}`);
+               const win = window.open(`/liveStat/${liveLesson.id}`, '_blank');
+                win?.focus();
                 e.stopPropagation();
-              }}
-            >
-              Check Attendance
+             }}
+           >
+             Check Attendance
 
-            </Button>
-          </>
+           </Button>
+         </>
         )}
-      </ListItem>
-      <Divider />
-    </div>
+       </ListItem>
+       <Divider />
+     </div>
   ))
   );
 

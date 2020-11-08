@@ -104,13 +104,6 @@ export const LiveLessonTeacher: React.FC = () => {
     setUsers(userMap);
   };
 
-  const onBeforeunloadListener = useCallback((event) => {
-    // Cancel the event as stated by the standard.
-    event.preventDefault();
-    // Older browsers supported custom message
-    event.returnValue = '';
-  }, []);
-
   const onMsgZoomClientListener = useCallback((e) => {
     const atts = e.data;
     if (atts.data?.userName === Util.fullName) {
@@ -171,7 +164,18 @@ export const LiveLessonTeacher: React.FC = () => {
     }
   }, []);
 
+  const onBeforeunloadListener = useCallback((event) => {
+    // eslint-disable-next-line no-use-before-define
+    disconnectAll();
+    // Cancel the event as stated by the standard.
+    event.preventDefault();
+    // Older browsers supported custom message
+    event.returnValue = '';
+  }, []);
+
   const disconnectAll = () => {
+    sendStopAction();
+
     setDisconnected(true);
     clearInterval(startConnectTimerRef.current);
 
@@ -179,7 +183,6 @@ export const LiveLessonTeacher: React.FC = () => {
     window.removeEventListener('message', onMsgZoomClientListener, false);
     window.removeEventListener('beforeunload', onBeforeunloadListener, false);
 
-    sendStopAction();
     setTimeout(() => {
       setConnected(false);
     }, 1000);
@@ -263,7 +266,7 @@ export const LiveLessonTeacher: React.FC = () => {
         <div>
           {connected && (
           <div>
-            <h3 style={{ color: 'red' }}>Disconnect the connection before reload/close the page</h3>
+            <h3 style={{ color: 'red' }}>Click `DISCONNECT` before reload/close the page</h3>
             <Button onClick={disconnectAll}>
               Disconnect
             </Button>
