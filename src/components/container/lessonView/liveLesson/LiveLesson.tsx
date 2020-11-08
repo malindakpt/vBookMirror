@@ -88,6 +88,7 @@ export const LiveLesson: React.FC = () => {
             });
           } else {
             showSnackbar('Please login with your Gmail address');
+            Util.invokeLogin();
           }
         } else {
           setLesson(lesson);
@@ -129,7 +130,7 @@ export const LiveLesson: React.FC = () => {
         copyName();
       }}
     >
-      CONNECT FROM APP
+      OPEN LESSON WITH ZOOM
     </Button>
   );
 
