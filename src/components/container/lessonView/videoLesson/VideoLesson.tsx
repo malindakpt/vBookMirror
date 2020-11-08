@@ -164,7 +164,6 @@ export const VideoLesson: React.FC = () => {
             }}
           >
             .
-
           </div>
           <iframe
             className={classes.player}
@@ -179,12 +178,20 @@ export const VideoLesson: React.FC = () => {
       >
         {teacher && lesson && (
         <div>
+          <div>
+            <a
+              href={`tel:${teacher.phoneChat}`}
+              style={{ color: 'white', textDecoration: 'none' }}
+            >
+              Call Teacher:
+              {teacher.phoneChat}
+            </a>
+          </div>
           <ReactWhatsapp
             number={teacher.phoneChat}
             message={`[${lesson?.topic}]:`}
           >
-            <div>Contact Teacher</div>
-
+            <div>WhatsApp Chat</div>
           </ReactWhatsapp>
         </div>
         )}
