@@ -67,7 +67,7 @@ export const Header:React.FC = () => {
       // ...
     }).catch((error) => {
       console.log('Login error', error);
-      showSnackbar('Network error. Please try again in few minutes');
+      showSnackbar('Allow Popups from your browser or Please try again in few minutes');
       // // Handle Errors here.
       // const errorCode = error.code;
       // const errorMessage = error.message;
