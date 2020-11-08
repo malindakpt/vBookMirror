@@ -42,6 +42,12 @@
     width: 100%;
   }
 
+  .tutorials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+  }
+
   table{
     th{
       text-align: left;
