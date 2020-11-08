@@ -106,8 +106,8 @@ export const LiveLesson: React.FC = () => {
         copyText.value = fullName;
         copyText.select();
         // copyText.setSelectionRange(0, 99999);
-        document.execCommand('copy');
-        showSnackbar(`Your name '${fullName}' is copied. Paste it when login to zoom`);
+        // document.execCommand('copy');
+        // showSnackbar(`Your name '${fullName}' is copied. Paste it when login to zoom`);
       }
     }
   };
@@ -187,7 +187,7 @@ export const LiveLesson: React.FC = () => {
       case JOIN_MODES.AKSHARA_AND_APP:
         return (
           <>
-            {getInViewButton(teacher)}
+            {/* {getInViewButton(teacher)} */}
             {getAppButton(teacher)}
           </>
         );
