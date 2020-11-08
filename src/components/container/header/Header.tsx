@@ -61,7 +61,7 @@ export const Header:React.FC = () => {
       // const token = result.credential.accessToken;
       // const user2 = result.user;
       setUserDetails(result);
-      window.location.reload();
+      // window.location.reload();
 
       // setName(user.displayName);
       // ...
