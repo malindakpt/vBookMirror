@@ -99,9 +99,10 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
     showPaymentGuide(false);
     if (Config.isProd) {
       console.log('Payment Dismissed');
-      showSnackbar('ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+      showSnackbar('ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
       onComplete(lesson.id);
     } else {
+      /// ////////////////////// This works only in Dev Mode////////////////////////
       if (!Config.payOnDismiss) {
         return;
       }
@@ -110,19 +111,17 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       addDoc(Entity.PAYMENTS_STUDENTS, {
         lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price, ownerName: Util.fullName,
       });
-      // const entity = isLive ? Entity.LESSONS_LIVE : Entity.LESSONS_VIDEO;
-      // updateDoc(entity, lesson.id, { subCount: firebase.firestore.FieldValue.increment(1) });
       onComplete(lesson.id);
       /// ////////FAKE UPDATE END///////////////
 
-      showSnackbar('DEV: ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න.. Payment is processing. Please refresh the page after 2 minutes');
+      showSnackbar('DEV: ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
     }
   };
 
   paymentJS.onCompleted = function onCompleted() {
     showPaymentGuide(false);
     console.log('Payment Succeed');
-    showSnackbar('ඔබ මුදල් ගෙවීම සම්පුර්ණ කලේ නම් එය සක්‍රිය වෙමින් පවතී. මිනිත්තු 2කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+    showSnackbar('ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
     onComplete(lesson.id);
   };
 
