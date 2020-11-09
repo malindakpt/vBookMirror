@@ -135,7 +135,7 @@ export const Course: React.FC = () => {
                 title1={`${live.topic}`}
                 title2={`${live.description}`}
                 title3={timeF}
-                title5="Live"
+                title5="Zoom"
                 title6={`${live.duration} hrs`}
                 navURL={(readyToGoLive(live) || amIOwnerOfLesson(live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
