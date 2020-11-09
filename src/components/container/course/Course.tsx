@@ -14,7 +14,10 @@ import { ICourse } from '../../../interfaces/ICourse';
 import { IPayment } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
-import { checkRefund, promptPayment, Util } from '../../../helper/util';
+import {
+  checkRefund, promptPayment, Util,
+} from '../../../helper/util';
+import { Banner } from '../../presentational/banner/Banner';
 
 export const Course: React.FC = () => {
   useBreadcrumb();
@@ -105,6 +108,9 @@ export const Course: React.FC = () => {
   const now = new Date().getTime();
   return (
     <div className="container">
+      { teacher?.bannerUrl1 && (
+      <Banner teacher={teacher} />
+      )}
       {
         liveLessons?.filter((le) => ((le.dateTime + le.duration * 3600000) > now)).sort(
           (a, b) => a.dateTime - b.dateTime,

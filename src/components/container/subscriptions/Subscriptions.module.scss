@@ -3,6 +3,12 @@
     max-width: 800px;
     margin: auto;
 
+    .attrs {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
     th {
         text-align: left;
     }

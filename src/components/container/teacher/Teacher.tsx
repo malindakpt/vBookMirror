@@ -10,8 +10,7 @@ import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import classes from './Teacher.module.scss';
-import im1 from '../../../images/im1.png';
-import im2 from '../../../images/im3.png';
+import { Banner } from '../../presentational/banner/Banner';
 
 export const Teacher = () => {
   useBreadcrumb();
@@ -54,46 +53,30 @@ export const Teacher = () => {
         <span className={classes.phone}>{` ${teacher?.ownerEmail}`}</span>
       </div>
       )}
-      {courses.length > 0 && (
-      <div className={classes.container}>
-        <div className={classes.cimg1}>
-          <img
-            alt="left"
-            src={im1}
-            className={classes.img1}
-          />
-        </div>
-        <div
-          className={classes.center}
-        >
-          {
-                courses.map((c) => {
-                  const subj = getObject(subjects, c.subjectId);
-                  const exam = getObject(exams, c.examId);
-                  return (
-                    <div
-                      key={c.id}
-                    >
-                      <Category
-                        title1={`${subj?.name} ${exam?.type}`}
-                        title2={`${exam?.name}`}
-                        navURL={`${teacherId}/${c.id}`}
-                        CategoryImg={CategoryIcon}
-                      />
-                    </div>
-                  );
-                })
-            }
-        </div>
-        <div className={classes.cimg1}>
-          <img
-            alt="left"
-            src={im2}
-            className={classes.img2}
-          />
-        </div>
-      </div>
+
+      <div className="container">
+        { teacher?.bannerUrl1 && (
+        <Banner teacher={teacher} />
       )}
+        {courses.length > 0 && (
+          courses.map((c) => {
+            const subj = getObject(subjects, c.subjectId);
+            const exam = getObject(exams, c.examId);
+            return (
+              <div
+                key={c.id}
+              >
+                <Category
+                  title1={`${subj?.name} ${exam?.type}`}
+                  title2={`${exam?.name}`}
+                  navURL={`${teacherId}/${c.id}`}
+                  CategoryImg={CategoryIcon}
+                />
+              </div>
+            );
+          })
+        ) }
+      </div>
     </div>
   );
 };

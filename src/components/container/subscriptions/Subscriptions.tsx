@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
-import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
+import {
+  Entity, getDocsWithProps, getDocWithId, updateDoc,
+} from '../../../data/Store';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
@@ -14,12 +16,15 @@ interface LessMap {payments: IPayment[], lesson: ILesson}
 
 export const Subscriptions = () => {
   useBreadcrumb();
-  const { email } = useContext(AppContext);
+  const { email, showSnackbar } = useContext(AppContext);
 
   const [videoLessons, setVideoLessons] = useState<LessMap[]>([]);
   const [liveLessons, setLiveLessons] = useState<LessMap[]>([]);
 
   const [teacher, setTeacher] = useState<ITeacher>();
+
+  const [banner1, setBanner1] = useState<string>('');
+  const [banner2, setBanner2] = useState<string>('');
 
   useEffect(() => {
     if (email) {
@@ -59,6 +64,9 @@ export const Subscriptions = () => {
 
         if (teacher) {
           setTeacher(teacher);
+          setBanner1(teacher.bannerUrl1 ?? '');
+          setBanner2(teacher.bannerUrl2 ?? '');
+
           setVideoLessons(vlessonArr);
           setLiveLessons(llessonArr);
         }
@@ -149,6 +157,38 @@ export const Subscriptions = () => {
               {teacher.url}
             </a>
           </div>
+          <form
+            className={classes.attrs}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              className={classes.input}
+              id="banner1"
+              value={banner1}
+              label="(2×1) Mobile Banner URL(Share an image from Google drive and paste the link here)"
+              onChange={(e) => {
+                setBanner1(e.target.value);
+              }}
+              onBlur={() => {
+                updateDoc(Entity.TEACHERS, teacher.id, { bannerUrl1: banner1 })
+                  .then(() => showSnackbar('Mobile banner image changed'));
+              }}
+            />
+            <TextField
+              className={classes.input}
+              id="banner2"
+              value={banner2}
+              label="(4×1) Desktop Banner URL(Share an image from Google drive and paste the link here)"
+              onChange={(e) => {
+                setBanner2(e.target.value);
+              }}
+              onBlur={() => {
+                updateDoc(Entity.TEACHERS, teacher.id, { bannerUrl2: banner2 })
+                  .then(() => showSnackbar('Desktop banner image changed'));
+              }}
+            />
+          </form>
           {
             getLessonsTable(videoLessons, false, teacher)
           }

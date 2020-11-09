@@ -33,6 +33,8 @@ export const checkRefund = (email: string, lessonId: string,
   });
 };
 
+export const isMobile = () => window.innerWidth < 599;
+
 export const teacherPortion = (commission:number, amount: number) => Math.round((amount
         * ((100) / (100 + commission))));
 

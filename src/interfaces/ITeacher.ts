@@ -14,4 +14,7 @@ export interface ITeacher extends IBase {
     zoomMaxCount: number;
     zoomRunningLessonId: string;
     zoomJoinMode: number;
+
+    bannerUrl1?: string; // desktop
+    bannerUrl2?: string; // mobile
 }
