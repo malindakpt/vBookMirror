@@ -166,7 +166,7 @@ export const Subscriptions = () => {
               className={classes.input}
               id="banner1"
               value={banner1}
-              label="(2×1) Mobile Banner URL(Share an image from Google drive and paste the link here)"
+              label="(2×1) Mobile Cover Photo URL(Share an image from Google drive and paste the link here)"
               onChange={(e) => {
                 setBanner1(e.target.value);
               }}
@@ -179,7 +179,7 @@ export const Subscriptions = () => {
               className={classes.input}
               id="banner2"
               value={banner2}
-              label="(4×1) Desktop Banner URL(Share an image from Google drive and paste the link here)"
+              label="(4×1) Desktop Cover Photo URL(Share an image from Google drive and paste the link here)"
               onChange={(e) => {
                 setBanner2(e.target.value);
               }}
