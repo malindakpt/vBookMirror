@@ -21,9 +21,9 @@
 
 .help {
   position: fixed;
-  height: 34px;
+  height: 44px;
   width: 320px;
-  left: calc(50% - 160px);
+  left: calc(50% - 165px);
   background: yellow;
   padding: 5px;
   text-align: center;
@@ -32,6 +32,6 @@
   z-index: 10000000000;
   cursor: pointer;
   font-size: 13px;
-  bottom: 13px;
+  bottom: 23px;
   display: none;
 }

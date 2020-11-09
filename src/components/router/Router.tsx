@@ -68,15 +68,27 @@ const Router: React.FC = () => {
 
   return (
     <>
-      <a
-        id="payGuide"
+      <div
         className={classes.help}
-        href="https://youtu.be/9gDP0N5Gh_Q"
-        target="_blank"
-        rel="noopener noreferrer"
+        id="payGuide"
       >
-        මුදල් ගෙවන අකාරය ඉගෙන ගන්න(Learn how to make a payment)
-      </a>
+        <a
+          href="https://youtu.be/9gDP0N5Gh_Q"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          බැංකු කාඩ් මගින් මුදල් ගෙවන ආකාරය
+        </a>
+        <a
+          href="https://youtu.be/uSjUzmhE1NQ"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ lineHeight: '30px', marginLeft: '10px' }}
+        >
+          EzCash මගින් මුදල් ගෙවන ආකාරය
+        </a>
+      </div>
+
       <BreadcrumbBar />
       <div className={classes.container}>
         <div>
