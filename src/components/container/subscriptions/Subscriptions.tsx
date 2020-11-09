@@ -189,6 +189,13 @@ export const Subscriptions = () => {
               }}
             />
           </form>
+          <a
+            href="https://youtu.be/SpqNBmEDgeU"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn how to add cover photos
+          </a>
           {
             getLessonsTable(videoLessons, false, teacher)
           }
