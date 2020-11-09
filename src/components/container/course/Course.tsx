@@ -137,7 +137,8 @@ export const Course: React.FC = () => {
                 title3={timeF}
                 title5="Zoom"
                 title6={`${live.duration} hrs`}
-                navURL={(readyToGoLive(live) || amIOwnerOfLesson(live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                navURL={(readyToGoLive(live)
+                  || amIOwnerOfLesson(live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>
@@ -174,7 +175,8 @@ export const Course: React.FC = () => {
                 title3={lesson.price > 0
                   ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                 title6={`${lesson.duration} mins`}
-                navURL={(readyToGoVideo(lesson) || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
+                navURL={(readyToGoVideo(lesson)
+                  || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                 status={status}
               />
             </div>
