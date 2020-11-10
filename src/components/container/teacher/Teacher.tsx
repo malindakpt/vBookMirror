@@ -46,18 +46,15 @@ export const Teacher = () => {
 
   return (
     <div className={classes.root}>
-      {teacher && (
+      {/* {teacher && (
       <div className={classes.teacher}>
         <span className={classes.name}>{` ${teacher?.name}`}</span>
-        {/* <span className={classes.phone}>{` ${teacher?.phone}`}</span> */}
         <span className={classes.phone}>{` ${teacher?.ownerEmail}`}</span>
       </div>
-      )}
+      )} */}
 
       <div className="container">
-        { teacher?.bannerUrl1 && (
-        <Banner teacher={teacher} />
-      )}
+        {teacher && <Banner teacher={teacher} />}
         {courses.length > 0 && (
           courses.map((c) => {
             const subj = getObject(subjects, c.subjectId);

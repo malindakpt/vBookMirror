@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, TextField } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
 import {
-  Entity, getDocsWithProps, getDocWithId, updateDoc,
+  Entity, FileType, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../data/Store';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
@@ -11,6 +11,7 @@ import { ITeacher } from '../../../interfaces/ITeacher';
 import { IPayment } from '../../../interfaces/IPayment';
 import { teacherPortion } from '../../../helper/util';
 import { IStudentUpdate } from '../../../interfaces/IStudentUpdate';
+import { FileUploader } from '../../presentational/fileUploader/FileUploader';
 
 interface LessMap {payments: IPayment[], lesson: ILesson}
 
@@ -23,8 +24,8 @@ export const Subscriptions = () => {
 
   const [teacher, setTeacher] = useState<ITeacher>();
 
-  const [banner1, setBanner1] = useState<string>('');
-  const [banner2, setBanner2] = useState<string>('');
+  // const [banner1, setBanner1] = useState<string>('');
+  // const [banner2, setBanner2] = useState<string>('');
 
   useEffect(() => {
     if (email) {
@@ -64,8 +65,8 @@ export const Subscriptions = () => {
 
         if (teacher) {
           setTeacher(teacher);
-          setBanner1(teacher.bannerUrl1 ?? '');
-          setBanner2(teacher.bannerUrl2 ?? '');
+          // setBanner1(teacher.bannerUrl1 ?? '');
+          // setBanner2(teacher.bannerUrl2 ?? '');
 
           setVideoLessons(vlessonArr);
           setLiveLessons(llessonArr);
@@ -142,6 +143,13 @@ export const Subscriptions = () => {
     );
   };
 
+  const handleUploadSuccess = (changesObj: Object) => {
+    if (teacher) {
+      updateDoc(Entity.TEACHERS, teacher.id, changesObj)
+        .then(() => showSnackbar('Banner image updated'));
+    }
+  };
+
   return (
     <>
       {teacher ? (
@@ -157,45 +165,16 @@ export const Subscriptions = () => {
               {teacher.url}
             </a>
           </div>
-          <form
-            className={classes.attrs}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              className={classes.input}
-              id="banner1"
-              value={banner1}
-              label="(2×1) Mobile Cover Photo URL(Share an image from Google drive and paste the link here)"
-              onChange={(e) => {
-                setBanner1(e.target.value);
-              }}
-              onBlur={() => {
-                updateDoc(Entity.TEACHERS, teacher.id, { bannerUrl1: banner1 })
-                  .then(() => showSnackbar('Mobile banner image changed'));
-              }}
-            />
-            <TextField
-              className={classes.input}
-              id="banner2"
-              value={banner2}
-              label="(4×1) Desktop Cover Photo URL(Share an image from Google drive and paste the link here)"
-              onChange={(e) => {
-                setBanner2(e.target.value);
-              }}
-              onBlur={() => {
-                updateDoc(Entity.TEACHERS, teacher.id, { bannerUrl2: banner2 })
-                  .then(() => showSnackbar('Desktop banner image changed'));
-              }}
-            />
-          </form>
-          <a
-            href="https://youtu.be/SpqNBmEDgeU"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn how to add cover photos
-          </a>
+          <FileUploader
+            fileType={FileType.IMAGE}
+            fileName="Mobile Cover Photo"
+            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl1: fileRef })}
+          />
+          <FileUploader
+            fileType={FileType.IMAGE}
+            fileName="Desktop Cover Photo"
+            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl2: fileRef })}
+          />
           {
             getLessonsTable(videoLessons, false, teacher)
           }
