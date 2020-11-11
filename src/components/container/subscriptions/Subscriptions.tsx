@@ -167,12 +167,12 @@ export const Subscriptions = () => {
           </div>
           <FileUploader
             fileType={FileType.IMAGE}
-            fileName="Mobile Cover Photo"
+            fileName="Mobile Cover Photo(2×1)"
             onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl1: fileRef })}
           />
           <FileUploader
             fileType={FileType.IMAGE}
-            fileName="Desktop Cover Photo"
+            fileName="Desktop Cover Photo(4×1)"
             onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl2: fileRef })}
           />
           {

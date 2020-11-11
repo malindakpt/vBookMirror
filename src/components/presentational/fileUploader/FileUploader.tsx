@@ -168,8 +168,8 @@ export const FileUploader: React.FC<Props> = ({
               variant="contained"
               onClick={startUploadFile}
             >
-              Start Upload
-              {`  ${fileName}`}
+              Upload
+              {` ${fileName}`}
             </Button>
           )}
         </div>

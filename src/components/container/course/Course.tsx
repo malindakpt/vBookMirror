@@ -180,7 +180,6 @@ export const Course: React.FC = () => {
                 title2={`${lesson.description}`}
                 title3={lesson.price > 0
                   ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
-                title6={`${lesson.duration} mins`}
                 navURL={(readyToGoVideo(lesson)
                   || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                 status={status}
