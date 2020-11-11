@@ -40,7 +40,7 @@ export const FileUploader: React.FC<Props> = ({
     // if (file.type === 'video/mp4') {
     if (file) {
       const size = file.size / (1024 * 1024);
-      const fileURL = URL.createObjectURL(file);
+      // const fileURL = URL.createObjectURL(file);
       // videoNode.src = fileURL;
 
       setTimeout(() => {
