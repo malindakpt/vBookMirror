@@ -120,6 +120,10 @@ export const AddLiveLesson = () => {
       showSnackbar('Topic and description should be more than 5 charactors. Price should 0 or more than 50');
       return;
     }
+    if (!(liveLesson.dateTime > (new Date().getTime() - 24 * 3600 * 1000))) {
+      showSnackbar('Date should not be before yesterday');
+      return;
+    }
 
     setBusy(true);
     if (editMode) {
@@ -470,9 +474,11 @@ export const AddLiveLesson = () => {
             component="nav"
             aria-label="main mailbox folders"
           >
+            <h5>Next Classes</h5>
             {
              renderLessonList(liveLessons.filter((l) => l.dateTime >= now))
             }
+            <h5>Older Classes</h5>
             {
              renderLessonList(liveLessons.filter((l) => l.dateTime < now))
             }
