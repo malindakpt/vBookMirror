@@ -125,6 +125,7 @@ export const Payments = () => {
             <tr key={p.id}>
               <td>{new Date(p.date).toDateString()}</td>
               <td>{p.ownerEmail}</td>
+              <td>{p.ownerName}</td>
               <td>{teacherLessons[p.lessonId]?.topic}</td>
               <td>{p.amount}</td>
             </tr>
