@@ -1,0 +1,11 @@
+.root {
+  grid-column: 1/3;
+  .twoColumn {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: calc(100% - 20px);
+    place-items: center;
+    background: #ffffff40;
+    margin: 10px;
+  }
+}

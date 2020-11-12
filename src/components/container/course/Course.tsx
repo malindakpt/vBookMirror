@@ -2,8 +2,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
+import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
+import classes from './Course.module.scss';
 import {
   getDocsWithProps, getDocWithId, Entity,
 } from '../../../data/Store';
@@ -19,6 +21,10 @@ import {
 } from '../../../helper/util';
 import { Banner } from '../../presentational/banner/Banner';
 
+enum DisplayMode {
+  ALL, VIDEO, LIVE
+}
+
 export const Course: React.FC = () => {
   useBreadcrumb();
 
@@ -26,6 +32,7 @@ export const Course: React.FC = () => {
 
   // Two routest for this page. (teacher profile)Consider both when reading params
   const { courseId } = useParams<any>();
+  const [displayMode, setDisplayMOde] = useState<DisplayMode>(DisplayMode.ALL);
 
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);
@@ -106,13 +113,48 @@ export const Course: React.FC = () => {
     (pay) => pay.lessonId === lesson.id)?.watchedCount ?? 0;
 
   const now = new Date().getTime();
+
   return (
     <div className="container">
       { teacher?.bannerUrl1 && (
       <Banner teacher={teacher} />
       )}
+      <form
+        className={classes.root}
+        noValidate
+        autoComplete="off"
+      >
+        <div>
+          <RadioGroup
+            className={classes.twoColumn}
+            aria-label="editMode"
+            name="editMode"
+            value={displayMode}
+            onChange={(e: any) => {
+              setDisplayMOde(Number(e.target.value));
+            }}
+          >
+            <FormControlLabel
+              value={DisplayMode.ALL}
+              control={<Radio />}
+              label="All"
+            />
+            <FormControlLabel
+              value={DisplayMode.VIDEO}
+              control={<Radio />}
+              label="Video"
+            />
+            <FormControlLabel
+              value={DisplayMode.LIVE}
+              control={<Radio />}
+              label="Live"
+            />
+          </RadioGroup>
+        </div>
+      </form>
       {
-        liveLessons?.filter((le) => ((le.dateTime + le.duration * 3600000) > now)).sort(
+       (displayMode === DisplayMode.ALL || displayMode === DisplayMode.LIVE)
+            && liveLessons?.filter((le) => ((le.dateTime + le.duration * 3600000) > now)).sort(
           (a, b) => a.dateTime - b.dateTime,
         ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
@@ -152,7 +194,7 @@ export const Course: React.FC = () => {
         })
       }
       {
-        videoLessons?.map((lesson, idx) => {
+        (displayMode === DisplayMode.ALL || displayMode === DisplayMode.VIDEO) && videoLessons?.map((lesson, idx) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (lesson.price) {
             if (readyToGoVideo(lesson)) {
