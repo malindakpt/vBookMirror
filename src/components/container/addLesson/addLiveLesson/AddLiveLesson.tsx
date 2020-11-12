@@ -474,11 +474,9 @@ export const AddLiveLesson = () => {
             component="nav"
             aria-label="main mailbox folders"
           >
-            <h5>Next Classes</h5>
             {
              renderLessonList(liveLessons.filter((l) => l.dateTime >= now))
             }
-            <h5>Older Classes</h5>
             {
              renderLessonList(liveLessons.filter((l) => l.dateTime < now))
             }
