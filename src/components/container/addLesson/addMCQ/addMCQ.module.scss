@@ -1,0 +1,16 @@
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+
+  .add {
+    display: grid;
+    place-items: end;
+    width: 100%;
+  }
+
+  .question {
+      display: grid;
+      grid-template-columns: auto 20px;
+  }
+}

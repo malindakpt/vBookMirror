@@ -8,10 +8,10 @@ export interface IPaper extends IBase {
     topic: string;
     description: string;
     type: PaperType;
-    questions: Question[];
+    questions: IMCQQuestion[];
 }
 
-export interface Question {
+export interface IMCQQuestion {
     text: string;
     imageUrl: string;
     answers: {text: string, imgUrl: string, isCorrect: boolean}[]
