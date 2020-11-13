@@ -25,6 +25,7 @@ import { AddLiveLesson } from '../container/addLesson/addLiveLesson/AddLiveLesso
 import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
 import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLessonTeacher';
+import { AddMCQ } from '../container/addLesson/addMCQ/AddMCQ';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -50,6 +51,7 @@ export const commonRoutes: routeConfig = [
 export const teacherRoutes: routeConfig = [
   ['/addLesson', AddVideoLesson, 'Video Lessons', true],
   ['/addLive', AddLiveLesson, 'Live Lessons', true],
+  ['/addMCQ', AddMCQ, 'Add MCQ', true],
   ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
   ['/profile', Subscriptions, 'Profile', true],
 ];
