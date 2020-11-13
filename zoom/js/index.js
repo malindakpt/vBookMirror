@@ -109,7 +109,8 @@ function getStringFromHash (s) {
       e.preventDefault();
       var meetingConfig = testTool.getMeetingConfig();
       if (!meetingConfig.mn || !meetingConfig.name) {
-        alert("Meeting number or username is empty");
+        // alert("Meeting number or username is empty");
+        console.log("Meeting number or username is empty");
         return false;
       }
 
@@ -138,7 +139,8 @@ function getStringFromHash (s) {
   window.copyJoinLink = function (element) {
     var meetingConfig = testTool.getMeetingConfig();
     if (!meetingConfig.mn || !meetingConfig.name) {
-      alert("Meeting number or username is empty");
+      // alert("Meeting number or username is empty");
+      console.log("Meeting number or username is empty");
       return false;
     }
     var signature = ZoomMtg.generateSignature({

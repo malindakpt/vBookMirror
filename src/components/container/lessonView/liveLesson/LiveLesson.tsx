@@ -87,7 +87,8 @@ export const LiveLesson: React.FC = () => {
               }
             });
           } else {
-            showSnackbar('Please login with your gmail address');
+            showSnackbar('Please login with your Gmail address');
+            Util.invokeLogin();
           }
         } else {
           setLesson(lesson);
@@ -106,8 +107,8 @@ export const LiveLesson: React.FC = () => {
         copyText.value = fullName;
         copyText.select();
         // copyText.setSelectionRange(0, 99999);
-        document.execCommand('copy');
-        showSnackbar(`Your name '${fullName}' is copied. Paste it when login to zoom`);
+        // document.execCommand('copy');
+        // showSnackbar(`Your name '${fullName}' is copied. Paste it when login to zoom`);
       }
     }
   };
@@ -123,12 +124,13 @@ export const LiveLesson: React.FC = () => {
   }, []);
 
   const getAppButton = (teacher: ITeacher) => (
-    <Button onClick={() => {
-      setCopyLessonWarn(true);
-      copyName();
-    }}
+    <Button
+      onClick={() => {
+        setCopyLessonWarn(true);
+        copyName();
+      }}
     >
-      JOIN WITH ZOOM APP
+      OPEN LESSON WITH ZOOM
     </Button>
   );
 
@@ -157,13 +159,13 @@ export const LiveLesson: React.FC = () => {
     showInView ? (
       <>
         {getIframe(teacher)}
-        <Button onClick={() => {
+        {/* <Button onClick={() => {
           setShowInView(true);
           stopLive();
         }}
         >
           DISCONNECT FROM LESSON
-        </Button>
+        </Button> */}
       </>
     ) : (
       <>
@@ -172,7 +174,7 @@ export const LiveLesson: React.FC = () => {
           startVideoRendering();
         }}
         >
-          CONNECT TO LESSON
+          CONNECT FROM WEB
         </Button>
       </>
 
@@ -186,7 +188,7 @@ export const LiveLesson: React.FC = () => {
       case JOIN_MODES.AKSHARA_AND_APP:
         return (
           <>
-            {getInViewButton(teacher)}
+            {/* {getInViewButton(teacher)} */}
             {getAppButton(teacher)}
           </>
         );
@@ -211,6 +213,27 @@ export const LiveLesson: React.FC = () => {
           ? getDisplay(teacher)
           : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
+        <p>
+          අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.
+          නැතිනම් ඔබව ගෙවීම් නොකළ පුද්ගලයෙකු ලෙස ගුරුවරයාට පෙන්වනු ලබන අතර ඔබව විසන්ධි
+          වීමද සිදුවිය හැකිය.පහත video මගින් Zoom වෙත login වන අකාරය නරඹන්න.
+        </p>
+        <div className={classes.tutorials}>
+          <iframe
+            title="Windows"
+            src="https://www.youtube.com/embed/wZ9RCeyzRzE"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+          <iframe
+            title="Android"
+            src="https://www.youtube.com/embed/LgWOwoEBBcg"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
         {lesson.attachments && (
         <div className={classes.attachments}>
           {lesson.attachments.map((atta) => (
@@ -240,7 +263,8 @@ export const LiveLesson: React.FC = () => {
         type={AlertMode.COPY_NAME}
         onAccept={() => {
           setCopyLessonWarn(false);
-          window.open(`https://us04web.zoom.us/j/${teacher?.zoomMeetingId}?pwd=${teacher?.zoomPwd}`, '_blank');
+          window.open(`https://us04web.zoom.us/j/${teacher?.zoomMeetingId}?pwd=${teacher?.zoomPwd}`,
+            '_blank');
         }}
         onCancel={() => {
           setCopyLessonWarn(false);

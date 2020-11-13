@@ -7,6 +7,10 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 5px;
 
+  background: #ffffff94;
+  padding: 15px;
+  border-radius: 2px;
+
   @include mobile {
     grid-template-columns: 1fr;
     padding: 10px;

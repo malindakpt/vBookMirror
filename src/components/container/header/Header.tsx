@@ -23,11 +23,6 @@ export const Header:React.FC = () => {
     } else {
       email = result.email;
     }
-    const temp = localStorage.getItem('mkptuser');
-    if (temp !== null) {
-      // if (temp !== null && window.location.host.startsWith('local')) {
-      email = temp;
-    }
 
     setEmail(email);
     Util.fullName = result.displayName;
@@ -61,17 +56,18 @@ export const Header:React.FC = () => {
 
   const handleLogin = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then((result:any) => {
+    firebase.auth().signInWithRedirect(provider).then((result:any) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       // const token = result.credential.accessToken;
       // const user2 = result.user;
       setUserDetails(result);
+      // window.location.reload();
 
       // setName(user.displayName);
       // ...
     }).catch((error) => {
       console.log('Login error', error);
-      showSnackbar('Network error. Please try again in few minutes');
+      showSnackbar('Allow Popups from your browser or Please try again in few minutes');
       // // Handle Errors here.
       // const errorCode = error.code;
       // const errorMessage = error.message;

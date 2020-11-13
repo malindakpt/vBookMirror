@@ -6,8 +6,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
-import { useHistory } from 'react-router-dom';
-import InputIcon from '@material-ui/icons/Input';
 import { AppContext } from '../../../../App';
 import {
   addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
@@ -50,7 +48,6 @@ const fresh: ILiveLesson = {
   createdAt: 0,
 };
 export const AddLiveLesson = () => {
-  const history = useHistory();
   const { showSnackbar, email } = useContext(AppContext);
   const [editMode, setEditMode] = useState<boolean>(false);
 
@@ -123,6 +120,10 @@ export const AddLiveLesson = () => {
       showSnackbar('Topic and description should be more than 5 charactors. Price should 0 or more than 50');
       return;
     }
+    if (!(liveLesson.dateTime > (new Date().getTime() - 24 * 3600 * 1000))) {
+      showSnackbar('Date should not be before yesterday');
+      return;
+    }
 
     setBusy(true);
     if (editMode) {
@@ -166,9 +167,9 @@ export const AddLiveLesson = () => {
         showSnackbar(`${less.topic} ${lesId ? 'Started' : 'Stopped'}`);
         getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
         setBusy(false);
-        if (lesId) {
-          history.push(`/liveStat/${lesId}`);
-        }
+        // if (lesId) {
+        //   history.push(`/liveStat/${lesId}`);
+        // }
       });
     }
   };
@@ -188,20 +189,21 @@ export const AddLiveLesson = () => {
     }
   };
 
-  const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => a.dateTime - b.dateTime).map((liveLesson) => (
-    <div
-      key={liveLesson.id}
-    >
-      <ListItem
-        button
-        onClick={() => { setEditMode(true); editLesson(liveLesson); }}
-      >
+  const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => a.dateTime
+   - b.dateTime).map((liveLesson) => (
+     <div
+       key={liveLesson.id}
+     >
+       <ListItem
+         button
+         onClick={() => { setEditMode(true); editLesson(liveLesson); }}
+       >
 
-        {teacher?.zoomRunningLessonId === liveLesson.id ? (
-          <StopIcon onClick={(e) => {
-            startMeeting(liveLesson); e.stopPropagation();
-          }}
-          />
+         {teacher?.zoomRunningLessonId === liveLesson.id ? (
+           <StopIcon onClick={(e) => {
+             startMeeting(liveLesson); e.stopPropagation();
+           }}
+           />
           ) : (
             <PlayCircleOutlineIcon
               className={classes.play}
@@ -211,25 +213,36 @@ export const AddLiveLesson = () => {
             />
           )}
 
-        <div
-          className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
-          style={{ fontSize: '11px', width: '100%' }}
-        >
-          {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
-        </div>
-        <FileCopyIcon onClick={(e) => {
-          copyLessonURL(liveLesson.id); e.stopPropagation();
-        }}
-        />
-        {teacher?.zoomRunningLessonId === liveLesson.id && (
-        <InputIcon onClick={(e) => {
-          history.push(`/liveStat/${liveLesson.id}`); e.stopPropagation();
-        }}
-        />
-)}
-      </ListItem>
-      <Divider />
-    </div>
+         <div
+           className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
+           style={{ fontSize: '11px', width: '100%' }}
+         >
+           {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
+         </div>
+         <FileCopyIcon onClick={(e) => {
+           copyLessonURL(liveLesson.id); e.stopPropagation();
+         }}
+         />
+         {teacher?.zoomRunningLessonId === liveLesson.id && (
+         <>
+           <Button
+             variant="contained"
+             color="secondary"
+             onClick={(e) => {
+               // history.push(`/liveStat/${liveLesson.id}`);
+               const win = window.open(`/liveStat/${liveLesson.id}`, '_blank');
+                win?.focus();
+                e.stopPropagation();
+             }}
+           >
+             Check Attendance
+
+           </Button>
+         </>
+        )}
+       </ListItem>
+       <Divider />
+     </div>
   ))
   );
 
@@ -381,7 +394,7 @@ export const AddLiveLesson = () => {
                 onClick={onSave}
                 disabled={disabled}
               >
-                {editMode ? 'Save Changes' : 'Add Live Lesson'}
+                {editMode ? 'Save Changes' : 'Save Lesson'}
               </Button>
               <input
                 type="text"
@@ -452,7 +465,7 @@ export const AddLiveLesson = () => {
               color="primary"
               onClick={saveAuth}
               disabled={busy}
-              style={{ gridColumn: '2/4', color: 'white' }}
+              style={{ gridColumn: '2/4' }}
             >
               Save Meeting Settings
             </Button>

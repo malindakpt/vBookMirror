@@ -10,7 +10,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddVideoLesson.module.scss';
 import {
-  addDoc, deleteVideo, Entity, getDocsWithProps, updateDoc, uploadVideoToServer,
+  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
@@ -23,20 +23,13 @@ import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import Config, {
   AKSHARA_HELP_VIDEO, OBS_DOWNLOAD, OBS_HELP_VIDEO,
 } from '../../../../data/Config';
-import { round } from '../../../../helper/util';
-
-const ALLOWED_SIZE_FOR_MIN = 6;
+import { ITeacher } from '../../../../interfaces/ITeacher';
 
 export const AddVideoLesson = () => {
   useBreadcrumb();
   const [busy, setBusy] = useState<boolean>(false);
   const [onDataFetch, fetchData] = useForcedUpdate();
   const { showSnackbar, email } = useContext(AppContext);
-
-  const [uploadTask, setUploadTask] = useState<any>();
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-
-  const [uploadFile, setUploadFile] = useState<File>();
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
@@ -46,6 +39,7 @@ export const AddVideoLesson = () => {
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [allLessons, setAllLessons] = useState<IVideoLesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
+  const [teacher, setTeacher] = useState<ITeacher>();
 
   const [courseLessons, setCourseLessons] = useState<IVideoLesson[]>([]);
 
@@ -57,24 +51,14 @@ export const AddVideoLesson = () => {
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
   const [videoURL, setVideoURL] = useState<string>('');
-  const [videoId, setVideoId] = useState<string>('');
+  // const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
-
-  const resetFileInput = () => {
-    // @ts-ignore
-    document.getElementById('uploader').value = null;
-    setUploadFile(undefined);
-
-    const videoNode = document.querySelector('video');
-    if (videoNode) videoNode.src = '';
-  };
 
   // Replicate changes of here for all #LessonModify
   const addNew = () => {
     setCourseOrderChaged(false);
     setEditMode(false);
-    setUploadProgress(0);
     setTopic('');
     setKeywords('');
     setDescription('');
@@ -83,7 +67,7 @@ export const AddVideoLesson = () => {
     setPrice(0);
     setDuration(0);
 
-    resetFileInput();
+    // resetFileInput();
     // No need to reset courseId
   };
 
@@ -119,65 +103,42 @@ export const AddVideoLesson = () => {
       onCourseChange(courses, courseId, lessons);
     });
 
+    if (!email) return;
     // fetch unrelated data
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-
+    getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
     // eslint-disable-next-line
   }, [onDataFetch]);
 
-  const onFileSelect = (e: any) => {
-    // TODO: Handle if file is not selected from file explorer
-    const file: File = e.target.files[0];
-    const videoNode = document.querySelector('video');
+  const disabled = !courseId || busy;
 
-    if (file.type === 'video/mp4') {
-      if (file && videoNode) {
-        const size = file.size / (1024 * 1024);
-        const fileURL = URL.createObjectURL(file);
-        videoNode.src = fileURL;
-
-        setTimeout(() => {
-          const duration = round(videoNode.duration / 60);
-          const uploadedSizePer1min = (size / duration);
-          if (uploadedSizePer1min > ALLOWED_SIZE_FOR_MIN) {
-            const allowedSize = round(ALLOWED_SIZE_FOR_MIN * duration);
-            showSnackbar(`Maximum ${allowedSize}Mb allowed for 
-                ${duration} minutes video. But this file is ${round(size)}Mb`);
-
-            resetFileInput();
-          } else if (size > 600) {
-            showSnackbar('Error: Maximum file size is 600Mb');
-            resetFileInput();
-          } else {
-          // validation success. ready to upload
-            setUploadFile(file);
-            setDuration(duration);
-          }
-        }, 1000);
-      }
-    } else {
-      showSnackbar('Please choose an .mp4 file');
-      resetFileInput();
+  const validateLesson = (): boolean => {
+    if (!topic || topic.length < 5) {
+      showSnackbar('Topic should have minimum length of 5');
+      return false;
     }
+    if (!description || description.length < 5) {
+      showSnackbar('Description should have minimum length of 5');
+      return false;
+    }
+    if (price > 0 && price < 50) {
+      showSnackbar('Price can be 0 or more than 50');
+      return false;
+    }
+    return true;
   };
 
-  const onCancelUpload = () => {
-    uploadTask?.cancel();
-    addNew();
-    setBusy(false);
-  };
-
-  const disabled = (uploadProgress > 0 && uploadProgress < 100) || !courseId || busy;
-
-  const disabledCourseSelection = (uploadProgress > 0 && uploadProgress < 100);
-
-  const onSave = async (videoURL: string, videoId: string, date: number, duration: number) => {
+  const onSave = async () => {
     if (!email) {
       showSnackbar('Error with logged in user');
       setBusy(false);
       return;
     }
+    if (!validateLesson()) {
+      return;
+    }
+
     if (editMode) {
       if (!editingLesson) return;
       // Replicate changes of here for all #LessonModify
@@ -190,7 +151,7 @@ export const AddVideoLesson = () => {
           attachments,
           keywords,
           videoURL,
-          videoId,
+          // videoId,
           duration,
           // No need to edit courseId
           price,
@@ -215,83 +176,25 @@ export const AddVideoLesson = () => {
         keywords: `${selectedCourse.examYear}`,
         videoURL,
         duration,
-        videoId,
+        // videoId,
         price,
         courseId,
         ownerEmail: email,
         subCount: 0,
         createdAt: 0,
       };
+
+      // Add new lesson
       lesson.id = await addDoc(Entity.LESSONS_VIDEO, lesson);
       const { videoLessonOrder } = courses.filter((c) => c.id === courseId)[0];
 
+      // Update lesson order of course
       updateDoc(Entity.COURSES, courseId, { videoLessonOrder: [...videoLessonOrder, lesson.id] }).then(() => {
         showSnackbar('Lesson Added');
         addNew();
         fetchData();
         setBusy(false);
       });
-    }
-  };
-
-  const validateLesson = (): boolean => {
-    if (!topic || topic.length < 5) {
-      showSnackbar('Topic should have minimum length of 5');
-      return false;
-    }
-    if (!description || description.length < 5) {
-      showSnackbar('Description should have minimum length of 5');
-      return false;
-    }
-    if (price > 0 && price < 50) {
-      showSnackbar('Price can be 0 or more than 50');
-      return false;
-    }
-    return true;
-  };
-
-  const uploadAndSave = (email: string, dd: number) => {
-    if (!uploadFile) return;
-
-    setUploadProgress(0);
-    const out = uploadVideoToServer(uploadFile, email, `${dd}`).subscribe((next) => {
-      setUploadTask(next.uploadTask);
-      if (next.downloadURL) {
-        // upload completed
-        setVideoURL(next.downloadURL);
-        onSave(next.downloadURL, `${dd}`, dd, duration);
-        out.unsubscribe();
-      }
-      if (next.progress < 100) {
-        setUploadProgress(next.progress);
-      }
-    });
-  };
-
-  const startUploadVideo = (e: any) => {
-    const dd = new Date().getTime();
-    if (!email) {
-      showSnackbar('Error with the logged in teacher');
-      return;
-    }
-    if (!validateLesson()) {
-      return;
-    }
-    setBusy(true);
-    if (editMode) {
-      if (uploadFile) {
-        deleteVideo(email, videoId).then((data) => console.log('deleted', data));
-        uploadAndSave(email, dd);
-      } else {
-        onSave(videoURL, videoId, dd, duration);
-      }
-    } else {
-      if (uploadFile) {
-        uploadAndSave(email, dd);
-      } else {
-        showSnackbar('Upload video not found');
-        setBusy(false);
-      }
     }
   };
 
@@ -304,7 +207,7 @@ export const AddVideoLesson = () => {
     setDescription(les.description);
     setAttachments(les.attachments);
     setVideoURL(les.videoURL);
-    setVideoId(les.videoId);
+    // setVideoId(les.videoId);
     setPrice(les.price);
     setDuration(les.duration);
 
@@ -350,19 +253,14 @@ export const AddVideoLesson = () => {
 
   return (
     <>
-      <p>
-        ඔබ upload  කරන  video ව OBS STUDIO  මගින්  screen recording  එකක් ලෙස පටිගත කර හැකිය.
-        නැතිනම් ඔබ විසින් ඔබගේ camera  මගින් record කල video වක් නම්,
-        එය පරිඝනකයේ media player එකක්  මගින් play කරමින්  screen recording  එකක් ලෙස පටිගත කර හැකිය.
-      </p>
       <div className={classes.help}>
         <a
           rel="noopener noreferrer"
           target="_blank"
           href={AKSHARA_HELP_VIDEO}
-          style={{ marginRight: '10px' }}
+          style={{ margin: '10px', fontWeight: 'bold' }}
         >
-          Video එකක් upload කරන අකාරය
+          Video upload කරන අකාරය
         </a>
         <a
           rel="noopener noreferrer"
@@ -435,7 +333,6 @@ export const AddVideoLesson = () => {
               labelId="label1"
               id="id1"
               value={courseId}
-              disabled={disabledCourseSelection}
               onChange={(e) => onCourseChange(courses, e.target.value as string, allLessons)}
             >
               {courses.map((course) => {
@@ -464,51 +361,15 @@ export const AddVideoLesson = () => {
               disabled={disabled}
               onChange={(e) => setTopic(e.target.value)}
             />
-            <div className={classes.video}>
-              <>
-                <div className={classes.buttons}>
-                  <input
-                    type="file"
-                    id="uploader"
-                    name="uploader"
-                    onChange={onFileSelect}
-                    disabled={disabled}
-                  />
-                  {uploadProgress > 0 && uploadProgress < 100 && (
-                    <>
-                      <span className={classes.progress}>
-                        {uploadProgress > 0 && uploadProgress < 100 && `Progress: ${round(uploadProgress)}% `}
-                      </span>
-                      <Button
-                        size="small"
-                        color="secondary"
-                        variant="contained"
-                        onClick={onCancelUpload}
-                      >
-                        Cancel Upload
-                      </Button>
-                    </>
-                  )}
-                  <div className={classes.note}>
-                    Max 5Mb allowed for 1 minute of the video.
-                    <br />
-                    Eg: If video length is 1 hour(60 minutes), size should be less than 300Mb.(Call 0771141194 for support)
-                  </div>
-                </div>
-                <video
-                  id="myVideo"
-                  width="320"
-                  height="176"
-                  controls
-                  controlsList="nodownload"
-                  src={AKSHARA_HELP_VIDEO}
-                >
-                  <track
-                    kind="captions"
-                  />
-                </video>
-              </>
-            </div>
+
+            <TextField
+              className={classes.input}
+              id="filled-basic5"
+              label="Video URL(Google Drive Embed)"
+              value={videoURL}
+              disabled={disabled}
+              onChange={(e) => setVideoURL(e.target.value)}
+            />
 
             <TextField
               className={classes.input}
@@ -542,14 +403,27 @@ export const AddVideoLesson = () => {
               disabled={disabled || Config.paymentDisabled}
               onChange={(e) => setPrice(Number(e.target.value))}
             />
+            {teacher && (
+            <div>
+              <span style={{ marginRight: '5px' }}>Profile url:</span>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`teacher/${teacher.url}`}
+              >
+                akshara.lk/teacher/
+                {teacher.url}
+              </a>
+            </div>
+            )}
             <Button
               size="small"
               variant="contained"
               color="primary"
               disabled={disabled}
-              onClick={startUploadVideo}
+              onClick={onSave}
             >
-              {editMode ? 'Save Changes' : 'Start Upload'}
+              {editMode ? 'Save Changes' : 'Save New Lesson'}
             </Button>
           </div>
         </div>
@@ -559,6 +433,13 @@ export const AddVideoLesson = () => {
             component="nav"
             aria-label="main mailbox folders"
           >
+            {videoURL && editMode && (
+            <iframe
+              className={classes.player}
+              title="video"
+              src={videoURL}
+            />
+            )}
             {courseOrderChanged && (
             <ListItem
               button

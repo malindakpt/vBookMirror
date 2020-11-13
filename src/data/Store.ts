@@ -10,6 +10,11 @@ export interface UploadStatus {
   downloadURL?: string;
 }
 
+export enum FileType {
+  VIDEO= 'VIDEO',
+  IMAGE = 'IMAGE',
+}
+
 export enum Entity {
   USERS = 'USERS',
   TEACHERS = 'TEACHERS',
@@ -21,7 +26,8 @@ export enum Entity {
   PAYMENTS_STUDENTS = 'PAYMENTS_STUDENTS', // used by BE
   PAYMENTS_TEACHER = 'PAYMENTS_TEACHER',
   REFUND_REQUESTS = 'REFUND_REQUESTS',
-  LOGS = 'LOGS'
+  LOGS = 'LOGS',
+  STUDENT_INFO = 'STUDENT_INFO'// used by BE
 }
 
 const app = firebase.initializeApp(appConfig);
@@ -57,31 +63,32 @@ export const listAllVideos = (ownerEmail: string)
     .then((data) => resolve(data));
 });
 
-export const updateMeta = (email: string, vId: string) => {
-  const storageRef = storage.ref();
-  // Create a reference to the file whose metadata we want to change
-  const forestRef = storageRef.child(`video/${email}/${vId}`);
+// export const updateMeta = (email: string, vId: string) => {
+//   const storageRef = storage.ref();
+//   // Create a reference to the file whose metadata we want to change
+//   const forestRef = storageRef.child(`video/${email}/${vId}`);
 
-  // Create file metadata to update
-  const newMetadata = {
-    contentType: 'image/jpeg',
-  };
+//   // Create file metadata to update
+//   const newMetadata = {
+//     contentType: 'image/jpeg',
+//   };
 
-  // Update metadata properties
-  forestRef.updateMetadata(newMetadata).then((metadata) => {
-    // Updated metadata for 'images/forest.jpg' is returned in the Promise
-  }).catch((error) => {
-    console.error(error);
-  // Uh-oh, an error occurred!
-  });
-};
+//   // Update metadata properties
+//   forestRef.updateMetadata(newMetadata).then((metadata) => {
+//     // Updated metadata for 'images/forest.jpg' is returned in the Promise
+//   }).catch((error) => {
+//     console.error(error);
+//   // Uh-oh, an error occurred!
+//   });
+// };
 
-export const uploadVideoToServer = (file: any, email: string, vId: string): Subject<UploadStatus> => {
+export const uploadFileToServer = (fileType: FileType, file: any,
+  email: string, fileId: string): Subject<UploadStatus> => {
   const subject = new Subject<UploadStatus>();
   const storageRef = storage.ref();
 
   // const blob = new Blob([file], { type: 'image/jpeg' });
-  const uploadTask = storageRef.child(`video/${email}/${vId}`).put(file);
+  const uploadTask = storageRef.child(`${fileType}/${email}/${fileId}`).put(file);
 
   // Register three observers:
   // 1. 'state_changed' observer, called any time the state changes
@@ -111,7 +118,7 @@ export const uploadVideoToServer = (file: any, email: string, vId: string): Subj
   // Handle successful uploads on complete
   // For instance, get the download URL: https://firebasestorage.googleapis.com/...
     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-      updateMeta(email, vId);
+      // updateMeta(email, fileId);
       subject.next({
         uploadTask,
         progress: 100,
@@ -264,3 +271,17 @@ export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | nul
       });
   },
 );
+
+export const sendHttp = (url: string, body: object) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...body, createdAt: new Date().getTime() }),
+  };
+  fetch(url, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Sent info');
+      // this.setState({ postId: data.id })
+    });
+};

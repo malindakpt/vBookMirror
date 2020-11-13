@@ -36,6 +36,10 @@
                 // document.getElementById('join_meeting').click();
             }else if (e.data.type === 'STOP'){
                 ZoomMtg.leaveMeeting({});
+            }else if (e.data.type === 'RELOAD'){
+                console.log('Reloading...');
+                ZoomMtg.leaveMeeting({});
+                window.location.reload();
             }
         }, false);
     });

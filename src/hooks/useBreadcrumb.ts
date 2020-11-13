@@ -35,7 +35,7 @@ export const useBreadcrumb = () => {
     let bcs;
     if (teacherId) {
       bcs = [
-        ['Subjects', `/teacher/${teacherId}`],
+        ['All Lessons (සියලුම පාඩම්)', `/teacher/${teacherId}`],
       ];
 
       if (courseId) {

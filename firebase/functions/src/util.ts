@@ -8,7 +8,8 @@ export enum Entity {
     SUBJECTS = 'SUBJECTS',
     PAYMENTS_STUDENTS = 'PAYMENTS_STUDENTS', // used by BE
     PAYMENTS_TEACHER = 'PAYMENTS_TEACHER',
-    LOGS = 'LOGS'
+    LOGS = 'LOGS',
+    STUDENT_INFO = 'STUDENT_INFO'// used by BE
   }
 
 export const getDocsWithProps = <T>(

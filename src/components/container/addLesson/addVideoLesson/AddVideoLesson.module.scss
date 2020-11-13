@@ -1,5 +1,9 @@
 @import '../../../../mixins.scss';
 
+.help {
+  padding-bottom: 10px;
+}
+
 .root {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -7,6 +11,10 @@
   max-width: 800px;
   margin: auto;
   padding: 0 40px;
+
+  background: #ffffff94;
+  padding: 15px;
+  border-radius: 2px;
 
   @include mobile {
     grid-template-columns: 1fr;
@@ -16,6 +24,7 @@
   .input {
     width: 100%;
   }
+
 
   .inputMulti{
     width: 100%;
@@ -76,15 +85,6 @@
 
       input {
       }
-    }
-  }
-
-  .help {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding-bottom: 40px;
-    a {
-      color: white;
     }
   }
 }

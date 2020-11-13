@@ -6,6 +6,7 @@
     font-weight: bold;
     background: #ffa50040;
     padding: 18px 88px;
+    margin-bottom: 10px;
 
     @include mobile {
       text-align: center;
@@ -18,7 +19,7 @@
     }
   }
   .container {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     place-items: center;
     margin: auto;
     display: grid;
@@ -35,27 +36,27 @@
       font-size: 25px;
     }
 
-    .center {
-      width: 100%;
-      @include mobile {
-        // width: unset;
-      }
-    }
+    // .center {
+    //   width: 100%;
+    //   @include mobile {
+    //     // width: unset;
+    //   }
+    // }
 
-    .cimg1 {
-      @include mobile {
-        display: none;
-      }
-      .img1 {
-        width: 50%;
-        display: block;
-        margin: auto;
-      }
-      .img2 {
-        width: 30%;
-        display: block;
-        margin: auto;
-      }
-    }
+    // .cimg1 {
+    //   @include mobile {
+    //     display: none;
+    //   }
+    //   .img1 {
+    //     width: 50%;
+    //     display: block;
+    //     margin: auto;
+    //   }
+    //   .img2 {
+    //     width: 30%;
+    //     display: block;
+    //     margin: auto;
+    //   }
+    // }
   }
 }

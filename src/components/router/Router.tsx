@@ -8,7 +8,6 @@ import { Exams } from '../container/exams/Exams';
 import { Subjects } from '../container/subjects/Subjects';
 import { Courses } from '../container/courses/Courses';
 import { Course } from '../container/course/Course';
-import { Storage } from '../container/storage/Storage';
 import { BreadcrumbBar } from '../presentational/breadcrumbs/BreadcrumbBar';
 import { AddVideoLesson } from '../container/addLesson/addVideoLesson/AddVideoLesson';
 import { AddSubject } from '../container/manageCourse/addSubject/AddSubject';
@@ -62,13 +61,34 @@ export const adminRoutes: routeConfig = [
   ['/addSubject', AddSubject, 'Add Subject', true],
   ['/addCourse', AddCourse, 'Add Course', true],
   ['/payments', Payments, 'Payments', true],
-  ['/storage', Storage, 'Storage', true],
 ];
 
 const Router: React.FC = () => {
   const { isTeacher, isAdmin } = useContext(AppContext);
+
   return (
     <>
+      <div
+        className={classes.help}
+        id="payGuide"
+      >
+        <a
+          href="https://youtu.be/9gDP0N5Gh_Q"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          බැංකු කාඩ් මගින් මුදල් ගෙවන ආකාරය
+        </a>
+        <a
+          href="https://youtu.be/uSjUzmhE1NQ"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ lineHeight: '30px', marginLeft: '10px' }}
+        >
+          EzCash මගින් මුදල් ගෙවන ආකාරය
+        </a>
+      </div>
+
       <BreadcrumbBar />
       <div className={classes.container}>
         <div>

@@ -1,23 +1,31 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Button } from '@material-ui/core';
 import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
-import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
+import {
+  Entity, FileType, getDocsWithProps, getDocWithId, updateDoc,
+} from '../../../data/Store';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IPayment } from '../../../interfaces/IPayment';
 import { teacherPortion } from '../../../helper/util';
+import { IStudentUpdate } from '../../../interfaces/IStudentUpdate';
+import { FileUploader } from '../../presentational/fileUploader/FileUploader';
 
 interface LessMap {payments: IPayment[], lesson: ILesson}
 
 export const Subscriptions = () => {
   useBreadcrumb();
-  const { email } = useContext(AppContext);
+  const { email, showSnackbar } = useContext(AppContext);
 
   const [videoLessons, setVideoLessons] = useState<LessMap[]>([]);
   const [liveLessons, setLiveLessons] = useState<LessMap[]>([]);
 
   const [teacher, setTeacher] = useState<ITeacher>();
+
+  // const [banner1, setBanner1] = useState<string>('');
+  // const [banner2, setBanner2] = useState<string>('');
 
   useEffect(() => {
     if (email) {
@@ -33,36 +41,52 @@ export const Subscriptions = () => {
 
         if (lessonsV && payments) {
           for (const vLes of lessonsV) {
-            if (vLes.price > 0) {
-              const payList = payments.filter((p) => p.lessonId === vLes.id);
-              vlessonArr.push({
-                lesson: vLes,
-                payments: payList,
-              });
-            }
+            // if (vLes.price > 0) {
+            const payList = payments.filter((p) => p.lessonId === vLes.id);
+            vlessonArr.push({
+              lesson: vLes,
+              payments: payList,
+            });
+            // }
           }
         }
 
         if (lessonsL && payments) {
           for (const lLes of lessonsL) {
-            if (lLes.price > 0) {
-              const payList = payments.filter((p) => p.lessonId === lLes.id);
-              llessonArr.push({
-                lesson: lLes,
-                payments: payList,
-              });
-            }
+            // if (lLes.price > 0) {
+            const payList = payments.filter((p) => p.lessonId === lLes.id);
+            llessonArr.push({
+              lesson: lLes,
+              payments: payList,
+            });
+            // }
           }
         }
 
         if (teacher) {
           setTeacher(teacher);
+          // setBanner1(teacher.bannerUrl1 ?? '');
+          // setBanner2(teacher.bannerUrl2 ?? '');
+
           setVideoLessons(vlessonArr);
           setLiveLessons(llessonArr);
         }
       });
     }
   }, [email]);
+
+  const [views, setViews] = useState<{lessonId: string, count: number}>();
+
+  const checkViews = (lesson: ILesson) => {
+    getDocsWithProps<IStudentUpdate[]>(Entity.STUDENT_INFO, { reference: lesson.id }).then((data) => {
+      if (data) {
+        setViews({
+          lessonId: lesson.id,
+          count: data.length,
+        });
+      }
+    });
+  };
 
   const getLessonsTable = (lessons: LessMap[], isLive: boolean, teacher: ITeacher) => {
     let fullTotal = 0;
@@ -74,9 +98,9 @@ export const Subscriptions = () => {
           <tbody>
             <tr key={0}>
               <th>Lesson</th>
-              <th>Price</th>
-              <th>Subscriptions</th>
-              <th>Total</th>
+              <th>Price(Now)</th>
+              <th>Payments</th>
+              <th>Income</th>
             </tr>
             {
 
@@ -94,6 +118,12 @@ export const Subscriptions = () => {
             <td>{val.payments.length}</td>
             <td>
               {teacherPortion(isLive ? teacher.commissionLive : teacher.commissionVideo, tot)}
+            </td>
+            <td>
+              {views?.lessonId === val.lesson.id && <span>{views.count}</span>}
+              <Button onClick={() => checkViews(val.lesson)}>
+                Check Views
+              </Button>
             </td>
           </tr>
         );
@@ -113,6 +143,13 @@ export const Subscriptions = () => {
     );
   };
 
+  const handleUploadSuccess = (changesObj: Object) => {
+    if (teacher) {
+      updateDoc(Entity.TEACHERS, teacher.id, changesObj)
+        .then(() => showSnackbar('Banner image updated'));
+    }
+  };
+
   return (
     <>
       {teacher ? (
@@ -128,6 +165,16 @@ export const Subscriptions = () => {
               {teacher.url}
             </a>
           </div>
+          <FileUploader
+            fileType={FileType.IMAGE}
+            fileName="Mobile Cover Photo(2×1)"
+            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl1: fileRef })}
+          />
+          <FileUploader
+            fileType={FileType.IMAGE}
+            fileName="Desktop Cover Photo(4×1)"
+            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl2: fileRef })}
+          />
           {
             getLessonsTable(videoLessons, false, teacher)
           }

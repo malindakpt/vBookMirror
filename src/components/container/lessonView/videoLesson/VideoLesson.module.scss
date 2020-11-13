@@ -1,13 +1,16 @@
 .root {
   margin: auto;
-  max-width: 900px;
+
+  &.maxWidth {
+    max-width: 900px;
+  }
 
   .warn {
     font-weight: bold;
     color: black;
     text-align: center;
   }
-  
+
   .topic {
     font-size: 22px;
     margin: 0px 10px;
@@ -15,22 +18,60 @@
 
   .desc {
     font-size: 16px;
-    margin: 0px 10px 10px 10px; 
+    margin: 0px 10px 10px 10px;
   }
 
-  .attachments {
-    padding-left: 10px;
-    padding-bottom: 50px;
-    color: white;
+  .full {
+    .playerHead {
+      position: fixed;
+      top: 0px;
+      width: 100%;
+      height: 100px;
+      // background: red;
+      z-index: 2;
+    }
 
-    li {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 50%;
+    .player {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0px;
+    }
+  }
+  .small {
+    .playerHead {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      // background: black;
+      z-index: 2;
+    }
 
-      a {
-        color: white;
+    .player {
+      position: relative;
+      width: 100%;
+      height: 50vh;
+      top: -100px;
+    }
+  }
+
+  .lessonInfo {
+    position: relative;
+    top: -90px;
+    .attachments {
+      padding-left: 10px;
+      padding-bottom: 50px;
+      color: white;
+
+      li {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 50%;
+
+        a {
+          color: white;
+        }
       }
     }
   }
@@ -42,6 +83,6 @@
     border: none;
     padding: 4px 20px;
     cursor: pointer;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   }
 }

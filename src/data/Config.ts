@@ -17,9 +17,10 @@ const APP_CONFIG_DEV = {
   paymentDisabled: false,
   techPhone: '0771141194',
   zoomURL: 'https://smsm-54fa3.web.app',
+  studentUpdateUrl: 'http://localhost:4000/studentupdate',
 
   // Variables valid only for dev
-  payOnDismiss: true,
+  payOnDismiss: false,
 };
 
 const APP_CONFIG_PROD = {
@@ -39,6 +40,7 @@ const APP_CONFIG_PROD = {
   zoomURL: 'https://smsm-54fa3.web.app',
   paymentDisabled: false,
   techPhone: '0771141194',
+  studentUpdateUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/studentupdate',
 
   payOnDismiss: false,
 };
@@ -47,11 +49,12 @@ export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG
 // export default APP_CONFIG_PROD;
 
 console.log(process.env.REACT_APP_ENV);
-
+export const STUDENT_INFO_UPDATE = 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/studentupdate';
 export const ADMIN_EMAIL = 'contact.akshara.lk@gmail.com';
 export const OBS_DOWNLOAD = 'https://drive.google.com/file/d/1NOqkKwhl1FVuHE7Z52FB4qn7iE2U-_6b/view?usp=sharing';
 export const OBS_HELP_DOC = '';
 export const OBS_HELP_VIDEO = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2F2020-10-26%2006-26-23.mp4?alt=media&token=8f4a2f91-5f8f-49a9-b9cc-8639cf1fa342';
-export const AKSHARA_HELP_VIDEO = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2F2020-11-05%2018-52-28.mp4?alt=media&token=15d6df26-fc1d-4f7b-8ab0-16bae9f5f785';
-
+export const AKSHARA_HELP_VIDEO = 'https://drive.google.com/file/d/1jWVH7JfI2mFp4QX72ADwveq2NVHusW4t/view?usp=sharing';
+export const SAMPLE_DESKTOP_COVER = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2FDesktopCover.png?alt=media&token=64a2527b-55e2-4ad7-9d65-5ee4fa1f5d89';
+export const SAMPLE_MOBILE_COVER = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2FMobileCover.png?alt=media&token=d7338c71-c45f-4d9d-8296-6e0f01fe75bd';
 export const isTester = (email: string | undefined | null) => email === 'malindakpt@gmail.com' || email === 'rasikadri@gmail.com' || email === 'thusitha884@gmail.com';

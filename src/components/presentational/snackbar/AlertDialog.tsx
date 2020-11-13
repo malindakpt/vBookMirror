@@ -6,7 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Util } from '../../../helper/util';
 
 export enum AlertMode {
   VIDEO, LIVE, COPY_NAME
@@ -33,8 +32,9 @@ export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel, type }) => {
       si: 'Microphone සක්‍රීය කිරීමට අවශ්‍ය වුවහොත්  එය සක්‍රිය කිරීමට ඉඩ දෙන්න(Allow Microphone)(නැතිනම් ඔබට ගුරුවරයාගේ හඬ ඇසෙන්නේ නැත ).  සම්බන්දතාව ගොඩනැගුනු පසුව Microphone විසන්ධි කල හැකිය.',
     },
     {
-      en: `Please use '${Util.fullName}' to connect to Zoom meeting. (Otherwise your payment will not be validated)`,
-      si: `'${Util.fullName}' යන  නමම  Zoom වෙත connect වීමටද භාවිතා කරන්න. නැතහොත් ඔබගේ මුදල් ගෙවීම වලංගු වන්නේ නැත .`,
+      en: 'Use the same email account for login to Zoom(You can logout Zoom and login again with \'Sign In with Google\' for confirm). Otherwise your payment will not indicated to teacher',
+      si: `අක්ෂර.lk  සඳහා යෙදූ  email එකම Zoom සඳහා login වීමටද භාවිත කරන්න(තහවුරු කර ගැනීමට Zoom නැවත Sign Out කර  
+        'Sign In with Google' තෝරන්න). නැතහොත් ඔබගේ මුදල් ගෙවීම ගුරුවරයාට පෙන්වන්නේ නැත.`,
     },
   ];
 
