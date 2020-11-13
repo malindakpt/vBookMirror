@@ -11,6 +11,7 @@
 
   .question {
       display: grid;
+      place-items: center;
       grid-template-columns: auto 20px;
   }
 }

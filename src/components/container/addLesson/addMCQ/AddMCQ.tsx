@@ -12,9 +12,14 @@ export const AddMCQ = () => {
   const [questions, setQuestions] = useState<IMCQQuestion[]>([]);
 
   const addQuestion = () => {
+    const ans = {
+      imgUrl: '',
+      isCorrect: false,
+      text: '',
+    };
     const question: IMCQQuestion = {
       text: '',
-      answers: [],
+      answers: [ans, ans, ans, ans, ans],
       imageUrl: '',
     };
     setQuestions((prev) => {
@@ -37,7 +42,7 @@ export const AddMCQ = () => {
       {
           questions.map((q) => (
             <div className={classes.question}>
-              <AddMCQQuestion />
+              <AddMCQQuestion mcqQuestion={q} />
               <DeleteForeverIcon />
             </div>
           ))
