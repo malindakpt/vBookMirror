@@ -1,17 +1,20 @@
-.container {
-  width: 100%;
-  max-width: 900px;
-  margin: auto;
-
-  .add {
+  .addRemove {
     display: grid;
-    place-items: end;
-    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+    width: 150px;
+    margin: auto;
   }
 
-  .question {
+  .questions {
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr;
+
+
+    .question {
       display: grid;
       place-items: center;
-      grid-template-columns: auto 20px;
+    }
   }
-}
+

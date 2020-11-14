@@ -1,18 +1,19 @@
 import { IBase } from './IBase';
 
-enum PaperType{
-    MCQ, WRITTEN
+export enum PaperType {
+  MCQ,
+  WRITTEN,
+}
+
+export interface IMCQAnswer {
+  ans: string;
 }
 
 export interface IPaper extends IBase {
-    topic: string;
-    description: string;
-    type: PaperType;
-    questions: IMCQQuestion[];
-}
-
-export interface IMCQQuestion {
-    text: string;
-    imageUrl: string;
-    answers: {text: string, imgUrl: string, isCorrect: boolean}[]
+  topic: string;
+  description: string;
+  type: PaperType;
+  srcURL: string;
+  possibleAnswers: string[];
+  asnwers: IMCQAnswer[];
 }
