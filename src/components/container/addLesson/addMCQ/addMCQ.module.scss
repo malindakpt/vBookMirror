@@ -1,20 +1,39 @@
+@import "../../../../mixins.scss";
+
+.container {
+
+  max-width: 900px;
+  margin: auto;
+
+  .top{
+    display: grid;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
   .addRemove {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 200px;
+    grid-gap: 20px;
     place-items: center;
-    width: 150px;
+    width: 250px;
     margin: auto;
   }
 
   .questions {
     display: grid;
     place-items: center;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 
+    @include mobile {
+      grid-template-columns: 1fr 1fr;
+    }
 
     .question {
       display: grid;
       place-items: center;
+      width: 100%;
     }
   }
-
+}
