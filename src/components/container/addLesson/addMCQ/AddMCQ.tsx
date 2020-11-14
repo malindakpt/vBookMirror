@@ -37,32 +37,41 @@ export const AddMCQ = () => {
     });
   };
 
+  const saveChanges = () => {
+    console.log(paper);
+  };
+
   return (
     <div className={classes.container}>
       <div className={classes.top}>
         <TextField
-          className={classes.input}
           id="topic"
-          type="text"
           label="Topic"
           value={paper.topic}
-          onChange={(e) => setPaper((prev) => {
-            const clone = { ...prev };
-            clone.topic = e.target.value;
-            return clone;
-          })}
+          inputProps={{ maxLength: 50 }}
+          onChange={(e) => {
+            e.persist();
+            setPaper((prev) => {
+              const clone = { ...prev };
+              clone.topic = e.target.value;
+              return clone;
+            });
+          }}
         />
         <TextField
           className={classes.input}
           id="description"
-          type="text"
           label="Description"
           value={paper.description}
-          onChange={(e) => setPaper((prev) => {
-            const clone = { ...prev };
-            clone.description = e.target.value;
-            return clone;
-          })}
+          inputProps={{ maxLength: 120 }}
+          onChange={(e) => {
+            e.persist();
+            setPaper((prev) => {
+              const clone = { ...prev };
+              clone.description = e.target.value;
+              return clone;
+            });
+          }}
         />
       </div>
       <div
@@ -76,7 +85,10 @@ export const AddMCQ = () => {
           fontSize="large"
           onClick={removeQuestion}
         />
-        <Button variant="contained">
+        <Button
+          variant="contained"
+          onClick={saveChanges}
+        >
           Save Changes
         </Button>
       </div>

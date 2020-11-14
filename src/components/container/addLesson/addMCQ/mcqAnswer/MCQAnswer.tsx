@@ -1,8 +1,7 @@
 import {
-  FormControl, InputLabel, MenuItem, Select, TextField,
+  FormControl, InputLabel, MenuItem, Select,
 } from '@material-ui/core';
-import React, { useState } from 'react';
-import { IMCQAnswer } from '../../../../../interfaces/IPaper';
+import React from 'react';
 import classes from './MCQAnswer.module.scss';
 
 interface Props {
