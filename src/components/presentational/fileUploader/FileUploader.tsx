@@ -32,9 +32,6 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
     // @ts-ignore
       document.getElementById('uploader').value = null;
       setUploadFile(undefined);
-
-    // const videoNode = document.querySelector('video');
-    // if (videoNode) videoNode.src = '';
     };
 
     const onFileSelect = (e: any) => {
@@ -60,30 +57,8 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
             setUploadFile(file);
             // setDuration(duration);
           }
-          // } else {
-          // const duration = round(videoNode.duration / 60);
-          // const uploadedSizePer1min = (size / duration);
-          // if (uploadedSizePer1min > ALLOWED_SIZE_FOR_MIN) {
-          //   const allowedSize = round(ALLOWED_SIZE_FOR_MIN * duration);
-          //   showSnackbar(`Maximum ${allowedSize}Mb allowed for
-          //         ${duration} minutes video. But this file is ${round(size)}Mb`);
-
-          //   resetFileInput();
-          // } else if (size > 600) {
-          //   showSnackbar('Error: Maximum file size is 600Mb');
-          //   resetFileInput();
-          // } else {
-          // // validation success. ready to upload
-          //   setUploadFile(file);
-          //   setDuration(duration);
-          // }
-          // }
         }, 1000);
       }
-    // } else {
-    //   showSnackbar('Please choose an .mp4 file');
-    //   resetFileInput();
-    // }
     };
 
     const onCancelUpload = () => {
@@ -144,7 +119,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
     useImperativeHandle(
       ref,
       () => ({
-        showAlert() {
+        startUploadFile() {
           // alert('Child function called');
           startUploadFile();
         },
@@ -162,7 +137,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
               onChange={onFileSelect}
               disabled={busy || disabled}
             />
-            {uploadProgress > 0 && uploadProgress < 100 ? (
+            {(uploadProgress > 0 && uploadProgress < 100) && (
               <>
                 <span className={classes.progress}>
                   {uploadProgress > 0 && uploadProgress < 100 && `Progress: ${round(uploadProgress)}% `}
@@ -176,32 +151,8 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
                   Cancel Upload
                 </Button>
               </>
-            ) : (
-              <></>
-              // <Button
-              //   size="small"
-              //   color="primary"
-              //   variant="contained"
-              //   onClick={startUploadFile}
-              //   disabled={disabled}
-              // >
-              //   Upload
-              //   {` ${fileName}`}
-              // </Button>
             )}
           </div>
-          {/* <video
-          id="myVideo"
-          width="320"
-          height="176"
-          controls
-          controlsList="nodownload"
-          src={AKSHARA_HELP_VIDEO}
-        >
-          <track
-            kind="captions"
-          />
-        </video> */}
         </>
       </div>
     );

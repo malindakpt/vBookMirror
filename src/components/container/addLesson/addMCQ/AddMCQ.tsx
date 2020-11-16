@@ -110,8 +110,6 @@ export const AddMCQ = () => {
     <div className={classes.container}>
       <div>
         <div className={classes.top}>
-
-          {/* <Child ref={childRef} /> */}
           <TextField
             id="topic"
             label="Topic"
@@ -176,9 +174,12 @@ export const AddMCQ = () => {
             onSuccess={(fileRef: string) => saveChanges(fileRef)}
             fileName={paper.pdfId}
           />
-          <Button onClick={() => {
+          <Button
+            disabled={disabled()}
+            variant="contained"
+            onClick={() => {
                childRef?.current?.showAlert();
-          }}
+            }}
           >
             Save
           </Button>

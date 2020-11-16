@@ -37,7 +37,7 @@ export const MCQAnswer: React.FC<Props> = ({
             value="0"
             key="0"
           >
-            Select
+            ---
           </MenuItem>
           {
           possibleAnswers.map((ans) => (
