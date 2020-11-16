@@ -213,6 +213,22 @@ export const LiveLesson: React.FC = () => {
           ? getDisplay(teacher)
           : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
+        {lesson.attachments && (
+        <div className={classes.attachments}>
+          {lesson.attachments.map((atta: string) => (
+            <li key={atta}>
+              <a
+                href={atta}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {atta}
+              </a>
+            </li>
+          ))}
+        </div>
+        )}
+
         <p>
           අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.
           නැතිනම් ඔබව ගෙවීම් නොකළ පුද්ගලයෙකු ලෙස ගුරුවරයාට පෙන්වනු ලබන අතර ඔබව විසන්ධි
@@ -234,21 +250,6 @@ export const LiveLesson: React.FC = () => {
             allowFullScreen
           />
         </div>
-        {lesson.attachments && (
-        <div className={classes.attachments}>
-          {lesson.attachments.map((atta) => (
-            <li key={atta}>
-              <a
-                href={atta}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {atta}
-              </a>
-            </li>
-          ))}
-        </div>
-        )}
       </div>
       ) }
       <input

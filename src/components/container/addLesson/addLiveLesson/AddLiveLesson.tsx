@@ -366,7 +366,6 @@ export const AddLiveLesson = () => {
               disabled={disabled}
               value={liveLesson.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
               onChange={(e) => {
-                console.log(e.target.value);
                 setSessionProps({ attachments: e.target.value.split('\n') });
               }}
             />
