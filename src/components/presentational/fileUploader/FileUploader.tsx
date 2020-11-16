@@ -73,7 +73,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
       if (!uploadFile) return;
 
       setUploadProgress(0);
-      const out = uploadFileToServer(FileType.IMAGE, uploadFile, email, fileName).subscribe((next) => {
+      const out = uploadFileToServer(fileType, uploadFile, email, fileName).subscribe((next) => {
         setUploadTask(next.uploadTask);
         if (next.downloadURL) {
         // upload completed
@@ -96,7 +96,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
         return;
       }
       // if (!validateLesson()) {
-      //   return;
+      //   return;d
       // }
       setBusy(true);
       // if (editMode) {

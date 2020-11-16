@@ -1,12 +1,14 @@
 import React, {
-  forwardRef,
-  useContext, useEffect, useImperativeHandle, useRef, useState,
+  useContext, useEffect, useRef, useState,
 } from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import {
-  Button, List, ListItem, TextField,
+  Button, List, ListItem, ListItemText, TextField,
 } from '@material-ui/core';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddMCQ.module.scss';
 import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
@@ -24,6 +26,7 @@ export const AddMCQ = () => {
     id: '',
     createdAt: 0,
 
+    orderIndex: 0,
     asnwers: [],
     price: 0,
     possibleAnswers: ['1', '2', '3', '4', '5'],
@@ -37,9 +40,11 @@ export const AddMCQ = () => {
   const [allPapers, setAllPapers] = useState<IPaper[]>([]);
   const [isEditMode, setEditMode] = useState<boolean>(false);
   const [paper, setPaper] = useState<IPaper>(newPaper);
+  const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
 
   const addNew = () => {
     newPaper.pdfId = `${new Date().getTime()}`;
+    newPaper.orderIndex = allPapers.length;
     setPaper(newPaper);
   };
 
@@ -56,7 +61,6 @@ export const AddMCQ = () => {
   }, []);
 
   const addQuestion = () => {
-    // childRef.current?.getAlert();
     setPaper((prev) => {
       const clone = { ...prev };
       clone.asnwers = [...clone.asnwers, { ans: '0' }];
@@ -104,6 +108,33 @@ export const AddMCQ = () => {
   const clickEdit = (paper: IPaper) => {
     setPaper(paper);
     setEditMode(true);
+  };
+
+  const changeOrder = (index: number, isUp: boolean) => {
+    const clone = [...allPapers];
+    const nextIdx = isUp ? index - 1 : index + 1;
+    if (nextIdx < 0 || nextIdx >= allPapers.length) {
+      return;
+    }
+    const item1 = { ...clone[index] };
+    const item2 = { ...clone[nextIdx] };
+
+    clone[index] = item2;
+    clone[nextIdx] = item1;
+
+    setCourseOrderChaged(true);
+
+    clone.forEach((paper, idx) => {
+      paper.orderIndex = idx;
+    });
+    setAllPapers(clone);
+  };
+
+  const saveLessonsOrder = () => {
+    allPapers.forEach((paper, idx) => {
+      updateDoc(Entity.PAPER_MCQ, paper.id, { orderIndex: idx });
+      setCourseOrderChaged(false);
+    });
   };
 
   return (
@@ -216,15 +247,42 @@ export const AddMCQ = () => {
             component="nav"
             aria-label="main mailbox folders"
           >
+            {courseOrderChanged && (
+            <ListItem
+              button
+              onClick={saveLessonsOrder}
+              className={classes.saveOrder}
+            >
+              <ListItemText
+                primary="Save order"
+              />
+              <SaveIcon />
+            </ListItem>
+            )}
             {
-              allPapers.map((paper) => (
+              allPapers.sort((a, b) => a.orderIndex - b.orderIndex).map((paper, index) => (
 
                 <ListItem
                   button
                   onClick={() => { clickEdit(paper); }}
                   key={paper.id}
+                  className={classes.paperList}
                 >
                   {paper.topic}
+
+                  <div>
+                    {index > 0 && (
+                    <ArrowUpwardIcon onClick={(e) => {
+                      changeOrder(index, true); e.stopPropagation();
+                    }}
+                    />
+                    )}
+                    {index < allPapers.length - 1 && (
+                    <ArrowDownwardIcon
+                      onClick={(e) => { changeOrder(index, false); e.stopPropagation(); }}
+                    />
+                    )}
+                  </div>
                 </ListItem>
               ))
             }

@@ -12,6 +12,7 @@ export interface IMCQAnswer {
 export interface IPaper extends IBase {
   topic: string;
   description: string;
+  orderIndex: number;
   price: number;
   type: PaperType;
   pdfURL: string;
