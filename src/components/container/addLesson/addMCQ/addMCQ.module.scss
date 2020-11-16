@@ -7,6 +7,11 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
 
+  .twoColumn{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
   .top{
     display: grid;
     max-width: 500px;

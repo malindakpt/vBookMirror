@@ -13,6 +13,7 @@ export interface IPaper extends IBase {
   topic: string;
   description: string;
   orderIndex: number;
+  courseId: string;
   price: number;
   type: PaperType;
   pdfURL: string;

@@ -4,7 +4,7 @@ import React, {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import {
-  Button, List, ListItem, ListItemText, TextField,
+  Button, FormControl, FormControlLabel, InputLabel, List, ListItem, ListItemText, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -14,10 +14,14 @@ import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
 import {
-  addDoc, Entity, FileType, getDocsWithProps, updateDoc,
+  addDoc, Entity, FileType, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { AppContext } from '../../../../App';
+import { ICourse } from '../../../../interfaces/ICourse';
+import { getObject } from '../../../../data/StoreHelper';
+import { IExam } from '../../../../interfaces/IExam';
+import { ISubject } from '../../../../interfaces/ISubject';
 
 export const AddMCQ = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -25,7 +29,7 @@ export const AddMCQ = () => {
   const newPaper: IPaper = {
     id: '',
     createdAt: 0,
-
+    courseId: '',
     orderIndex: 0,
     asnwers: [],
     price: 0,
@@ -38,29 +42,54 @@ export const AddMCQ = () => {
     ownerEmail: email || '',
   };
   const [allPapers, setAllPapers] = useState<IPaper[]>([]);
+  const [busy, setBusy] = useState<boolean>(false);
   const [isEditMode, setEditMode] = useState<boolean>(false);
   const [paper, setPaper] = useState<IPaper>(newPaper);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [courseId, setCourseId] = useState<string>('');
+
+  const [exams, setExams] = useState<IExam[]>([]);
+  const [subjects, setSubjects] = useState<ISubject[]>([]);
 
   const addNew = () => {
-    newPaper.pdfId = `${new Date().getTime()}`;
-    newPaper.orderIndex = allPapers.length;
     setPaper(newPaper);
+    setEditMode(false);
   };
 
-  const initData = () => {
-    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email })
+  const beforeAdd = () => {
+    paper.courseId = courseId;
+    paper.pdfId = `${new Date().getTime()}`;
+    paper.orderIndex = allPapers.length;
+  };
+
+  const loadPapers = () => {
+    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email, courseId })
       .then((papers) => {
         papers && setAllPapers(papers);
       });
+  };
+  const initData = () => {
+    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
+      .then((courses) => {
+        courses && setCourses(courses);
+      });
+    // eslint-disable-next-line
     addNew();
   };
 
   useEffect(() => {
     initData();
+    // fetch unrelated data
+    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
   }, []);
 
+  const disabled = !courseId;
+
   const addQuestion = () => {
+    if (disabled) return;
+
     setPaper((prev) => {
       const clone = { ...prev };
       clone.asnwers = [...clone.asnwers, { ans: '0' }];
@@ -69,6 +98,8 @@ export const AddMCQ = () => {
   };
 
   const removeQuestion = () => {
+    if (disabled) return;
+
     setPaper((prev) => {
       const clone = { ...prev };
       clone.asnwers.splice(clone.asnwers.length - 1, 1);
@@ -76,33 +107,48 @@ export const AddMCQ = () => {
     });
   };
 
-  const disabled = () => {
-    if (paper.topic?.length > 2 && paper.description?.length > 2) {
-      return false;
+  const handleSuccess = (fileRef: string|null) => {
+    // const clone = { ...paper };
+
+    if (isEditMode) {
+      if (fileRef) {
+        paper.pdfURL = fileRef;
+      } else {
+        // No need to set ref
+      }
+    } else {
+      if (!fileRef) {
+        showSnackbar('Upload file not found');
+        return;
+      }
+      paper.pdfURL = fileRef;
     }
-    return true;
+
+    if (isEditMode) {
+      updateDoc(Entity.PAPER_MCQ, paper.id, paper).then(() => {
+        showSnackbar(`Edited: ${paper.topic}`);
+        setEditMode(false);
+        initData();
+        setBusy(false);
+        loadPapers();
+      });
+    } else {
+      beforeAdd();
+      addDoc<IPaper>(Entity.PAPER_MCQ, paper).then(() => {
+        showSnackbar(`Added: ${paper.topic}`);
+        initData();
+        setBusy(false);
+        loadPapers();
+      });
+    }
   };
 
-  const saveChanges = (fileRef: string) => {
-    setPaper((prev) => {
-      const clone = { ...prev };
-      clone.pdfURL = fileRef;
-
-      if (isEditMode) {
-        updateDoc(Entity.PAPER_MCQ, clone.id, clone).then(() => {
-          showSnackbar(`Edited: ${paper.topic}`);
-          setEditMode(false);
-          initData();
-        });
-      } else {
-        addDoc<IPaper>(Entity.PAPER_MCQ, clone).then(() => {
-          showSnackbar(`Added: ${paper.topic}`);
-          initData();
-        });
-      }
-
-      return clone;
-    });
+  const onCourseChange = (_courseId: string) => {
+    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email, courseId: _courseId })
+      .then((papers) => {
+        papers && setAllPapers(papers);
+      });
+    setCourseId(_courseId);
   };
 
   const clickEdit = (paper: IPaper) => {
@@ -137,13 +183,75 @@ export const AddMCQ = () => {
     });
   };
 
+  const validate = () => {
+    childRef?.current?.startUploading();
+  };
+
   return (
     <div className={classes.container}>
       <div>
+
+        <RadioGroup
+          className={classes.twoColumn}
+          aria-label="editMode"
+          name="editMode"
+          value={isEditMode}
+          onChange={(e: any) => {
+            if (e.target.value === 'false') {
+              addNew();
+            } else {
+              showSnackbar('Select a lesson from the lessons list');
+            }
+          }}
+        >
+          <FormControlLabel
+            value={false}
+            control={<Radio />}
+            label="Add New Lesson"
+            disabled={busy}
+          />
+          <FormControlLabel
+            value
+            control={<Radio />}
+            label="Edit lesson"
+            disabled={busy}
+          />
+        </RadioGroup>
+
         <div className={classes.top}>
+          <FormControl className={classes.input}>
+            <InputLabel
+              id="demo-simple-select-label"
+              className="fc1"
+            >
+              Select Course
+            </InputLabel>
+            <Select
+              className={`${classes.input}`}
+              labelId="label1"
+              id="id1"
+              value={courseId}
+              onChange={(e) => onCourseChange(e.target.value as string)}
+            >
+              {courses.map((course) => {
+                const subject = getObject(subjects, course.subjectId);
+                const exam = getObject(exams, course.examId);
+
+                return (
+                  <MenuItem
+                    value={course.id}
+                    key={course.id}
+                  >
+                    {`${exam?.name}-${exam?.type}-${subject?.name}`}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
           <TextField
             id="topic"
             label="Topic"
+            disabled={disabled}
             value={paper.topic}
             inputProps={{ maxLength: 50 }}
             onChange={(e) => {
@@ -159,6 +267,7 @@ export const AddMCQ = () => {
             className={classes.input}
             id="description"
             label="Description"
+            disabled={disabled}
             value={paper.description}
             inputProps={{ maxLength: 120 }}
             onChange={(e) => {
@@ -174,6 +283,7 @@ export const AddMCQ = () => {
             className={classes.input}
             id="price"
             label="Price"
+            disabled={disabled}
             type="number"
             value={paper.price}
             onChange={(e) => {
@@ -200,17 +310,15 @@ export const AddMCQ = () => {
           />
           <FileUploader
             ref={childRef}
-            disabled={disabled()}
+            disabled={disabled}
             fileType={FileType.PDF}
-            onSuccess={(fileRef: string) => saveChanges(fileRef)}
+            onSuccess={handleSuccess}
             fileName={paper.pdfId}
           />
           <Button
-            disabled={disabled()}
+            disabled={disabled}
             variant="contained"
-            onClick={() => {
-               childRef?.current?.showAlert();
-            }}
+            onClick={validate}
           >
             Save
           </Button>

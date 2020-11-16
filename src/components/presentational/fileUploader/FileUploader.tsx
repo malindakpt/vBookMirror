@@ -12,7 +12,7 @@ interface Props {
   fileType: FileType;
   fileName: string;
   disabled?: boolean;
-  onSuccess: (fileRef: string) => void;
+  onSuccess: (fileRef: string | null) => void;
   onCancel?: () => void;
 }
 export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>> = forwardRef(
@@ -110,7 +110,8 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
       if (uploadFile) {
         uploadAndSave(email, dd);
       } else {
-        showSnackbar('Upload file not found');
+        console.log('Upload file not found');
+        onSuccess(null);
         setBusy(false);
       }
     // }
@@ -119,7 +120,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
     useImperativeHandle(
       ref,
       () => ({
-        startUploadFile() {
+        startUploading() {
           // alert('Child function called');
           startUploadFile();
         },
