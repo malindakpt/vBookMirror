@@ -13,7 +13,8 @@ export interface IPaper extends IBase {
   topic: string;
   description: string;
   type: PaperType;
-  srcURL: string;
+  pdfURL: string;
+  pdfId: string;
   possibleAnswers: string[];
   asnwers: IMCQAnswer[];
 }
