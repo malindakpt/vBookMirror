@@ -28,15 +28,6 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
 
     const { showSnackbar, email } = useContext(AppContext);
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        showAlert() {
-          alert('Child function called');
-        },
-      }),
-    );
-
     const resetFileInput = () => {
     // @ts-ignore
       document.getElementById('uploader').value = null;
@@ -58,18 +49,18 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
         // videoNode.src = fileURL;
 
         setTimeout(() => {
-          if (fileType === FileType.IMAGE) {
-            if (size > ALLOWED_IMAGE_SIZE) {
-              showSnackbar(`Maximum ${ALLOWED_IMAGE_SIZE}Mb allowed for 
+          // if (fileType === FileType.IMAGE) {
+          if (size > ALLOWED_IMAGE_SIZE) {
+            showSnackbar(`Maximum ${ALLOWED_IMAGE_SIZE}Mb allowed for 
                     an image. But this file is ${round(size)}Mb`);
 
-              resetFileInput();
-            } else {
-            // validation success. ready to upload
-              setUploadFile(file);
-            // setDuration(duration);
-            }
+            resetFileInput();
           } else {
+            // validation success. ready to upload
+            setUploadFile(file);
+            // setDuration(duration);
+          }
+          // } else {
           // const duration = round(videoNode.duration / 60);
           // const uploadedSizePer1min = (size / duration);
           // if (uploadedSizePer1min > ALLOWED_SIZE_FOR_MIN) {
@@ -86,7 +77,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
           //   setUploadFile(file);
           //   setDuration(duration);
           // }
-          }
+          // }
         }, 1000);
       }
     // } else {
@@ -123,7 +114,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
       });
     };
 
-    const startUploadFile = (e: any) => {
+    const startUploadFile = () => {
       const dd = new Date().getTime();
       if (!email) {
         showSnackbar('Error with the logged in teacher');
@@ -149,6 +140,16 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
       }
     // }
     };
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        showAlert() {
+          // alert('Child function called');
+          startUploadFile();
+        },
+      }),
+    );
 
     return (
       <div className={classes.container}>
@@ -176,16 +177,17 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
                 </Button>
               </>
             ) : (
-              <Button
-                size="small"
-                color="primary"
-                variant="contained"
-                onClick={startUploadFile}
-                disabled={disabled}
-              >
-                Upload
-                {` ${fileName}`}
-              </Button>
+              <></>
+              // <Button
+              //   size="small"
+              //   color="primary"
+              //   variant="contained"
+              //   onClick={startUploadFile}
+              //   disabled={disabled}
+              // >
+              //   Upload
+              //   {` ${fileName}`}
+              // </Button>
             )}
           </div>
           {/* <video

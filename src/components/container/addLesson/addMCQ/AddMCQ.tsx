@@ -4,7 +4,9 @@ import React, {
 } from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
-import { List, ListItem, TextField } from '@material-ui/core';
+import {
+  Button, List, ListItem, TextField,
+} from '@material-ui/core';
 import classes from './AddMCQ.module.scss';
 import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
@@ -54,7 +56,6 @@ export const AddMCQ = () => {
   }, []);
 
   const addQuestion = () => {
-    childRef?.current?.showAlert();
     // childRef.current?.getAlert();
     setPaper((prev) => {
       const clone = { ...prev };
@@ -175,6 +176,12 @@ export const AddMCQ = () => {
             onSuccess={(fileRef: string) => saveChanges(fileRef)}
             fileName={paper.pdfId}
           />
+          <Button onClick={() => {
+               childRef?.current?.showAlert();
+          }}
+          >
+            Save
+          </Button>
 
         </div>
         <div className={classes.questions}>
