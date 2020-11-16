@@ -1,12 +1,13 @@
-import React, {
-  useState, useEffect, useContext,
-} from 'react';
+import React, { useState } from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
-import { Button, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import classes from './AddMCQ.module.scss';
-import { IMCQAnswer, IPaper, PaperType } from '../../../../interfaces/IPaper';
+import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
+import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
+import { addDoc, Entity, FileType } from '../../../../data/Store';
+import { PDFView } from '../../../presentational/pdfView/PDFView';
 
 export const AddMCQ = () => {
   const [paper, setPaper] = useState<IPaper>({
@@ -18,7 +19,8 @@ export const AddMCQ = () => {
     topic: '',
     description: '',
     type: PaperType.MCQ,
-    srcURL: '',
+    pdfURL: '',
+    pdfId: `${new Date().getTime()}`,
   });
 
   const addQuestion = () => {
@@ -37,64 +39,74 @@ export const AddMCQ = () => {
     });
   };
 
-  const saveChanges = () => {
-    console.log(paper);
+  const saveChanges = (fileRef: string) => {
+    setPaper((prev) => {
+      const clone = { ...prev };
+      clone.pdfURL = fileRef;
+
+      addDoc<IPaper>(Entity.PAPER_MCQ, paper).then(() => {
+        console.log(`Added: ${paper}`);
+      });
+
+      return clone;
+    });
   };
 
   return (
     <div className={classes.container}>
-      <div className={classes.top}>
-        <TextField
-          id="topic"
-          label="Topic"
-          value={paper.topic}
-          inputProps={{ maxLength: 50 }}
-          onChange={(e) => {
-            e.persist();
-            setPaper((prev) => {
-              const clone = { ...prev };
-              clone.topic = e.target.value;
-              return clone;
-            });
-          }}
-        />
-        <TextField
-          className={classes.input}
-          id="description"
-          label="Description"
-          value={paper.description}
-          inputProps={{ maxLength: 120 }}
-          onChange={(e) => {
-            e.persist();
-            setPaper((prev) => {
-              const clone = { ...prev };
-              clone.description = e.target.value;
-              return clone;
-            });
-          }}
-        />
-      </div>
-      <div
-        className={classes.addRemove}
-      >
-        <AddCircleOutlineIcon
-          fontSize="large"
-          onClick={addQuestion}
-        />
-        <RemoveCircleOutlineIcon
-          fontSize="large"
-          onClick={removeQuestion}
-        />
-        <Button
-          variant="contained"
-          onClick={saveChanges}
-        >
-          Save Changes
-        </Button>
-      </div>
+      <div>
+        <div className={classes.top}>
+          <TextField
+            id="topic"
+            label="Topic"
+            value={paper.topic}
+            inputProps={{ maxLength: 50 }}
+            onChange={(e) => {
+              e.persist();
+              setPaper((prev) => {
+                const clone = { ...prev };
+                clone.topic = e.target.value;
+                return clone;
+              });
+            }}
+          />
+          <TextField
+            className={classes.input}
+            id="description"
+            label="Description"
+            value={paper.description}
+            inputProps={{ maxLength: 120 }}
+            onChange={(e) => {
+              e.persist();
+              setPaper((prev) => {
+                const clone = { ...prev };
+                clone.description = e.target.value;
+                return clone;
+              });
+            }}
+          />
 
-      <div className={classes.questions}>
-        {
+        </div>
+        <div
+          className={classes.addRemove}
+        >
+          <AddCircleOutlineIcon
+            fontSize="large"
+            onClick={addQuestion}
+          />
+          <RemoveCircleOutlineIcon
+            fontSize="large"
+            onClick={removeQuestion}
+          />
+          <FileUploader
+            fileType={FileType.PDF}
+            onSuccess={(fileRef: string) => saveChanges(fileRef)}
+            fileName="Paper"
+          />
+
+        </div>
+        <div className={classes.questions}>
+          {
         paper?.asnwers.map((q, idx) => (
           <div
             className={classes.question}
@@ -115,6 +127,11 @@ export const AddMCQ = () => {
           </div>
         ))
       }
+        </div>
+      </div>
+      <div>
+        <PDFView />
+        Papers
       </div>
     </div>
   );
