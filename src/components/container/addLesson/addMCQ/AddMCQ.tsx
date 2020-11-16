@@ -1,4 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  forwardRef,
+  useContext, useEffect, useImperativeHandle, useRef, useState,
+} from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import { List, ListItem, TextField } from '@material-ui/core';
@@ -7,17 +10,14 @@ import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
 import {
-  addDoc, Entity, FileType, getDocsWithProps,
+  addDoc, Entity, FileType, getDocsWithProps, updateDoc,
 } from '../../../../data/Store';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { AppContext } from '../../../../App';
 
 export const AddMCQ = () => {
-  const { email } = useContext(AppContext);
-
-  const [allPapers, setAllPapers] = useState<IPaper[]>([]);
-  const [isEditMode, setEditMode] = useState<boolean>(false);
-
+  const { email, showSnackbar } = useContext(AppContext);
+  const childRef = useRef<any>();
   const newPaper: IPaper = {
     id: '',
     createdAt: 0,
@@ -32,14 +32,8 @@ export const AddMCQ = () => {
     pdfId: `${new Date().getTime()}`,
     ownerEmail: email || '',
   };
-
-  useEffect(() => {
-    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email })
-      .then((papers) => {
-        papers && setAllPapers(papers);
-      });
-  }, []);
-
+  const [allPapers, setAllPapers] = useState<IPaper[]>([]);
+  const [isEditMode, setEditMode] = useState<boolean>(false);
   const [paper, setPaper] = useState<IPaper>(newPaper);
 
   const addNew = () => {
@@ -47,7 +41,21 @@ export const AddMCQ = () => {
     setPaper(newPaper);
   };
 
+  const initData = () => {
+    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email })
+      .then((papers) => {
+        papers && setAllPapers(papers);
+      });
+    addNew();
+  };
+
+  useEffect(() => {
+    initData();
+  }, []);
+
   const addQuestion = () => {
+    childRef?.current?.showAlert();
+    // childRef.current?.getAlert();
     setPaper((prev) => {
       const clone = { ...prev };
       clone.asnwers = [...clone.asnwers, { ans: '0' }];
@@ -75,9 +83,18 @@ export const AddMCQ = () => {
       const clone = { ...prev };
       clone.pdfURL = fileRef;
 
-      addDoc<IPaper>(Entity.PAPER_MCQ, clone).then(() => {
-        console.log(`Added: ${paper}`);
-      });
+      if (isEditMode) {
+        updateDoc(Entity.PAPER_MCQ, clone.id, clone).then(() => {
+          showSnackbar(`Edited: ${paper.topic}`);
+          setEditMode(false);
+          initData();
+        });
+      } else {
+        addDoc<IPaper>(Entity.PAPER_MCQ, clone).then(() => {
+          showSnackbar(`Added: ${paper.topic}`);
+          initData();
+        });
+      }
 
       return clone;
     });
@@ -92,6 +109,8 @@ export const AddMCQ = () => {
     <div className={classes.container}>
       <div>
         <div className={classes.top}>
+
+          {/* <Child ref={childRef} /> */}
           <TextField
             id="topic"
             label="Topic"
@@ -150,6 +169,7 @@ export const AddMCQ = () => {
             onClick={removeQuestion}
           />
           <FileUploader
+            ref={childRef}
             disabled={disabled()}
             fileType={FileType.PDF}
             onSuccess={(fileRef: string) => saveChanges(fileRef)}
