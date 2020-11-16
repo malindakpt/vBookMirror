@@ -12,9 +12,11 @@ export interface IMCQAnswer {
 export interface IPaper extends IBase {
   topic: string;
   description: string;
+  price: number;
   type: PaperType;
   pdfURL: string;
   pdfId: string;
   possibleAnswers: string[];
   asnwers: IMCQAnswer[];
+  ownerEmail: string;
 }

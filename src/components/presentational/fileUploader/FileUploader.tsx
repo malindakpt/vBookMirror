@@ -9,11 +9,12 @@ const ALLOWED_IMAGE_SIZE = 5;
 interface Props {
   fileType: FileType;
   fileName: string;
+  disabled?: boolean;
   onSuccess: (fileRef: string) => void;
   onCancel?: () => void;
 }
 export const FileUploader: React.FC<Props> = ({
-  fileType, fileName, onSuccess, onCancel,
+  fileType, fileName, onSuccess, onCancel, disabled,
 }) => {
   const [uploadFile, setUploadFile] = useState<File>();
   const [uploadTask, setUploadTask] = useState<any>();
@@ -55,7 +56,18 @@ export const FileUploader: React.FC<Props> = ({
             setUploadFile(file);
             // setDuration(duration);
           }
-        } else {
+        } else if (fileType === FileType.PDF) {
+          if (size > ALLOWED_IMAGE_SIZE) {
+            showSnackbar(`Maximum ${ALLOWED_IMAGE_SIZE}Mb allowed for 
+                    an image. But this file is ${round(size)}Mb`);
+
+            resetFileInput();
+          } else {
+            // validation success. ready to upload
+            setUploadFile(file);
+            // setDuration(duration);
+          }
+
           // const duration = round(videoNode.duration / 60);
           // const uploadedSizePer1min = (size / duration);
           // if (uploadedSizePer1min > ALLOWED_SIZE_FOR_MIN) {
@@ -145,7 +157,7 @@ export const FileUploader: React.FC<Props> = ({
             id="uploader"
             name="uploader"
             onChange={onFileSelect}
-            disabled={busy}
+            disabled={busy || disabled}
           />
           {uploadProgress > 0 && uploadProgress < 100 ? (
             <>
@@ -167,6 +179,7 @@ export const FileUploader: React.FC<Props> = ({
               color="primary"
               variant="contained"
               onClick={startUploadFile}
+              disabled={disabled}
             >
               Upload
               {` ${fileName}`}

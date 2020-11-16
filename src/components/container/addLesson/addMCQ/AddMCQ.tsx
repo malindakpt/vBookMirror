@@ -1,27 +1,51 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
-import { TextField } from '@material-ui/core';
+import { List, ListItem, TextField } from '@material-ui/core';
 import classes from './AddMCQ.module.scss';
 import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
-import { addDoc, Entity, FileType } from '../../../../data/Store';
+import {
+  addDoc, Entity, FileType, getDocsWithProps,
+} from '../../../../data/Store';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
+import { AppContext } from '../../../../App';
 
 export const AddMCQ = () => {
-  const [paper, setPaper] = useState<IPaper>({
+  const { email } = useContext(AppContext);
+
+  const [allPapers, setAllPapers] = useState<IPaper[]>([]);
+  const [isEditMode, setEditMode] = useState<boolean>(false);
+
+  const newPaper: IPaper = {
     id: '',
     createdAt: 0,
 
     asnwers: [],
+    price: 0,
     possibleAnswers: ['1', '2', '3', '4', '5'],
     topic: '',
     description: '',
     type: PaperType.MCQ,
     pdfURL: '',
     pdfId: `${new Date().getTime()}`,
-  });
+    ownerEmail: email || '',
+  };
+
+  useEffect(() => {
+    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email })
+      .then((papers) => {
+        papers && setAllPapers(papers);
+      });
+  }, []);
+
+  const [paper, setPaper] = useState<IPaper>(newPaper);
+
+  const addNew = () => {
+    newPaper.pdfId = `${new Date().getTime()}`;
+    setPaper(newPaper);
+  };
 
   const addQuestion = () => {
     setPaper((prev) => {
@@ -39,17 +63,29 @@ export const AddMCQ = () => {
     });
   };
 
+  const disabled = () => {
+    if (paper.topic?.length > 2 && paper.description?.length > 2) {
+      return false;
+    }
+    return true;
+  };
+
   const saveChanges = (fileRef: string) => {
     setPaper((prev) => {
       const clone = { ...prev };
       clone.pdfURL = fileRef;
 
-      addDoc<IPaper>(Entity.PAPER_MCQ, paper).then(() => {
+      addDoc<IPaper>(Entity.PAPER_MCQ, clone).then(() => {
         console.log(`Added: ${paper}`);
       });
 
       return clone;
     });
+  };
+
+  const clickEdit = (paper: IPaper) => {
+    setPaper(paper);
+    setEditMode(true);
   };
 
   return (
@@ -85,6 +121,21 @@ export const AddMCQ = () => {
               });
             }}
           />
+          <TextField
+            className={classes.input}
+            id="price"
+            label="Price"
+            type="number"
+            value={paper.price}
+            onChange={(e) => {
+              e.persist();
+              setPaper((prev) => {
+                const clone = { ...prev };
+                clone.price = Number(e.target.value);
+                return clone;
+              });
+            }}
+          />
 
         </div>
         <div
@@ -99,9 +150,10 @@ export const AddMCQ = () => {
             onClick={removeQuestion}
           />
           <FileUploader
+            disabled={disabled()}
             fileType={FileType.PDF}
             onSuccess={(fileRef: string) => saveChanges(fileRef)}
-            fileName="Paper"
+            fileName={paper.pdfId}
           />
 
         </div>
@@ -130,8 +182,26 @@ export const AddMCQ = () => {
         </div>
       </div>
       <div>
-        <PDFView />
-        Papers
+        {paper.pdfURL && <PDFView url={paper.pdfURL} />}
+        <div>
+          <List
+            component="nav"
+            aria-label="main mailbox folders"
+          >
+            {
+              allPapers.map((paper) => (
+
+                <ListItem
+                  button
+                  onClick={() => { clickEdit(paper); }}
+                  key={paper.id}
+                >
+                  {paper.topic}
+                </ListItem>
+              ))
+            }
+          </List>
+        </div>
       </div>
     </div>
   );
