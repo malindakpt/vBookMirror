@@ -32,7 +32,7 @@ export interface IPaper extends ILesson {
   pdfURL: string;
   pdfId: string;
   possibleAnswers: string[];
-  asnwers: { ans: string }[];
+  answers: { ans: string }[];
 }
 
 export interface IVideoLesson extends ILesson {

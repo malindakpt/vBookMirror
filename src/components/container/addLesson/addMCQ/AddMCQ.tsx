@@ -34,7 +34,7 @@ export const AddMCQ = () => {
     createdAt: 0,
     courseId: '',
     orderIndex: 0,
-    asnwers: [],
+    answers: [],
     price: 0,
     possibleAnswers: ['1', '2', '3', '4', '5'],
     topic: '',
@@ -96,7 +96,7 @@ export const AddMCQ = () => {
 
     setPaper((prev) => {
       const clone = { ...prev };
-      clone.asnwers = [...clone.asnwers, { ans: '0' }];
+      clone.answers = [...clone.answers, { ans: '0' }];
       return clone;
     });
   };
@@ -106,7 +106,7 @@ export const AddMCQ = () => {
 
     setPaper((prev) => {
       const clone = { ...prev };
-      clone.asnwers.splice(clone.asnwers.length - 1, 1);
+      clone.answers.splice(clone.answers.length - 1, 1);
       return clone;
     });
   };
@@ -330,7 +330,7 @@ export const AddMCQ = () => {
         </div>
         <div className={classes.questions}>
           {
-        paper?.asnwers.map((q, idx) => (
+        paper?.answers.map((q, idx) => (
           <div
             className={classes.question}
             key={idx}
@@ -342,7 +342,7 @@ export const AddMCQ = () => {
               onSelectAnswer={(idx, ans) => {
                 setPaper((prev) => {
                   const clone = { ...prev };
-                  clone.asnwers[idx].ans = ans;
+                  clone.answers[idx].ans = ans;
                   return clone;
                 });
               }}

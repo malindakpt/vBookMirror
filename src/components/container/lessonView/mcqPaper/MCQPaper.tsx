@@ -9,6 +9,8 @@ import { IPaper } from '../../../../interfaces/ILesson';
 import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
+import { MCQAnswer } from '../../addLesson/addMCQ/mcqAnswer/MCQAnswer';
+import classes from './MCQPaper.module.scss';
 
 export const MCQPaper = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -19,6 +21,7 @@ export const MCQPaper = () => {
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [paper, setPaper] = useState<IPaper>();
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
+  const [answers, setAnswers] = useState<string[]>();
 
   const processPaper = async () => {
     getDocWithId<IPaper>(Entity.PAPER_MCQ, lessonId).then((paper) => {
@@ -67,6 +70,29 @@ export const MCQPaper = () => {
         <div>
           <div>{paper.topic}</div>
           <div>{paper.description}</div>
+          <div className={classes.questions}>
+            {
+        paper?.answers?.map((q, idx) => (
+          <div
+            className={classes.question}
+            key={idx}
+          >
+            <MCQAnswer
+              idx={idx}
+              ans="0"
+              possibleAnswers={paper.possibleAnswers}
+              onSelectAnswer={(idx, ans) => {
+                if (paper) {
+                  const clone = { ...paper };
+                  clone.answers[idx].ans = ans;
+                  setPaper(clone);
+                }
+              }}
+            />
+          </div>
+        ))
+      }
+          </div>
           <PDFView url={paper.pdfURL} />
         </div>
       ) : <div>Not Loaded</div>}
