@@ -4,7 +4,9 @@
   min-height: calc(100vh - 138px);
   // padding: 20px;
   // background: linear-gradient(0deg, #4c4c4c, transparent);
-  background: linear-gradient(0deg, #3f51b5, transparent, transparent);
+  // background: linear-gradient(0deg, #3f51b5, transparent, transparent);
+  max-width: 900px;
+  margin: auto;
 
   @include mobile {
     min-height: calc(100vh - 120px);
