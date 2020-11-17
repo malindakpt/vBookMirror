@@ -356,6 +356,17 @@ export const AddLiveLesson = () => {
               onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
             />
 
+            {editMode && (
+            <TextField
+              className={classes.input}
+              id="videoUrl"
+              label="Video URL"
+              disabled={disabled}
+              value={liveLesson.videoUrl || ''}
+              onChange={(e) => setSessionProps({ videoUrl: e.target.value })}
+            />
+            )}
+
             <TextField
               className={classes.inputMulti}
               id="standard-multiline-static"

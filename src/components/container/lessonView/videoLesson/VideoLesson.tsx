@@ -19,6 +19,7 @@ import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDi
 import { promptPayment, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
+import { Player } from '../../../presentational/player/Player';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
@@ -124,12 +125,6 @@ export const VideoLesson: React.FC = () => {
 
   useEffect(() => {
     processVideo();
-    // if (email) {
-    //   processVideo();
-    // } else {
-    //   // Util.invokeLogin();
-    //   // showSnackbar('Please login with your gmail address and reload the page');
-    // }
 
     return () => {
       clearInterval(timerRef.current);
@@ -137,10 +132,8 @@ export const VideoLesson: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-  const [isFull, setFull] = useState<boolean>(false);
-
   return (
-    <div className={`${classes.root} ${!isFull && classes.maxWidth}`}>
+    <div className={`${classes.root}`}>
       {lesson && (
       <CollectInfo
         reference={lesson.id}
@@ -157,28 +150,10 @@ export const VideoLesson: React.FC = () => {
         {lesson?.description}
       </div>
       {lesson?.videoURL && (
-        <div className={isFull ? classes.full : classes.small}>
-          <div
-            className={classes.playerHead}
-            role="button"
-            onKeyDown={() => {}}
-            onClick={(e) => {
-              setFull((prev) => !prev);
-              e.stopPropagation();
-            }}
-          >
-            .
-          </div>
-          <iframe
-            className={classes.player}
-            title="video"
-            src={lesson?.videoURL}
-          />
-        </div>
+        <Player videoUrl={lesson.videoURL} />
       )}
       <div
         className={classes.lessonInfo}
-        style={isFull ? { display: 'none' } : {}}
       >
         {teacher && lesson && (
         <div>
