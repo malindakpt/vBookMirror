@@ -180,7 +180,7 @@ export const AddVideoLesson = () => {
         price,
         courseId,
         ownerEmail: email,
-        subCount: 0,
+        // subCount: 0,
         createdAt: 0,
       };
 

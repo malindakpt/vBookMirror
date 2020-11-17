@@ -95,7 +95,7 @@ const showPaymentGuide = (show: boolean) => {
 };
 
 export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
-  isLive: boolean, onComplete: (lessonId: string) => void, showSnackbar: (msg: string) => void) => {
+  paymentType: PaymentType, onComplete: (lessonId: string) => void, showSnackbar: (msg: string) => void) => {
   // const dd = new Date().getTime();
   paymentJS.onDismissed = function onDismissed() {
     showPaymentGuide(false);
@@ -127,7 +127,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
     onComplete(lesson.id);
   };
 
-  if (isLive) {
+  if (paymentType === PaymentType.LIVE_LESSON) {
     getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => {
       if (data && data.length >= teacher.zoomMaxCount) {
         // TODO: send a notification to teacher
@@ -141,7 +141,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
     });
   } else {
     startPay(email, Util.fullName, lesson, payable(teacher.commissionVideo,
-      lesson.price), teacher.ownerEmail, PaymentType.VIDEO_LESSON);
+      lesson.price), teacher.ownerEmail, paymentType);
     showPaymentGuide(true);
   }
 };

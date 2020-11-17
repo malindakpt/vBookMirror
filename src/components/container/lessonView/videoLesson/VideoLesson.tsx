@@ -14,7 +14,7 @@ import { IVideoLesson } from '../../../../interfaces/ILesson';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
-import { IPayment } from '../../../../interfaces/IPayment';
+import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { promptPayment, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
@@ -107,7 +107,7 @@ export const VideoLesson: React.FC = () => {
                 startVideoRendering(lesson);
               } else {
                 setWarn('මුදල් ගෙවියයුතු පාඩමකි.  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid lesson. Please try again in 2 miniutes if you have paid already');
-                promptPayment(email, teacher, lesson, false, () => {
+                promptPayment(email, teacher, lesson, PaymentType.VIDEO_LESSON, () => {
                   // DO not reload this page since it can cause to reset your watch count
                 }, showSnackbar);
               }

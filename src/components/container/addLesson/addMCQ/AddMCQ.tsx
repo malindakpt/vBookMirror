@@ -10,7 +10,6 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddMCQ.module.scss';
-import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
 import {
@@ -22,12 +21,16 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
+import { IPaper, PaperType } from '../../../../interfaces/ILesson';
 
 export const AddMCQ = () => {
   const { email, showSnackbar } = useContext(AppContext);
   const childRef = useRef<any>();
   const newPaper: IPaper = {
     id: '',
+    attachments: [],
+    duration: 0,
+    keywords: '',
     createdAt: 0,
     courseId: '',
     orderIndex: 0,

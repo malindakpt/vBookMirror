@@ -29,3 +29,6 @@ WHat happend if clear date and save
 Change Live to Zoom
 
 Add date and time to live lesson view
+
+
+Check max count for live lessons

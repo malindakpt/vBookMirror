@@ -44,7 +44,6 @@ const fresh: ILiveLesson = {
   ownerEmail: '',
   dateTime: new Date().getTime(),
   status: LiveMeetingStatus.NOT_STARTED,
-  subCount: 0,
   createdAt: 0,
 };
 export const AddLiveLesson = () => {

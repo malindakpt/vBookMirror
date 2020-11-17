@@ -13,7 +13,7 @@ import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
 import { getHashFromString, promptPayment, Util } from '../../../../helper/util';
-import { IPayment } from '../../../../interfaces/IPayment';
+import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 
@@ -78,7 +78,7 @@ export const LiveLesson: React.FC = () => {
                 setLesson(lesson);
                 setFreeOrPurchased(true);
               } else {
-                teacher && promptPayment(email, teacher, lesson, true,
+                teacher && promptPayment(email, teacher, lesson, PaymentType.LIVE_LESSON,
                   () => {
                     setTimeout(() => {
                       window.location.reload();

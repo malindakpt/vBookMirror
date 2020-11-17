@@ -1,8 +1,15 @@
-.root {
+@import '../../../mixins.scss';
+
+.filter {
   grid-column: 1/3;
+
+  @include mobile {
+    grid-column: 1/2;
+  }
+
   .twoColumn {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     width: calc(100% - 20px);
     place-items: center;
     background: #ffffff40;

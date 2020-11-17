@@ -26,6 +26,7 @@ import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
 import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLessonTeacher';
 import { AddMCQ } from '../container/addLesson/addMCQ/AddMCQ';
+import { MCQPaper } from '../container/lessonView/mcqPaper/MCQPaper';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -35,11 +36,13 @@ export const commonRoutes: routeConfig = [
 
   ['/teacher/:teacherId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
   ['/teacher/:teacherId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],
+  ['/teacher/:teacherId/:courseId/paper/:lessonId', MCQPaper, 'MCQ Paper', false],
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
 
   ['/:examId/:subjectId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
   ['/:examId/:subjectId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],
+  ['/:examId/:subjectId/:courseId/paper/:lessonId', MCQPaper, 'MCQ Paper', false],
 
   ['/:examId/:subjectId/:courseId', Course, 'Course', false],
   ['/:examId/:subjectId', Courses, 'Courses', false],
