@@ -128,6 +128,7 @@ export const Payments = () => {
               <td>{p.ownerName}</td>
               <td>{teacherLessons[p.lessonId]?.topic}</td>
               <td>{p.amount}</td>
+              <td>{p.watchedCount}</td>
             </tr>
           ))}
         </tbody>
