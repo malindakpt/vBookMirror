@@ -14,7 +14,7 @@ import { IPaper, PaperType } from '../../../../interfaces/IPaper';
 import { MCQAnswer } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
 import {
-  addDoc, Entity, FileType, getDocsWithProps, getDocWithId, updateDoc,
+  addDoc, Entity, FileType, getDocsWithProps, updateDoc,
 } from '../../../../data/Store';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { AppContext } from '../../../../App';
@@ -83,6 +83,7 @@ export const AddMCQ = () => {
     // fetch unrelated data
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    // eslint-disable-next-line
   }, []);
 
   const disabled = !courseId;
