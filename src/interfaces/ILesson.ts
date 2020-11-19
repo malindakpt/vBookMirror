@@ -7,6 +7,10 @@ export enum LiveMeetingStatus {
   CANCELLED
 }
 
+export enum LessonType {
+  VIDEO, LIVE,
+}
+
 export interface ILesson extends IBase {
     topic: string;
     description: string;
@@ -19,6 +23,8 @@ export interface ILesson extends IBase {
     ownerEmail: string;
 
     subCount: number;
+
+    type: LessonType
   }
 
 export interface IVideoLesson extends ILesson {

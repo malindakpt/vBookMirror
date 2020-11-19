@@ -14,7 +14,7 @@ import {
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
-import { IVideoLesson } from '../../../../interfaces/ILesson';
+import { IVideoLesson, LessonType } from '../../../../interfaces/ILesson';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
@@ -182,6 +182,7 @@ export const AddVideoLesson = () => {
         ownerEmail: email,
         subCount: 0,
         createdAt: 0,
+        type: LessonType.VIDEO,
       };
 
       // Add new lesson
