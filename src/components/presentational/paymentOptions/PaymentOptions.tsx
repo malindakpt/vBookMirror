@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import { promptPayment, Util } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
+import { DialogAddToBill } from './dialogAddToBill/DialogAddToBill';
 import classes from './PaymentOptions.module.scss';
 
 export interface PaymentOptionProps {
@@ -18,6 +19,7 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = ({
   email, paidFor, lesson, onSuccess, onCancel,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [dialogAddToBill, setDialogAddToBill] = useState<boolean>(false);
   const { showSnackbar } = useContext(AppContext);
 
   const handleClose = () => {
@@ -71,9 +73,16 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = ({
             </Button>
           </div>
           <div>
-            <Button variant="contained">Add to Dialog bill</Button>
+            <Button
+              variant="contained"
+              onClick={() => setDialogAddToBill(true)}
+            >
+              Add to Dialog bill
+            </Button>
+
           </div>
 
+          { dialogAddToBill && <DialogAddToBill />}
         </form>
         {/* </DialogContentText> */}
 
