@@ -19,6 +19,7 @@ const APP_CONFIG_DEV = {
   zoomURL: 'https://smsm-54fa3.web.app',
   studentUpdateUrl: 'http://localhost:4000/studentupdate',
   dialogPaymentUrl: 'http://localhost:4000/dialogCharge',
+  dialogConfirmUrl: 'http://localhost:4000/dialogConfirm',
 
   // Variables valid only for dev
   payOnDismiss: false,
@@ -43,6 +44,7 @@ const APP_CONFIG_PROD = {
   techPhone: '0771141194',
   studentUpdateUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/studentupdate',
   dialogPaymentUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/dialogCharge',
+  dialogConfirmUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/dialogConfirm',
 
   payOnDismiss: false,
 };

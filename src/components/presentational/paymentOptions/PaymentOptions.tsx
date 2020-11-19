@@ -19,6 +19,7 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = ({
   email, paidFor, lesson, onSuccess, onCancel,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [showCancel, setShowCancel] = useState<boolean>(true);
   const [dialogAddToBill, setDialogAddToBill] = useState<boolean>(false);
   const { showSnackbar } = useContext(AppContext);
 
@@ -82,19 +83,18 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = ({
 
           </div>
 
-          { dialogAddToBill && <DialogAddToBill />}
+          { dialogAddToBill && (
+          <DialogAddToBill
+            hideCancel={() => setShowCancel(false)}
+            onSuccess={() => onSuccess && onSuccess()}
+          />
+          )}
         </form>
         {/* </DialogContentText> */}
 
       </DialogContent>
       <DialogActions>
-        {/* <Button
-                    //   onClick={onSave}
-          color="primary"
-          autoFocus
-        >
-          OK
-        </Button> */}
+        {showCancel && (
         <Button
           onClick={handleClose}
           color="primary"
@@ -102,6 +102,7 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = ({
         >
           Cancel
         </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
