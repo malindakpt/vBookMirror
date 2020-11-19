@@ -12,7 +12,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
-import { getHashFromString, promptPayment, Util } from '../../../../helper/util';
+import { getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
@@ -229,7 +229,12 @@ export const LiveLesson: React.FC = () => {
            )}
         {teacher && teacher.zoomRunningLessonId === lesson.id
           ? getDisplay(teacher)
-          : <div className={classes.notStarted}>{lesson.videoUrl ? 'Video will available only for 12 hours ' : 'Meeting is Not Live'}</div>}
+          : (
+            <div className={classes.notStarted}>
+              {lesson.videoUrl
+                ? 'Video will available only for 12 hours ' : 'Meeting is Not Live'}
+            </div>
+          )}
 
         {lesson.attachments && (
         <div className={classes.attachments}>

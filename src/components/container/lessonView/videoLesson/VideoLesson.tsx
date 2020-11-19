@@ -16,7 +16,7 @@ import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
-import { promptPayment, Util } from '../../../../helper/util';
+import { Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { Player } from '../../../presentational/player/Player';

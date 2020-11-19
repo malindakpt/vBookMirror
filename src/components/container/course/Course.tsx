@@ -17,7 +17,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import {
-  checkRefund, promptPayment, Util,
+  checkRefund, Util,
 } from '../../../helper/util';
 import { Banner } from '../../presentational/banner/Banner';
 
@@ -111,7 +111,7 @@ export const Course: React.FC = () => {
           email,
           paidFor: teacher.ownerEmail,
           lesson,
-          onSuccess: () => {},
+          onSuccess: () => { updatePayments(lesson.id); },
           onCancel: () => {},
         });
       }
@@ -203,41 +203,42 @@ export const Course: React.FC = () => {
         })
       }
       {
-        (displayMode === DisplayMode.ALL || displayMode === DisplayMode.VIDEO) && videoLessons?.map((lesson, idx) => {
-          let status: 'yes' | 'no' | 'none' | undefined;
-          if (lesson.price) {
-            if (readyToGoVideo(lesson)) {
-              status = 'yes';
-            } else {
-              status = 'no';
-            }
-          } else {
-            status = 'none';
-          }
+        (displayMode === DisplayMode.ALL
+           || displayMode === DisplayMode.VIDEO) && videoLessons?.map((lesson, idx) => {
+             let status: 'yes' | 'no' | 'none' | undefined;
+             if (lesson.price) {
+               if (readyToGoVideo(lesson)) {
+                 status = 'yes';
+               } else {
+                 status = 'no';
+               }
+             } else {
+               status = 'none';
+             }
 
-          return (
-            <div
-              onClick={() => handleLessonSelection(lesson, false)}
-              key={idx}
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => handleLessonSelection(lesson, false)}
-            >
-              <Category
-                id={lesson.id}
-                key={idx}
-                CategoryImg={OndemandVideoIcon}
-                title1={`${lesson.topic}`}
-                title2={`${lesson.description}`}
-                title3={lesson.price > 0
-                  ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
-                navURL={(readyToGoVideo(lesson)
+             return (
+               <div
+                 onClick={() => handleLessonSelection(lesson, false)}
+                 key={idx}
+                 role="button"
+                 tabIndex={0}
+                 onKeyDown={() => handleLessonSelection(lesson, false)}
+               >
+                 <Category
+                   id={lesson.id}
+                   key={idx}
+                   CategoryImg={OndemandVideoIcon}
+                   title1={`${lesson.topic}`}
+                   title2={`${lesson.description}`}
+                   title3={lesson.price > 0
+                     ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
+                   navURL={(readyToGoVideo(lesson)
                   || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
-                status={status}
-              />
-            </div>
-          );
-        })
+                   status={status}
+                 />
+               </div>
+             );
+           })
       }
     </div>
   );

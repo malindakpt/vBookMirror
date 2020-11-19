@@ -1,5 +1,5 @@
 import {
-  Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button,
+  Dialog, DialogTitle, DialogContent, DialogActions, Button,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { ILesson } from '../../../interfaces/ILesson';
