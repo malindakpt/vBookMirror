@@ -98,8 +98,14 @@ const App: React.FC = () => {
           handleClose={hideSnackbar}
         />
         {
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          paymentOptionProps && <PaymentOptions {...paymentOptionProps} />
+
+          paymentOptionProps && (
+          <PaymentOptions
+               // eslint-disable-next-line react/jsx-props-no-spreading
+            {...paymentOptionProps}
+            onCancel={() => setPaymentOptionProps(undefined)}
+          />
+          )
         }
         <Header />
         <Router />

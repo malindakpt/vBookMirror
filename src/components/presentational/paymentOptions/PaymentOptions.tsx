@@ -17,7 +17,7 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
 
   const handleClose = () => {
     // setOpen(false);
-    // onCancel();
+    props.onCancel && props.onCancel();
   };
 
   useEffect(() => {
@@ -59,6 +59,13 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
           autoFocus
         >
           OK
+        </Button>
+        <Button
+          onClick={handleClose}
+          color="primary"
+          autoFocus
+        >
+          Cancel
         </Button>
       </DialogActions>
     </Dialog>
