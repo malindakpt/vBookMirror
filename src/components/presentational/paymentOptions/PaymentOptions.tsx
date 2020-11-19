@@ -1,7 +1,9 @@
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button,
 } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../../App';
+import { promptPayment, Util } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
 import classes from './PaymentOptions.module.scss';
 
@@ -12,17 +14,36 @@ export interface PaymentOptionProps {
     onSuccess?: () => void;
     onCancel?: () => void;
 }
-export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
+export const PaymentOptions: React.FC<PaymentOptionProps> = ({
+  email, paidFor, lesson, onSuccess, onCancel,
+}) => {
   const [open, setOpen] = useState<boolean>(false);
+  const { showSnackbar } = useContext(AppContext);
 
   const handleClose = () => {
     // setOpen(false);
-    props.onCancel && props.onCancel();
+    onCancel && onCancel();
   };
 
   useEffect(() => {
     setOpen(true);
   }, []);
+
+  const showPayhere = () => {
+    onCancel && onCancel();
+    const callback = () => {};
+    if (email) {
+      promptPayment(
+        email,
+        paidFor,
+        lesson,
+        onSuccess ?? callback,
+        showSnackbar,
+      );
+    } else {
+      Util.invokeLogin();
+    }
+  };
 
   return (
     <Dialog
@@ -42,7 +63,12 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
           className={classes.container}
         >
           <div>
-            <Button variant="contained">EZ Cash or Card Payment</Button>
+            <Button
+              variant="contained"
+              onClick={showPayhere}
+            >
+              EZ Cash / Card Payment
+            </Button>
           </div>
           <div>
             <Button variant="contained">Add to Dialog bill</Button>
@@ -53,13 +79,13 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
 
       </DialogContent>
       <DialogActions>
-        <Button
+        {/* <Button
                     //   onClick={onSave}
           color="primary"
           autoFocus
         >
           OK
-        </Button>
+        </Button> */}
         <Button
           onClick={handleClose}
           color="primary"

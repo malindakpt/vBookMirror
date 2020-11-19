@@ -6,7 +6,6 @@ import {
 } from '../data/Store';
 import { ILesson, ILiveLesson } from '../interfaces/ILesson';
 import { IPayment } from '../interfaces/IPayment';
-import { ITeacher } from '../interfaces/ITeacher';
 import { paymentJS, startPay } from './payment';
 
 export const DEFAULT_FULL_NAME = 'Unknown';
@@ -94,15 +93,15 @@ const showPaymentGuide = (show: boolean) => {
   }
 };
 
-export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
-  isLive: boolean, onComplete: (lessonId: string) => void, showSnackbar: (msg: string) => void) => {
+export const promptPayment = (email: string, paidFor: string, lesson: ILesson,
+  onComplete: () => void, showSnackbar: (msg: string) => void) => {
   // const dd = new Date().getTime();
   paymentJS.onDismissed = function onDismissed() {
     showPaymentGuide(false);
     if (Config.isProd) {
       console.log('Payment Dismissed');
       showSnackbar('ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
-      onComplete(lesson.id);
+      onComplete();
     } else {
       /// ////////////////////// This works only in Dev Mode////////////////////////
       if (!Config.payOnDismiss) {
@@ -113,7 +112,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       addDoc(Entity.PAYMENTS_STUDENTS, {
         lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price, ownerName: Util.fullName,
       });
-      onComplete(lesson.id);
+      onComplete();
       /// ////////FAKE UPDATE END///////////////
 
       showSnackbar('DEV: ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
@@ -124,34 +123,44 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
     showPaymentGuide(false);
     console.log('Payment Succeed');
     showSnackbar('ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
-    onComplete(lesson.id);
+    onComplete();
   };
+  startPay({
+    email,
+    paidFor,
+    lesson,
+  });
 
-  if (isLive) {
-    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => {
-      if (data && data.length >= teacher.zoomMaxCount) {
-        // TODO: send a notification to teacher
-        showSnackbar('This live session is full. Please contact the teacher');
-      } else {
-        // setPayLesson(lesson);
-        startPay({
-          email,
-          paidFor: teacher.ownerEmail,
-          lesson,
-        });
-        // startPay(email, Util.fullName, lesson, payable(teacher.commissionLive,
-        //   lesson.price), teacher.ownerEmail, PaymentType.LIVE_LESSON);
-        // showPaymentGuide(true);
-      }
-    });
-  } else {
-    // startPay(email, Util.fullName, lesson, payable(teacher.commissionVideo,
-    //   lesson.price), teacher.ownerEmail, PaymentType.VIDEO_LESSON);
-    startPay({
-      email,
-      paidFor: teacher.ownerEmail,
-      lesson,
-    });
-    // showPaymentGuide(true);
-  }
+  // if (isLive) {
+  // startPay({
+  //   email,
+  //   paidFor,
+  //   lesson,
+  // });
+  // getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => {
+  //   if (data && data.length >= teacher.zoomMaxCount) {
+  //     // TODO: send a notification to teacher
+  //     showSnackbar('This live session is full. Please contact the teacher');
+  //   } else {
+  //     // setPayLesson(lesson);
+  //     startPay({
+  //       email,
+  //       paidFor,
+  //       lesson,
+  //     });
+  //     // startPay(email, Util.fullName, lesson, payable(teacher.commissionLive,
+  //     //   lesson.price), teacher.ownerEmail, PaymentType.LIVE_LESSON);
+  //     // showPaymentGuide(true);
+  //   }
+  // });
+  // } else {
+  //   // startPay(email, Util.fullName, lesson, payable(teacher.commissionVideo,
+  //   //   lesson.price), teacher.ownerEmail, PaymentType.VIDEO_LESSON);
+  //   startPay({
+  //     email,
+  //     paidFor,
+  //     lesson,
+  //   });
+  // showPaymentGuide(true);
+  // }
 };

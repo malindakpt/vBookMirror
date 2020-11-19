@@ -20,7 +20,7 @@ const APP_CONFIG_DEV = {
   studentUpdateUrl: 'http://localhost:4000/studentupdate',
 
   // Variables valid only for dev
-  payOnDismiss: true,
+  payOnDismiss: false,
 };
 
 const APP_CONFIG_PROD = {
