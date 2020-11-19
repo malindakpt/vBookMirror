@@ -23,7 +23,7 @@ import { Player } from '../../../presentational/player/Player';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
-  const { email, showSnackbar } = useContext(AppContext);
+  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
   const timerRef = useRef<any>();
 
   // disble context menu for avoid right click
@@ -108,9 +108,18 @@ export const VideoLesson: React.FC = () => {
                 startVideoRendering(lesson);
               } else {
                 setWarn('මුදල් ගෙවියයුතු පාඩමකි.  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid lesson. Please try again in 2 miniutes if you have paid already');
-                promptPayment(email, teacher, lesson, false, () => {
-                  // DO not reload this page since it can cause to reset your watch count
-                }, showSnackbar);
+
+                showPaymentPopup({
+                  email,
+                  paidFor: teacher.ownerEmail,
+                  lesson,
+                  onSuccess: () => {},
+                  onCancel: () => {},
+                });
+
+                // promptPayment(email, teacher, lesson, false, () => {
+                //   // DO not reload this page since it can cause to reset your watch count
+                // }, showSnackbar);
               }
               // }
             });

@@ -19,7 +19,7 @@ import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 import { Player } from '../../../presentational/player/Player';
 
 export const LiveLesson: React.FC = () => {
-  const { email, showSnackbar } = useContext(AppContext);
+  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
 
   // disble context menu for avoid right click
   document.addEventListener('contextmenu', (event) => event.preventDefault());
@@ -79,12 +79,25 @@ export const LiveLesson: React.FC = () => {
                 setLesson(lesson);
                 setFreeOrPurchased(true);
               } else {
-                teacher && promptPayment(email, teacher, lesson, true,
-                  () => {
-                    setTimeout(() => {
-                      window.location.reload();
-                    }, Config.realoadTimeoutAferSuccessPay);
-                  }, showSnackbar);
+                if (teacher) {
+                  showPaymentPopup({
+                    email,
+                    paidFor: teacher.ownerEmail,
+                    lesson,
+                    onSuccess: () => {
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, Config.realoadTimeoutAferSuccessPay);
+                    },
+                    onCancel: () => {},
+                  });
+                }
+                // teacher && promptPayment(email, teacher, lesson, true,
+                //   () => {
+                //     setTimeout(() => {
+                //       window.location.reload();
+                //     }, Config.realoadTimeoutAferSuccessPay);
+                //   }, showSnackbar);
               }
             });
           } else {

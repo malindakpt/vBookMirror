@@ -28,7 +28,7 @@ enum DisplayMode {
 export const Course: React.FC = () => {
   useBreadcrumb();
 
-  const { email, showSnackbar } = useContext(AppContext);
+  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
 
   // Two routest for this page. (teacher profile)Consider both when reading params
   const { courseId } = useParams<any>();
@@ -105,7 +105,16 @@ export const Course: React.FC = () => {
         Util.invokeLogin();
         return;
       }
-      teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);
+      // teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);
+      if (teacher) {
+        showPaymentPopup({
+          email,
+          paidFor: teacher.ownerEmail,
+          lesson,
+          onSuccess: () => {},
+          onCancel: () => {},
+        });
+      }
     }
   };
 
