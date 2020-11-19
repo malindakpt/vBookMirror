@@ -2,8 +2,8 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 import { privateKey } from './config';
-import { Entity, getDocsWithProps } from './util';
-import { dialogCharge } from './helperDialog';
+import { Entity } from './util';
+import { dialogCharge, dialogConfirm } from './helperDialog';
 
 const cors = require('cors');
 
@@ -40,17 +40,15 @@ enum StatusCode {
 
 app.post('/dialogCharge', (req: any, res: any) => {
   console.log(
-    `\n dialogCharge-  phone: ${req.body.phone}, amount: ${req.body.amount}`
+    `\n dialogCharge-  phone: ${req.body.phone}, amount: ${req.body.amount}`,
   );
   dialogCharge(res, req.body.phone, req.body.amount);
 });
 
 app.post('/dialogConfirm', (req: any, res: any) => {
-
   console.log(`\nsubmitPin- pin: ${req.body.pin}, ref: ${req.body.serverRef}`);
   dialogConfirm(res, req.body.pin, req.body.serverRef);
 });
-
 
 app.post('/notify/1', (req: any, res: any) => {
   const ref = req.body.merchant_id;

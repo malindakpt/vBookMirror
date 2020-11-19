@@ -1,12 +1,20 @@
 import { Button, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
+import Config from '../../../../data/Config';
+import { sendHttp } from '../../../../data/Store';
 
 export const DialogAddToBill = () => {
-  const [phone, setPhone] = useState<string>('');
+  const [phone, setPhone] = useState<string>('+94771141194');
+  const [code, setCode] = useState<string>('');
+
   const [verifySent, setVerifySent] = useState<boolean>(false);
 
   const sendVerification = () => {
     setVerifySent(true);
+    sendHttp(Config.dialogPaymentUrl, {
+      phone,
+      amount: 1,
+    });
   };
 
   return (
@@ -17,8 +25,8 @@ export const DialogAddToBill = () => {
       // className={classes.input}
             id="desc"
             label="Enter Code"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
           />
           <Button onClick={sendVerification}>
             Make Payment
@@ -34,7 +42,7 @@ export const DialogAddToBill = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
-            <Button onClick={() => setVerifySent(true)}>
+            <Button onClick={sendVerification}>
               Send Verification Code
             </Button>
           </div>

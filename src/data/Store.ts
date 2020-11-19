@@ -283,5 +283,5 @@ export const sendHttp = (url: string, body: object) => {
     .then((data) => {
       console.log('Sent info');
       // this.setState({ postId: data.id })
-    });
+    }).catch((e) => console.error('Error', e));
 };
