@@ -16,7 +16,7 @@ import { ITeacher } from '../../../../interfaces/ITeacher';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { Player } from '../../../presentational/player/Player';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
-import { MCQAnswer, Status } from '../../addLesson/addMCQ/mcqAnswer/MCQAnswer';
+import { MCQAnswer, Status } from '../../addLesson/addPaperLesson/mcqAnswer/MCQAnswer';
 import classes from './PaperLesson.module.scss';
 
 export const PaperLesson = () => {

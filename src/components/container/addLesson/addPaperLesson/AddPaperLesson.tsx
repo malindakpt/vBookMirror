@@ -9,7 +9,7 @@ import {
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
-import classes from './AddMCQ.module.scss';
+import classes from './AddPaperLesson.module.scss';
 import { MCQAnswer, Status } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
 import {
@@ -23,7 +23,7 @@ import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { IPaperLesson, PaperType } from '../../../../interfaces/ILesson';
 
-export const AddMCQ = () => {
+export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
   const childRef = useRef<any>();
   const newPaper: IPaperLesson = {
@@ -189,6 +189,14 @@ export const AddMCQ = () => {
   };
 
   const validate = () => {
+    if (paper.topic === '') {
+      showSnackbar('Please add a Topic');
+      return;
+    }
+    if (paper.description === '') {
+      showSnackbar('Please add a Description');
+      return;
+    }
     childRef?.current?.startUploading();
   };
 
