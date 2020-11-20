@@ -258,9 +258,9 @@ export const AddVideoLesson = () => {
           rel="noopener noreferrer"
           target="_blank"
           href={AKSHARA_HELP_VIDEO}
-          style={{ margin: '10px', fontWeight: 'bold' }}
+          style={{ margin: '10px' }}
         >
-          Video upload කරන අකාරය
+          Videos upload කරන අකාරය
         </a>
         <a
           rel="noopener noreferrer"
@@ -276,7 +276,15 @@ export const AddVideoLesson = () => {
           href={OBS_DOWNLOAD}
           style={{ marginRight: '10px' }}
         >
-          Download Screen Recorder
+          Download  OBS Studio Screen Recorder
+        </a>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://www.youtube.com/watch?v=FUtle-pIFs8"
+          style={{ marginRight: '10px' }}
+        >
+          How to reduce size of a video
         </a>
 
         {/* <a

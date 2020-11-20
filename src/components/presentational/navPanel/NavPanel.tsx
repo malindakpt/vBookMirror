@@ -49,6 +49,8 @@ export const NavPanel = () => {
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
   const [selectedTeacher, setSelectedTeacher] = useState<ITeacher|null>();
 
+  const [customerEmail, setCustomerEmail] = useState<string>('');
+
   useEffect(() => {
     getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => {
       setTeachers(data);
@@ -154,6 +156,24 @@ export const NavPanel = () => {
             />
             )}
           </div>
+          {teachers && isAdmin() && (
+          <div style={{ display: 'grid' }}>
+            <TextField
+              // className={classes.input}
+              id="customerEmail"
+              label="Customer Email"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+            />
+            <Button onClick={() => {
+              setEmail(customerEmail);
+              alert(`Logged in as: ${customerEmail}`);
+            }}
+            >
+              Set Customer
+            </Button>
+          </div>
+          )}
         </Drawer>
       </>
     </div>

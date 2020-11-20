@@ -2,7 +2,7 @@ import { Button } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import {
-  addDoc, Entity, getDocsWithProps,
+  addDoc, Entity, getDocsWithProps, updateDoc,
 } from '../../../data/Store';
 import { teacherPortion } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
@@ -87,6 +87,10 @@ export const Payments = () => {
     }
   };
 
+  const resetWatchCount = (paymentId: string) => {
+    updateDoc(Entity.PAYMENTS_STUDENTS, paymentId, { disabled: false, watchedCount: 0 });
+  };
+
   return (
     <div className={classes.container}>
       <table>
@@ -128,6 +132,8 @@ export const Payments = () => {
               <td>{p.ownerName}</td>
               <td>{teacherLessons[p.lessonId]?.topic}</td>
               <td>{p.amount}</td>
+              <td>{p.watchedCount ?? 0}</td>
+              <td><Button onClick={() => resetWatchCount(p.id)}>Reset</Button></td>
             </tr>
           ))}
         </tbody>

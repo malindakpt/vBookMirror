@@ -84,6 +84,7 @@ const Router: React.FC = () => {
         >
           බැංකු කාඩ් මගින් මුදල් ගෙවන ආකාරය
         </a>
+        <br />
         <a
           href="https://youtu.be/uSjUzmhE1NQ"
           target="_blank"
@@ -91,6 +92,13 @@ const Router: React.FC = () => {
           style={{ lineHeight: '30px', marginLeft: '10px' }}
         >
           EzCash මගින් මුදල් ගෙවන ආකාරය
+        </a>
+        <br />
+        <a
+          href="tel:0771141194"
+          style={{ fontSize: '11px', textAlign: 'center', margin: '5px' }}
+        >
+          Call for help: 0771141194
         </a>
       </div>
 

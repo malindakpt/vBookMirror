@@ -21,40 +21,6 @@
     margin: 0px 10px 10px 10px;
   }
 
-  .full {
-    .playerHead {
-      position: fixed;
-      top: 0px;
-      width: 100%;
-      height: 100px;
-      // background: red;
-      z-index: 2;
-    }
-
-    .player {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      top: 0px;
-    }
-  }
-  .small {
-    .playerHead {
-      position: relative;
-      width: 100%;
-      height: 100px;
-      // background: black;
-      z-index: 2;
-    }
-
-    .player {
-      position: relative;
-      width: 100%;
-      height: 50vh;
-      top: -100px;
-    }
-  }
-
   .lessonInfo {
     position: relative;
     top: -90px;

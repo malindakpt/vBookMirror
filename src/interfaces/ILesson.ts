@@ -44,4 +44,5 @@ export interface ILiveLesson extends ILesson {
   // meetingId: string;
   dateTime: number;
   status: LiveMeetingStatus;
+  videoUrl?: string;
 }

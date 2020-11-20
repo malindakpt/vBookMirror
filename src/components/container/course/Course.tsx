@@ -168,7 +168,7 @@ export const Course: React.FC = () => {
       </form>
       {
        (displayMode === ModuleType.ANY || displayMode === ModuleType.LIVE)
-            && liveLessons?.filter((le) => ((le.dateTime + le.duration * 3600000) > now)).sort(
+            && liveLessons?.filter((le) => ((le.dateTime + 24 * 3600000) > now)).sort(
           (a, b) => a.dateTime - b.dateTime,
         ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;

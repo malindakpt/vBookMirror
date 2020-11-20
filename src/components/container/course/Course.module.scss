@@ -15,4 +15,8 @@
     background: #ffffff40;
     margin: 10px;
   }
+
+  @include mobile{
+    grid-column: 1/2;
+  }
 }

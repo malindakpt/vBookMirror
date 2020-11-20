@@ -16,6 +16,7 @@ import { getHashFromString, promptPayment, Util } from '../../../../helper/util'
 import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
+import { Player } from '../../../presentational/player/Player';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -209,9 +210,29 @@ export const LiveLesson: React.FC = () => {
         <div className={classes.desc}>
           {lesson?.description}
         </div>
+        {lesson?.videoUrl
+           && (
+           <Player videoUrl={lesson?.videoUrl} />
+           )}
         {teacher && teacher.zoomRunningLessonId === lesson.id
           ? getDisplay(teacher)
-          : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
+          : <div className={classes.notStarted}>{lesson.videoUrl ? 'Video will available only for 12 hours ' : 'Meeting is Not Live'}</div>}
+
+        {lesson.attachments && (
+        <div className={classes.attachments}>
+          {lesson.attachments.map((atta: string) => (
+            <li key={atta}>
+              <a
+                href={atta}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {atta}
+              </a>
+            </li>
+          ))}
+        </div>
+        )}
 
         <p>
           අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.
@@ -234,21 +255,6 @@ export const LiveLesson: React.FC = () => {
             allowFullScreen
           />
         </div>
-        {lesson.attachments && (
-        <div className={classes.attachments}>
-          {lesson.attachments.map((atta) => (
-            <li key={atta}>
-              <a
-                href={atta}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {atta}
-              </a>
-            </li>
-          ))}
-        </div>
-        )}
       </div>
       ) }
       <input

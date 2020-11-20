@@ -18,7 +18,7 @@ import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
-import Config, { isTester } from '../../../../data/Config';
+import Config from '../../../../data/Config';
 
 export enum JOIN_MODES {
   ONLY_APP,
@@ -247,7 +247,7 @@ export const AddLiveLesson = () => {
 
   const now = new Date().getTime();
 
-  return isTester(email) ? (
+  return (
     <>
       <div
         className={classes.root}
@@ -355,6 +355,17 @@ export const AddLiveLesson = () => {
               onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
             />
 
+            {editMode && (
+            <TextField
+              className={classes.input}
+              id="videoUrl"
+              label="Video URL"
+              disabled={disabled}
+              value={liveLesson.videoUrl || ''}
+              onChange={(e) => setSessionProps({ videoUrl: e.target.value })}
+            />
+            )}
+
             <TextField
               className={classes.inputMulti}
               id="standard-multiline-static"
@@ -365,7 +376,6 @@ export const AddLiveLesson = () => {
               disabled={disabled}
               value={liveLesson.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
               onChange={(e) => {
-                console.log(e.target.value);
                 setSessionProps({ attachments: e.target.value.split('\n') });
               }}
             />
@@ -484,5 +494,5 @@ export const AddLiveLesson = () => {
       </div>
 
     </>
-  ) : (<h2>This feature is not enabled yet</h2>);
+  );
 };
