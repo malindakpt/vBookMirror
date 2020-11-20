@@ -1,5 +1,11 @@
 @import "../../../../mixins.scss";
 
+.warn {
+  font-weight: bold;
+  color: black;
+  text-align: center;
+}
+
 .questions {
   display: grid;
   place-items: center;

@@ -94,8 +94,6 @@ export const VideoLesson: React.FC = () => {
                 lessonId,
                 ownerEmail: email,
               }).then((data) => {
-              // If payments found
-              // if (data?.length > 0) {
               const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
                   < Config.allowedWatchCount));
 
@@ -112,7 +110,6 @@ export const VideoLesson: React.FC = () => {
                   // DO not reload this page since it can cause to reset your watch count
                 }, showSnackbar);
               }
-              // }
             });
           } else {
             Util.invokeLogin();

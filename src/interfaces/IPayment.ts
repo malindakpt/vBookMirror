@@ -3,7 +3,7 @@ import { IBase } from './IBase';
 export enum PaymentType {
     LIVE_LESSON,
     VIDEO_LESSON,
-    MCQ_PAPER,
+    PAPER_LESSON,
     TEACHER_SALARY
 }
 export interface IPayment extends IBase {

@@ -262,11 +262,11 @@ export const Course: React.FC = () => {
 
              return (
                <div
-                 onClick={() => handleLessonSelection(paper, PaymentType.MCQ_PAPER)}
+                 onClick={() => handleLessonSelection(paper, PaymentType.PAPER_LESSON)}
                  key={idx}
                  role="button"
                  tabIndex={0}
-                 onKeyDown={() => handleLessonSelection(paper, PaymentType.MCQ_PAPER)}
+                 onKeyDown={() => handleLessonSelection(paper, PaymentType.PAPER_LESSON)}
                >
                  <Category
                    id={paper.id}
@@ -275,7 +275,7 @@ export const Course: React.FC = () => {
                    title1={`${paper.topic}`}
                    title2={`${paper.description}`}
                    title3={paper.price > 0
-                     ? `${paper.price}` : 'Free'}
+                     ? `Rs:${paper.price}/=` : 'Free'}
                    navURL={(readyToGoLiveOrPaper(paper)
                       || amIOwnerOfLesson(paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
                    status={status}
