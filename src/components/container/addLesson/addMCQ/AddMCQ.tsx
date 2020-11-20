@@ -195,34 +195,33 @@ export const AddMCQ = () => {
     <div className={classes.container}>
       <div>
 
-        <RadioGroup
-          className={classes.twoColumn}
-          aria-label="editMode"
-          name="editMode"
-          value={isEditMode}
-          onChange={(e: any) => {
-            if (e.target.value === 'false') {
-              addNew();
-            } else {
-              showSnackbar('Select a lesson from the lessons list');
-            }
-          }}
-        >
-          <FormControlLabel
-            value={false}
-            control={<Radio />}
-            label="Add New Lesson"
-            disabled={busy}
-          />
-          <FormControlLabel
-            value
-            control={<Radio />}
-            label="Edit lesson"
-            disabled={busy}
-          />
-        </RadioGroup>
-
         <div className={classes.top}>
+          <RadioGroup
+            className={classes.twoColumn}
+            aria-label="editMode"
+            name="editMode"
+            value={isEditMode}
+            onChange={(e: any) => {
+              if (e.target.value === 'false') {
+                addNew();
+              } else {
+                showSnackbar('Select a lesson from the lessons list');
+              }
+            }}
+          >
+            <FormControlLabel
+              value={false}
+              control={<Radio />}
+              label="Add New Lesson"
+              disabled={busy}
+            />
+            <FormControlLabel
+              value
+              control={<Radio />}
+              label="Edit lesson"
+              disabled={busy}
+            />
+          </RadioGroup>
           <FormControl className={classes.input}>
             <InputLabel
               id="demo-simple-select-label"
@@ -299,35 +298,35 @@ export const AddMCQ = () => {
               });
             }}
           />
-
-        </div>
-        <div
-          className={classes.addRemove}
-        >
-          <AddCircleOutlineIcon
-            fontSize="large"
-            onClick={addQuestion}
-          />
-          <RemoveCircleOutlineIcon
-            fontSize="large"
-            onClick={removeQuestion}
-          />
-          <FileUploader
-            ref={childRef}
-            disabled={disabled}
-            fileType={FileType.PDF}
-            onSuccess={handleSuccess}
-            fileName={paper.pdfId}
-          />
-          <Button
-            disabled={disabled}
-            variant="contained"
-            onClick={validate}
+          <div
+            className={classes.addRemove}
           >
-            Save
-          </Button>
+            <AddCircleOutlineIcon
+              fontSize="large"
+              onClick={addQuestion}
+            />
+            <RemoveCircleOutlineIcon
+              fontSize="large"
+              onClick={removeQuestion}
+            />
+            <FileUploader
+              ref={childRef}
+              disabled={disabled}
+              fileType={FileType.PDF}
+              onSuccess={handleSuccess}
+              fileName={paper.pdfId}
+            />
+            <Button
+              disabled={disabled}
+              variant="contained"
+              onClick={validate}
+            >
+              Save
+            </Button>
 
+          </div>
         </div>
+
         <div className={classes.questions}>
           {
         paper?.answers.map((q, idx) => (
