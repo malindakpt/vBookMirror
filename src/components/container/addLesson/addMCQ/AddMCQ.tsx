@@ -284,6 +284,22 @@ export const AddMCQ = () => {
           />
           <TextField
             className={classes.input}
+            id="video"
+            label="Video URL"
+            disabled={disabled}
+            value={paper.description}
+            inputProps={{ maxLength: 120 }}
+            onChange={(e) => {
+              e.persist();
+              setPaper((prev) => {
+                const clone = { ...prev };
+                clone.description = e.target.value;
+                return clone;
+              });
+            }}
+          />
+          <TextField
+            className={classes.input}
             id="price"
             label="Price"
             disabled={disabled}
