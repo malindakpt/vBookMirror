@@ -122,15 +122,17 @@ export const PaperLesson = () => {
               ))
             }
           </div>
-          <div className={classes.validate}>
-            <Button
-              variant="contained"
-              color="default"
-              onClick={() => setValidate(true)}
-            >
-              Validate Answers
-            </Button>
-          </div>
+          {paper.answers.length > 0 && !validated && (
+            <div className={classes.validate}>
+              <Button
+                variant="contained"
+                color="default"
+                onClick={() => setValidate(true)}
+              >
+                Validate Answers
+              </Button>
+            </div>
+          )}
           <div>
             {paper.videoUrl && (
             <div>
