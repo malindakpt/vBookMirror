@@ -248,7 +248,7 @@ export const AddLiveLesson = () => {
 
   const now = new Date().getTime();
 
-  return isTester(email) ? (
+  return (
     <>
       <div
         className={classes.root}
@@ -495,5 +495,5 @@ export const AddLiveLesson = () => {
       </div>
 
     </>
-  ) : (<h2>This feature is not enabled yet</h2>);
+  );
 };
