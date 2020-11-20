@@ -21,12 +21,12 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
-import { IPaper, PaperType } from '../../../../interfaces/ILesson';
+import { IPaperLesson, PaperType } from '../../../../interfaces/ILesson';
 
 export const AddMCQ = () => {
   const { email, showSnackbar } = useContext(AppContext);
   const childRef = useRef<any>();
-  const newPaper: IPaper = {
+  const newPaper: IPaperLesson = {
     id: '',
     attachments: [],
     duration: 0,
@@ -45,10 +45,10 @@ export const AddMCQ = () => {
     pdfId: `${new Date().getTime()}`,
     ownerEmail: email || '',
   };
-  const [allPapers, setAllPapers] = useState<IPaper[]>([]);
+  const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
   const [busy, setBusy] = useState<boolean>(false);
   const [isEditMode, setEditMode] = useState<boolean>(false);
-  const [paper, setPaper] = useState<IPaper>(newPaper);
+  const [paper, setPaper] = useState<IPaperLesson>(newPaper);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [courseId, setCourseId] = useState<string>('');
@@ -68,7 +68,7 @@ export const AddMCQ = () => {
   };
 
   const loadPapers = () => {
-    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email, courseId })
+    getDocsWithProps<IPaperLesson[]>(Entity.PAPER_LESSON, { ownerEmail: email, courseId })
       .then((papers) => {
         papers && setAllPapers(papers);
       });
@@ -130,7 +130,7 @@ export const AddMCQ = () => {
     }
 
     if (isEditMode) {
-      updateDoc(Entity.PAPER_MCQ, paper.id, paper).then(() => {
+      updateDoc(Entity.PAPER_LESSON, paper.id, paper).then(() => {
         showSnackbar(`Edited: ${paper.topic}`);
         setEditMode(false);
         initData();
@@ -139,7 +139,7 @@ export const AddMCQ = () => {
       });
     } else {
       beforeAdd();
-      addDoc<IPaper>(Entity.PAPER_MCQ, paper).then(() => {
+      addDoc<IPaperLesson>(Entity.PAPER_LESSON, paper).then(() => {
         showSnackbar(`Added: ${paper.topic}`);
         initData();
         setBusy(false);
@@ -149,14 +149,14 @@ export const AddMCQ = () => {
   };
 
   const onCourseChange = (_courseId: string) => {
-    getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { ownerEmail: email, courseId: _courseId })
+    getDocsWithProps<IPaperLesson[]>(Entity.PAPER_LESSON, { ownerEmail: email, courseId: _courseId })
       .then((papers) => {
         papers && setAllPapers(papers);
       });
     setCourseId(_courseId);
   };
 
-  const clickEdit = (paper: IPaper) => {
+  const clickEdit = (paper: IPaperLesson) => {
     setPaper(paper);
     setEditMode(true);
   };
@@ -183,7 +183,7 @@ export const AddMCQ = () => {
 
   const saveLessonsOrder = () => {
     allPapers.forEach((paper, idx) => {
-      updateDoc(Entity.PAPER_MCQ, paper.id, { orderIndex: idx });
+      updateDoc(Entity.PAPER_LESSON, paper.id, { orderIndex: idx });
       setCourseOrderChaged(false);
     });
   };

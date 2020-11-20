@@ -6,15 +6,15 @@ import Config from '../../../../data/Config';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
 import { promptPayment, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import { IPaper } from '../../../../interfaces/ILesson';
+import { IPaperLesson } from '../../../../interfaces/ILesson';
 import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { Player } from '../../../presentational/player/Player';
 import { MCQAnswer } from '../../addLesson/addMCQ/mcqAnswer/MCQAnswer';
-import classes from './MCQPaper.module.scss';
+import classes from './PaperLesson.module.scss';
 
-export const MCQPaper = () => {
+export const PaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
   // disble context menu for avoid right click
   document.addEventListener('contextmenu', (event) => event.preventDefault());
@@ -22,12 +22,12 @@ export const MCQPaper = () => {
   const { lessonId } = useParams<any>();
   const [showVideo, setShowVideo] = useState<boolean>(false);
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
-  const [paper, setPaper] = useState<IPaper>();
+  const [paper, setPaper] = useState<IPaperLesson>();
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [answers, setAnswers] = useState<string[]>();
 
   const processPaper = async () => {
-    getDocWithId<IPaper>(Entity.PAPER_MCQ, lessonId).then((paper) => {
+    getDocWithId<IPaperLesson>(Entity.PAPER_LESSON, lessonId).then((paper) => {
       if (!paper) return;
 
       // Fetch techer for show teache info and check is this running lesson ID

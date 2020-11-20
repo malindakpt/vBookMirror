@@ -12,7 +12,7 @@ import {
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
 import {
-  ILesson, ILiveLesson, IPaper, IVideoLesson,
+  ILesson, ILiveLesson, IPaperLesson, IVideoLesson,
 } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
@@ -39,7 +39,7 @@ export const Course: React.FC = () => {
 
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);
-  const [mcqPapers, setMcqPapers] = useState<IPaper[]>([]);
+  const [mcqPapers, setMcqPapers] = useState<IPaperLesson[]>([]);
 
   const [payments, setPayments] = useState<IPayment[]>([]);
 
@@ -57,7 +57,7 @@ export const Course: React.FC = () => {
     Promise.all([
       getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
       getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
-      getDocsWithProps<IPaper[]>(Entity.PAPER_MCQ, { courseId }),
+      getDocsWithProps<IPaperLesson[]>(Entity.PAPER_LESSON, { courseId }),
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
       const [videoLessons, liveLessons, mcqPapers, course] = result;
@@ -88,7 +88,7 @@ export const Course: React.FC = () => {
   const readyToGoLiveOrPaper = (liveLess: ILesson) => (!liveLess.price)
     || (payments?.find((pay) => pay.lessonId === liveLess.id));
 
-  const readyToGoPaper = (paper: IPaper) => (!paper.price)
+  const readyToGoPaper = (paper: IPaperLesson) => (!paper.price)
     || (payments?.find((pay) => pay.lessonId === paper.id));
 
   const updatePayments = async (lessonId: string) => {

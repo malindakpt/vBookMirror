@@ -26,7 +26,7 @@ export interface ILesson extends IBase {
   // subCount: number;
 }
 
-export interface IPaper extends ILesson {
+export interface IPaperLesson extends ILesson {
   orderIndex: number;
   type: PaperType;
   pdfURL: string;
