@@ -193,159 +193,195 @@ export const AddMCQ = () => {
   };
 
   return (
-    <div className={classes.container}>
-      <div>
-
-        <div className={classes.top}>
-          <RadioGroup
-            className={classes.twoColumn}
-            aria-label="editMode"
-            name="editMode"
-            value={isEditMode}
-            onChange={(e: any) => {
-              if (e.target.value === 'false') {
-                addNew();
-              } else {
-                showSnackbar('Select a lesson from the lessons list');
-              }
-            }}
+    <>
+      <div style={{ display: 'flex' }}>
+        <div className={classes.help}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://youtu.be/vSQTMkHxiag"
+            style={{ margin: '10px' }}
           >
-            <FormControlLabel
-              value={false}
-              control={<Radio />}
-              label="Add New Lesson"
-              disabled={busy}
-            />
-            <FormControlLabel
-              value
-              control={<Radio />}
-              label="Edit lesson"
-              disabled={busy}
-            />
-          </RadioGroup>
-          <FormControl className={classes.input}>
-            <InputLabel
-              id="demo-simple-select-label"
-              className="fc1"
-            >
-              Select Course
-            </InputLabel>
-            <Select
-              className={`${classes.input}`}
-              labelId="label1"
-              id="id1"
-              value={courseId}
-              onChange={(e) => onCourseChange(e.target.value as string)}
-            >
-              {courses.map((course) => {
-                const subject = getObject(subjects, course.subjectId);
-                const exam = getObject(exams, course.examId);
-
-                return (
-                  <MenuItem
-                    value={course.id}
-                    key={course.id}
-                  >
-                    {`${exam?.name}-${exam?.type}-${subject?.name}`}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-          <TextField
-            id="topic"
-            label="Topic"
-            disabled={disabled}
-            value={paper.topic}
-            inputProps={{ maxLength: 50 }}
-            onChange={(e) => {
-              e.persist();
-              setPaper((prev) => {
-                const clone = { ...prev };
-                clone.topic = e.target.value;
-                return clone;
-              });
-            }}
-          />
-          <TextField
-            className={classes.input}
-            id="description"
-            label="Description"
-            disabled={disabled}
-            value={paper.description}
-            inputProps={{ maxLength: 120 }}
-            onChange={(e) => {
-              e.persist();
-              setPaper((prev) => {
-                const clone = { ...prev };
-                clone.description = e.target.value;
-                return clone;
-              });
-            }}
-          />
-          <TextField
-            className={classes.input}
-            id="video"
-            label="Video URL"
-            disabled={disabled}
-            value={paper.videoUrl}
-            inputProps={{ maxLength: 120 }}
-            onChange={(e) => {
-              e.persist();
-              setPaper((prev) => {
-                const clone = { ...prev };
-                clone.videoUrl = e.target.value;
-                return clone;
-              });
-            }}
-          />
-          <TextField
-            className={classes.input}
-            id="price"
-            label="Price"
-            disabled={disabled}
-            type="number"
-            value={paper.price}
-            onChange={(e) => {
-              e.persist();
-              setPaper((prev) => {
-                const clone = { ...prev };
-                clone.price = Number(e.target.value);
-                return clone;
-              });
-            }}
-          />
-          <div
-            className={classes.addRemove}
+            Papers add කරන අකාරය
+          </a>
+        </div>
+        <div className={classes.help}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://youtu.be/24HPqXjVIBo"
+            style={{ margin: '10px' }}
           >
-            <AddCircleOutlineIcon
-              fontSize="large"
-              onClick={addQuestion}
-            />
-            <RemoveCircleOutlineIcon
-              fontSize="large"
-              onClick={removeQuestion}
-            />
-            <FileUploader
-              ref={childRef}
+            How to upload a video to GoogleDrive
+          </a>
+        </div>
+        <div className={classes.help}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://youtu.be/YmFne6P5cOc"
+            style={{ margin: '10px' }}
+          >
+            සිසුවන්ට Papers  පෙන්වන ආකාරය
+          </a>
+        </div>
+      </div>
+      <div className={classes.container}>
+
+        <div>
+
+          <div className={classes.top}>
+            <RadioGroup
+              className={classes.twoColumn}
+              aria-label="editMode"
+              name="editMode"
+              value={isEditMode}
+              onChange={(e: any) => {
+                if (e.target.value === 'false') {
+                  addNew();
+                } else {
+                  showSnackbar('Select a lesson from the lessons list');
+                }
+              }}
+            >
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label="Add New Lesson"
+                disabled={busy}
+              />
+              <FormControlLabel
+                value
+                control={<Radio />}
+                label="Edit lesson"
+                disabled={busy}
+              />
+            </RadioGroup>
+            <FormControl className={classes.input}>
+              <InputLabel
+                id="demo-simple-select-label"
+                className="fc1"
+              >
+                Select Course
+              </InputLabel>
+              <Select
+                className={`${classes.input}`}
+                labelId="label1"
+                id="id1"
+                value={courseId}
+                onChange={(e) => onCourseChange(e.target.value as string)}
+              >
+                {courses.map((course) => {
+                  const subject = getObject(subjects, course.subjectId);
+                  const exam = getObject(exams, course.examId);
+
+                  return (
+                    <MenuItem
+                      value={course.id}
+                      key={course.id}
+                    >
+                      {`${exam?.name}-${exam?.type}-${subject?.name}`}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <TextField
+              id="topic"
+              label="Topic"
               disabled={disabled}
-              fileType={FileType.PDF}
-              onSuccess={handleSuccess}
-              fileName={paper.pdfId}
+              value={paper.topic}
+              inputProps={{ maxLength: 50 }}
+              onChange={(e) => {
+                e.persist();
+                setPaper((prev) => {
+                  const clone = { ...prev };
+                  clone.topic = e.target.value;
+                  return clone;
+                });
+              }}
             />
+            <TextField
+              className={classes.input}
+              id="description"
+              label="Description"
+              disabled={disabled}
+              value={paper.description}
+              inputProps={{ maxLength: 120 }}
+              onChange={(e) => {
+                e.persist();
+                setPaper((prev) => {
+                  const clone = { ...prev };
+                  clone.description = e.target.value;
+                  return clone;
+                });
+              }}
+            />
+            <TextField
+              className={classes.input}
+              id="video"
+              label="Video URL"
+              disabled={disabled}
+              value={paper.videoUrl}
+              inputProps={{ maxLength: 120 }}
+              onChange={(e) => {
+                e.persist();
+                setPaper((prev) => {
+                  const clone = { ...prev };
+                  clone.videoUrl = e.target.value;
+                  return clone;
+                });
+              }}
+            />
+            <TextField
+              className={classes.input}
+              id="price"
+              label="Price"
+              disabled={disabled}
+              type="number"
+              value={paper.price}
+              onChange={(e) => {
+                e.persist();
+                setPaper((prev) => {
+                  const clone = { ...prev };
+                  clone.price = Number(e.target.value);
+                  return clone;
+                });
+              }}
+            />
+            <div
+              className={classes.addRemove}
+            >
+              <AddCircleOutlineIcon
+                fontSize="large"
+                onClick={addQuestion}
+              />
+              <RemoveCircleOutlineIcon
+                fontSize="large"
+                onClick={removeQuestion}
+              />
+              <FileUploader
+                ref={childRef}
+                disabled={disabled}
+                fileType={FileType.PDF}
+                onSuccess={handleSuccess}
+                fileName={paper.pdfId}
+              />
+
+            </div>
             <Button
               disabled={disabled}
               variant="contained"
               onClick={validate}
+              color="primary"
+              style={{ width: '150px' }}
             >
-              Save
+              Save Paper
             </Button>
-
           </div>
-        </div>
 
-        <div className={classes.questions}>
-          {
+          <div className={classes.questions}>
+            {
         paper?.answers.map((q, idx) => (
           <div
             className={classes.question}
@@ -367,28 +403,28 @@ export const AddMCQ = () => {
           </div>
         ))
       }
+          </div>
         </div>
-      </div>
-      <div>
-        {paper.pdfURL && <PDFView url={paper.pdfURL} />}
         <div>
-          <List
-            component="nav"
-            aria-label="main mailbox folders"
-          >
-            {courseOrderChanged && (
-            <ListItem
-              button
-              onClick={saveLessonsOrder}
-              className={classes.saveOrder}
+          {paper.pdfURL && <PDFView url={paper.pdfURL} />}
+          <div>
+            <List
+              component="nav"
+              aria-label="main mailbox folders"
             >
-              <ListItemText
-                primary="Save order"
-              />
-              <SaveIcon />
-            </ListItem>
-            )}
-            {
+              {courseOrderChanged && (
+              <ListItem
+                button
+                onClick={saveLessonsOrder}
+                className={classes.saveOrder}
+              >
+                <ListItemText
+                  primary="Save order"
+                />
+                <SaveIcon />
+              </ListItem>
+              )}
+              {
               allPapers.sort((a, b) => a.orderIndex - b.orderIndex).map((paper, index) => (
 
                 <ListItem
@@ -415,9 +451,11 @@ export const AddMCQ = () => {
                 </ListItem>
               ))
             }
-          </List>
+            </List>
+          </div>
         </div>
       </div>
-    </div>
+
+    </>
   );
 };

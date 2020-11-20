@@ -52,9 +52,9 @@ export const commonRoutes: routeConfig = [
 ];
 
 export const teacherRoutes: routeConfig = [
-  ['/addLesson', AddVideoLesson, 'Video Lessons', true],
-  ['/addLive', AddLiveLesson, 'Live Lessons', true],
-  ['/addPaper', AddMCQ, 'Paper Lessons', true],
+  ['/addLesson', AddVideoLesson, 'Video', true],
+  ['/addLive', AddLiveLesson, 'Live', true],
+  ['/addPaper', AddMCQ, 'Paper', true],
   ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
   ['/profile', Subscriptions, 'Profile', true],
 ];
