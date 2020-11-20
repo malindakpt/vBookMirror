@@ -30,7 +30,7 @@ export const Category:React.FC<Props> = ({
     style={{ textDecoration: 'none', color: 'rgb(63 81 181)' }}
   >
     <div className={classes.image}>
-      <CategoryImg
+      <InputIcon
         htmlColor="#3f51b5"
         style={{ fontSize: 40 }}
       />
@@ -49,7 +49,8 @@ export const Category:React.FC<Props> = ({
     </div>
     <div className={classes.actions}>
       {title5 ? <span className={classes.rightTop}>{title5}</span> : <span />}
-      <InputIcon
+
+      <CategoryImg
         htmlColor="#3f51b5"
         style={{ fontSize: 40 }}
       />
