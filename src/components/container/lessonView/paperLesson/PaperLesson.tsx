@@ -25,6 +25,7 @@ export const PaperLesson = () => {
   const [paper, setPaper] = useState<IPaperLesson>();
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
   const [answers, setAnswers] = useState<string[]>([]);
+  const [validated, setValidate] = useState<boolean>(false);
 
   const processPaper = async () => {
     getDocWithId<IPaperLesson>(Entity.PAPER_LESSON, lessonId).then((paper) => {
@@ -79,6 +80,16 @@ export const PaperLesson = () => {
     processPaper();
   }, []);
 
+  const getStatus = (paper: IPaperLesson, idx: number) => {
+    if (validated) {
+      if (paper.answers[idx].ans === answers[idx]) {
+        return Status.Correct;
+      }
+      return Status.Wrong;
+    }
+    return Status.Unknown;
+  };
+
   return (
     <div>
       {paper ? (
@@ -97,7 +108,7 @@ export const PaperLesson = () => {
                   <MCQAnswer
                     idx={idx}
                     ans={ans}
-                    status={Status.Wrong}
+                    status={getStatus(paper, idx)}
                     possibleAnswers={paper.possibleAnswers}
                     onSelectAnswer={(idx, ans) => {
                       setAnswers((prev) => {
@@ -111,7 +122,15 @@ export const PaperLesson = () => {
               ))
             }
           </div>
-
+          <div className={classes.validate}>
+            <Button
+              variant="contained"
+              color="default"
+              onClick={() => setValidate(true)}
+            >
+              Validate Answers
+            </Button>
+          </div>
           <div>
             {paper.videoUrl && (
             <div>
