@@ -1,3 +1,4 @@
+import { Button } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppContext } from '../../../../App';
@@ -9,6 +10,7 @@ import { IPaper } from '../../../../interfaces/ILesson';
 import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
+import { Player } from '../../../presentational/player/Player';
 import { MCQAnswer } from '../../addLesson/addMCQ/mcqAnswer/MCQAnswer';
 import classes from './MCQPaper.module.scss';
 
@@ -18,6 +20,7 @@ export const MCQPaper = () => {
   document.addEventListener('contextmenu', (event) => event.preventDefault());
   useBreadcrumb();
   const { lessonId } = useParams<any>();
+  const [showVideo, setShowVideo] = useState<boolean>(false);
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [paper, setPaper] = useState<IPaper>();
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
@@ -35,7 +38,7 @@ export const MCQPaper = () => {
           if (email) {
             getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
-            // TODO:  Check refundable lessons here
+              // TODO:  Check refundable lessons here
               if (data && data.length > 0) {
                 setPaper(paper);
                 setFreeOrPurchased(true);
@@ -70,30 +73,50 @@ export const MCQPaper = () => {
         <div>
           <div>{paper.topic}</div>
           <div>{paper.description}</div>
+          <PDFView url={paper.pdfURL} />
+
           <div className={classes.questions}>
             {
-        paper?.answers?.map((q, idx) => (
-          <div
-            className={classes.question}
-            key={idx}
-          >
-            <MCQAnswer
-              idx={idx}
-              ans="0"
-              possibleAnswers={paper.possibleAnswers}
-              onSelectAnswer={(idx, ans) => {
-                if (paper) {
-                  const clone = { ...paper };
-                  clone.answers[idx].ans = ans;
-                  setPaper(clone);
-                }
-              }}
-            />
+              paper?.answers?.map((q, idx) => (
+                <div
+                  className={classes.question}
+                  key={idx}
+                >
+                  <MCQAnswer
+                    idx={idx}
+                    ans="0"
+                    possibleAnswers={paper.possibleAnswers}
+                    onSelectAnswer={(idx, ans) => {
+                      if (paper) {
+                        const clone = { ...paper };
+                        clone.answers[idx].ans = ans;
+                        setPaper(clone);
+                      }
+                    }}
+                  />
+                </div>
+              ))
+            }
           </div>
-        ))
-      }
+
+          <div>
+            {paper.videoUrl && (
+            <div>
+              { showVideo ? (
+                <Player videoUrl={paper.videoUrl} />
+              )
+                : (
+                  <Button
+                    variant="contained"
+                    color="default"
+                    onClick={() => setShowVideo(true)}
+                  >
+                    Show Discussion Video
+                  </Button>
+                )}
+            </div>
+            )}
           </div>
-          <PDFView url={paper.pdfURL} />
         </div>
       ) : <div>Not Loaded</div>}
     </div>

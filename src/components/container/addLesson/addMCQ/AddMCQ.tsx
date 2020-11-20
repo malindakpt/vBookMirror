@@ -35,6 +35,7 @@ export const AddMCQ = () => {
     courseId: '',
     orderIndex: 0,
     answers: [],
+    videoUrl: '',
     price: 0,
     possibleAnswers: ['1', '2', '3', '4', '5'],
     topic: '',
@@ -287,13 +288,13 @@ export const AddMCQ = () => {
             id="video"
             label="Video URL"
             disabled={disabled}
-            value={paper.description}
+            value={paper.videoUrl}
             inputProps={{ maxLength: 120 }}
             onChange={(e) => {
               e.persist();
               setPaper((prev) => {
                 const clone = { ...prev };
-                clone.description = e.target.value;
+                clone.videoUrl = e.target.value;
                 return clone;
               });
             }}

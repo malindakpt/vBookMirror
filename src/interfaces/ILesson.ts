@@ -33,6 +33,7 @@ export interface IPaper extends ILesson {
   pdfId: string;
   possibleAnswers: string[];
   answers: { ans: string }[];
+  videoUrl: string;
 }
 
 export interface IVideoLesson extends ILesson {
