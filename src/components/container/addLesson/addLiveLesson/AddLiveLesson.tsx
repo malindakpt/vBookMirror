@@ -18,7 +18,7 @@ import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
-import Config, { isTester } from '../../../../data/Config';
+import Config from '../../../../data/Config';
 
 export enum JOIN_MODES {
   ONLY_APP,
