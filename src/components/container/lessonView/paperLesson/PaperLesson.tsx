@@ -104,18 +104,6 @@ export const PaperLesson = () => {
                 // DO not reload this page since it can cause to reset your watch count
                 }, showSnackbar);
               }
-              // TODO:  Check refundable lessons here
-              // if (data && data.length > 0) {
-              //   setPaper(paper);
-              //   // setFreeOrPurchased(true);
-              // } else {
-              //   teacher && promptPayment(email, teacher, paper, PaymentType.PAPER_LESSON,
-              //     () => {
-              //       setTimeout(() => {
-              //         window.location.reload();
-              //       }, Config.realoadTimeoutAferSuccessPay);
-              //     }, showSnackbar);
-              // }
             });
           } else {
             // showSnackbar('Please login with your Gmail address');
