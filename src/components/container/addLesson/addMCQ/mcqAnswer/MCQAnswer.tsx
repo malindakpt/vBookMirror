@@ -4,20 +4,24 @@ import {
 import React from 'react';
 import classes from './MCQAnswer.module.scss';
 
+export enum Status {
+  Correct, Wrong, Unknown
+}
 interface Props {
     idx: number;
     ans: string;
     possibleAnswers: string[];
+    status: Status;
     onSelectAnswer: (idx:number, ans: string) => void;
 }
 
 export const MCQAnswer: React.FC<Props> = ({
-  idx, ans, possibleAnswers, onSelectAnswer,
+  idx, ans, possibleAnswers, onSelectAnswer, status,
 }) => (
   <FormControl className={classes.container}>
-    <div className={classes.section2}>
+    <div className={`${classes.section2} ${status === Status.Correct && classes.correct} ${status === Status.Wrong && classes.wrong}`}>
       <h3>
-        {idx}
+        {idx + 1}
       </h3>
       <div>
         <InputLabel

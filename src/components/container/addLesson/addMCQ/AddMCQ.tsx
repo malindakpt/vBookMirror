@@ -10,7 +10,7 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import SaveIcon from '@material-ui/icons/Save';
 import classes from './AddMCQ.module.scss';
-import { MCQAnswer } from './mcqAnswer/MCQAnswer';
+import { MCQAnswer, Status } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
 import {
   addDoc, Entity, FileType, getDocsWithProps, updateDoc,
@@ -353,6 +353,7 @@ export const AddMCQ = () => {
           >
             <MCQAnswer
               idx={idx}
+              status={Status.Correct}
               ans={q.ans}
               possibleAnswers={paper.possibleAnswers}
               onSelectAnswer={(idx, ans) => {

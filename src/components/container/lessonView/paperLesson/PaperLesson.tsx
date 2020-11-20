@@ -11,7 +11,7 @@ import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { Player } from '../../../presentational/player/Player';
-import { MCQAnswer } from '../../addLesson/addMCQ/mcqAnswer/MCQAnswer';
+import { MCQAnswer, Status } from '../../addLesson/addMCQ/mcqAnswer/MCQAnswer';
 import classes from './PaperLesson.module.scss';
 
 export const PaperLesson = () => {
@@ -24,7 +24,7 @@ export const PaperLesson = () => {
   const [teacher, setTeacher] = useState<ITeacher | null>(null);
   const [paper, setPaper] = useState<IPaperLesson>();
   const [freeOrPurchased, setFreeOrPurchased] = useState<boolean>();
-  const [answers, setAnswers] = useState<string[]>();
+  const [answers, setAnswers] = useState<string[]>([]);
 
   const processPaper = async () => {
     getDocWithId<IPaperLesson>(Entity.PAPER_LESSON, lessonId).then((paper) => {
@@ -64,6 +64,18 @@ export const PaperLesson = () => {
   };
 
   useEffect(() => {
+    setAnswers((prev) => {
+      const clone = [];
+      if (paper?.answers) {
+        for (const a of paper?.answers) {
+          clone.push('0');
+        }
+      }
+      return clone;
+    });
+  }, [paper]);
+
+  useEffect(() => {
     processPaper();
   }, []);
 
@@ -77,21 +89,22 @@ export const PaperLesson = () => {
 
           <div className={classes.questions}>
             {
-              paper?.answers?.map((q, idx) => (
+              answers?.map((ans, idx) => (
                 <div
                   className={classes.question}
                   key={idx}
                 >
                   <MCQAnswer
                     idx={idx}
-                    ans="0"
+                    ans={ans}
+                    status={Status.Wrong}
                     possibleAnswers={paper.possibleAnswers}
                     onSelectAnswer={(idx, ans) => {
-                      if (paper) {
-                        const clone = { ...paper };
-                        clone.answers[idx].ans = ans;
-                        setPaper(clone);
-                      }
+                      setAnswers((prev) => {
+                        const clone = [...prev];
+                        clone[idx] = ans;
+                        return clone;
+                      });
                     }}
                   />
                 </div>
