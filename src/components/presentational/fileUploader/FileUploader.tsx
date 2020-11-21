@@ -1,7 +1,7 @@
-import { Button } from '@material-ui/core';
 import React, {
   forwardRef, useContext, useImperativeHandle, useState,
 } from 'react';
+import { Button } from '@material-ui/core';
 import classes from './FileUploader.module.scss';
 import { FileType, uploadFileToServer } from '../../../data/Store';
 import { round } from '../../../helper/util';
@@ -155,7 +155,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
               onChange={onFileSelect}
               disabled={busy || disabled}
             />
-            {/* {(uploadProgress > 0 && uploadProgress < 100) && (
+            {(uploadProgress > 999 && uploadProgress < 100) && (
               <>
                 <span className={classes.progress}>
                   {uploadProgress > 0 && uploadProgress < 100 && `Progress: ${round(uploadProgress)}% `}
@@ -169,7 +169,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
                   Cancel Upload
                 </Button>
               </>
-            )} */}
+            )}
           </div>
         </>
       </div>
