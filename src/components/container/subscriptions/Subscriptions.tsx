@@ -167,6 +167,12 @@ export const Subscriptions = () => {
               {teacher.url}
             </a>
           </div>
+          {
+            getLessonsTable(videoLessons, false, teacher)
+          }
+          {
+            getLessonsTable(liveLessons, true, teacher)
+          }
           <FileUploader
             fileType={FileType.IMAGE}
             fileName="Mobile Cover Photo(2×1)"
@@ -177,12 +183,6 @@ export const Subscriptions = () => {
             fileName="Desktop Cover Photo(4×1)"
             onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl2: fileRef })}
           />
-          {
-            getLessonsTable(videoLessons, false, teacher)
-          }
-          {
-            getLessonsTable(liveLessons, true, teacher)
-          }
         </div>
       )
         : <div />}
