@@ -21,7 +21,7 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
-import { IPaperLesson, PaperType } from '../../../../interfaces/ILesson';
+import { IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 
 export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -40,10 +40,10 @@ export const AddPaperLesson = () => {
     possibleAnswers: ['1', '2', '3', '4', '5'],
     topic: '',
     description: '',
-    type: PaperType.MCQ,
     pdfURL: '',
     pdfId: `${new Date().getTime()}`,
     ownerEmail: email || '',
+    type: LessonType.PAPER,
   };
   const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
   const [busy, setBusy] = useState<boolean>(false);

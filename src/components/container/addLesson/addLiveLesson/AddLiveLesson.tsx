@@ -14,7 +14,7 @@ import { getObject } from '../../../../data/StoreHelper';
 import { formattedTime } from '../../../../helper/util';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
-import { ILiveLesson, LiveMeetingStatus } from '../../../../interfaces/ILesson';
+import { ILiveLesson, LessonType, LiveMeetingStatus } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
@@ -45,6 +45,7 @@ const fresh: ILiveLesson = {
   dateTime: new Date().getTime(),
   status: LiveMeetingStatus.NOT_STARTED,
   createdAt: 0,
+  type: LessonType.LIVE,
 };
 export const AddLiveLesson = () => {
   const { showSnackbar, email } = useContext(AppContext);

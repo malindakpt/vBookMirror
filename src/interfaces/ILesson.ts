@@ -12,6 +12,10 @@ export enum PaperType {
   WRITTEN,
 }
 
+export enum LessonType {
+  VIDEO, LIVE, PAPER
+}
+
 export interface ILesson extends IBase {
   topic: string;
   description: string;
@@ -24,11 +28,11 @@ export interface ILesson extends IBase {
   ownerEmail: string;
 
   // subCount: number;
+  type: LessonType
 }
 
 export interface IPaperLesson extends ILesson {
   orderIndex: number;
-  type: PaperType;
   pdfURL: string;
   pdfId: string;
   possibleAnswers: string[];
