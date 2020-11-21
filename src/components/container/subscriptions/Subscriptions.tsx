@@ -98,9 +98,9 @@ export const Subscriptions = () => {
           <tbody>
             <tr key={0}>
               <th>Lesson</th>
-              <th>Price(Now)</th>
-              <th>Payments</th>
-              <th>Income</th>
+              <th>Price</th>
+              <th>Count</th>
+              <th>Total</th>
             </tr>
             {
 
@@ -120,9 +120,11 @@ export const Subscriptions = () => {
               {teacherPortion(isLive ? teacher.commissionLive : teacher.commissionVideo, tot)}
             </td>
             <td>
-              {views?.lessonId === val.lesson.id && <span>{views.count}</span>}
-              <Button onClick={() => checkViews(val.lesson)}>
-                Check Views
+              {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
+              <Button
+                onClick={() => checkViews(val.lesson)}
+              >
+                Views
               </Button>
             </td>
           </tr>

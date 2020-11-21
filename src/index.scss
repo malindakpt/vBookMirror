@@ -17,7 +17,8 @@ body {
 
   .w100 {
     width: 100%;
-    max-width: 900px;
+    overflow: auto;
+    display: block;
   }
 
   .right {
