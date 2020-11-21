@@ -240,7 +240,7 @@ export const Course: React.FC = () => {
 
       {
         (displayMode === ModuleType.ANY
-          || displayMode === ModuleType.PAPER) && mcqPapers?.map((paper, idx) => {
+          || displayMode === ModuleType.PAPER) && mcqPapers.sort((a, b) => a.orderIndex - b.orderIndex)?.map((paper, idx) => {
             let status: 'yes' | 'no' | 'none' | undefined;
             if (paper.price) {
               if (readyToGo(payments, paper).ok) {

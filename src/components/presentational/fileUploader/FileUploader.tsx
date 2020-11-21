@@ -15,6 +15,20 @@ interface Props {
   onSuccess: (fileRef: string | null) => void;
   onCancel?: () => void;
 }
+
+const fileFormat = (fileType: FileType): string => {
+  switch (fileType) {
+    case FileType.IMAGE:
+      return 'image/jpeg';
+    case FileType.PDF:
+      return 'application/pdf';
+    case FileType.VIDEO:
+      return 'video/mp4';
+    default:
+      return '';
+  }
+};
+
 export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttributes<unknown>> = forwardRef(
   (props, ref) => {
     const {
@@ -39,7 +53,10 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
       const file: File = e.target.files[0];
       // const videoNode = document.querySelector('video');
 
-      // if (file.type === 'video/mp4') {
+      if (file.type !== fileFormat(fileType)) {
+        showSnackbar(`Invalid file type. Please try with: ${fileFormat(fileType)}`);
+        return;
+      }
       if (file) {
         const size = file.size / (1024 * 1024);
         // const fileURL = URL.createObjectURL(file);
@@ -138,7 +155,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
               onChange={onFileSelect}
               disabled={busy || disabled}
             />
-            {(uploadProgress > 0 && uploadProgress < 100) && (
+            {/* {(uploadProgress > 0 && uploadProgress < 100) && (
               <>
                 <span className={classes.progress}>
                   {uploadProgress > 0 && uploadProgress < 100 && `Progress: ${round(uploadProgress)}% `}
@@ -152,7 +169,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
                   Cancel Upload
                 </Button>
               </>
-            )}
+            )} */}
           </div>
         </>
       </div>
