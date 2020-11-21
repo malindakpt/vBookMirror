@@ -13,7 +13,7 @@ export enum PaperType {
 }
 
 export enum LessonType {
-  VIDEO, LIVE, PAPER
+  LIVE, VIDEO, PAPER
 }
 
 export interface ILesson extends IBase {

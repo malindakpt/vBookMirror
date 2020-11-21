@@ -8,7 +8,7 @@ import Config from '../../../../data/Config';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { promptPayment, Util } from '../../../../helper/util';
+import { promptPayment, readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ILesson, IPaperLesson } from '../../../../interfaces/ILesson';
 import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
@@ -88,12 +88,14 @@ export const PaperLesson = () => {
           if (email) {
             getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
-              const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
-                < Config.allowedWatchCount));
+              const ready = readyToGo(data, paper);
 
-              if (validPayment) {
+              // data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
+              //   < Config.allowedWatchCount));
+
+              if (ready.payment) {
                 setAlert(true);
-                setPayment(validPayment);
+                setPayment(ready.payment);
                 setTempLesson(paper);
               } else if (amIOwnerOfLesson(paper)) {
                 setWarn('Watch as owner');

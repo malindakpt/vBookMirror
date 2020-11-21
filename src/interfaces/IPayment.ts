@@ -19,6 +19,6 @@ export interface IPayment extends IBase {
     ownerName: string;
 
     status: string;
-    disabled?: boolean;
+    disabled?: boolean; // This is mandetory when multiple payments exists and calculate the watch count
     watchedCount?: number;
 }
