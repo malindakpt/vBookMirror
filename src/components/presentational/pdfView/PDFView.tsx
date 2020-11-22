@@ -12,10 +12,25 @@ export const PDFView: React.FC<Props> = ({ url }) => {
   }, []);
 
   return (
-    <iframe
+    <object
       className={classes.iframe}
-      title="PDF"
-      src={url}
-    />
+      data={url}
+      type="application/pdf"
+    >
+      <p>
+        Your web browser doesn't have a PDF plugin.
+        Instead you can
+        {' '}
+        <a
+          href={url}
+          target="_blank"
+        >
+          click here to
+          download the Paper.
+        </a>
+
+      </p>
+    </object>
+
   );
 };
