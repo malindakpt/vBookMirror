@@ -57,7 +57,7 @@ export const Course: React.FC = () => {
     Promise.all([
       getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
       getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
-      getDocsWithProps<IPaperLesson[]>(Entity.PAPER_LESSON, { courseId }),
+      getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { courseId }),
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
       const [videoLessons, liveLessons, mcqPapers, course] = result;

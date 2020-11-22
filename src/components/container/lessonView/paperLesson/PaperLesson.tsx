@@ -77,7 +77,7 @@ export const PaperLesson = () => {
   };
 
   const processPaper = async () => {
-    getDocWithId<IPaperLesson>(Entity.PAPER_LESSON, lessonId).then((paper) => {
+    getDocWithId<IPaperLesson>(Entity.LESSONS_PAPER, lessonId).then((paper) => {
       if (!paper) return;
 
       // Fetch techer for show teache info and check is this running lesson ID

@@ -68,7 +68,7 @@ export const AddPaperLesson = () => {
   };
 
   const loadPapers = () => {
-    getDocsWithProps<IPaperLesson[]>(Entity.PAPER_LESSON, { ownerEmail: email, courseId })
+    getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId })
       .then((papers) => {
         papers && setAllPapers(papers);
       });
@@ -130,7 +130,7 @@ export const AddPaperLesson = () => {
     }
 
     if (isEditMode) {
-      updateDoc(Entity.PAPER_LESSON, paper.id, paper).then(() => {
+      updateDoc(Entity.LESSONS_PAPER, paper.id, paper).then(() => {
         showSnackbar(`Edited: ${paper.topic}`);
         setEditMode(false);
         initData();
@@ -139,7 +139,7 @@ export const AddPaperLesson = () => {
       });
     } else {
       beforeAdd();
-      addDoc<IPaperLesson>(Entity.PAPER_LESSON, paper).then(() => {
+      addDoc<IPaperLesson>(Entity.LESSONS_PAPER, paper).then(() => {
         showSnackbar(`Added: ${paper.topic}`);
         initData();
         setBusy(false);
@@ -149,7 +149,7 @@ export const AddPaperLesson = () => {
   };
 
   const onCourseChange = (_courseId: string) => {
-    getDocsWithProps<IPaperLesson[]>(Entity.PAPER_LESSON, { ownerEmail: email, courseId: _courseId })
+    getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId: _courseId })
       .then((papers) => {
         papers && setAllPapers(papers);
       });
@@ -183,7 +183,7 @@ export const AddPaperLesson = () => {
 
   const saveLessonsOrder = () => {
     allPapers.forEach((paper, idx) => {
-      updateDoc(Entity.PAPER_LESSON, paper.id, { orderIndex: idx });
+      updateDoc(Entity.LESSONS_PAPER, paper.id, { orderIndex: idx });
       setCourseOrderChaged(false);
     });
   };
