@@ -194,7 +194,8 @@ export const PaperLesson = () => {
             </a> */}
           </div>
           )}
-
+          <br />
+          <div>පහතින් පිළිතුරු ලකුණු කරන්න. Mark the answere here.</div>
           <div className={classes.questions}>
             {
               answers?.map((ans, idx: number) => (
@@ -220,7 +221,7 @@ export const PaperLesson = () => {
             }
           </div>
           {validated && (
-          <h3>
+          <h3 style={{ color: 'red', textAlign: 'center' }}>
             Wow!!
             {' '}
             {' '}
@@ -237,10 +238,10 @@ export const PaperLesson = () => {
             <div className={classes.validate}>
               <Button
                 variant="contained"
-                color="default"
+                color="primary"
                 onClick={() => setValidate(true)}
               >
-                Validate Answers
+                Complete
               </Button>
             </div>
           )}

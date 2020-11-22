@@ -18,16 +18,12 @@ export const PDFView: React.FC<Props> = ({ url }) => {
       type="application/pdf"
     >
       <p>
-        Your web browser doesn't have a PDF plugin.
-        Instead you can
-        {' '}
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
         >
-          click here to
-          download the Paper.
+          ප්‍රශ්ණ පත්‍රය භාගත කිරීමට මෙහි ක්ලික් කරන්න . Download the Paper.
         </a>
 
       </p>
