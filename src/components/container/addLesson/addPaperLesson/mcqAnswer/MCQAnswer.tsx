@@ -31,7 +31,7 @@ export const MCQAnswer: React.FC<Props> = ({
           Select Answer
         </InputLabel>
         <Select
-          className="w100"
+          className={classes.w100}
           labelId="label1"
           id="id1"
           value={ans}

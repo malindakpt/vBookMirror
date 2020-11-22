@@ -117,7 +117,7 @@ export const Course: React.FC = () => {
 
   return (
     <div className="container">
-      { teacher?.bannerUrl1 && (
+      { teacher && (
         <Banner teacher={teacher} />
       )}
       <form

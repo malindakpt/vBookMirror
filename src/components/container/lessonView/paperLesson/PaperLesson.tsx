@@ -14,6 +14,7 @@ import { ILesson, IPaperLesson } from '../../../../interfaces/ILesson';
 import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
+import { Banner } from '../../../presentational/banner/Banner';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { Player } from '../../../presentational/player/Player';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
@@ -168,6 +169,9 @@ export const PaperLesson = () => {
             lessonType={InteractionType.MCQ_PAPER}
           />
         </>
+      )}
+      { teacher && (
+      <Banner teacher={teacher} />
       )}
       {paper ? (
         <div>

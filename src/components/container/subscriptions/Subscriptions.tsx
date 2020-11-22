@@ -26,6 +26,7 @@ export const Subscriptions = () => {
 
   const [videoLessons, setVideoLessons] = useState<LessMap[]>([]);
   const [liveLessons, setLiveLessons] = useState<LessMap[]>([]);
+  const [paperLessons, setPaperLessons] = useState<LessMap[]>([]);
 
   const [teacher, setTeacher] = useState<ITeacher>();
 
@@ -40,9 +41,11 @@ export const Subscriptions = () => {
         getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { paidFor: email }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email }),
-      ]).then(([teacher, payments, lessonsV, lessonsL]) => {
+        getDocsWithProps<ILesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email }),
+      ]).then(([teacher, payments, lessonsV, lessonsL, lessonsP]) => {
         const vlessonArr: LessMap[] = [];
         const llessonArr: LessMap[] = [];
+        const plessonArr: LessMap[] = [];
 
         if (lessonsV && payments) {
           for (const vLes of lessonsV) {
@@ -68,13 +71,23 @@ export const Subscriptions = () => {
           }
         }
 
+        if (lessonsP && payments) {
+          for (const pLes of lessonsP) {
+            // if (lLes.price > 0) {
+            const payList = payments.filter((p) => p.lessonId === pLes.id);
+            plessonArr.push({
+              lesson: pLes,
+              payments: payList,
+            });
+            // }
+          }
+        }
+
         if (teacher) {
           setTeacher(teacher);
-          // setBanner1(teacher.bannerUrl1 ?? '');
-          // setBanner2(teacher.bannerUrl2 ?? '');
-
           setVideoLessons(vlessonArr);
           setLiveLessons(llessonArr);
+          setPaperLessons(plessonArr);
         }
       });
     }
@@ -93,12 +106,11 @@ export const Subscriptions = () => {
     });
   };
 
-  const getLessonsTable = (lessons: LessMap[], isLive: boolean, teacher: ITeacher) => {
+  const getLessonsTable = (lessons: LessMap[], teacher: ITeacher) => {
     let fullTotal = 0;
 
     return (
       <>
-        <h2>{isLive ? 'Live lessons income' : 'Video lessons income'}</h2>
         <table className="center w100">
           <tbody>
             <tr key={0}>
@@ -122,7 +134,7 @@ export const Subscriptions = () => {
             <td>{val.lesson.price}</td>
             <td>{val.payments.length}</td>
             <td>
-              {teacherPortion(isLive ? teacher.commissionLive : teacher.commissionVideo, tot)}
+              {teacherPortion(teacher.commissionVideo, tot)}
             </td>
             <td>
               {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
@@ -141,7 +153,7 @@ export const Subscriptions = () => {
               <th>.</th>
               <th>Total</th>
               <th>
-                {teacherPortion(isLive ? teacher.commissionLive : teacher.commissionVideo, fullTotal)}
+                {teacherPortion(teacher.commissionVideo, fullTotal)}
               </th>
             </tr>
           </tbody>
@@ -172,11 +184,18 @@ export const Subscriptions = () => {
               {teacher.url}
             </a>
           </div>
+
+          <h3>Video lessons income</h3>
           {
-            getLessonsTable(videoLessons, false, teacher)
+            getLessonsTable(videoLessons, teacher)
           }
+          <h3>Live lessons income</h3>
           {
-            getLessonsTable(liveLessons, true, teacher)
+            getLessonsTable(liveLessons, teacher)
+          }
+          <h3>Paper lessons income</h3>
+          {
+            getLessonsTable(paperLessons, teacher)
           }
           <div className={classes.banners}>
             <div>
