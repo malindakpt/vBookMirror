@@ -90,7 +90,7 @@ export const AddPaperLesson = () => {
     // eslint-disable-next-line
   }, []);
 
-  const disabled = !courseId;
+  const disabled = !courseId || busy;
 
   const addQuestion = () => {
     if (disabled) return;
@@ -197,6 +197,7 @@ export const AddPaperLesson = () => {
       showSnackbar('Please add a Description');
       return;
     }
+    setBusy(true);
     fileRef?.current?.startUploading();
   };
 
