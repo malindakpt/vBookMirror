@@ -24,6 +24,7 @@ export const PDFView: React.FC<Props> = ({ url }) => {
         <a
           href={url}
           target="_blank"
+          rel="noopener noreferrer"
         >
           click here to
           download the Paper.
