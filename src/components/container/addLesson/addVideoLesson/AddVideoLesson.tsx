@@ -374,21 +374,22 @@ export const AddVideoLesson = () => {
             <TextField
               className={classes.input}
               id="filled-basic5"
-              label="Video URL(Google Drive Embed)"
-              value={videoURL}
-              disabled={disabled}
-              onChange={(e) => setVideoURL(e.target.value)}
-            />
-
-            <TextField
-              className={classes.input}
-              id="filled-basic5"
               label="Description"
               value={description}
               inputProps={{ maxLength: 120 }}
               disabled={disabled}
               onChange={(e) => setDescription(e.target.value)}
             />
+
+            <TextField
+              className={classes.input}
+              id="filled-basic5"
+              label="Video URL(Google Drive Embed)"
+              value={videoURL}
+              disabled={disabled}
+              onChange={(e) => setVideoURL(e.target.value)}
+            />
+
             <TextField
               className={classes.inputMulti}
               id="standard-multiline-static"

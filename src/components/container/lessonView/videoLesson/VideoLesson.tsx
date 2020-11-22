@@ -157,7 +157,6 @@ export const VideoLesson: React.FC = () => {
           <div>
             <a
               href={`tel:${teacher.phoneChat}`}
-              style={{ color: 'white', textDecoration: 'none' }}
             >
               Call Teacher:
               {teacher.phoneChat}

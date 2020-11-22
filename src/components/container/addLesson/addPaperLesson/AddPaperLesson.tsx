@@ -124,6 +124,7 @@ export const AddPaperLesson = () => {
     } else {
       if (!pdfUrl) {
         showSnackbar('Upload file not found');
+        setBusy(false);
         return;
       }
       paper.pdfURL = pdfUrl;
