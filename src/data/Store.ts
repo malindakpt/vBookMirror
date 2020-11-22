@@ -90,7 +90,7 @@ export const uploadFileToServer = (fileType: FileType, file: any,
   const storageRef = storage.ref();
 
   // const blob = new Blob([file], { type: 'image/jpeg' });
-  const uploadTask = storageRef.child(`${email}/${fileType}/${fileId}`).put(file);
+  const uploadTask = storageRef.child(`teachers/${email}/${fileType}/${fileId}`).put(file);
 
   // Register three observers:
   // 1. 'state_changed' observer, called any time the state changes
