@@ -12,7 +12,7 @@ interface Props {
   fileType: FileType;
   fileName: string;
   disabled?: boolean;
-  onSuccess: (fileRef: string | null) => void;
+  onSuccess?: (fileRef: string | null) => void;
   onCancel?: () => void;
 }
 
@@ -52,12 +52,12 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
     // TODO: Handle if file is not selected from file explorer
       const file: File = e.target.files[0];
       // const videoNode = document.querySelector('video');
-
-      if (file.type !== fileFormat(fileType)) {
-        showSnackbar(`Invalid file type. Please try with: ${fileFormat(fileType)}`);
-        return;
-      }
       if (file) {
+        if (file.type !== fileFormat(fileType)) {
+          showSnackbar(`Invalid file type. Please try with: ${fileFormat(fileType)}`);
+          return;
+        }
+
         const size = file.size / (1024 * 1024);
         // const fileURL = URL.createObjectURL(file);
         // videoNode.src = fileURL;
@@ -66,7 +66,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
           // if (fileType === FileType.IMAGE) {
           if (size > ALLOWED_IMAGE_SIZE) {
             showSnackbar(`Maximum ${ALLOWED_IMAGE_SIZE}Mb allowed for 
-                    an image. But this file is ${round(size)}Mb`);
+                    a file. But this file is ${round(size)}Mb`);
 
             resetFileInput();
           } else {
@@ -97,7 +97,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
         // setDownloadUrl(next.downloadURL);
         // onSave(next.downloadURL, `${dd}`, dd, duration);
           out.unsubscribe();
-          onSuccess(next.downloadURL);
+          onSuccess && onSuccess(next.downloadURL);
           setBusy(false);
         }
         if (next.progress < 100) {
@@ -128,7 +128,7 @@ export const FileUploader: React.ForwardRefExoticComponent<Props & React.RefAttr
         uploadAndSave(email, dd);
       } else {
         console.log('Upload file not found');
-        onSuccess(null);
+        onSuccess && onSuccess(null);
         setBusy(false);
       }
     // }

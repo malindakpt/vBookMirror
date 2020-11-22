@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext, useEffect, useRef, useState,
+} from 'react';
 import { Button } from '@material-ui/core';
 import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
@@ -18,6 +20,9 @@ interface LessMap {payments: IPayment[], lesson: ILesson}
 export const Subscriptions = () => {
   useBreadcrumb();
   const { email, showSnackbar } = useContext(AppContext);
+
+  const mobileBannerRef = useRef<any>();
+  const desktopBannerRef = useRef<any>();
 
   const [videoLessons, setVideoLessons] = useState<LessMap[]>([]);
   const [liveLessons, setLiveLessons] = useState<LessMap[]>([]);
@@ -173,16 +178,37 @@ export const Subscriptions = () => {
           {
             getLessonsTable(liveLessons, true, teacher)
           }
-          <FileUploader
-            fileType={FileType.IMAGE}
-            fileName="Mobile Cover Photo(2×1)"
-            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl1: fileRef })}
-          />
-          <FileUploader
-            fileType={FileType.IMAGE}
-            fileName="Desktop Cover Photo(4×1)"
-            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl2: fileRef })}
-          />
+          <div className={classes.banners}>
+            <div>
+              <FileUploader
+                ref={mobileBannerRef}
+                fileType={FileType.IMAGE}
+                fileName="Mobile Cover Photo(2×1)"
+                onSuccess={(f) => handleUploadSuccess({ bannerUrl1: f })}
+              />
+
+              <Button
+                variant="contained"
+                onClick={() => { mobileBannerRef.current?.startUploading(); }}
+              >
+                Save Mobile
+              </Button>
+            </div>
+            <div>
+              <FileUploader
+                ref={desktopBannerRef}
+                fileType={FileType.IMAGE}
+                fileName="Desktop Cover Photo(4×1)"
+                onSuccess={(f) => handleUploadSuccess({ bannerUrl2: f })}
+              />
+              <Button
+                variant="contained"
+                onClick={() => { desktopBannerRef.current?.startUploading(); }}
+              >
+                Save Desktop
+              </Button>
+            </div>
+          </div>
         </div>
       )
         : <div />}

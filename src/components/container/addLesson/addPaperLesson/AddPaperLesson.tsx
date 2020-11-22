@@ -25,7 +25,7 @@ import { IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 
 export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
-  const childRef = useRef<any>();
+  const fileRef = useRef<any>();
   const newPaper: IPaperLesson = {
     id: '',
     attachments: [],
@@ -112,21 +112,21 @@ export const AddPaperLesson = () => {
     });
   };
 
-  const handleSuccess = (fileRef: string|null) => {
+  const handleSuccess = (pdfUrl: string|null) => {
     // const clone = { ...paper };
 
     if (isEditMode) {
-      if (fileRef) {
-        paper.pdfURL = fileRef;
+      if (pdfUrl) {
+        paper.pdfURL = pdfUrl;
       } else {
         // No need to set ref
       }
     } else {
-      if (!fileRef) {
+      if (!pdfUrl) {
         showSnackbar('Upload file not found');
         return;
       }
-      paper.pdfURL = fileRef;
+      paper.pdfURL = pdfUrl;
     }
 
     if (isEditMode) {
@@ -197,7 +197,7 @@ export const AddPaperLesson = () => {
       showSnackbar('Please add a Description');
       return;
     }
-    childRef?.current?.startUploading();
+    fileRef?.current?.startUploading();
   };
 
   return (
@@ -369,7 +369,7 @@ export const AddPaperLesson = () => {
                 onClick={removeQuestion}
               />
               <FileUploader
-                ref={childRef}
+                ref={fileRef}
                 disabled={disabled}
                 fileType={FileType.PDF}
                 onSuccess={handleSuccess}
