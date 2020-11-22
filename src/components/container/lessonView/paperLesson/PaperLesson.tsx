@@ -195,7 +195,7 @@ export const PaperLesson = () => {
           </div>
           )}
           <br />
-          <div>පහතින් පිළිතුරු ලකුණු කරන්න. Mark the answere here.</div>
+          <div>පහතින් පිළිතුරු ලකුණු කරන්න. Mark the answers here.</div>
           <div className={classes.questions}>
             {
               answers?.map((ans, idx: number) => (
