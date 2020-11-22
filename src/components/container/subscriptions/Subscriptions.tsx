@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext, useEffect, useRef, useState,
+} from 'react';
 import { Button } from '@material-ui/core';
 import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
@@ -18,6 +20,9 @@ interface LessMap {payments: IPayment[], lesson: ILesson}
 export const Subscriptions = () => {
   useBreadcrumb();
   const { email, showSnackbar } = useContext(AppContext);
+
+  const mobileBannerRef = useRef<any>();
+  const desktopBannerRef = useRef<any>();
 
   const [videoLessons, setVideoLessons] = useState<LessMap[]>([]);
   const [liveLessons, setLiveLessons] = useState<LessMap[]>([]);
@@ -98,9 +103,9 @@ export const Subscriptions = () => {
           <tbody>
             <tr key={0}>
               <th>Lesson</th>
-              <th>Price(Now)</th>
-              <th>Payments</th>
-              <th>Income</th>
+              <th>Price</th>
+              <th>Count</th>
+              <th>Total</th>
             </tr>
             {
 
@@ -120,9 +125,11 @@ export const Subscriptions = () => {
               {teacherPortion(isLive ? teacher.commissionLive : teacher.commissionVideo, tot)}
             </td>
             <td>
-              {views?.lessonId === val.lesson.id && <span>{views.count}</span>}
-              <Button onClick={() => checkViews(val.lesson)}>
-                Check Views
+              {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
+              <Button
+                onClick={() => checkViews(val.lesson)}
+              >
+                Views
               </Button>
             </td>
           </tr>
@@ -165,22 +172,43 @@ export const Subscriptions = () => {
               {teacher.url}
             </a>
           </div>
-          <FileUploader
-            fileType={FileType.IMAGE}
-            fileName="Mobile Cover Photo(2×1)"
-            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl1: fileRef })}
-          />
-          <FileUploader
-            fileType={FileType.IMAGE}
-            fileName="Desktop Cover Photo(4×1)"
-            onSuccess={(fileRef) => handleUploadSuccess({ bannerUrl2: fileRef })}
-          />
           {
             getLessonsTable(videoLessons, false, teacher)
           }
           {
             getLessonsTable(liveLessons, true, teacher)
           }
+          <div className={classes.banners}>
+            <div>
+              <FileUploader
+                ref={mobileBannerRef}
+                fileType={FileType.IMAGE}
+                fileName="Mobile Cover Photo(2×1)"
+                onSuccess={(f) => handleUploadSuccess({ bannerUrl1: f })}
+              />
+
+              <Button
+                variant="contained"
+                onClick={() => { mobileBannerRef.current?.startUploading(); }}
+              >
+                Save Mobile
+              </Button>
+            </div>
+            <div>
+              <FileUploader
+                ref={desktopBannerRef}
+                fileType={FileType.IMAGE}
+                fileName="Desktop Cover Photo(4×1)"
+                onSuccess={(f) => handleUploadSuccess({ bannerUrl2: f })}
+              />
+              <Button
+                variant="contained"
+                onClick={() => { desktopBannerRef.current?.startUploading(); }}
+              >
+                Save Desktop
+              </Button>
+            </div>
+          </div>
         </div>
       )
         : <div />}

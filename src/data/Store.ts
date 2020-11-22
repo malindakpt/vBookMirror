@@ -13,6 +13,7 @@ export interface UploadStatus {
 export enum FileType {
   VIDEO= 'VIDEO',
   IMAGE = 'IMAGE',
+  PDF = 'PDF'
 }
 
 export enum Entity {
@@ -20,6 +21,7 @@ export enum Entity {
   TEACHERS = 'TEACHERS',
   COURSES = 'COURSES',
   EXAMS = 'EXAMS',
+  LESSONS_PAPER = 'LESSONS_PAPER',
   LESSONS_VIDEO = 'LESSONS_VIDEO', // used by BE
   LESSONS_LIVE = 'LESSONS_LIVE', // used by BE
   SUBJECTS = 'SUBJECTS',
@@ -88,7 +90,7 @@ export const uploadFileToServer = (fileType: FileType, file: any,
   const storageRef = storage.ref();
 
   // const blob = new Blob([file], { type: 'image/jpeg' });
-  const uploadTask = storageRef.child(`${fileType}/${email}/${fileId}`).put(file);
+  const uploadTask = storageRef.child(`${email}/${fileType}/${fileId}`).put(file);
 
   // Register three observers:
   // 1. 'state_changed' observer, called any time the state changes

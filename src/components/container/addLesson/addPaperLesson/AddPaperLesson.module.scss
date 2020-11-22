@@ -1,0 +1,56 @@
+@import "../../../../mixins.scss";
+
+.container {
+
+  max-width: 900px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+
+  @include mobile{
+    grid-template-columns: 1fr;
+  }
+
+  .twoColumn{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .top{
+    display: grid;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff87;
+  }
+
+  .paperList {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .addRemove {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 20px;
+    place-items: center;
+    width: 250px;
+    margin: 10px;
+  }
+
+  .questions {
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    @include mobile {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .question {
+      display: grid;
+      place-items: center;
+      width: 100%;
+    }
+  }
+}

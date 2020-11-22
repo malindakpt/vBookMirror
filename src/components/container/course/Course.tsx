@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
+import DescriptionIcon from '@material-ui/icons/Description';
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { Category } from '../../presentational/category/Category';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
@@ -10,19 +11,21 @@ import {
   getDocsWithProps, getDocWithId, Entity,
 } from '../../../data/Store';
 import { AppContext } from '../../../App';
-import { ILesson, ILiveLesson, IVideoLesson } from '../../../interfaces/ILesson';
+import {
+  ILesson, ILiveLesson, IPaperLesson, IVideoLesson,
+} from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
-import { IPayment } from '../../../interfaces/IPayment';
+import { IPayment, PaymentType } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import {
-  checkRefund, promptPayment, Util,
+  checkRefund, promptPayment, readyToGo, Util,
 } from '../../../helper/util';
 import { Banner } from '../../presentational/banner/Banner';
 
-enum DisplayMode {
-  ALL, VIDEO, LIVE
+export enum ModuleType {
+  ANY, VIDEO, LIVE, PAPER
 }
 
 export const Course: React.FC = () => {
@@ -32,10 +35,11 @@ export const Course: React.FC = () => {
 
   // Two routest for this page. (teacher profile)Consider both when reading params
   const { courseId } = useParams<any>();
-  const [displayMode, setDisplayMOde] = useState<DisplayMode>(DisplayMode.ALL);
+  const [displayMode, setDisplayMOde] = useState<ModuleType>(ModuleType.ANY);
 
   const [videoLessons, setVideoLessons] = useState<IVideoLesson[]>([]);
   const [liveLessons, setLiveLessons] = useState<ILiveLesson[] | null>([]);
+  const [mcqPapers, setMcqPapers] = useState<IPaperLesson[]>([]);
 
   const [payments, setPayments] = useState<IPayment[]>([]);
 
@@ -45,7 +49,7 @@ export const Course: React.FC = () => {
     getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }).then((user) => {
       if (user) {
         getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
-          setPayments(payments.filter((p) => !p.disabled));
+          setPayments(payments);
         });
       }
     });
@@ -53,9 +57,10 @@ export const Course: React.FC = () => {
     Promise.all([
       getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
       getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
+      getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { courseId }),
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
-      const [videoLessons, liveLessons, course] = result;
+      const [videoLessons, liveLessons, mcqPapers, course] = result;
 
       const orderedVL: IVideoLesson[] = [];
       course?.videoLessonOrder?.forEach((c) => {
@@ -65,6 +70,7 @@ export const Course: React.FC = () => {
       setVideoLessons(orderedVL);
       setLiveLessons(liveLessons);
       // course && setCourse(course);
+      setMcqPapers(mcqPapers ?? []);
 
       course && getDocWithId<ITeacher>(Entity.TEACHERS, course.ownerEmail).then((teacher) => {
         teacher && setTeacher(teacher);
@@ -75,13 +81,7 @@ export const Course: React.FC = () => {
 
   const amIOwnerOfLesson = (lesson: ILesson) => email === lesson.ownerEmail;
 
-  const readyToGoVideo = (lesson: ILesson) => (!lesson.price)
-    || ((payments?.find((pay) => pay.lessonId
-       === lesson.id && ((pay.watchedCount ?? 0) < Config.allowedWatchCount))));
-
-  const readyToGoLive = (liveLess: ILiveLesson) => (!liveLess.price)
-    || (payments?.find((pay) => pay.lessonId === liveLess.id));
-
+  // TODO: Memory leek here when user make payment and open the lesson, stil this thread is alive
   const updatePayments = async (lessonId: string) => {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     for (let i = 0; i < 5; i += 1) {
@@ -98,29 +98,30 @@ export const Course: React.FC = () => {
     }
   };
 
-  const handleLessonSelection = (lesson: ILesson, isLive: boolean) => {
-    if (!readyToGoVideo(lesson)) {
+  const handleLessonSelection = (lesson: ILesson, paymentType: PaymentType) => {
+    if (!readyToGo(payments, lesson).ok) {
       if (!email) {
         // showSnackbar('Please login with your gmail address');
         Util.invokeLogin();
         return;
       }
-      teacher && promptPayment(email, teacher, lesson, isLive, updatePayments, showSnackbar);
+      teacher && promptPayment(email, teacher, lesson, paymentType, updatePayments, showSnackbar);
     }
   };
 
+  // If multiple payments exists, get the lowest watch count payment
   const watchedCount = (lesson: ILesson) => payments?.find(
-    (pay) => pay.lessonId === lesson.id)?.watchedCount ?? 0;
+      (pay) => (pay.lessonId === lesson.id) && !pay.disabled)?.watchedCount ?? 0;
 
   const now = new Date().getTime();
 
   return (
     <div className="container">
       { teacher?.bannerUrl1 && (
-      <Banner teacher={teacher} />
+        <Banner teacher={teacher} />
       )}
       <form
-        className={classes.root}
+        className={classes.filter}
         noValidate
         autoComplete="off"
       >
@@ -135,17 +136,22 @@ export const Course: React.FC = () => {
             }}
           >
             <FormControlLabel
-              value={DisplayMode.ALL}
+              value={ModuleType.ANY}
               control={<Radio />}
               label="All"
             />
             <FormControlLabel
-              value={DisplayMode.VIDEO}
+              value={ModuleType.VIDEO}
               control={<Radio />}
               label="Video"
             />
             <FormControlLabel
-              value={DisplayMode.LIVE}
+              value={ModuleType.PAPER}
+              control={<Radio />}
+              label="Paper"
+            />
+            <FormControlLabel
+              value={ModuleType.LIVE}
               control={<Radio />}
               label="Live"
             />
@@ -153,13 +159,13 @@ export const Course: React.FC = () => {
         </div>
       </form>
       {
-       (displayMode === DisplayMode.ALL || displayMode === DisplayMode.LIVE)
-            && liveLessons?.filter((le) => ((le.dateTime + 24 * 3600000) > now)).sort(
+        (displayMode === ModuleType.ANY || displayMode === ModuleType.LIVE)
+        && liveLessons?.filter((le) => ((le.dateTime + 12 * 3600000) > now)).sort(
           (a, b) => a.dateTime - b.dateTime,
         ).map((live) => {
           let status: 'yes' | 'no' | 'none' | undefined;
           if (live.price) {
-            if (readyToGoLive(live)) {
+            if (readyToGo(payments, live).ok) {
               status = 'yes';
             } else {
               status = 'no';
@@ -171,11 +177,11 @@ export const Course: React.FC = () => {
           const timeF = time.substring(0, time.length - 4);
           return (
             <div
-              onClick={() => handleLessonSelection(live, true)}
+              onClick={() => handleLessonSelection(live, PaymentType.LIVE_LESSON)}
               key={live.id}
               role="button"
               tabIndex={0}
-              onKeyDown={() => handleLessonSelection(live, true)}
+              onKeyDown={() => handleLessonSelection(live, PaymentType.LIVE_LESSON)}
             >
               <Category
                 id={live.id}
@@ -185,7 +191,7 @@ export const Course: React.FC = () => {
                 title3={timeF}
                 title5="Zoom"
                 title6={`${live.duration} hrs`}
-                navURL={(readyToGoLive(live)
+                navURL={(readyToGo(payments, live).ok
                   || amIOwnerOfLesson(live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
@@ -194,41 +200,81 @@ export const Course: React.FC = () => {
         })
       }
       {
-        (displayMode === DisplayMode.ALL || displayMode === DisplayMode.VIDEO) && videoLessons?.map((lesson, idx) => {
-          let status: 'yes' | 'no' | 'none' | undefined;
-          if (lesson.price) {
-            if (readyToGoVideo(lesson)) {
-              status = 'yes';
+        (displayMode === ModuleType.ANY
+          || displayMode === ModuleType.VIDEO) && videoLessons?.map((lesson, idx) => {
+            let status: 'yes' | 'no' | 'none' | undefined;
+            if (lesson.price) {
+              if (readyToGo(payments, lesson).ok) {
+                status = 'yes';
+              } else {
+                status = 'no';
+              }
             } else {
-              status = 'no';
+              status = 'none';
             }
-          } else {
-            status = 'none';
-          }
 
-          return (
-            <div
-              onClick={() => handleLessonSelection(lesson, false)}
-              key={idx}
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => handleLessonSelection(lesson, false)}
-            >
-              <Category
-                id={lesson.id}
+            return (
+              <div
+                onClick={() => handleLessonSelection(lesson, PaymentType.VIDEO_LESSON)}
                 key={idx}
-                CategoryImg={OndemandVideoIcon}
-                title1={`${lesson.topic}`}
-                title2={`${lesson.description}`}
-                title3={lesson.price > 0
-                  ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
-                navURL={(readyToGoVideo(lesson)
-                  || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
-                status={status}
-              />
-            </div>
-          );
-        })
+                role="button"
+                tabIndex={0}
+                onKeyDown={() => handleLessonSelection(lesson, PaymentType.VIDEO_LESSON)}
+              >
+                <Category
+                  id={lesson.id}
+                  key={idx}
+                  CategoryImg={OndemandVideoIcon}
+                  title1={`${lesson.topic}`}
+                  title2={`${lesson.description}`}
+                  title3={lesson.price > 0
+                    ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
+                  navURL={(readyToGo(payments, lesson).ok
+                    || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
+                  status={status}
+                />
+              </div>
+            );
+          })
+      }
+
+      {
+        (displayMode === ModuleType.ANY
+          || displayMode === ModuleType.PAPER) && mcqPapers.sort((a, b) => a.orderIndex - b.orderIndex)?.map((paper, idx) => {
+            let status: 'yes' | 'no' | 'none' | undefined;
+            if (paper.price) {
+              if (readyToGo(payments, paper).ok) {
+                status = 'yes';
+              } else {
+                status = 'no';
+              }
+            } else {
+              status = 'none';
+            }
+
+            return (
+              <div
+                onClick={() => handleLessonSelection(paper, PaymentType.PAPER_LESSON)}
+                key={idx}
+                role="button"
+                tabIndex={0}
+                onKeyDown={() => handleLessonSelection(paper, PaymentType.PAPER_LESSON)}
+              >
+                <Category
+                  id={paper.id}
+                  key={idx}
+                  CategoryImg={DescriptionIcon}
+                  title1={`${paper.topic}`}
+                  title2={`${paper.description}`}
+                  title3={paper.price > 0
+                    ? `Watched: ${watchedCount(paper)}/${Config.allowedWatchCount}` : 'Free'}
+                  navURL={(readyToGo(payments, paper).ok
+                    || amIOwnerOfLesson(paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
+                  status={status}
+                />
+              </div>
+            );
+          })
       }
     </div>
   );

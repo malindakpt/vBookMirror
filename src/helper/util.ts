@@ -4,7 +4,7 @@ import Config from '../data/Config';
 import {
   addDoc, Entity, getDocsWithProps, updateDoc,
 } from '../data/Store';
-import { ILesson, ILiveLesson } from '../interfaces/ILesson';
+import { ILesson, ILiveLesson, LessonType } from '../interfaces/ILesson';
 import { IPayment, PaymentType } from '../interfaces/IPayment';
 import { ITeacher } from '../interfaces/ITeacher';
 import { paymentJS, startPay } from './payment';
@@ -15,6 +15,26 @@ export class Util {
 
     public static fullName = DEFAULT_FULL_NAME;
 }
+
+export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean, payment?: IPayment} => {
+  let okPayment;
+  if (lesson.type === LessonType.LIVE) {
+    okPayment = payments?.filter((p) => !p.disabled).find(
+      (pay) => pay.lessonId === lesson.id);
+  } else {
+    okPayment = payments?.filter((p) => !p.disabled).find(
+      (pay) => (pay.lessonId === lesson.id) && ((pay.watchedCount ?? 0) < Config.allowedWatchCount));
+  }
+  if (lesson.price === 0) {
+    return {
+      ok: true,
+    };
+  }
+  return {
+    ok: !!okPayment,
+    payment: okPayment,
+  };
+};
 
 export const checkRefund = (email: string, lessonId: string,
   maxCount: number, onError: (msg: string) => void) => {
@@ -95,7 +115,7 @@ const showPaymentGuide = (show: boolean) => {
 };
 
 export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
-  isLive: boolean, onComplete: (lessonId: string) => void, showSnackbar: (msg: string) => void) => {
+  paymentType: PaymentType, onComplete: (lessonId: string) => void, showSnackbar: (msg: string) => void) => {
   // const dd = new Date().getTime();
   paymentJS.onDismissed = function onDismissed() {
     showPaymentGuide(false);
@@ -108,7 +128,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
       if (!Config.payOnDismiss) {
         return;
       }
-      console.log('Succeed');
+      console.log(`Succeed lessonId: ${lesson.id}`);
       /// /////////FAKE UPDATE START////////////
       addDoc(Entity.PAYMENTS_STUDENTS, {
         lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price, ownerName: Util.fullName,
@@ -127,7 +147,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
     onComplete(lesson.id);
   };
 
-  if (isLive) {
+  if (paymentType === PaymentType.LIVE_LESSON) {
     getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => {
       if (data && data.length >= teacher.zoomMaxCount) {
         // TODO: send a notification to teacher
@@ -141,7 +161,7 @@ export const promptPayment = (email: string, teacher: ITeacher, lesson: ILesson,
     });
   } else {
     startPay(email, Util.fullName, lesson, payable(teacher.commissionVideo,
-      lesson.price), teacher.ownerEmail, PaymentType.VIDEO_LESSON);
+      lesson.price), teacher.ownerEmail, paymentType);
     showPaymentGuide(true);
   }
 };

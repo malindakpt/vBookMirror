@@ -8,7 +8,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('../src/images/back2.jpeg');
+  background-image: url('../src/images/back3.jpeg');
   background-size: 100% 100%;
 
   .center {
@@ -17,7 +17,7 @@ body {
 
   .w100 {
     width: 100%;
-    max-width: 900px;
+    overflow: auto;
   }
 
   .right {
