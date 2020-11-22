@@ -12,10 +12,12 @@ import { promptPayment, readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ILesson, IPaperLesson } from '../../../../interfaces/ILesson';
 import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
+import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { Player } from '../../../presentational/player/Player';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
+import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { MCQAnswer, Status } from '../../addLesson/addPaperLesson/mcqAnswer/MCQAnswer';
 import classes from './PaperLesson.module.scss';
 
@@ -149,8 +151,7 @@ export const PaperLesson = () => {
 
   const correctCount = () => {
     let okCount = 0;
-    const paperAns = paper?.answers;
-    paper?.answers.forEach((ans, idx) => {
+    paper?.answers.forEach((ans, idx: number) => {
       if (ans.ans === answers[idx]) {
         okCount += 1;
       }
@@ -160,6 +161,14 @@ export const PaperLesson = () => {
 
   return (
     <div>
+      {paper && (
+        <>
+          <CollectInfo
+            reference={paper.id}
+            lessonType={InteractionType.MCQ_PAPER}
+          />
+        </>
+      )}
       {paper ? (
         <div>
           <div className={classes.warn}>
