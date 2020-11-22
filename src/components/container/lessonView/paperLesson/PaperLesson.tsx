@@ -120,20 +120,17 @@ export const PaperLesson = () => {
   };
 
   useEffect(() => {
-    setAnswers((prev) => {
-      const clone = [];
-      if (paper?.answers) {
-        for (let i = 0; i < paper.answers.length; i += 1) {
-          clone.push('0');
-        }
+    const ans = [];
+    if (paper?.answers) {
+      for (let i = 0; i < paper.answers.length; i += 1) {
+        ans.push('0');
       }
-      return clone;
-    });
+    }
+    setAnswers(ans);
   }, [paper]);
 
   useEffect(() => {
     processPaper();
-
     return () => {
       clearInterval(timerRef.current);
     };
@@ -148,6 +145,17 @@ export const PaperLesson = () => {
       return Status.Wrong;
     }
     return Status.Unknown;
+  };
+
+  const correctCount = () => {
+    let okCount = 0;
+    const paperAns = paper?.answers;
+    paper?.answers.forEach((ans, idx) => {
+      if (ans.ans === answers[idx]) {
+        okCount += 1;
+      }
+    });
+    return okCount;
   };
 
   return (
@@ -173,9 +181,10 @@ export const PaperLesson = () => {
             </a> */}
           </div>
           )}
+
           <div className={classes.questions}>
             {
-              answers?.map((ans, idx) => (
+              answers?.map((ans, idx: number) => (
                 <div
                   className={classes.question}
                   key={idx}
@@ -197,6 +206,20 @@ export const PaperLesson = () => {
               ))
             }
           </div>
+          {validated && (
+          <h3>
+            Wow!!
+            {' '}
+            {' '}
+            {correctCount()}
+            {' '}
+            out of
+            {' '}
+            {answers.length}
+            {' '}
+            are correct.
+          </h3>
+          )}
           {paper.answers.length > 0 && !validated && (
             <div className={classes.validate}>
               <Button
