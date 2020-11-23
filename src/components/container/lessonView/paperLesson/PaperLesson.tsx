@@ -180,6 +180,14 @@ export const PaperLesson = () => {
           </div>
           <h2>{paper.topic}</h2>
           <div>{paper.description}</div>
+          <div>
+            <a
+              href={`tel:${teacher?.phoneChat}`}
+            >
+              Contact Teacher:
+              {teacher?.phoneChat}
+            </a>
+          </div>
 
           <PDFView url={paper.pdfURL} />
 
@@ -257,7 +265,7 @@ export const PaperLesson = () => {
                     color="default"
                     onClick={() => setShowVideo(true)}
                   >
-                    Show Discussion Video
+                    ප්‍රශ්ණ සාකච්චාව නරඹන්න/Show Discussion Video
                   </Button>
                 )}
             </div>
