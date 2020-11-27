@@ -5,6 +5,7 @@ import Header from './components/container/header/Header';
 import Router from './components/router/Router';
 import { Snack, State } from './components/presentational/snackbar/Snack';
 import { ADMIN_EMAIL } from './data/Config';
+import { setStoreLoadingFunc } from './data/Store';
 
 export interface IContext {
   email: string | null;
@@ -15,6 +16,9 @@ export interface IContext {
   updateBreadcrumbs: (bcrumbs: any) => void;
   showSnackbar:(message: string) => void;
   isAdmin: () => boolean;
+  // global loading status
+  isLoading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
 const initialState = {
@@ -26,6 +30,8 @@ const initialState = {
   updateBreadcrumbs: (bcrumbs: any) => {},
   showSnackbar: (message: string) => {},
   isAdmin: () => false,
+  isLoading: false,
+  setLoading: (loading: boolean) => {},
 };
 export const AppContext = React.createContext<IContext>(
   initialState,
@@ -35,6 +41,9 @@ const App: React.FC = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
   const [snackText, setSnackText] = useState<string>('');
   const [email, setEmail] = useState<string|null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  setStoreLoadingFunc(setLoading);
 
   // undefined: fetching initial data inprogress
   const [isTeacher, setIsTeacher] = useState<boolean | undefined>(undefined);
@@ -69,7 +78,7 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AppContext.Provider value={{
-        isTeacher, setIsTeacher, email, breadcrumbs, showSnackbar, setEmail, updateBreadcrumbs, isAdmin,
+        isTeacher, setIsTeacher, email, breadcrumbs, showSnackbar, setEmail, updateBreadcrumbs, isAdmin, isLoading, setLoading,
       }}
       >
         <Snack

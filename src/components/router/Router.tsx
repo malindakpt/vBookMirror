@@ -3,6 +3,7 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import loader from '../../images/loading/e.gif';
 import classes from './Router.module.scss';
 import { Exams } from '../container/exams/Exams';
 import { Subjects } from '../container/subjects/Subjects';
@@ -69,10 +70,18 @@ export const adminRoutes: routeConfig = [
 ];
 
 const Router: React.FC = () => {
-  const { isTeacher, isAdmin } = useContext(AppContext);
+  const { isTeacher, isAdmin, isLoading } = useContext(AppContext);
 
   return (
     <>
+      {isLoading && (
+      <div className={classes.loader}>
+        <img
+          alt="loading"
+          src={loader}
+        />
+      </div>
+      )}
       <div
         className={classes.help}
         id="payGuide"
@@ -134,7 +143,7 @@ const Router: React.FC = () => {
             ))}
             <Route path="">
               <div className={classes.loading}>
-                <p>අක්ෂර.lk</p>
+                <p>....</p>
               </div>
             </Route>
           </Switch>

@@ -1,5 +1,4 @@
 import React from 'react';
-import InputIcon from '@material-ui/icons/Input';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
