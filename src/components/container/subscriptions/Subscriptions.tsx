@@ -141,38 +141,38 @@ export const Subscriptions = () => {
             </tr>
             {
 
-      lessons.map((val) => {
-        const tot = val.payments.reduce(
-          (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
-        ).amount;
+            lessons.map((val) => {
+              const tot = val.payments.reduce(
+                (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
+              ).amount;
 
-        fullTotal += tot;
+              fullTotal += tot;
 
-        return (
-          <tr key={val.lesson.id}>
-            <td>{val.lesson.topic}</td>
-            <td>{val.lesson.price}</td>
-            <td>{val.payments.length}</td>
-            <td>
-              {teacherPortion(teacher.commissionVideo, tot)}
-            </td>
-            <td>
-              {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
-              <Button
-                onClick={() => checkViews(val.lesson)}
-              >
-                Views
-              </Button>
-            </td>
-          </tr>
-        );
-      })
-      }
+              return (
+                <tr key={val.lesson.id}>
+                  <td>{val.lesson.topic}</td>
+                  <td>{val.lesson.price}</td>
+                  <td>{val.payments.length}</td>
+                  <td>
+                    {teacherPortion(teacher.commissionVideo, tot)}
+                  </td>
+                  <td>
+                    {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
+                    <Button
+                      onClick={() => checkViews(val.lesson)}
+                    >
+                      Views
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })
+            }
             <tr key={1}>
               <th>.</th>
               <th>.</th>
               <th>Total</th>
-              <th>
+              <th style={{ color: 'blue', fontSize: '18px' }}>
                 {teacherPortion(teacher.commissionVideo, fullTotal)}
               </th>
             </tr>

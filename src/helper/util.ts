@@ -55,10 +55,10 @@ export const checkRefund = (email: string, lessonId: string,
 
 export const isMobile = () => window.innerWidth < 599;
 
-export const teacherPortion = (commission:number, amount: number) => ((amount
+export const teacherPortion = (commission:number, amount: number) => Math.ceil((amount
         * ((100) / (100 + commission))));
 
-export const payable = (commissionRate:number, amount: number) => ((amount
+export const payable = (commissionRate:number, amount: number) => Math.ceil((amount
           * ((100 + commissionRate) / 100)));
 
 export const round = (num: number) => Math.round(num * 10) / 10;
