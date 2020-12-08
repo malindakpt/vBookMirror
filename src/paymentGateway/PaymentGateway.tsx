@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import classes from './PaymentGateway.module.scss';
 
@@ -9,12 +9,72 @@ interface Props {
 export const PaymentGateway: React.FC<Props> = ({ redirectUrl }) => {
   const { email } = useParams<any>();
 
-  const handlePaymentSuccess = () => {
-    window.location.href = redirectUrl;
+  const [hash, setHash] = useState('');
+
+  const sha256 = async (message: string) => {
+    // encode as UTF-8
+    const msgBuffer = new TextEncoder().encode(message);
+
+    // hash the message
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+    // convert ArrayBuffer to Array
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    // convert bytes to hex string
+    const hashHex = hashArray.map((b) => (`00${b.toString(16)}`).slice(-2)).join('');
+
+    setHash(hashHex);
+    return hashHex;
   };
+
+  const get2digit = (n: number) => (n < 10 ? `0${n}` : n);
+
+  const getDate = () => {
+    // "2020-12-04 6:40:09"
+    const now = new Date();
+    // eslint-disable-next-line max-len
+    const date = `${now.getFullYear()}-${get2digit(now.getMonth() + 1)}-${get2digit(now.getDate())} ${now.getHours()}:${get2digit(now.getMinutes())}:${get2digit(now.getSeconds())}`;
+
+    console.log(date);
+    return date;
+  };
+
+  useEffect(() => {
+    getDate();
+  }, []);
 
   const payGeine = () => {
     window.location.href = redirectUrl;
+  };
+  const [options, setOptions] = useState({
+    merchantPgIdentifier: 'PG00008532',
+    chargeTotal: '10.00',
+    currency: 'LKR',
+    orderId: '1234',
+    invoiceNumber: 'INV000132',
+    storeName: 'MCO0002398',
+    txnToken: '',
+    transactionDateTime: getDate(),
+    sharedScret: '7b41da3d80654cfcb8bd7c9102080c75',
+  });
+
+  // MCO0002398LKR7b41da3d80654cfcb8bd7c9102080c752019-10-08 3:44:0910.00INV000132
+  const handlePaymentSuccess = async () => {
+    // window.location.href = redirectUrl;
+    // eslint-disable-next-line max-len
+    const token = `${options.storeName}${options.currency}${options.sharedScret}${options.transactionDateTime}${options.chargeTotal}${options.invoiceNumber}`;
+    const sh = await sha256(token);
+    console.log(token);
+    console.log(sh);
+    setOptions((prev) => {
+      const clone = { ...prev };
+
+      clone.txnToken = sh;
+
+      console.log(options);
+      return clone;
+    });
   };
 
   return (
@@ -34,23 +94,26 @@ export const PaymentGateway: React.FC<Props> = ({ redirectUrl }) => {
           encType="application/x-www-form-urlencoded"
         >
           <input
+            readOnly
             type="hidden"
             id="merchantPgIdentifier"
             name="merchantPgIdentifier"
-            value="PG00008532"
+            value={options.merchantPgIdentifier}
           />
           Total Price
           <input
+            readOnly
             type="text"
             id="chargeTotal"
             name="chargeTotal"
-            value="10.00"
+            value={options.chargeTotal}
           />
           <input
+            readOnly
             type="hidden"
             id="currency"
             name="currency"
-            value="LKR"
+            value={options.currency}
           />
           <input
             type="hidden"
@@ -59,34 +122,39 @@ export const PaymentGateway: React.FC<Props> = ({ redirectUrl }) => {
             value="Genie"
           />
           <input
+            readOnly
             type="hidden"
             id="orderId"
             name="orderId"
-            value="1234"
+            value={options.orderId}
           />
           <input
+            readOnly
             type="hidden"
             id="invoiceNumber"
             name="invoiceNumber"
-            value="INV000132"
+            value={options.invoiceNumber}
           />
           <input
+            readOnly
             type="hidden"
             id="successUrl"
             name="successUrl"
             value="https://akshara.lk/ok"
           />
           <input
+            readOnly
             type="hidden"
             id="errorUrl"
             name="errorUrl"
             value="https://akshara.lk/error"
           />
           <input
+            readOnly
             type="hidden"
             id="storeName"
             name="storeName"
-            value="MCO0002398"
+            value={options.storeName}
           />
           <input
             type="hidden"
@@ -101,22 +169,25 @@ export const PaymentGateway: React.FC<Props> = ({ redirectUrl }) => {
             value="120"
           />
           <input
-            type="hidden"
+            readOnly
+            // type="hidden"
             id="transactionDateTime"
             name="transactionDateTime"
-            value="2020-12-04 6:40:09"
+            value={options.transactionDateTime}
           />
           <input
             type="hidden"
             id="language"
             name="language"
-            value=""
+            value="en"
           />
           <input
-            type="hidden"
+            readOnly
+            // type="hidden"
             id="txnToken"
             name="txnToken"
-            value="313607e9644f2472fca8f354b1207c4721d05ba64760fe466edf4df0b50bae6f"
+            // value="313607e9644f2472fca8f354b1207c4721d05ba64760fe466edf4df0b50bae6f"
+            value={options.txnToken}
           />
           <input
             type="hidden"
@@ -175,7 +246,7 @@ export const PaymentGateway: React.FC<Props> = ({ redirectUrl }) => {
       <div>
         PayHere
       </div>
-      <Button onClick={handlePaymentSuccess}>Done</Button>
+      <Button onClick={handlePaymentSuccess}>Before Submit</Button>
     </div>
   );
 };
