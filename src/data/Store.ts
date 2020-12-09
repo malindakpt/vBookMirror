@@ -4,6 +4,11 @@ import 'firebase/storage';
 import { Subject } from 'rxjs';
 import appConfig from './Config';
 
+let setLoading: (loading: boolean)=>void;
+
+export const setStoreLoadingFunc = (func: (loading: boolean) => void) => {
+  setLoading = func;
+};
 export interface UploadStatus {
   progress: number;
   uploadTask: firebase.storage.UploadTask;
@@ -13,6 +18,7 @@ export interface UploadStatus {
 export enum FileType {
   VIDEO= 'VIDEO',
   IMAGE = 'IMAGE',
+  PDF = 'PDF'
 }
 
 export enum Entity {
@@ -20,6 +26,7 @@ export enum Entity {
   TEACHERS = 'TEACHERS',
   COURSES = 'COURSES',
   EXAMS = 'EXAMS',
+  LESSONS_PAPER = 'LESSONS_PAPER',
   LESSONS_VIDEO = 'LESSONS_VIDEO', // used by BE
   LESSONS_LIVE = 'LESSONS_LIVE', // used by BE
   SUBJECTS = 'SUBJECTS',
@@ -88,7 +95,7 @@ export const uploadFileToServer = (fileType: FileType, file: any,
   const storageRef = storage.ref();
 
   // const blob = new Blob([file], { type: 'image/jpeg' });
-  const uploadTask = storageRef.child(`${fileType}/${email}/${fileId}`).put(file);
+  const uploadTask = storageRef.child(`teachers/${email}/${fileType}/${fileId}`).put(file);
 
   // Register three observers:
   // 1. 'state_changed' observer, called any time the state changes
@@ -212,7 +219,9 @@ export const getDocsWithProps = <T>(
     //   console.log('ch');
     //   resolves(cachedResponse);
     //   return;
-    // }
+    // }export
+
+    setLoading(true);
 
     const ref = db.collection(entityName);
     let query: any;
@@ -245,28 +254,34 @@ export const getDocsWithProps = <T>(
         });
         // Store result in cache and resolve
         // store[generateRequestKey(entityName, conditions)] = results;
+        setLoading(false);
         resolves(results);
       })
       .catch((err: any) => {
         console.error(err);
+        setLoading(false);
         reject(err);
       });
   });
 
 export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | null> => new Promise(
   (resolves, reject) => {
+    setLoading(true);
     db.collection(entityName).doc(id).get().then((doc: any) => {
       if (doc.exists) {
         const dat = doc.data();
         dat.id = id;
+        setLoading(false);
         resolves(dat);
       } else {
+        setLoading(false);
         resolves(null);
         console.error(`${entityName}: ${id} : No such document!`);
       }
     })
       .catch((err: any) => {
         console.error(err);
+        setLoading(false);
         reject(err);
       });
   },

@@ -9,9 +9,9 @@ const APP_CONFIG_DEV = {
   appId: '1:794082939900:web:9967e6ea91936c2016d879',
   measurementId: 'G-4SS7PQK8D5',
 
-  watchedTimeout: 2000,
+  watchedTimeout: 500,
   realoadTimeoutAferSuccessPay: 10000,
-  allowedWatchCount: 1,
+  allowedWatchCount: 2,
   isProd: false,
   // zoomURL: 'http://127.0.0.1:8887',
   paymentDisabled: false,

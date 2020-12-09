@@ -4,28 +4,41 @@ export enum LiveMeetingStatus {
   NOT_STARTED,
   RUNNING,
   FINISHED,
-  CANCELLED
+  CANCELLED,
+}
+
+export enum PaperType {
+  MCQ,
+  WRITTEN,
 }
 
 export enum LessonType {
-  VIDEO, LIVE,
+  LIVE, VIDEO, PAPER
 }
 
 export interface ILesson extends IBase {
-    topic: string;
-    description: string;
+  topic: string;
+  description: string;
 
-    duration: number;
-    keywords: string;
-    attachments: string[],
-    courseId: string;
-    price: number;
-    ownerEmail: string;
+  duration: number;
+  keywords: string;
+  attachments: string[];
+  courseId: string;
+  price: number;
+  ownerEmail: string;
 
-    subCount: number;
+  // subCount: number;
+  type: LessonType
+}
 
-    type: LessonType
-  }
+export interface IPaperLesson extends ILesson {
+  orderIndex: number;
+  pdfURL: string;
+  pdfId: string;
+  possibleAnswers: string[];
+  answers: { ans: string }[];
+  videoUrl: string;
+}
 
 export interface IVideoLesson extends ILesson {
   videoURL: string;

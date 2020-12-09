@@ -180,7 +180,7 @@ export const AddVideoLesson = () => {
         price,
         courseId,
         ownerEmail: email,
-        subCount: 0,
+        // subCount: 0,
         createdAt: 0,
         type: LessonType.VIDEO,
       };
@@ -259,9 +259,9 @@ export const AddVideoLesson = () => {
           rel="noopener noreferrer"
           target="_blank"
           href={AKSHARA_HELP_VIDEO}
-          style={{ margin: '10px', fontWeight: 'bold' }}
+          style={{ margin: '10px' }}
         >
-          Video upload කරන අකාරය
+          Videos upload කරන අකාරය
         </a>
         <a
           rel="noopener noreferrer"
@@ -277,7 +277,15 @@ export const AddVideoLesson = () => {
           href={OBS_DOWNLOAD}
           style={{ marginRight: '10px' }}
         >
-          Download Screen Recorder
+          Download  OBS Studio Screen Recorder
+        </a>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          href="https://www.youtube.com/watch?v=FUtle-pIFs8"
+          style={{ marginRight: '10px' }}
+        >
+          How to reduce size of a video
         </a>
 
         {/* <a
@@ -366,21 +374,22 @@ export const AddVideoLesson = () => {
             <TextField
               className={classes.input}
               id="filled-basic5"
-              label="Video URL(Google Drive Embed)"
-              value={videoURL}
-              disabled={disabled}
-              onChange={(e) => setVideoURL(e.target.value)}
-            />
-
-            <TextField
-              className={classes.input}
-              id="filled-basic5"
               label="Description"
               value={description}
               inputProps={{ maxLength: 120 }}
               disabled={disabled}
               onChange={(e) => setDescription(e.target.value)}
             />
+
+            <TextField
+              className={classes.input}
+              id="filled-basic5"
+              label="Video URL(Google Drive Embed)"
+              value={videoURL}
+              disabled={disabled}
+              onChange={(e) => setVideoURL(e.target.value)}
+            />
+
             <TextField
               className={classes.inputMulti}
               id="standard-multiline-static"

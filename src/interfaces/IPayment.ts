@@ -4,7 +4,7 @@ import { LessonType } from './ILesson';
 // export enum PaymentType {
 //     LIVE_LESSON,
 //     VIDEO_LESSON,
-//     MCQ_PAPER,
+//     PAPER_LESSON,
 //     TEACHER_SALARY
 // }
 export interface IPayment extends IBase {
@@ -20,6 +20,6 @@ export interface IPayment extends IBase {
     ownerName: string;
 
     status: string;
-    disabled?: boolean;
+    disabled?: boolean; // This is mandetory when multiple payments exists and calculate the watch count
     watchedCount?: number;
 }

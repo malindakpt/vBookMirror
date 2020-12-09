@@ -9,6 +9,7 @@ import {
   PaymentOptionProps,
   PaymentOptions,
 } from './components/presentational/paymentOptions/PaymentOptions';
+import { setStoreLoadingFunc } from './data/Store';
 
 export interface IContext {
   email: string | null;
@@ -20,6 +21,9 @@ export interface IContext {
   showSnackbar:(message: string) => void;
   showPaymentPopup: (options: PaymentOptionProps) => void;
   isAdmin: () => boolean;
+  // global loading status
+  isLoading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
 const initialState = {
@@ -32,6 +36,8 @@ const initialState = {
   showSnackbar: (message: string) => {},
   showPaymentPopup: (options: PaymentOptionProps) => {},
   isAdmin: () => false,
+  isLoading: false,
+  setLoading: (loading: boolean) => {},
 };
 export const AppContext = React.createContext<IContext>(
   initialState,
@@ -43,6 +49,9 @@ const App: React.FC = () => {
   const [email, setEmail] = useState<string|null>(null);
   // const [isShowPayment, setShowPayment] = useState<boolean>(true);
   const [paymentOptionProps, setPaymentOptionProps] = useState<PaymentOptionProps | undefined>();
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  setStoreLoadingFunc(setLoading);
 
   // undefined: fetching initial data inprogress
   const [isTeacher, setIsTeacher] = useState<boolean | undefined>(undefined);
@@ -90,6 +99,8 @@ const App: React.FC = () => {
         updateBreadcrumbs,
         isAdmin,
         showPaymentPopup,
+        isLoading,
+        setLoading,
       }}
       >
         <Snack

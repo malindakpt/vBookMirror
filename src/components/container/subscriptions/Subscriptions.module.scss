@@ -12,4 +12,14 @@
     th {
         text-align: left;
     }
+
+    .input {
+        min-width: 200px;
+    }
+    
+    .banners {
+        // display: grid;
+        // grid-template-columns: 1fr 1fr;
+        // place-items: start;
+    }
 }

@@ -94,8 +94,6 @@ export const VideoLesson: React.FC = () => {
                 lessonId,
                 ownerEmail: email,
               }).then((data) => {
-              // If payments found
-              // if (data?.length > 0) {
               const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
                   < Config.allowedWatchCount));
 
@@ -107,6 +105,7 @@ export const VideoLesson: React.FC = () => {
                 setWarn('Watch as owner');
                 startVideoRendering(lesson);
               } else {
+                // eslint-disable-next-line max-len
                 setWarn('මුදල් ගෙවියයුතු පාඩමකි.  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid lesson. Please try again in 2 miniutes if you have paid already');
 
                 showPaymentPopup({
@@ -121,7 +120,6 @@ export const VideoLesson: React.FC = () => {
                 //   // DO not reload this page since it can cause to reset your watch count
                 // }, showSnackbar);
               }
-              // }
             });
           } else {
             Util.invokeLogin();
@@ -169,7 +167,6 @@ export const VideoLesson: React.FC = () => {
           <div>
             <a
               href={`tel:${teacher.phoneChat}`}
-              style={{ color: 'white', textDecoration: 'none' }}
             >
               Call Teacher:
               {teacher.phoneChat}

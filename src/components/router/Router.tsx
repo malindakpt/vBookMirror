@@ -3,6 +3,7 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import loader from '../../images/loading/e.gif';
 import classes from './Router.module.scss';
 import { Exams } from '../container/exams/Exams';
 import { Subjects } from '../container/subjects/Subjects';
@@ -25,6 +26,8 @@ import { AddLiveLesson } from '../container/addLesson/addLiveLesson/AddLiveLesso
 import { LiveLesson } from '../container/lessonView/liveLesson/LiveLesson';
 import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLessonTeacher';
+import { AddPaperLesson } from '../container/addLesson/addPaperLesson/AddPaperLesson';
+import { PaperLesson } from '../container/lessonView/paperLesson/PaperLesson';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -34,11 +37,13 @@ export const commonRoutes: routeConfig = [
 
   ['/teacher/:teacherId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
   ['/teacher/:teacherId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],
+  ['/teacher/:teacherId/:courseId/paper/:lessonId', PaperLesson, 'Paper Lesson', false],
   ['/teacher/:teacherId/:courseId', Course, 'Teacher', false],
   ['/teacher/:teacherId', Teacher, 'Teacher', false],
 
   ['/:examId/:subjectId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
   ['/:examId/:subjectId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],
+  ['/:examId/:subjectId/:courseId/paper/:lessonId', PaperLesson, 'Paper Lesson', false],
 
   ['/:examId/:subjectId/:courseId', Course, 'Course', false],
   ['/:examId/:subjectId', Courses, 'Courses', false],
@@ -48,8 +53,9 @@ export const commonRoutes: routeConfig = [
 ];
 
 export const teacherRoutes: routeConfig = [
-  ['/addLesson', AddVideoLesson, 'Video Lessons', true],
-  ['/addLive', AddLiveLesson, 'Live Lessons', true],
+  ['/addLesson', AddVideoLesson, 'Video', true],
+  ['/addLive', AddLiveLesson, 'Live', true],
+  ['/addPaper', AddPaperLesson, 'Paper', true],
   ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
   ['/profile', Subscriptions, 'Profile', true],
 ];
@@ -64,10 +70,18 @@ export const adminRoutes: routeConfig = [
 ];
 
 const Router: React.FC = () => {
-  const { isTeacher, isAdmin } = useContext(AppContext);
+  const { isTeacher, isAdmin, isLoading } = useContext(AppContext);
 
   return (
     <>
+      {isLoading && (
+      <div className={classes.loader}>
+        <img
+          alt="loading"
+          src={loader}
+        />
+      </div>
+      )}
       <div
         className={classes.help}
         id="payGuide"
@@ -129,7 +143,7 @@ const Router: React.FC = () => {
             ))}
             <Route path="">
               <div className={classes.loading}>
-                <p>අක්ෂර.lk</p>
+                <p>....</p>
               </div>
             </Route>
           </Switch>

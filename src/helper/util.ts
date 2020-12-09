@@ -4,7 +4,7 @@ import Config from '../data/Config';
 import {
   addDoc, Entity, getDocsWithProps, updateDoc,
 } from '../data/Store';
-import { ILesson, ILiveLesson } from '../interfaces/ILesson';
+import { ILesson, ILiveLesson, LessonType } from '../interfaces/ILesson';
 import { IPayment } from '../interfaces/IPayment';
 import { paymentJS, startPay } from './payment';
 
@@ -14,6 +14,26 @@ export class Util {
 
     public static fullName = DEFAULT_FULL_NAME;
 }
+
+export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean, payment?: IPayment} => {
+  let okPayment;
+  if (lesson.type === LessonType.LIVE) {
+    okPayment = payments?.filter((p) => !p.disabled).find(
+      (pay) => pay.lessonId === lesson.id);
+  } else {
+    okPayment = payments?.filter((p) => !p.disabled).find(
+      (pay) => (pay.lessonId === lesson.id) && ((pay.watchedCount ?? 0) < Config.allowedWatchCount));
+  }
+  if (lesson.price === 0) {
+    return {
+      ok: true,
+    };
+  }
+  return {
+    ok: !!okPayment,
+    payment: okPayment,
+  };
+};
 
 export const checkRefund = (email: string, lessonId: string,
   maxCount: number, onError: (msg: string) => void) => {
@@ -34,10 +54,10 @@ export const checkRefund = (email: string, lessonId: string,
 
 export const isMobile = () => window.innerWidth < 599;
 
-export const teacherPortion = (commission:number, amount: number) => Math.round((amount
+export const teacherPortion = (commission:number, amount: number) => Math.ceil((amount
         * ((100) / (100 + commission))));
 
-export const payable = (commissionRate:number, amount: number) => Math.round((amount
+export const payable = (commissionRate:number, amount: number) => Math.ceil((amount
           * ((100 + commissionRate) / 100)));
 
 export const round = (num: number) => Math.round(num * 10) / 10;
@@ -107,7 +127,7 @@ export const promptPayment = (email: string, paidFor: string, lesson: ILesson,
       if (!Config.payOnDismiss) {
         return;
       }
-      console.log('Succeed');
+      console.log(`Succeed lessonId: ${lesson.id}`);
       /// /////////FAKE UPDATE START////////////
       addDoc(Entity.PAYMENTS_STUDENTS, {
         lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price, ownerName: Util.fullName,

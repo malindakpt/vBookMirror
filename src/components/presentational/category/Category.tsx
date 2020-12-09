@@ -1,5 +1,5 @@
 import React from 'react';
-import InputIcon from '@material-ui/icons/Input';
+import TouchAppIcon from '@material-ui/icons/TouchApp';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { Link } from 'react-router-dom';
@@ -30,7 +30,7 @@ export const Category:React.FC<Props> = ({
     style={{ textDecoration: 'none', color: 'rgb(63 81 181)' }}
   >
     <div className={classes.image}>
-      <CategoryImg
+      <TouchAppIcon
         htmlColor="#3f51b5"
         style={{ fontSize: 40 }}
       />
@@ -49,7 +49,8 @@ export const Category:React.FC<Props> = ({
     </div>
     <div className={classes.actions}>
       {title5 ? <span className={classes.rightTop}>{title5}</span> : <span />}
-      <InputIcon
+
+      <CategoryImg
         htmlColor="#3f51b5"
         style={{ fontSize: 40 }}
       />

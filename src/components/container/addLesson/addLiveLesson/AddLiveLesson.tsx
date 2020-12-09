@@ -18,7 +18,7 @@ import { ILiveLesson, LessonType, LiveMeetingStatus } from '../../../../interfac
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
-import Config, { isTester } from '../../../../data/Config';
+import Config from '../../../../data/Config';
 
 export enum JOIN_MODES {
   ONLY_APP,
@@ -44,7 +44,6 @@ const fresh: ILiveLesson = {
   ownerEmail: '',
   dateTime: new Date().getTime(),
   status: LiveMeetingStatus.NOT_STARTED,
-  subCount: 0,
   createdAt: 0,
   type: LessonType.LIVE,
 };
@@ -249,7 +248,7 @@ export const AddLiveLesson = () => {
 
   const now = new Date().getTime();
 
-  return isTester(email) ? (
+  return (
     <>
       <div
         className={classes.root}
@@ -496,5 +495,5 @@ export const AddLiveLesson = () => {
       </div>
 
     </>
-  ) : (<h2>This feature is not enabled yet</h2>);
+  );
 };
