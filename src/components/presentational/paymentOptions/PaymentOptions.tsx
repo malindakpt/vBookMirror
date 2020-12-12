@@ -75,32 +75,19 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
               EZ Cash / Card Payment
             </Button>
           </div>
-          {/* <div>
-            <Button
-              variant="contained"
-              onClick={() => setDialogAddToBill(true)}
-            >
-              Add to Dialog bill
-            </Button>
-          </div> */}
           <div>
             <Button
               variant="contained"
               onClick={() => setPaymentValidation(true)}
             >
-              Manual Payment
+              Request Payment Validation
             </Button>
           </div>
 
           { paymentValidation && (
-            <RequestPaymentValidation options={props} />
-          // <DialogAddToBill
-          //   hideCancel={() => setShowCancel(false)}
-          //   onSuccess={() => onSuccess && onSuccess()}
-          // />
+            <RequestPaymentValidation options={{ ...props, onSuccess: () => setOpen(false) }} />
           )}
         </form>
-        {/* </DialogContentText> */}
 
       </DialogContent>
       <DialogActions>

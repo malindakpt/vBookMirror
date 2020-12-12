@@ -37,6 +37,12 @@ enum StatusCode {
   SUCCESS = '2'
 }
 
+export enum PaymentGateway { // Used by BE
+  MANUAL,
+  PAY_HERE,
+  GEINE
+}
+
 app.post('/notify/1', (req: any, res: any) => {
   const ref = req.body.merchant_id;
   //   const ref2 = req.param('payhere_amount');
@@ -115,6 +121,7 @@ app.post('/notify/3', (req: any, res: any) => {
       paymentRef: body.payment_id,
       status: body.status_code,
       paymentObject: body,
+      gateway: PaymentGateway.PAY_HERE,
     };
     console.log(req.body);
 

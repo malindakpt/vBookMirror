@@ -145,7 +145,7 @@ const Router: React.FC = () => {
             ))}
             <Route path="">
               <div className={classes.loading}>
-                <p>....</p>
+                <p />
               </div>
             </Route>
           </Switch>

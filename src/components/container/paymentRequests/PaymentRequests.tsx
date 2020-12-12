@@ -5,7 +5,7 @@ import {
   Entity, getDocsWithProps, sendHttp,
 } from '../../../data/Store';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
-import { IPayment } from '../../../interfaces/IPayment';
+import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
 import { NOT_VALIDATED } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
 
 export const PaymentRequests = () => {
@@ -15,7 +15,7 @@ export const PaymentRequests = () => {
   useEffect(() => {
     getDocsWithProps<IPayment[]>(
       Entity.PAYMENTS_STUDENTS,
-      { status: NOT_VALIDATED, disabled: true },
+      { status: NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true },
     ).then((data) => data && setPending(data));
   }, [onUpdate]);
 

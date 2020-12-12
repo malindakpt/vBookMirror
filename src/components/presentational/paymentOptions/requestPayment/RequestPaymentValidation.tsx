@@ -3,17 +3,20 @@ import React, { useContext, useState } from 'react';
 import { AppContext } from '../../../../App';
 import { addDoc, Entity } from '../../../../data/Store';
 import { Util } from '../../../../helper/util';
-import { IPayment } from '../../../../interfaces/IPayment';
+import { IPayment, PaymentGateway } from '../../../../interfaces/IPayment';
 import { PaymentOptionProps } from '../PaymentOptions';
 
 export const NOT_VALIDATED = 'NOT_VALIDATED';
 export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> = ({ options }) => {
-  const { lesson, email } = options;
+  const { lesson, email, onSuccess } = options;
   const [paymentRef, setPaymentRef] = useState('');
   const { showSnackbar } = useContext(AppContext);
 
   const requestValidation = () => {
-    alert('req pay');
+    if (paymentRef === '') {
+      showSnackbar('Provide the reference given by the teacher');
+      return;
+    }
     if (email) {
       const paymentObj: IPayment = {
         date: new Date().getTime(),
@@ -31,6 +34,8 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
         disabled: true, // This is mandetory when multiple payments exists and calculate the watch count
         watchedCount: 0,
 
+        gateway: PaymentGateway.MANUAL,
+
         id: '',
         createdAt: 0,
       };
@@ -38,6 +43,8 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
       addDoc(Entity.PAYMENTS_STUDENTS, paymentObj).then(() => {
         showSnackbar('Payment Request Sent');
       });
+
+      onSuccess && onSuccess();
     }
   };
 
@@ -51,7 +58,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
       />
 
       <Button onClick={requestValidation}>
-        Request Validate Payment
+        Send Validation Request
       </Button>
 
     </div>
