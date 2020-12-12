@@ -20,6 +20,7 @@ const APP_CONFIG_DEV = {
   studentUpdateUrl: 'http://localhost:4000/studentupdate',
   dialogPaymentUrl: 'http://localhost:4000/dialogCharge',
   dialogConfirmUrl: 'http://localhost:4000/dialogConfirm',
+  validatePaymentUrl: 'http://localhost:4000/validatePayment',
 
   // Variables valid only for dev
   payOnDismiss: false,
@@ -45,6 +46,7 @@ const APP_CONFIG_PROD = {
   studentUpdateUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/studentupdate',
   dialogPaymentUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/dialogCharge',
   dialogConfirmUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/dialogConfirm',
+  validatePaymentUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/validatePayment',
 
   payOnDismiss: false,
 };

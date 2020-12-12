@@ -2,8 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 import { privateKey } from './config';
-import { Entity } from './util';
-import { dialogCharge, dialogConfirm } from './helperDialog';
+import { Entity, updateDoc } from './util';
 
 const cors = require('cors');
 
@@ -38,18 +37,6 @@ enum StatusCode {
   SUCCESS = '2'
 }
 
-app.post('/dialogCharge', (req: any, res: any) => {
-  console.log(
-    `\n dialogCharge-  phone: ${req.body.phone}, amount: ${req.body.amount}`,
-  );
-  dialogCharge(res, req.body.phone, req.body.amount);
-});
-
-app.post('/dialogConfirm', (req: any, res: any) => {
-  console.log(`\nsubmitPin- pin: ${req.body.pin}, ref: ${req.body.serverRef}`);
-  dialogConfirm(res, req.body.pin, req.body.serverRef);
-});
-
 app.post('/notify/1', (req: any, res: any) => {
   const ref = req.body.merchant_id;
   //   const ref2 = req.param('payhere_amount');
@@ -59,6 +46,26 @@ app.post('/notify/1', (req: any, res: any) => {
   res.send({
     res: out,
   });
+});
+
+app.post('/validatePayment', (req: any, res: any) => {
+  const { body } = req;
+  try {
+    updateDoc(db, Entity.PAYMENTS_STUDENTS, body.id, { disabled: false }).then(() => {
+      res.send({
+        res: { status: 'ok' },
+      });
+    }).catch(() => {
+      res.send({
+        res: { status: 'error' },
+      });
+    });
+  } catch (e) {
+    console.log('error validatePayment catch');
+    res.send({
+      res: { status: 'error' },
+    });
+  }
 });
 
 app.post('/studentupdate', (req: any, res: any) => {
@@ -90,6 +97,9 @@ app.post('/studentupdate', (req: any, res: any) => {
   }
 });
 
+/**
+ * Update payement status
+ */
 app.post('/notify/3', (req: any, res: any) => {
   const { body } = req;
   if (body.status_code === StatusCode.SUCCESS) {

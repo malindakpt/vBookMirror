@@ -22,13 +22,13 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
         paymentType: lesson.type,
         paidFor: lesson.ownerEmail, // for calculating teacher salary
         paymentRef,
-        paymentObject: {},
+        paymentObject: lesson.topic,
 
         ownerEmail: email,
         ownerName: Util.fullName,
 
         status: NOT_VALIDATED,
-        disabled: false, // This is mandetory when multiple payments exists and calculate the watch count
+        disabled: true, // This is mandetory when multiple payments exists and calculate the watch count
         watchedCount: 0,
 
         id: '',

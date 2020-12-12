@@ -60,6 +60,22 @@ export const getDocsWithProps = <T>(
       });
   });
 
+export const updateDoc = (db: FirebaseFirestore.Firestore,
+  entityName: Entity, id: string, obj: any) => new Promise((resolve, reject) => {
+  const saveObj = { ...obj, updatedAt: new Date().getTime() };
+  // @ts-ignore
+  delete saveObj.id; // Allow id auto generation and remove exsting id params
+
+  db.collection(entityName).doc(id).update(saveObj).then((data: any) => {
+    // clearStore(entityName);
+    resolve(true);
+  })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+});
+
 export const sendError = (res: any, text: any) => {
   console.error(text);
   res.send({ status: StatusType.ERROR, message: text });
