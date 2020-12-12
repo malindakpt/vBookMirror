@@ -38,8 +38,6 @@ export const Subscriptions = () => {
 
   const [selectedMonth, setSelectedMonth] = useState<number>(date.getMonth());
 
-  // const [banner1, setBanner1] = useState<string>('');
-  // const [banner2, setBanner2] = useState<string>('');
   const getPeriodObj = (month: number) => {
     const fd = new Date(date.getFullYear(), month, 1).getTime();
     const ld = new Date(date.getFullYear(), month + 1, 0).getTime();
@@ -69,37 +67,31 @@ export const Subscriptions = () => {
 
         if (lessonsV && payments) {
           for (const vLes of lessonsV) {
-            // if (vLes.price > 0) {
             const payList = payments.filter((p) => p.lessonId === vLes.id);
             vlessonArr.push({
               lesson: vLes,
               payments: payList,
             });
-            // }
           }
         }
 
         if (lessonsL && payments) {
           for (const lLes of lessonsL) {
-            // if (lLes.price > 0) {
             const payList = payments.filter((p) => p.lessonId === lLes.id);
             llessonArr.push({
               lesson: lLes,
               payments: payList,
             });
-            // }
           }
         }
 
         if (lessonsP && payments) {
           for (const pLes of lessonsP) {
-            // if (lLes.price > 0) {
             const payList = payments.filter((p) => p.lessonId === pLes.id);
             plessonArr.push({
               lesson: pLes,
               payments: payList,
             });
-            // }
           }
         }
 
@@ -131,17 +123,19 @@ export const Subscriptions = () => {
 
     return (
       <>
-        <table className="center w100">
-          <tbody>
-            <tr key={0}>
-              <th>Lesson</th>
-              <th>Price</th>
-              <th>Count</th>
-              <th>Total</th>
-            </tr>
-            {
+        <div className={classes.table}>
+          <table className="center w100">
+            <tbody>
+              <tr key={0}>
+                <th>Date</th>
+                <th>Lesson</th>
+                <th>Price</th>
+                <th>Count</th>
+                <th>Total</th>
+              </tr>
+              {
 
-            lessons.map((val) => {
+            lessons.sort((a, b) => b.lesson.createdAt - a.lesson.createdAt).map((val) => {
               const tot = val.payments.reduce(
                 (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
               ).amount;
@@ -150,6 +144,7 @@ export const Subscriptions = () => {
 
               return (
                 <tr key={val.lesson.id}>
+                  <td><span>{val.lesson.createdAt && new Date(val.lesson.createdAt).toDateString()}</span></td>
                   <td>{val.lesson.topic}</td>
                   <td>{val.lesson.price}</td>
                   <td>{val.payments.length}</td>
@@ -168,16 +163,14 @@ export const Subscriptions = () => {
               );
             })
             }
-            <tr key={1}>
-              <th>.</th>
-              <th>.</th>
-              <th>Total</th>
-              <th style={{ color: 'blue', fontSize: '18px' }}>
-                {teacherPortion(teacher.commissionVideo, fullTotal)}
-              </th>
-            </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
+        <div style={{ color: 'blue', fontSize: '18px', fontWeight: 'bold' }}>
+          Total:
+          {' '}
+          {teacherPortion(teacher.commissionVideo, fullTotal)}
+        </div>
       </>
     );
   };
@@ -245,7 +238,6 @@ export const Subscriptions = () => {
 
           <h3>Video lessons income</h3>
           {
-
             getLessonsTable(videoLessons, teacher)
           }
           <h3>Paper lessons income</h3>

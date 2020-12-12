@@ -9,17 +9,16 @@
         grid-template-columns: 1fr;
     }
 
-    th {
-        text-align: left;
+    .table{
+        max-height: 300px;
+        overflow: auto;
+
+        th {
+            text-align: left;
+        }
     }
 
     .input {
         min-width: 200px;
-    }
-    
-    .banners {
-        // display: grid;
-        // grid-template-columns: 1fr 1fr;
-        // place-items: start;
     }
 }
