@@ -12,10 +12,12 @@ import { IExam } from '../../../../interfaces/IExam';
 import { ListItems } from '../../../presentational/ListItems/ListItemsComponent';
 import { getObject } from '../../../../data/StoreHelper';
 import { ICourse } from '../../../../interfaces/ICourse';
+import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 
 export const AddCourse = () => {
   useBreadcrumb();
   const [busy, setBusy] = useState<boolean>(false);
+  const [onUpdate, forceUpdate] = useForcedUpdate();
 
   const { showSnackbar } = useContext(AppContext);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
@@ -33,11 +35,8 @@ export const AddCourse = () => {
     getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-  }, []);
-
-  useEffect(() => {
     getDocsWithProps<ICourse[]>(Entity.COURSES, {}).then((data) => setCourses(data));
-  }, [courses]);
+  }, [onUpdate]);
 
   const disabled = !examId || !subjectId || !ownerEmail;
 
@@ -66,6 +65,7 @@ export const AddCourse = () => {
       });
       showSnackbar(`New course created: ${newCourse.examYear}`);
       setBusy(false);
+      forceUpdate();
     });
   };
 

@@ -1,7 +1,9 @@
 import React, {
   useContext, useEffect, useRef, useState,
 } from 'react';
-import { Button } from '@material-ui/core';
+import {
+  Button, FormControl, InputLabel, MenuItem, Select,
+} from '@material-ui/core';
 import classes from './Subscriptions.module.scss';
 import { AppContext } from '../../../App';
 import {
@@ -17,6 +19,10 @@ import { FileUploader } from '../../presentational/fileUploader/FileUploader';
 
 interface LessMap {payments: IPayment[], lesson: ILesson}
 
+const months = ['January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'Auguest', 'September', 'October', 'November', 'December'];
+const date = new Date();
+
 export const Subscriptions = () => {
   useBreadcrumb();
   const { email, showSnackbar } = useContext(AppContext);
@@ -30,15 +36,27 @@ export const Subscriptions = () => {
 
   const [teacher, setTeacher] = useState<ITeacher>();
 
-  // const [banner1, setBanner1] = useState<string>('');
-  // const [banner2, setBanner2] = useState<string>('');
+  const [selectedMonth, setSelectedMonth] = useState<number>(date.getMonth());
+
+  const getPeriodObj = (month: number) => {
+    const fd = new Date(date.getFullYear(), month, 1).getTime();
+    const ld = new Date(date.getFullYear(), month + 1, 0).getTime();
+
+    return {
+      'date>': fd,
+      'date<': ld,
+    };
+  };
 
   useEffect(() => {
     if (email) {
       // TODO: add live lessons here
       Promise.all([
         getDocWithId<ITeacher>(Entity.TEACHERS, email),
-        getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { paidFor: email }),
+        getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, {
+          paidFor: email,
+          ...getPeriodObj(selectedMonth),
+        }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email }),
         getDocsWithProps<ILesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email }),
@@ -49,37 +67,31 @@ export const Subscriptions = () => {
 
         if (lessonsV && payments) {
           for (const vLes of lessonsV) {
-            // if (vLes.price > 0) {
             const payList = payments.filter((p) => p.lessonId === vLes.id);
             vlessonArr.push({
               lesson: vLes,
               payments: payList,
             });
-            // }
           }
         }
 
         if (lessonsL && payments) {
           for (const lLes of lessonsL) {
-            // if (lLes.price > 0) {
             const payList = payments.filter((p) => p.lessonId === lLes.id);
             llessonArr.push({
               lesson: lLes,
               payments: payList,
             });
-            // }
           }
         }
 
         if (lessonsP && payments) {
           for (const pLes of lessonsP) {
-            // if (lLes.price > 0) {
             const payList = payments.filter((p) => p.lessonId === pLes.id);
             plessonArr.push({
               lesson: pLes,
               payments: payList,
             });
-            // }
           }
         }
 
@@ -91,7 +103,7 @@ export const Subscriptions = () => {
         }
       });
     }
-  }, [email]);
+  }, [email, selectedMonth]);
 
   const [views, setViews] = useState<{lessonId: string, count: number}>();
 
@@ -111,53 +123,54 @@ export const Subscriptions = () => {
 
     return (
       <>
-        <table className="center w100">
-          <tbody>
-            <tr key={0}>
-              <th>Lesson</th>
-              <th>Price</th>
-              <th>Count</th>
-              <th>Total</th>
-            </tr>
-            {
+        <div className={classes.table}>
+          <table className="center w100">
+            <tbody>
+              <tr key={0}>
+                <th>Date</th>
+                <th>Lesson</th>
+                <th>Price</th>
+                <th>Count</th>
+                <th>Total</th>
+              </tr>
+              {
 
-      lessons.map((val) => {
-        const tot = val.payments.reduce(
-          (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
-        ).amount;
+            lessons.sort((a, b) => b.lesson.createdAt - a.lesson.createdAt).map((val) => {
+              const tot = val.payments.reduce(
+                (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
+              ).amount;
 
-        fullTotal += tot;
+              fullTotal += tot;
 
-        return (
-          <tr key={val.lesson.id}>
-            <td>{val.lesson.topic}</td>
-            <td>{val.lesson.price}</td>
-            <td>{val.payments.length}</td>
-            <td>
-              {teacherPortion(teacher.commissionVideo, tot)}
-            </td>
-            <td>
-              {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
-              <Button
-                onClick={() => checkViews(val.lesson)}
-              >
-                Views
-              </Button>
-            </td>
-          </tr>
-        );
-      })
-      }
-            <tr key={1}>
-              <th>.</th>
-              <th>.</th>
-              <th>Total</th>
-              <th>
-                {teacherPortion(teacher.commissionVideo, fullTotal)}
-              </th>
-            </tr>
-          </tbody>
-        </table>
+              return (
+                <tr key={val.lesson.id}>
+                  <td><span>{val.lesson.createdAt && new Date(val.lesson.createdAt).toDateString()}</span></td>
+                  <td>{val.lesson.topic}</td>
+                  <td>{val.lesson.price}</td>
+                  <td>{val.payments.length}</td>
+                  <td>
+                    {teacherPortion(teacher.commissionVideo, tot)}
+                  </td>
+                  <td>
+                    {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
+                    <Button
+                      onClick={() => checkViews(val.lesson)}
+                    >
+                      Views
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })
+            }
+            </tbody>
+          </table>
+        </div>
+        <div style={{ color: 'blue', fontSize: '18px', fontWeight: 'bold' }}>
+          Total:
+          {' '}
+          {teacherPortion(teacher.commissionVideo, fullTotal)}
+        </div>
       </>
     );
   };
@@ -167,6 +180,19 @@ export const Subscriptions = () => {
       updateDoc(Entity.TEACHERS, teacher.id, changesObj)
         .then(() => showSnackbar('Banner image updated'));
     }
+  };
+
+  const getDisplayMonths = () => {
+    const date = new Date();
+
+    const monthArr = [];
+    const month = date.getMonth();
+
+    for (let m = 0; m < 4; m += 1) {
+      const next = (month - m) < 0 ? 12 - m : (month - m);
+      monthArr.push([next, months[next]]);
+    }
+    return monthArr;
   };
 
   return (
@@ -185,17 +211,42 @@ export const Subscriptions = () => {
             </a>
           </div>
 
+          <FormControl className={classes.input}>
+            <InputLabel
+              id="demo-simple-select-label"
+              className="fc1"
+            >
+              Select Month
+            </InputLabel>
+            <Select
+              className={`${classes.input}`}
+              labelId="label1"
+              id="id1"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value as number)}
+            >
+              {getDisplayMonths().map((month) => (
+                <MenuItem
+                  value={month[0]}
+                  key={month[0]}
+                >
+                  {month[1]}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <h3>Video lessons income</h3>
           {
             getLessonsTable(videoLessons, teacher)
           }
-          <h3>Live lessons income</h3>
-          {
-            getLessonsTable(liveLessons, teacher)
-          }
           <h3>Paper lessons income</h3>
           {
             getLessonsTable(paperLessons, teacher)
+          }
+          <h3>Live lessons income</h3>
+          {
+            getLessonsTable(liveLessons, teacher)
           }
           <div className={classes.banners}>
             <div>
