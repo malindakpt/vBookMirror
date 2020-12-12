@@ -7,6 +7,7 @@ import { promptPayment, Util } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
 import { DialogAddToBill } from './dialogAddToBill/DialogAddToBill';
 import classes from './PaymentOptions.module.scss';
+import { RequestPaymentValidation } from './requestPayment/RequestPaymentValidation';
 
 export interface PaymentOptionProps {
     email: string | null;
@@ -15,12 +16,13 @@ export interface PaymentOptionProps {
     onSuccess?: () => void;
     onCancel?: () => void;
 }
-export const PaymentOptions: React.FC<PaymentOptionProps> = ({
-  email, paidFor, lesson, onSuccess, onCancel,
-}) => {
+export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
+  const {
+    email, paidFor, lesson, onSuccess, onCancel,
+  } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [showCancel, setShowCancel] = useState<boolean>(true);
-  const [dialogAddToBill, setDialogAddToBill] = useState<boolean>(false);
+  const [paymentValidation, setPaymentValidation] = useState<boolean>(false);
   const { showSnackbar } = useContext(AppContext);
 
   const handleClose = () => {
@@ -73,21 +75,29 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = ({
               EZ Cash / Card Payment
             </Button>
           </div>
-          <div>
+          {/* <div>
             <Button
               variant="contained"
               onClick={() => setDialogAddToBill(true)}
             >
               Add to Dialog bill
             </Button>
-
+          </div> */}
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => setPaymentValidation(true)}
+            >
+              Manual Payment
+            </Button>
           </div>
 
-          { dialogAddToBill && (
-          <DialogAddToBill
-            hideCancel={() => setShowCancel(false)}
-            onSuccess={() => onSuccess && onSuccess()}
-          />
+          { paymentValidation && (
+            <RequestPaymentValidation options={props} />
+          // <DialogAddToBill
+          //   hideCancel={() => setShowCancel(false)}
+          //   onSuccess={() => onSuccess && onSuccess()}
+          // />
           )}
         </form>
         {/* </DialogContentText> */}

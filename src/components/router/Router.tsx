@@ -28,6 +28,7 @@ import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLessonTeacher';
 import { AddPaperLesson } from '../container/addLesson/addPaperLesson/AddPaperLesson';
 import { PaperLesson } from '../container/lessonView/paperLesson/PaperLesson';
+import { PaymentRequests } from '../container/paymentRequests/PaymentRequests';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -57,6 +58,7 @@ export const teacherRoutes: routeConfig = [
   ['/addLive', AddLiveLesson, 'Live', true],
   ['/addPaper', AddPaperLesson, 'Paper', true],
   ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
+  ['/paymentRequests', PaymentRequests, 'Payment Requests', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 
