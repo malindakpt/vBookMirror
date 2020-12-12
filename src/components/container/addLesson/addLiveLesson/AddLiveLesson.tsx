@@ -189,8 +189,8 @@ export const AddLiveLesson = () => {
     }
   };
 
-  const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => a.dateTime
-   - b.dateTime).map((liveLesson) => (
+  const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => b.dateTime
+   - a.dateTime).map((liveLesson) => (
      <div
        key={liveLesson.id}
      >
@@ -245,8 +245,6 @@ export const AddLiveLesson = () => {
      </div>
   ))
   );
-
-  const now = new Date().getTime();
 
   return (
     <>
@@ -485,10 +483,7 @@ export const AddLiveLesson = () => {
             aria-label="main mailbox folders"
           >
             {
-             renderLessonList(liveLessons.filter((l) => l.dateTime >= now))
-            }
-            {
-             renderLessonList(liveLessons.filter((l) => l.dateTime < now))
+             renderLessonList(liveLessons)
             }
           </List>
         </div>
