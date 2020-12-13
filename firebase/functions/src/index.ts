@@ -57,7 +57,7 @@ app.post('/notify/1', (req: any, res: any) => {
 app.post('/validatePayment', (req: any, res: any) => {
   const { body } = req;
   try {
-    updateDoc(db, Entity.PAYMENTS_STUDENTS, body.id, { disabled: false }).then(() => {
+    updateDoc(db, Entity.PAYMENTS_STUDENTS, body.id, { disabled: false, status: 'VALIDATED' }).then(() => {
       res.send({
         res: { status: 'ok' },
       });

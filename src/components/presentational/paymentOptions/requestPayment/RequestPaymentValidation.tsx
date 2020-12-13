@@ -6,7 +6,11 @@ import { Util } from '../../../../helper/util';
 import { IPayment, PaymentGateway } from '../../../../interfaces/IPayment';
 import { PaymentOptionProps } from '../PaymentOptions';
 
-export const NOT_VALIDATED = 'NOT_VALIDATED';
+export enum PaymentStatus {
+ VALIDATED = 'VALIDATED',
+ NOT_VALIDATED = 'NOT_VALIDATED'
+}
+
 export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> = ({ options }) => {
   const { lesson, email, onSuccess } = options;
   const [paymentRef, setPaymentRef] = useState('');
@@ -30,7 +34,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
         ownerEmail: email,
         ownerName: Util.fullName,
 
-        status: NOT_VALIDATED,
+        status: PaymentStatus.NOT_VALIDATED,
         disabled: true, // This is mandetory when multiple payments exists and calculate the watch count
         watchedCount: 0,
 

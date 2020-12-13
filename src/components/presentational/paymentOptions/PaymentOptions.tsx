@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import { promptPayment, Util } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
-import { DialogAddToBill } from './dialogAddToBill/DialogAddToBill';
 import classes from './PaymentOptions.module.scss';
 import { RequestPaymentValidation } from './requestPayment/RequestPaymentValidation';
 
@@ -21,7 +20,6 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
     email, paidFor, lesson, onSuccess, onCancel,
   } = props;
   const [open, setOpen] = useState<boolean>(false);
-  const [showCancel, setShowCancel] = useState<boolean>(true);
   const [paymentValidation, setPaymentValidation] = useState<boolean>(false);
   const { showSnackbar } = useContext(AppContext);
 
@@ -59,9 +57,6 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
     >
       <DialogTitle id="alert-dialog-title">Payment Methods</DialogTitle>
       <DialogContent>
-        {/* <DialogContentText id="alert-dialog-description">
-          Paymetn Methods
-        </DialogContentText> */}
         <form
           noValidate
           autoComplete="off"
@@ -91,7 +86,6 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
 
       </DialogContent>
       <DialogActions>
-        {showCancel && (
         <Button
           onClick={handleClose}
           color="primary"
@@ -99,7 +93,6 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
         >
           Cancel
         </Button>
-        )}
       </DialogActions>
     </Dialog>
   );

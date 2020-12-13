@@ -6,7 +6,7 @@ import {
 } from '../../../data/Store';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
-import { NOT_VALIDATED } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
+import { PaymentStatus } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
 
 export const PaymentRequests = () => {
   const [pending, setPending] = useState<IPayment[]>([]);
@@ -15,30 +15,30 @@ export const PaymentRequests = () => {
   useEffect(() => {
     getDocsWithProps<IPayment[]>(
       Entity.PAYMENTS_STUDENTS,
-      { status: NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true },
+      { status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true },
     ).then((data) => data && setPending(data));
   }, [onUpdate]);
 
   const approvePayment = (paymentId: string) => {
-    sendHttp(Config.validatePaymentUrl, { id: paymentId, disabled: false }).then(() => {
+    sendHttp(Config.validatePaymentUrl,
+      { id: paymentId, disabled: false, status: PaymentStatus.VALIDATED }).then(() => {
       forceUpdate();
     });
   };
 
   return (
     <div>
-      <table>
+      <table className="w100">
         <tbody>
-
           {pending.map((payment) => (
             <tr key={payment.id}>
+              <td>{new Date(payment.createdAt).toDateString()}</td>
               <td>{payment.ownerEmail}</td>
               <td>{payment.paymentRef}</td>
               <td>{`${payment.paymentObject}`}</td>
               <td><Button onClick={() => approvePayment(payment.id)}>Approve </Button></td>
             </tr>
           ))}
-
         </tbody>
       </table>
     </div>

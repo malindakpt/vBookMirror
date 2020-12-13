@@ -12,10 +12,11 @@ import {
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
-import { IPayment } from '../../../interfaces/IPayment';
+import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
 import { teacherPortion } from '../../../helper/util';
 import { IStudentUpdate } from '../../../interfaces/IStudentUpdate';
 import { FileUploader } from '../../presentational/fileUploader/FileUploader';
+import { PaymentStatus } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
 
 interface LessMap {payments: IPayment[], lesson: ILesson}
 
@@ -64,6 +65,10 @@ export const Subscriptions = () => {
         const vlessonArr: LessMap[] = [];
         const llessonArr: LessMap[] = [];
         const plessonArr: LessMap[] = [];
+
+        // const vlessonArrRef: LessMap[] = [];
+        // const llessonArrRef: LessMap[] = [];
+        // const plessonArrRef: LessMap[] = [];
 
         if (lessonsV && payments) {
           for (const vLes of lessonsV) {
@@ -119,7 +124,11 @@ export const Subscriptions = () => {
   };
 
   const getLessonsTable = (lessons: LessMap[], teacher: ITeacher) => {
-    let fullTotal = 0;
+    let gatewayTotal = 0;
+    let manualPayTotal = 0;
+
+    // let gatewayPayCount = 0;
+    // let manualPayCount = 0;
 
     return (
       <>
@@ -130,26 +139,58 @@ export const Subscriptions = () => {
                 <th>Date</th>
                 <th>Lesson</th>
                 <th>Price</th>
-                <th>Count</th>
-                <th>Total</th>
+                <th>Akshara</th>
+
+                <th>Other</th>
+
               </tr>
               {
 
             lessons.sort((a, b) => b.lesson.createdAt - a.lesson.createdAt).map((val) => {
-              const tot = val.payments.reduce(
-                (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
-              ).amount;
+              // const tot = val.payments.reduce(
+              //   (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
+              // ).amount;
+              let manualTot = 0;
+              let gatewayTot = 0;
 
-              fullTotal += tot;
+              let gatewayPayCountForLesson = 0;
+              let manualPayCountForLesson = 0;
+
+              val.payments.forEach((payment) => {
+                if (payment.gateway === PaymentGateway.MANUAL) {
+                  if (payment.status === PaymentStatus.VALIDATED) {
+                    manualTot += payment.amount;
+                    manualPayCountForLesson += 1;
+                  }
+                } else {
+                  gatewayTot += payment.amount;
+                  gatewayPayCountForLesson += 1;
+                }
+              });
+
+              manualPayTotal += manualTot;
+              gatewayTotal += gatewayTot;
 
               return (
                 <tr key={val.lesson.id}>
-                  <td><span>{val.lesson.createdAt && new Date(val.lesson.createdAt).toDateString()}</span></td>
+                  <td>
+                    <span>{val.lesson.createdAt && new Date(val.lesson.createdAt).toDateString()}</span>
+                  </td>
                   <td>{val.lesson.topic}</td>
                   <td>{val.lesson.price}</td>
-                  <td>{val.payments.length}</td>
                   <td>
-                    {teacherPortion(teacher.commissionVideo, tot)}
+                    {teacherPortion(teacher.commissionVideo, gatewayTot)}
+                    {' '}
+                    (
+                    {gatewayPayCountForLesson}
+                    )
+                  </td>
+                  <td>
+                    { manualTot}
+                    {' '}
+                    (
+                    {manualPayCountForLesson}
+                    )
                   </td>
                   <td>
                     {views?.lessonId === val.lesson.id && <span><b>{views.count}</b></span>}
@@ -166,10 +207,18 @@ export const Subscriptions = () => {
             </tbody>
           </table>
         </div>
-        <div style={{ color: 'blue', fontSize: '18px', fontWeight: 'bold' }}>
-          Total:
+        <div>
+          Akshara.lk payments:
           {' '}
-          {teacherPortion(teacher.commissionVideo, fullTotal)}
+          <b>{teacherPortion(teacher.commissionVideo, gatewayTotal)}</b>
+          {'    ### '}
+          Charges for other payments:
+          {' '}
+          <b>{(manualPayTotal * (teacher.commissionVideo - 5)) / 100}</b>
+          <br />
+          Balance:
+          {' '}
+          <b>{teacherPortion(teacher.commissionVideo, gatewayTotal) - (manualPayTotal * (teacher.commissionVideo - 5)) / 100}</b>
         </div>
       </>
     );
@@ -248,6 +297,11 @@ export const Subscriptions = () => {
           {
             getLessonsTable(liveLessons, teacher)
           }
+          <br />
+          {' '}
+          <br />
+          {' '}
+          <br />
           <div className={classes.banners}>
             <div>
               <FileUploader
