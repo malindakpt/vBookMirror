@@ -109,10 +109,11 @@ app.post('/studentupdate', (req: any, res: any) => {
 app.post('/notify/3', (req: any, res: any) => {
   const { body } = req;
   if (body.status_code === StatusCode.SUCCESS) {
-    const [lessonId, paidFor, paymentType] = body.order_id.split('##');
+    const [lessonId, paidFor, paymentType, amountPure] = body.order_id.split('##');
     const payment = {
       date: new Date().getTime(),
       amount: Number(body.payhere_amount),
+      amountPure: Number(amountPure),
       ownerEmail: body.custom_1,
       ownerName: body.custom_2,
       paidFor,

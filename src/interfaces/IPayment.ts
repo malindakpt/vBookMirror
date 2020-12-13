@@ -9,6 +9,7 @@ export enum PaymentGateway { // Used by BE
 export interface IPayment extends IBase {
     date: number;
     amount: number;
+    amountPure?: number; // we can get actual price from this for reports
     lessonId: string;
     paymentType: LessonType;
     paidFor: string; // for calculating teacher salary

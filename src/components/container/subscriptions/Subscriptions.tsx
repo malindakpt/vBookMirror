@@ -66,10 +66,6 @@ export const Subscriptions = () => {
         const llessonArr: LessMap[] = [];
         const plessonArr: LessMap[] = [];
 
-        // const vlessonArrRef: LessMap[] = [];
-        // const llessonArrRef: LessMap[] = [];
-        // const plessonArrRef: LessMap[] = [];
-
         if (lessonsV && payments) {
           for (const vLes of lessonsV) {
             const payList = payments.filter((p) => p.lessonId === vLes.id);
@@ -127,9 +123,6 @@ export const Subscriptions = () => {
     let gatewayTotal = 0;
     let manualPayTotal = 0;
 
-    // let gatewayPayCount = 0;
-    // let manualPayCount = 0;
-
     return (
       <>
         <div className={classes.table}>
@@ -147,9 +140,6 @@ export const Subscriptions = () => {
               {
 
             lessons.sort((a, b) => b.lesson.createdAt - a.lesson.createdAt).map((val) => {
-              // const tot = val.payments.reduce(
-              //   (a, b) => ({ ...a, amount: a.amount + b.amount }), { amount: 0 },
-              // ).amount;
               let manualTot = 0;
               let gatewayTot = 0;
 
@@ -163,7 +153,8 @@ export const Subscriptions = () => {
                     manualPayCountForLesson += 1;
                   }
                 } else {
-                  gatewayTot += payment.amount;
+                  gatewayTot += (payment.amountPure ?? teacherPortion(teacher.commissionVideo,
+                    payment.amount));
                   gatewayPayCountForLesson += 1;
                 }
               });
@@ -179,7 +170,7 @@ export const Subscriptions = () => {
                   <td>{val.lesson.topic}</td>
                   <td>{val.lesson.price}</td>
                   <td>
-                    {teacherPortion(teacher.commissionVideo, gatewayTot)}
+                    {gatewayTot}
                     {' '}
                     (
                     {gatewayPayCountForLesson}
@@ -210,7 +201,7 @@ export const Subscriptions = () => {
         <div>
           Akshara.lk payments:
           {' '}
-          <b>{teacherPortion(teacher.commissionVideo, gatewayTotal)}</b>
+          <b>{gatewayTotal}</b>
           {'    ### '}
           Charges for other payments:
           {' '}
@@ -218,7 +209,7 @@ export const Subscriptions = () => {
           <br />
           Balance:
           {' '}
-          <b>{teacherPortion(teacher.commissionVideo, gatewayTotal) - (manualPayTotal * (teacher.commissionVideo - 5)) / 100}</b>
+          <b>{gatewayTotal - (manualPayTotal * (teacher.commissionVideo - 5)) / 100}</b>
         </div>
       </>
     );
