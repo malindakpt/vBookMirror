@@ -84,6 +84,7 @@ export const LiveLesson: React.FC = () => {
                     email,
                     paidFor: teacher.ownerEmail,
                     lesson,
+                    teacher,
                     onSuccess: () => {
                       setTimeout(() => {
                         window.location.reload();

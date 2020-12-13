@@ -110,6 +110,7 @@ export const Course: React.FC = () => {
           email,
           paidFor: teacher.ownerEmail,
           lesson,
+          teacher,
           onSuccess: updatePayments,
           onCancel: () => {},
         });

@@ -112,6 +112,7 @@ export const VideoLesson: React.FC = () => {
                   email,
                   paidFor: teacher.ownerEmail,
                   lesson,
+                  teacher,
                   onSuccess: () => {},
                   onCancel: () => {},
                 });

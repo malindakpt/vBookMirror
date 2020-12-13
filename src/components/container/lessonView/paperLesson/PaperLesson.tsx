@@ -111,6 +111,7 @@ export const PaperLesson = () => {
                     email,
                     paidFor: teacher.ownerEmail,
                     lesson: paper,
+                    teacher,
                     onSuccess: () => {},
                     onCancel: () => {},
                   });

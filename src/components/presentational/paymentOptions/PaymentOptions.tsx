@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import { promptPayment, Util } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
+import { ITeacher } from '../../../interfaces/ITeacher';
 import classes from './PaymentOptions.module.scss';
 import { RequestPaymentValidation } from './requestPayment/RequestPaymentValidation';
 
@@ -12,12 +13,13 @@ export interface PaymentOptionProps {
     email: string | null;
     paidFor: string;
     lesson: ILesson;
+    teacher: ITeacher;
     onSuccess?: () => void;
     onCancel?: () => void;
 }
 export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
   const {
-    email, paidFor, lesson, onSuccess, onCancel,
+    email, paidFor, lesson, teacher, onSuccess, onCancel,
   } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [paymentValidation, setPaymentValidation] = useState<boolean>(false);
@@ -40,6 +42,7 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
         email,
         paidFor,
         lesson,
+        teacher,
         onSuccess ?? callback,
         showSnackbar,
       );

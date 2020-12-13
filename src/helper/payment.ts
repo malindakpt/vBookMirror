@@ -1,7 +1,7 @@
 import { PaymentOptionProps } from '../components/presentational/paymentOptions/PaymentOptions';
 import Config from '../data/Config';
 import { ILesson } from '../interfaces/ILesson';
-import { DEFAULT_FULL_NAME, Util } from './util';
+import { DEFAULT_FULL_NAME, payable, Util } from './util';
 // @ts-ignore
 // eslint-disable-next-line no-undef
 export const paymentJS = payhere;
@@ -43,8 +43,9 @@ export const startPay = (options: PaymentOptionProps) => {
     if (!Util.fullName || Util.fullName === DEFAULT_FULL_NAME) {
       alert(`Error with the name related to your email. Please contact ${Config.techPhone}`);
     } else {
+      const newPrice = payable(options.teacher.commissionVideo, options.lesson.price);
       paymentJS.startPayment(getPaymentObj(options.email, Util.fullName,
-        options.lesson, options.lesson.price, options.paidFor));
+        options.lesson, newPrice, options.paidFor));
     }
   }
 };

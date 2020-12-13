@@ -6,6 +6,7 @@ import {
 } from '../data/Store';
 import { ILesson, ILiveLesson, LessonType } from '../interfaces/ILesson';
 import { IPayment } from '../interfaces/IPayment';
+import { ITeacher } from '../interfaces/ITeacher';
 import { paymentJS, startPay } from './payment';
 
 export const DEFAULT_FULL_NAME = 'Unknown';
@@ -113,7 +114,7 @@ const showPaymentGuide = (show: boolean) => {
   }
 };
 
-export const promptPayment = (email: string, paidFor: string, lesson: ILesson,
+export const promptPayment = (email: string, paidFor: string, lesson: ILesson, teacher: ITeacher,
   onComplete: () => void, showSnackbar: (msg: string) => void) => {
   // const dd = new Date().getTime();
   paymentJS.onDismissed = function onDismissed() {
@@ -146,6 +147,7 @@ export const promptPayment = (email: string, paidFor: string, lesson: ILesson,
     onComplete();
   };
   startPay({
+    teacher,
     email,
     paidFor,
     lesson,
