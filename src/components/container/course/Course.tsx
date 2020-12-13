@@ -20,7 +20,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import {
-  checkRefund, readyToGo, Util,
+  readyToGo, Util,
 } from '../../../helper/util';
 import { Banner } from '../../presentational/banner/Banner';
 
@@ -31,7 +31,7 @@ export enum ModuleType {
 export const Course: React.FC = () => {
   useBreadcrumb();
 
-  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
+  const { email, showPaymentPopup } = useContext(AppContext);
 
   // Two routest for this page. (teacher profile)Consider both when reading params
   const { courseId } = useParams<any>();

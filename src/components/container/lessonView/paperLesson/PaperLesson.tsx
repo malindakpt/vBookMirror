@@ -8,7 +8,7 @@ import Config from '../../../../data/Config';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { promptPayment, readyToGo, Util } from '../../../../helper/util';
+import { readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ILesson, IPaperLesson } from '../../../../interfaces/ILesson';
 import { IPayment } from '../../../../interfaces/IPayment';
