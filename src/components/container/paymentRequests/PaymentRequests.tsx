@@ -27,7 +27,7 @@ export const PaymentRequests = () => {
   };
 
   return (
-    <div>
+    <div style={{ overflow: 'auto' }}>
       <table className="w100">
         <tbody>
           {pending.map((payment) => (
@@ -36,6 +36,7 @@ export const PaymentRequests = () => {
               <td>{payment.ownerEmail}</td>
               <td>{payment.paymentRef}</td>
               <td>{`${payment.paymentObject}`}</td>
+              <td>{payment.amount}</td>
               <td><Button onClick={() => approvePayment(payment.id)}>Approve </Button></td>
             </tr>
           ))}

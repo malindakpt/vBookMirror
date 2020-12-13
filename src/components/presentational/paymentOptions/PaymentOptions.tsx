@@ -70,12 +70,13 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
               EZ Cash / Card Payment
             </Button>
           </div>
-          <div>
+          <div style={{ display: 'grid' }}>
+            <div>ගුරුවරයාට/ආයතනයට  මුදල් ගෙවා ඇත්නම්</div>
             <Button
               variant="contained"
               onClick={() => setPaymentValidation(true)}
             >
-              Request Payment Validation
+              Payment Validation Req.
             </Button>
           </div>
 

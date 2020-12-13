@@ -18,7 +18,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
 
   const requestValidation = () => {
     if (paymentRef === '') {
-      showSnackbar('Provide the reference given by the teacher');
+      showSnackbar('ගුරුවරයාගෙන් ලබාගත් අංකය ඇතුලත් කරන්න. Please contact the teacher for get a code.');
       return;
     }
     if (email) {
