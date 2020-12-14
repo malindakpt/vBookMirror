@@ -9,20 +9,27 @@ import { ITeacher } from '../../../interfaces/ITeacher';
 import classes from './PaymentOptions.module.scss';
 import { RequestPaymentValidation } from './requestPayment/RequestPaymentValidation';
 
+export enum SelectedPayMethod {
+  NONE,
+  MANUAL,
+  PAY_HERE,
+  GEINE
+}
+
 export interface PaymentOptionProps {
-    email: string | null;
-    paidFor: string;
-    lesson: ILesson;
-    teacher: ITeacher;
-    onSuccess?: () => void;
-    onCancel?: () => void;
+  email: string | null;
+  paidFor: string;
+  lesson: ILesson;
+  teacher: ITeacher;
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }
 export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
   const {
     email, paidFor, lesson, teacher, onSuccess, onCancel,
   } = props;
   const [open, setOpen] = useState<boolean>(false);
-  const [paymentValidation, setPaymentValidation] = useState<boolean>(false);
+  const [mode, setMode] = useState<SelectedPayMethod>(SelectedPayMethod.NONE);
   const { showSnackbar } = useContext(AppContext);
 
   const handleClose = () => {
@@ -36,7 +43,7 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
 
   const showPayhere = () => {
     onCancel && onCancel();
-    const callback = () => {};
+    const callback = () => { };
     if (email) {
       promptPayment(
         email,
@@ -65,25 +72,32 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
           autoComplete="off"
           className={classes.container}
         >
-          <div>
-            <Button
-              variant="contained"
-              onClick={showPayhere}
-            >
-              EZ Cash / Card Payment
-            </Button>
-          </div>
-          <div style={{ display: 'grid' }}>
-            <div>ගුරුවරයාට/ආයතනයට  මුදල් ගෙවා ඇත්නම්</div>
-            <Button
-              variant="contained"
-              onClick={() => setPaymentValidation(true)}
-            >
-              Payment Validation Req.
-            </Button>
-          </div>
-
-          { paymentValidation && (
+          {mode === SelectedPayMethod.NONE && (
+            <>
+              <div style={{ display: 'grid' }}>
+                <div style={{ textAlign: 'center' }}>Online මුදල් ගෙවීම </div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={showPayhere}
+                >
+                  EZ Cash / Bank Card Payment
+                </Button>
+              </div>
+              <br />
+              <div style={{ display: 'grid' }}>
+                <div style={{ textAlign: 'center' }}>ගුරුවරයාට/ආයතනයට  මුදල් ගෙවා ඇත්නම්</div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setMode(SelectedPayMethod.MANUAL)}
+                >
+                  Payment Validation
+                </Button>
+              </div>
+            </>
+          )}
+          {mode === SelectedPayMethod.MANUAL && (
             <RequestPaymentValidation options={{ ...props, onSuccess: () => setOpen(false) }} />
           )}
         </form>

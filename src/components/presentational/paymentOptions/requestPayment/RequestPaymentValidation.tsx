@@ -60,8 +60,12 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
         value={paymentRef}
         onChange={(e) => setPaymentRef(e.target.value)}
       />
-
-      <Button onClick={requestValidation}>
+      <br />
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={requestValidation}
+      >
         Send Validation Request
       </Button>
 
