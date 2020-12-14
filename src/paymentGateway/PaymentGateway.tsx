@@ -68,11 +68,14 @@ export const PaymentGateway: React.FC<Props> = ({ redirectUrl }) => {
     console.log(token);
     console.log(sh);
     setOptions((prev) => {
+      const uniqueID = new Date().getTime();
       const clone = { ...prev };
 
       clone.txnToken = sh;
+      clone.invoiceNumber = `INMK${uniqueID}`;
+      clone.orderId = `MKORDER${uniqueID}`;
 
-      console.log(options);
+      console.log(clone);
       return clone;
     });
   };
