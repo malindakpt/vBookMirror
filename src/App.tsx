@@ -5,6 +5,10 @@ import Header from './components/container/header/Header';
 import Router from './components/router/Router';
 import { Snack, State } from './components/presentational/snackbar/Snack';
 import { ADMIN_EMAIL } from './data/Config';
+import {
+  PaymentOptionProps,
+  PaymentOptions,
+} from './components/presentational/paymentOptions/PaymentOptions';
 import { setStoreLoadingFunc } from './data/Store';
 
 export interface IContext {
@@ -15,6 +19,7 @@ export interface IContext {
   setEmail: (email: string|null) => void,
   updateBreadcrumbs: (bcrumbs: any) => void;
   showSnackbar:(message: string) => void;
+  showPaymentPopup: (options: PaymentOptionProps) => void;
   isAdmin: () => boolean;
   // global loading status
   isLoading: boolean;
@@ -29,6 +34,7 @@ const initialState = {
   setEmail: (email: string|null) => {},
   updateBreadcrumbs: (bcrumbs: any) => {},
   showSnackbar: (message: string) => {},
+  showPaymentPopup: (options: PaymentOptionProps) => {},
   isAdmin: () => false,
   isLoading: false,
   setLoading: (loading: boolean) => {},
@@ -41,6 +47,8 @@ const App: React.FC = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
   const [snackText, setSnackText] = useState<string>('');
   const [email, setEmail] = useState<string|null>(null);
+  // const [isShowPayment, setShowPayment] = useState<boolean>(true);
+  const [paymentOptionProps, setPaymentOptionProps] = useState<PaymentOptionProps | undefined>();
   const [isLoading, setLoading] = useState<boolean>(false);
 
   setStoreLoadingFunc(setLoading);
@@ -62,6 +70,10 @@ const App: React.FC = () => {
     });
   };
 
+  const showPaymentPopup = (options: PaymentOptionProps) => {
+    setPaymentOptionProps(options);
+  };
+
   const hideSnackbar = () => {
     setState((prev) => {
       const next = { ...prev, open: false };
@@ -78,7 +90,17 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AppContext.Provider value={{
-        isTeacher, setIsTeacher, email, breadcrumbs, showSnackbar, setEmail, updateBreadcrumbs, isAdmin, isLoading, setLoading,
+        isTeacher,
+        setIsTeacher,
+        email,
+        breadcrumbs,
+        showSnackbar,
+        setEmail,
+        updateBreadcrumbs,
+        isAdmin,
+        showPaymentPopup,
+        isLoading,
+        setLoading,
       }}
       >
         <Snack
@@ -86,6 +108,16 @@ const App: React.FC = () => {
           state={state}
           handleClose={hideSnackbar}
         />
+        {
+
+          paymentOptionProps && (
+          <PaymentOptions
+               // eslint-disable-next-line react/jsx-props-no-spreading
+            {...paymentOptionProps}
+            onCancel={() => setPaymentOptionProps(undefined)}
+          />
+          )
+        }
         <Header />
         <Router />
         {/* {isTeacher !== undefined && <Footer />} */}

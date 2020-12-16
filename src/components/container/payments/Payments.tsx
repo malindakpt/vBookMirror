@@ -1,18 +1,17 @@
 import { Button } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
-import { AppContext } from '../../../App';
+import React, { useEffect, useState } from 'react';
 import {
-  addDoc, Entity, getDocsWithProps, updateDoc,
+  Entity, getDocsWithProps, updateDoc,
 } from '../../../data/Store';
 import { teacherPortion } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
-import { IPayment, PaymentType } from '../../../interfaces/IPayment';
+import { IPayment } from '../../../interfaces/IPayment';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import classes from './Payments.module.scss';
 
 export const Payments = () => {
-  const [busy, setBusy] = useState<boolean>(false);
-  const { email, showSnackbar } = useContext(AppContext);
+  // const [busy, setBusy] = useState<boolean>(false);
+  // const { email, showSnackbar } = useContext(AppContext);
   const [teachers, setTeachers] = useState<ITeacher[]>([]);
 
   const [studentPayments, setStudentPayments] = useState<{[id: string]: number}>({});
@@ -58,34 +57,34 @@ export const Payments = () => {
     });
   };
 
-  const pay = (teacherEmail: string) => {
-    setBusy(true);
-    // @ts-ignore
-    const amount = Number(document.getElementById(teacherEmail)?.value);
-    const date = new Date().getTime();
+  // const pay = (teacherEmail: string) => {
+  //   setBusy(true);
+  //   // @ts-ignore
+  //   // const amount = Number(document.getElementById(teacherEmail)?.value);
+  //   const date = new Date().getTime();
 
-    if (email) {
-      addDoc<IPayment>(Entity.PAYMENTS_TEACHER, {
-        id: '',
-        ownerEmail: email,
-        paidFor: teacherEmail,
-        date,
-        amount,
-        lessonId: '',
-        paymentObject: {},
-        paymentRef: '',
-        ownerName: '',
-        status: 'OK',
-        createdAt: 0,
-        paymentType: PaymentType.TEACHER_SALARY,
-      }).then(() => {
-        showSnackbar(`Payment done:${amount}`);
-        setBusy(false);
-      });
-    } else {
-      showSnackbar('email not exists');
-    }
-  };
+  //   if (email) {
+  //     // addDoc<IPayment>(Entity.PAYMENTS_TEACHER, {
+  //     //   id: '',
+  //     //   ownerEmail: email,
+  //     //   paidFor: teacherEmail,
+  //     //   date,
+  //     //   amount,
+  //     //   lessonId: '',
+  //     //   paymentObject: {},
+  //     //   paymentRef: '',
+  //     //   ownerName: '',
+  //     //   status: 'OK',
+  //     //   createdAt: 0,
+  //     //   paymentType: PaymentType.TEACHER_SALARY,
+  //     // }).then(() => {
+  //     //   showSnackbar(`Payment done:${amount}`);
+  //     //   setBusy(false);
+  //     // });
+  //   } else {
+  //     showSnackbar('email not exists');
+  //   }
+  // };
 
   const resetWatchCount = (paymentId: string) => {
     updateDoc(Entity.PAYMENTS_STUDENTS, paymentId, { disabled: false, watchedCount: 0 });
@@ -105,7 +104,7 @@ export const Payments = () => {
                 <td>{studentPayments[t.id]}</td>
                 <td>{teacherPayments[t.id]}</td>
                 <td>{payble}</td>
-                <td>
+                {/* <td>
                   <input
                     type="number"
                     id={t.id}
@@ -116,7 +115,7 @@ export const Payments = () => {
                   >
                     Pay
                   </Button>
-                </td>
+                </td> */}
               </tr>
             );
           })}

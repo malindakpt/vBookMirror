@@ -25,7 +25,16 @@ export const privateKey1 = {
   client_x509_cert_url: 'https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-s5rv4%40smsm-54fa3.iam.gserviceaccount.com',
 };
 
-export const prebookUser = {
-  email: 'prebookuser@gmail.com',
-  password: 'Aa12345678',
+export const dialogApiUrl = 'https://ideabiz.lk/apicall/pin/payment/v1';
+
+export const tokenOptions = {
+  uri:
+    'https://ideabiz.lk/apicall/token?grant_type=password&username=prebook&password=Akpt%4016709&scope=PRODUCTION',
+  method: 'POST',
+  headers: {
+    accept: 'application/json',
+    'content-type': 'application/x-www-form-urlencoded',
+    authorization:
+      'Basic NWZ0OE1DN3lseU9nY3I3ZE9mQlg2b3JVNmlrYTpDTm1rN2syRURWeDFRczF1MUVjZ1hHODBEaE1h',
+  },
 };

@@ -18,6 +18,9 @@ const APP_CONFIG_DEV = {
   techPhone: '0771141194',
   zoomURL: 'https://smsm-54fa3.web.app',
   studentUpdateUrl: 'http://localhost:4000/studentupdate',
+  dialogPaymentUrl: 'http://localhost:4000/dialogCharge',
+  dialogConfirmUrl: 'http://localhost:4000/dialogConfirm',
+  validatePaymentUrl: 'http://localhost:4000/validatePayment',
 
   // Variables valid only for dev
   payOnDismiss: false,
@@ -41,9 +44,12 @@ const APP_CONFIG_PROD = {
   paymentDisabled: false,
   techPhone: '0771141194',
   studentUpdateUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/studentupdate',
+  dialogPaymentUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/dialogCharge',
+  dialogConfirmUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/dialogConfirm',
+  validatePaymentUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/validatePayment',
 
   payOnDismiss: false,
-};
+}
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;
 // export default APP_CONFIG_PROD;

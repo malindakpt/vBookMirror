@@ -81,23 +81,6 @@
     font-weight: bold;
   }
 
-  .attachments {
-    padding-left: 10px;
-    padding-bottom: 50px;
-    color: black;
-
-    li {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 50%;
-
-      a {
-        color: black;
-      }
-    }
-  }
-
   button {
     background: #413fb5;
     color: #fff;

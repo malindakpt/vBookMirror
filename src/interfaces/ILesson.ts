@@ -7,10 +7,10 @@ export enum LiveMeetingStatus {
   CANCELLED,
 }
 
-export enum PaperType {
-  MCQ,
-  WRITTEN,
-}
+// export enum PaperType {
+//   MCQ,
+//   WRITTEN,
+// }
 
 export enum LessonType {
   LIVE, VIDEO, PAPER

@@ -16,11 +16,11 @@ import {
 } from '../../../interfaces/ILesson';
 import { IUser } from '../../../interfaces/IUser';
 import { ICourse } from '../../../interfaces/ICourse';
-import { IPayment, PaymentType } from '../../../interfaces/IPayment';
+import { IPayment } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import {
-  checkRefund, promptPayment, readyToGo, Util,
+  readyToGo, Util,
 } from '../../../helper/util';
 import { Banner } from '../../presentational/banner/Banner';
 
@@ -31,7 +31,7 @@ export enum ModuleType {
 export const Course: React.FC = () => {
   useBreadcrumb();
 
-  const { email, showSnackbar } = useContext(AppContext);
+  const { email, showPaymentPopup } = useContext(AppContext);
 
   // Two routest for this page. (teacher profile)Consider both when reading params
   const { courseId } = useParams<any>();
@@ -82,13 +82,13 @@ export const Course: React.FC = () => {
   const amIOwnerOfLesson = (lesson: ILesson) => email === lesson.ownerEmail;
 
   // TODO: Memory leek here when user make payment and open the lesson, stil this thread is alive
-  const updatePayments = async (lessonId: string) => {
+  const updatePayments = async () => {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     for (let i = 0; i < 5; i += 1) {
       console.log('payment status');
 
       // TODO : enhance this logic
-      if (email && teacher) { checkRefund(email, lessonId, teacher.zoomMaxCount, showSnackbar); }
+      // if (email && teacher) { checkRefund(email, le, teacher.zoomMaxCount, showSnackbar); }
 
       // eslint-disable-next-line no-await-in-loop
       const myPayments = await getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
@@ -98,14 +98,24 @@ export const Course: React.FC = () => {
     }
   };
 
-  const handleLessonSelection = (lesson: ILesson, paymentType: PaymentType) => {
+  const handleLessonSelection = (lesson: ILesson) => {
     if (!readyToGo(payments, lesson).ok) {
       if (!email) {
         // showSnackbar('Please login with your gmail address');
         Util.invokeLogin();
         return;
       }
-      teacher && promptPayment(email, teacher, lesson, paymentType, updatePayments, showSnackbar);
+      if (teacher) {
+        showPaymentPopup({
+          email,
+          paidFor: teacher.ownerEmail,
+          lesson,
+          teacher,
+          onSuccess: updatePayments,
+          onCancel: () => {},
+        });
+      }
+      // teacher && promptPayment(email, teacher, lesson, paymentType, updatePayments, showSnackbar);
     }
   };
 
@@ -177,11 +187,11 @@ export const Course: React.FC = () => {
           const timeF = time.substring(0, time.length - 4);
           return (
             <div
-              onClick={() => handleLessonSelection(live, PaymentType.LIVE_LESSON)}
+              onClick={() => handleLessonSelection(live)}
               key={live.id}
               role="button"
               tabIndex={0}
-              onKeyDown={() => handleLessonSelection(live, PaymentType.LIVE_LESSON)}
+              onKeyDown={() => handleLessonSelection(live)}
             >
               <Category
                 id={live.id}
@@ -215,11 +225,11 @@ export const Course: React.FC = () => {
 
             return (
               <div
-                onClick={() => handleLessonSelection(lesson, PaymentType.VIDEO_LESSON)}
+                onClick={() => handleLessonSelection(lesson)}
                 key={idx}
                 role="button"
                 tabIndex={0}
-                onKeyDown={() => handleLessonSelection(lesson, PaymentType.VIDEO_LESSON)}
+                onKeyDown={() => handleLessonSelection(lesson)}
               >
                 <Category
                   id={lesson.id}
@@ -240,7 +250,8 @@ export const Course: React.FC = () => {
 
       {
         (displayMode === ModuleType.ANY
-          || displayMode === ModuleType.PAPER) && mcqPapers.sort((a, b) => a.orderIndex - b.orderIndex)?.map((paper, idx) => {
+          || displayMode === ModuleType.PAPER)
+          && mcqPapers.sort((a, b) => a.orderIndex - b.orderIndex)?.map((paper, idx) => {
             let status: 'yes' | 'no' | 'none' | undefined;
             if (paper.price) {
               if (readyToGo(payments, paper).ok) {
@@ -254,11 +265,11 @@ export const Course: React.FC = () => {
 
             return (
               <div
-                onClick={() => handleLessonSelection(paper, PaymentType.PAPER_LESSON)}
+                onClick={() => handleLessonSelection(paper)}
                 key={idx}
                 role="button"
                 tabIndex={0}
-                onKeyDown={() => handleLessonSelection(paper, PaymentType.PAPER_LESSON)}
+                onKeyDown={() => handleLessonSelection(paper)}
               >
                 <Category
                   id={paper.id}
