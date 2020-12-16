@@ -17,6 +17,7 @@ import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 import { Player } from '../../../presentational/player/Player';
+import { Attachments } from '../../../presentational/attachments/Attachments';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
@@ -237,21 +238,7 @@ export const LiveLesson: React.FC = () => {
             </div>
           )}
 
-        {lesson.attachments && (
-        <div className={classes.attachments}>
-          {lesson.attachments.map((atta: string) => (
-            <li key={atta}>
-              <a
-                href={atta}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {atta}
-              </a>
-            </li>
-          ))}
-        </div>
-        )}
+        <Attachments lesson={lesson} />
 
         <p>
           අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.

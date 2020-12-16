@@ -20,6 +20,7 @@ import { Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { Player } from '../../../presentational/player/Player';
+import { Attachments } from '../../../presentational/attachments/Attachments';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
@@ -181,22 +182,8 @@ export const VideoLesson: React.FC = () => {
           </ReactWhatsapp>
         </div>
         )}
-        {lesson?.attachments && (
-        <div className={classes.attachments}>
-          {lesson.attachments.map((atta, idx) => (
-          // eslint-disable-next-line react/no-array-index-key
-            <li key={atta + idx}>
-              <a
-                href={atta}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {atta}
-              </a>
-            </li>
-          ))}
-        </div>
-)}
+
+        <Attachments lesson={lesson} />
       </div>
       {alert && payment && (
       <AlertDialog
