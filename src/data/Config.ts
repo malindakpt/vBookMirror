@@ -49,7 +49,7 @@ const APP_CONFIG_PROD = {
   validatePaymentUrl: 'https://us-central1-akshara-8630e.cloudfunctions.net/akshara/validatePayment',
 
   payOnDismiss: false,
-}
+};
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;
 // export default APP_CONFIG_PROD;

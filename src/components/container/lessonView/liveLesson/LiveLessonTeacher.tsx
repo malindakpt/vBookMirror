@@ -319,7 +319,7 @@ export const LiveLessonTeacher: React.FC = () => {
             </table>
           </div>
 
-          {teacher && teacher.zoomRunningLessonId === lesson.id
+          {teacher && lesson.isRunning
             ? getIframe(teacher)
             : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
