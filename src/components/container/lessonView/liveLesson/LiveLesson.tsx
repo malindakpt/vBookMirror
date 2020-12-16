@@ -229,12 +229,12 @@ export const LiveLesson: React.FC = () => {
            && (
            <Player videoUrl={lesson?.videoUrl} />
            )}
-        {teacher && teacher.zoomRunningLessonId === lesson.id
+        { teacher && lesson.isRunning
           ? getDisplay(teacher)
           : (
             <div className={classes.notStarted}>
               {lesson.videoUrl
-                ? 'Video will available only for 12 hours ' : 'Meeting is Not Live'}
+                ? 'Video will available only for 12 hours ' : `Meeting starts @ ${new Date(lesson.dateTime).toString().split('GMT')[0]}`}
             </div>
           )}
 
