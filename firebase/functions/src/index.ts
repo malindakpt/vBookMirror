@@ -118,6 +118,40 @@ app.post('/studentupdate', (req: any, res: any) => {
 });
 
 /**
+ * Update GEINE payement status
+ */
+app.post('/notify/genie', (req: any, res: any) => {
+  const { body } = req;
+  if (body.status_code === StatusCode.SUCCESS) {
+    const [email, amountPure, paymentType, paidFor, lessonId] = body.otherInfo.split('##');
+    const payment = {
+      date: new Date().getTime(),
+      amount: Number(body.charge_total),
+      amountPure: Number(amountPure),
+      ownerEmail: email,
+      ownerName: email,
+      paidFor,
+      lessonId,
+      paymentType: Number(paymentType),
+      paymentRef: body.trx_ref_number,
+      status: body.status,
+      paymentObject: body,
+      gateway: PaymentGateway.GEINE,
+    };
+    console.log(req.body);
+
+    // TODO: Update payments
+    db.collection(Entity.LOGS).add(payment).then((ref) => {
+    }).catch((err) => {
+      console.log(err, req.body);
+    });
+  }
+  res.send({
+    res: 'ok',
+  });
+});
+
+/**
  * Update payement status
  */
 app.post('/notify/3', (req: any, res: any) => {

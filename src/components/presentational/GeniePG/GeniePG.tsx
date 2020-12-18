@@ -50,7 +50,7 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
     txnToken: '',
     transactionDateTime: getDate(),
     sharedScret: '7b41da3d80654cfcb8bd7c9102080c75',
-    otherInfo: `${email}#${lesson.price}#${lesson.type}#${lesson.ownerEmail}#`,
+    otherInfo: `${email}##${lesson.price}##${lesson.type}##${lesson.ownerEmail}##${lesson.id}`,
   });
 
   // MCO0002398LKR7b41da3d80654cfcb8bd7c9102080c752019-10-08 3:44:0910.00INV000132
