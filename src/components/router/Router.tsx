@@ -58,7 +58,7 @@ export const teacherRoutes: routeConfig = [
   ['/addLive', AddLiveLesson, 'Live', true],
   ['/addPaper', AddPaperLesson, 'Paper', true],
   ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
-  ['/paymentRequests', PaymentRequests, 'Pay Requests', true],
+  ['/paymentRequests', PaymentRequests, 'Requests', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 
