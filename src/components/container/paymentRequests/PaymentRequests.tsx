@@ -11,6 +11,7 @@ import { PaymentStatus } from '../../presentational/paymentOptions/requestPaymen
 export const PaymentRequests = () => {
   const [pending, setPending] = useState<IPayment[]>([]);
   const [onUpdate, forceUpdate] = useForcedUpdate();
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     getDocsWithProps<IPayment[]>(
@@ -19,17 +20,12 @@ export const PaymentRequests = () => {
     ).then((data) => data && setPending(data));
   }, [onUpdate]);
 
-  const approvePayment = (paymentId: string) => {
+  const approvePayment = (paymentId: string, disabled: boolean) => {
+    setBusy(true);
     sendHttp(Config.validatePaymentUrl,
-      { id: paymentId, disabled: false, status: PaymentStatus.VALIDATED }).then(() => {
+      { id: paymentId, disabled, status: PaymentStatus.VALIDATED }).then(() => {
       forceUpdate();
-    });
-  };
-
-  const rejectPayment = (paymentId: string) => {
-    sendHttp(Config.validatePaymentUrl,
-      { id: paymentId, disabled: false, status: PaymentStatus.VALIDATED }).then(() => {
-      forceUpdate();
+      setBusy(false);
     });
   };
 
@@ -39,29 +35,31 @@ export const PaymentRequests = () => {
         <tbody>
           {pending.map((payment) => (
             <tr key={payment.id}>
-              <td>{new Date(payment.createdAt).toDateString()}</td>
-              <td>{payment.ownerEmail}</td>
-              <td>{payment.paymentRef}</td>
-              <td>{`${payment.paymentObject}`}</td>
-              <td>{payment.amount}</td>
               <td>
                 <Button
+                  disabled={busy}
                   variant="contained"
                   color="primary"
-                  onClick={() => approvePayment(payment.id)}
+                  onClick={() => approvePayment(payment.id, false)}
                 >
                   Approve
                 </Button>
               </td>
               <td>
                 <Button
+                  disabled={busy}
                   variant="contained"
                   color="secondary"
-                  onClick={() => rejectPayment(payment.id)}
+                  onClick={() => approvePayment(payment.id, true)}
                 >
                   Reject
                 </Button>
               </td>
+              <td>{payment.ownerEmail}</td>
+              <td>{payment.paymentRef}</td>
+              <td>{`${payment.paymentObject}`}</td>
+              <td>{payment.amount}</td>
+              <td>{new Date(payment.createdAt).toDateString()}</td>
             </tr>
           ))}
         </tbody>

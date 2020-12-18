@@ -57,15 +57,16 @@ app.post('/notify/1', (req: any, res: any) => {
 app.post('/validatePayment', (req: any, res: any) => {
   const { body } = req;
   const { disabled, id } = body;
+  console.log('/validatePayment');
   try {
     if (disabled) {
       deleteDoc(db, Entity.PAYMENTS_STUDENTS, id).then(() => {
         res.send({
           res: { status: 'ok' },
         });
-      }).catch(() => {
+      }).catch((e) => {
         res.send({
-          res: { status: 'error' },
+          res: { status: e },
         });
       });
     } else {
@@ -73,9 +74,9 @@ app.post('/validatePayment', (req: any, res: any) => {
         res.send({
           res: { status: 'ok' },
         });
-      }).catch(() => {
+      }).catch((e) => {
         res.send({
-          res: { status: 'error' },
+          res: { status: e },
         });
       });
     }
