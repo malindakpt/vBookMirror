@@ -59,23 +59,6 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
     }
   };
 
-  const showGenie = () => {
-    onCancel && onCancel();
-    const callback = () => { };
-    if (email) {
-      promptPayment(
-        email,
-        paidFor,
-        lesson,
-        teacher,
-        onSuccess ?? callback,
-        showSnackbar,
-      );
-    } else {
-      Util.invokeLogin();
-    }
-  };
-
   return (
     <Dialog
       open={open}
@@ -85,22 +68,14 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
     >
       <DialogTitle id="alert-dialog-title">Payment Methods</DialogTitle>
       <DialogContent>
-        <form
-          noValidate
-          autoComplete="off"
+        <div
           className={classes.container}
         >
           {mode === SelectedPayMethod.NONE && (
             <>
               <div style={{ display: 'grid' }}>
                 <div style={{ textAlign: 'center' }}>Genie Payments </div>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={showGenie}
-                >
-                  Pay with Genie
-                </Button>
+
                 <GeniePG
                   email={email}
                   lesson={lesson}
@@ -137,7 +112,7 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
           {mode === SelectedPayMethod.MANUAL && (
             <RequestPaymentValidation options={{ ...props, onSuccess: () => setOpen(false) }} />
           )}
-        </form>
+        </div>
 
       </DialogContent>
       <DialogActions>

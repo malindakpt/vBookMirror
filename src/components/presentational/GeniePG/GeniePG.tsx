@@ -231,8 +231,9 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
             value=""
           />
           <input
+            className={classes.pay}
             type="submit"
-            value="Submit"
+            value="PAY WITH GEINE"
           />
         </form>
       </div>
