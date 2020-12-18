@@ -58,6 +58,23 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
     }
   };
 
+  const showGenie = () => {
+    onCancel && onCancel();
+    const callback = () => { };
+    if (email) {
+      promptPayment(
+        email,
+        paidFor,
+        lesson,
+        teacher,
+        onSuccess ?? callback,
+        showSnackbar,
+      );
+    } else {
+      Util.invokeLogin();
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -75,6 +92,17 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
           {mode === SelectedPayMethod.NONE && (
             <>
               <div style={{ display: 'grid' }}>
+                <div style={{ textAlign: 'center' }}>Genie Payments </div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={showGenie}
+                >
+                  Pay with Genie
+                </Button>
+              </div>
+              <br />
+              <div style={{ display: 'grid' }}>
                 <div style={{ textAlign: 'center' }}>Online මුදල් ගෙවීම </div>
                 <Button
                   variant="contained"
@@ -85,8 +113,9 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
                 </Button>
               </div>
               <br />
+
               <div style={{ display: 'grid' }}>
-                <div style={{ textAlign: 'center' }}>ගුරුවරයාට/ආයතනයට  මුදල් ගෙවා ඇත්නම්</div>
+                <div style={{ textAlign: 'center' }}> මුදල් ගෙවා ඇත්නම්</div>
                 <Button
                   variant="contained"
                   color="primary"

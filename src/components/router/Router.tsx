@@ -28,7 +28,7 @@ import { NotifyPayment } from '../container/notifypayment/NotifyPayment';
 import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLessonTeacher';
 import { AddPaperLesson } from '../container/addLesson/addPaperLesson/AddPaperLesson';
 import { PaperLesson } from '../container/lessonView/paperLesson/PaperLesson';
-import { PaymentGateway } from '../../paymentGateway/PaymentGateway';
+import { GeniePG } from '../presentational/GeniePG/GeniePG';
 import { PaymentRequests } from '../container/paymentRequests/PaymentRequests';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
@@ -36,7 +36,7 @@ type routeConfig = [string, any, string, boolean][]; // route, component, labelN
 export const commonRoutes: routeConfig = [
   ['/intro/:id', Intro, 'Intro', false],
   ['/notify/:type', NotifyPayment, 'Notify', false],
-  ['/payment/:email', PaymentGateway, 'Payments', false],
+  ['/payment/:email', GeniePG, 'Payments', false],
 
   ['/teacher/:teacherId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
   ['/teacher/:teacherId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],

@@ -1,12 +1,12 @@
 import { Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import classes from './PaymentGateway.module.scss';
+import classes from './GeniePG.module.scss';
 
 interface Props {
   redirectUrl: string;
 }
-export const PaymentGateway: React.FC<Props> = ({ redirectUrl }) => {
+export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
   const { email } = useParams<any>();
 
   const [hash, setHash] = useState('');
