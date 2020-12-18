@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 import { privateKey } from './config';
-import { Entity, getDocsWithProps } from './util';
+import { deleteDoc, Entity, updateDoc } from './util';
 
 const cors = require('cors');
 
@@ -37,6 +37,12 @@ enum StatusCode {
   SUCCESS = '2'
 }
 
+export enum PaymentGateway { // Used by BE
+  MANUAL,
+  PAY_HERE,
+  GEINE
+}
+
 app.post('/notify/1', (req: any, res: any) => {
   const ref = req.body.merchant_id;
   //   const ref2 = req.param('payhere_amount');
@@ -46,6 +52,40 @@ app.post('/notify/1', (req: any, res: any) => {
   res.send({
     res: out,
   });
+});
+
+app.post('/validatePayment', (req: any, res: any) => {
+  const { body } = req;
+  const { disabled, id } = body;
+  console.log('/validatePayment');
+  try {
+    if (disabled) {
+      deleteDoc(db, Entity.PAYMENTS_STUDENTS, id).then(() => {
+        res.send({
+          res: { status: 'ok' },
+        });
+      }).catch((e) => {
+        res.send({
+          res: { status: e },
+        });
+      });
+    } else {
+      updateDoc(db, Entity.PAYMENTS_STUDENTS, id, { disabled, status: 'VALIDATED' }).then(() => {
+        res.send({
+          res: { status: 'ok' },
+        });
+      }).catch((e) => {
+        res.send({
+          res: { status: e },
+        });
+      });
+    }
+  } catch (e) {
+    console.log('error validatePayment catch');
+    res.send({
+      res: { status: 'error' },
+    });
+  }
 });
 
 app.post('/studentupdate', (req: any, res: any) => {
@@ -77,13 +117,17 @@ app.post('/studentupdate', (req: any, res: any) => {
   }
 });
 
+/**
+ * Update payement status
+ */
 app.post('/notify/3', (req: any, res: any) => {
   const { body } = req;
   if (body.status_code === StatusCode.SUCCESS) {
-    const [lessonId, paidFor, paymentType] = body.order_id.split('##');
+    const [lessonId, paidFor, paymentType, amountPure] = body.order_id.split('##');
     const payment = {
       date: new Date().getTime(),
       amount: Number(body.payhere_amount),
+      amountPure: Number(amountPure),
       ownerEmail: body.custom_1,
       ownerName: body.custom_2,
       paidFor,
@@ -92,6 +136,7 @@ app.post('/notify/3', (req: any, res: any) => {
       paymentRef: body.payment_id,
       status: body.status_code,
       paymentObject: body,
+      gateway: PaymentGateway.PAY_HERE,
     };
     console.log(req.body);
 

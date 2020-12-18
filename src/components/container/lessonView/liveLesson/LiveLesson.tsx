@@ -12,14 +12,15 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
-import { getHashFromString, promptPayment, Util } from '../../../../helper/util';
-import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
+import { getHashFromString, Util } from '../../../../helper/util';
+import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 import { Player } from '../../../presentational/player/Player';
+import { Attachments } from '../../../presentational/attachments/Attachments';
 
 export const LiveLesson: React.FC = () => {
-  const { email, showSnackbar } = useContext(AppContext);
+  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
 
   // disble context menu for avoid right click
   document.addEventListener('contextmenu', (event) => event.preventDefault());
@@ -79,12 +80,26 @@ export const LiveLesson: React.FC = () => {
                 setLesson(lesson);
                 setFreeOrPurchased(true);
               } else {
-                teacher && promptPayment(email, teacher, lesson, PaymentType.LIVE_LESSON,
-                  () => {
-                    setTimeout(() => {
-                      window.location.reload();
-                    }, Config.realoadTimeoutAferSuccessPay);
-                  }, showSnackbar);
+                if (teacher) {
+                  showPaymentPopup({
+                    email,
+                    paidFor: teacher.ownerEmail,
+                    lesson,
+                    teacher,
+                    onSuccess: () => {
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, Config.realoadTimeoutAferSuccessPay);
+                    },
+                    onCancel: () => {},
+                  });
+                }
+                // teacher && promptPayment(email, teacher, lesson, true,
+                //   () => {
+                //     setTimeout(() => {
+                //       window.location.reload();
+                //     }, Config.realoadTimeoutAferSuccessPay);
+                //   }, showSnackbar);
               }
             });
           } else {
@@ -214,25 +229,16 @@ export const LiveLesson: React.FC = () => {
            && (
            <Player videoUrl={lesson?.videoUrl} />
            )}
-        {teacher && teacher.zoomRunningLessonId === lesson.id
+        { teacher && lesson.isRunning
           ? getDisplay(teacher)
-          : <div className={classes.notStarted}>{lesson.videoUrl ? 'Video will available only for 12 hours ' : 'Meeting is Not Live'}</div>}
+          : (
+            <div className={classes.notStarted}>
+              {lesson.videoUrl
+                ? 'Video will available only for 12 hours ' : `Meeting starts @ ${new Date(lesson.dateTime).toString().split('GMT')[0]}`}
+            </div>
+          )}
 
-        {lesson.attachments && (
-        <div className={classes.attachments}>
-          {lesson.attachments.map((atta: string) => (
-            <li key={atta}>
-              <a
-                href={atta}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {atta}
-              </a>
-            </li>
-          ))}
-        </div>
-        )}
+        <Attachments lesson={lesson} />
 
         <p>
           අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.

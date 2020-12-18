@@ -35,8 +35,7 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
     if (isTeacher === false) {
       const info = getFromStorage(LocalStorageKeys.STUDENT_INFO);
       if (info) {
-        console.log('sent info');
-        sendHttp(Config.studentUpdateUrl, info);
+        sendHttp(Config.studentUpdateUrl, info).then(() => console.log('info sent'));
       } else {
         setOpen(true);
       }
@@ -55,8 +54,7 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
       type: lessonType,
     };
     addToStorage(LocalStorageKeys.STUDENT_INFO, info);
-    console.log('sent info');
-    sendHttp(Config.studentUpdateUrl, info);
+    sendHttp(Config.studentUpdateUrl, info).then(() => console.log('Added student info'));
   };
 
   const onSave = () => {

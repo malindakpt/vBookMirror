@@ -29,6 +29,7 @@ import { LiveLessonTeacher } from '../container/lessonView/liveLesson/LiveLesson
 import { AddPaperLesson } from '../container/addLesson/addPaperLesson/AddPaperLesson';
 import { PaperLesson } from '../container/lessonView/paperLesson/PaperLesson';
 import { PaymentGateway } from '../../paymentGateway/PaymentGateway';
+import { PaymentRequests } from '../container/paymentRequests/PaymentRequests';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
@@ -59,6 +60,7 @@ export const teacherRoutes: routeConfig = [
   ['/addLive', AddLiveLesson, 'Live', true],
   ['/addPaper', AddPaperLesson, 'Paper', true],
   ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
+  ['/paymentRequests', PaymentRequests, 'Requests', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
 
@@ -145,7 +147,7 @@ const Router: React.FC = () => {
             ))}
             <Route path="">
               <div className={classes.loading}>
-                <p>....</p>
+                <p />
               </div>
             </Route>
           </Switch>

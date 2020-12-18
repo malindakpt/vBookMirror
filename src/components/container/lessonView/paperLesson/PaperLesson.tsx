@@ -8,10 +8,10 @@ import Config from '../../../../data/Config';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { promptPayment, readyToGo, Util } from '../../../../helper/util';
+import { readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ILesson, IPaperLesson } from '../../../../interfaces/ILesson';
-import { IPayment, PaymentType } from '../../../../interfaces/IPayment';
+import { IPayment } from '../../../../interfaces/IPayment';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
@@ -24,7 +24,7 @@ import classes from './PaperLesson.module.scss';
 
 export const PaperLesson = () => {
   const history = useHistory();
-  const { email, showSnackbar } = useContext(AppContext);
+  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
   const timerRef = useRef<any>();
 
   // disble context menu for avoid right click
@@ -104,10 +104,21 @@ export const PaperLesson = () => {
                 setWarn('Watch as owner');
                 startPaperRendering(paper);
               } else {
+                // eslint-disable-next-line max-len
                 setWarn('මුදල් ගෙවියයුතු ප්‍රශ්න පත්‍රයකි .  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid exam paper. Please try again in 2 miniutes if you have paid already');
-                teacher && promptPayment(email, teacher, paper, PaymentType.VIDEO_LESSON, () => {
-                // DO not reload this page since it can cause to reset your watch count
-                }, showSnackbar);
+                if (teacher) {
+                  showPaymentPopup({
+                    email,
+                    paidFor: teacher.ownerEmail,
+                    lesson: paper,
+                    teacher,
+                    onSuccess: () => {},
+                    onCancel: () => {},
+                  });
+                }
+                // teacher && promptPayment(email, teacher, paper, PaymentType.VIDEO_LESSON, () => {
+                // // DO not reload this page since it can cause to reset your watch count
+                // }, showSnackbar);
               }
             });
           } else {

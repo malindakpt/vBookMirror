@@ -293,10 +293,11 @@ export const sendHttp = (url: string, body: object) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...body, createdAt: new Date().getTime() }),
   };
-  fetch(url, requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('Sent info');
-      // this.setState({ postId: data.id })
-    });
+  return new Promise((resolve, reject) => {
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        resolve(data);
+      }).catch((e) => reject(e));
+  });
 };

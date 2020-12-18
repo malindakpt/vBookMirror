@@ -42,6 +42,7 @@ const fresh: ILiveLesson = {
   courseId: '',
   price: 0,
   ownerEmail: '',
+  isRunning: false,
   dateTime: new Date().getTime(),
   status: LiveMeetingStatus.NOT_STARTED,
   createdAt: 0,
@@ -159,17 +160,14 @@ export const AddLiveLesson = () => {
     }
   };
 
-  const startMeeting = (less: ILiveLesson) => {
+  const startMeeting = (less: ILiveLesson, isRunning: boolean) => {
     setBusy(true);
     if (teacher && email) {
-      const lesId = teacher?.zoomRunningLessonId === less.id ? '' : less.id;
-      updateDoc(Entity.TEACHERS, teacher.id, { ...teacher, zoomRunningLessonId: lesId }).then((data) => {
-        showSnackbar(`${less.topic} ${lesId ? 'Started' : 'Stopped'}`);
-        getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
+      updateDoc(Entity.LESSONS_LIVE, less.id, { isRunning }).then((data) => {
+        showSnackbar(`${less.topic} ${isRunning ? 'Started' : 'Stopped'}`);
+        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+          { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
-        // if (lesId) {
-        //   history.push(`/liveStat/${lesId}`);
-        // }
       });
     }
   };
@@ -190,7 +188,7 @@ export const AddLiveLesson = () => {
   };
 
   const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => b.dateTime
-   - a.dateTime).map((liveLesson) => (
+   - a.dateTime).sort((a, b) => (a.isRunning ? -1 : 1)).map((liveLesson) => (
      <div
        key={liveLesson.id}
      >
@@ -199,22 +197,22 @@ export const AddLiveLesson = () => {
          onClick={() => { setEditMode(true); editLesson(liveLesson); }}
        >
 
-         {teacher?.zoomRunningLessonId === liveLesson.id ? (
+         { liveLesson.isRunning ? (
            <StopIcon onClick={(e) => {
-             startMeeting(liveLesson); e.stopPropagation();
+             startMeeting(liveLesson, false); e.stopPropagation();
            }}
            />
-          ) : (
-            <PlayCircleOutlineIcon
-              className={classes.play}
-              onClick={(e) => {
-                startMeeting(liveLesson); e.stopPropagation();
-              }}
-            />
-          )}
+         ) : (
+           <PlayCircleOutlineIcon
+             className={classes.play}
+             onClick={(e) => {
+               startMeeting(liveLesson, true); e.stopPropagation();
+             }}
+           />
+         )}
 
          <div
-           className={teacher?.zoomRunningLessonId === liveLesson.id ? classes.running : ''}
+           className={liveLesson.isRunning ? classes.running : ''}
            style={{ fontSize: '11px', width: '100%' }}
          >
            {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
@@ -223,9 +221,10 @@ export const AddLiveLesson = () => {
            copyLessonURL(liveLesson.id); e.stopPropagation();
          }}
          />
-         {teacher?.zoomRunningLessonId === liveLesson.id && (
+         {liveLesson.isRunning && (
          <>
            <Button
+             style={{ fontSize: '10px' }}
              variant="contained"
              color="secondary"
              onClick={(e) => {
@@ -239,7 +238,7 @@ export const AddLiveLesson = () => {
 
            </Button>
          </>
-        )}
+         )}
        </ListItem>
        <Divider />
      </div>

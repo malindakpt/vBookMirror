@@ -7,10 +7,10 @@ export enum LiveMeetingStatus {
   CANCELLED,
 }
 
-export enum PaperType {
-  MCQ,
-  WRITTEN,
-}
+// export enum PaperType {
+//   MCQ,
+//   WRITTEN,
+// }
 
 export enum LessonType {
   LIVE, VIDEO, PAPER
@@ -50,4 +50,5 @@ export interface ILiveLesson extends ILesson {
   dateTime: number;
   status: LiveMeetingStatus;
   videoUrl?: string;
+  isRunning: boolean;
 }

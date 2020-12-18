@@ -1,19 +1,22 @@
 import { IBase } from './IBase';
+import { LessonType } from './ILesson';
 
-export enum PaymentType {
-    LIVE_LESSON,
-    VIDEO_LESSON,
-    PAPER_LESSON,
-    TEACHER_SALARY
+export enum PaymentGateway { // Used by BE
+    MANUAL,
+    PAY_HERE,
+    GEINE
 }
 export interface IPayment extends IBase {
     date: number;
     amount: number;
+    amountPure?: number; // we can get actual price from this for reports
     lessonId: string;
-    paymentType: PaymentType;
+    paymentType: LessonType;
     paidFor: string; // for calculating teacher salary
     paymentRef: string;
     paymentObject: any;
+
+    gateway: PaymentGateway;
 
     ownerEmail: string;
     ownerName: string;
