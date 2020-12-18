@@ -1,5 +1,5 @@
-import { Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import Config from '../../../data/Config';
 import { payable } from '../../../helper/util';
 import { PaymentOptionProps } from '../paymentOptions/PaymentOptions';
 import classes from './GeniePG.module.scss';
@@ -134,7 +134,7 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
             type="hidden"
             id="successUrl"
             name="successUrl"
-            value="https://akshara.lk/ok"
+            value={Config.genieNotifyUrl}
           />
           <input
             readOnly
