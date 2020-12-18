@@ -1,5 +1,6 @@
 import { Button } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../../App';
 import Config from '../../../data/Config';
 import {
   Entity, getDocsWithProps, sendHttp,
@@ -9,6 +10,7 @@ import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
 import { PaymentStatus } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
 
 export const PaymentRequests = () => {
+  const { email } = useContext(AppContext);
   const [pending, setPending] = useState<IPayment[]>([]);
   const [onUpdate, forceUpdate] = useForcedUpdate();
   const [busy, setBusy] = useState(false);
@@ -16,7 +18,9 @@ export const PaymentRequests = () => {
   useEffect(() => {
     getDocsWithProps<IPayment[]>(
       Entity.PAYMENTS_STUDENTS,
-      { status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true },
+      {
+        status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true, paidFor: email,
+      },
     ).then((data) => data && setPending(data));
   }, [onUpdate]);
 
