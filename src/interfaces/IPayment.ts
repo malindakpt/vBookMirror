@@ -14,7 +14,7 @@ export interface IPayment extends IBase {
     paymentType: LessonType;
     paidFor: string; // for calculating teacher salary
     paymentRef: string;
-    paymentObject: any;
+    paymentObject: any; // payment response come from PG as it is
 
     gateway: PaymentGateway;
 

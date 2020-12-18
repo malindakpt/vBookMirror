@@ -1,13 +1,13 @@
 import { Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { payable } from '../../../helper/util';
+import { PaymentOptionProps } from '../paymentOptions/PaymentOptions';
 import classes from './GeniePG.module.scss';
 
-interface Props {
-  redirectUrl: string;
-}
-export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
-  const { email } = useParams<any>();
+export const GeniePG: React.FC<PaymentOptionProps> = ({
+  email, lesson, teacher, onSuccess,
+}) => {
+  // const { email } = useParams<any>();
 
   const [hash, setHash] = useState('');
 
@@ -40,28 +40,21 @@ export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
     return date;
   };
 
-  useEffect(() => {
-    getDate();
-  }, []);
-
-  const payGeine = () => {
-    window.location.href = redirectUrl;
-  };
   const [options, setOptions] = useState({
     merchantPgIdentifier: 'PG00008532',
-    chargeTotal: '10.00',
+    chargeTotal: payable(teacher.commissionVideo, lesson.price),
     currency: 'LKR',
-    orderId: '1234',
-    invoiceNumber: 'INV000132',
+    orderId: lesson.id,
+    invoiceNumber: lesson.id,
     storeName: 'MCO0002398',
     txnToken: '',
     transactionDateTime: getDate(),
     sharedScret: '7b41da3d80654cfcb8bd7c9102080c75',
+    otherInfo: `${email}#${lesson.price}#${lesson.type}#${lesson.ownerEmail}#`,
   });
 
   // MCO0002398LKR7b41da3d80654cfcb8bd7c9102080c752019-10-08 3:44:0910.00INV000132
-  const handlePaymentSuccess = async () => {
-    // window.location.href = redirectUrl;
+  const createPaymentMeta = async () => {
     // eslint-disable-next-line max-len
     const token = `${options.storeName}${options.currency}${options.sharedScret}${options.transactionDateTime}${options.chargeTotal}${options.invoiceNumber}`;
     const sh = await sha256(token);
@@ -80,15 +73,13 @@ export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
     });
   };
 
+  useEffect(() => {
+    createPaymentMeta();
+  }, []);
+
   return (
     <div>
-      <div className={classes.header}>
-        Payment Gateway
-        {' '}
-        {email}
-      </div>
       <div>
-        <Button onClick={payGeine}>Pay with Geine</Button>
         <form
           id="ext-merchant-frm"
           action="https://apps.genied.dialog.lk/merchant"
@@ -103,10 +94,10 @@ export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
             name="merchantPgIdentifier"
             value={options.merchantPgIdentifier}
           />
-          Total Price
+
           <input
             readOnly
-            type="text"
+            type="hidden"
             id="chargeTotal"
             name="chargeTotal"
             value={options.chargeTotal}
@@ -173,7 +164,7 @@ export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
           />
           <input
             readOnly
-            // type="hidden"
+            type="hidden"
             id="transactionDateTime"
             name="transactionDateTime"
             value={options.transactionDateTime}
@@ -186,10 +177,9 @@ export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
           />
           <input
             readOnly
-            // type="hidden"
+            type="hidden"
             id="txnToken"
             name="txnToken"
-            // value="313607e9644f2472fca8f354b1207c4721d05ba64760fe466edf4df0b50bae6f"
             value={options.txnToken}
           />
           <input
@@ -202,7 +192,7 @@ export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
             type="hidden"
             id="otherInfo"
             name="otherInfo"
-            value=""
+            value={options.otherInfo}
           />
           <input
             type="hidden"
@@ -246,10 +236,6 @@ export const GeniePG: React.FC<Props> = ({ redirectUrl }) => {
           />
         </form>
       </div>
-      <div>
-        PayHere
-      </div>
-      <Button onClick={handlePaymentSuccess}>Before Submit</Button>
     </div>
   );
 };

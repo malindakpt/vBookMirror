@@ -6,6 +6,7 @@ import { AppContext } from '../../../App';
 import { promptPayment, Util } from '../../../helper/util';
 import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
+import { GeniePG } from '../GeniePG/GeniePG';
 import classes from './PaymentOptions.module.scss';
 import { RequestPaymentValidation } from './requestPayment/RequestPaymentValidation';
 
@@ -100,6 +101,13 @@ export const PaymentOptions: React.FC<PaymentOptionProps> = (props) => {
                 >
                   Pay with Genie
                 </Button>
+                <GeniePG
+                  email={email}
+                  lesson={lesson}
+                  paidFor={teacher.ownerEmail}
+                  teacher={teacher}
+                  onSuccess={onSuccess}
+                />
               </div>
               <br />
               <div style={{ display: 'grid' }}>
