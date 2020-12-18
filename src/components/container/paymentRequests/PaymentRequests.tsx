@@ -26,6 +26,13 @@ export const PaymentRequests = () => {
     });
   };
 
+  const rejectPayment = (paymentId: string) => {
+    sendHttp(Config.validatePaymentUrl,
+      { id: paymentId, disabled: false, status: PaymentStatus.VALIDATED }).then(() => {
+      forceUpdate();
+    });
+  };
+
   return (
     <div style={{ overflow: 'auto' }}>
       <table className="w100">
@@ -37,7 +44,24 @@ export const PaymentRequests = () => {
               <td>{payment.paymentRef}</td>
               <td>{`${payment.paymentObject}`}</td>
               <td>{payment.amount}</td>
-              <td><Button onClick={() => approvePayment(payment.id)}>Approve </Button></td>
+              <td>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => approvePayment(payment.id)}
+                >
+                  Approve
+                </Button>
+              </td>
+              <td>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => rejectPayment(payment.id)}
+                >
+                  Reject
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>

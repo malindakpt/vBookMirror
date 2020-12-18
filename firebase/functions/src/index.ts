@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 import { privateKey } from './config';
-import { Entity, updateDoc } from './util';
+import { deleteDoc, Entity, updateDoc } from './util';
 
 const cors = require('cors');
 
@@ -56,16 +56,29 @@ app.post('/notify/1', (req: any, res: any) => {
 
 app.post('/validatePayment', (req: any, res: any) => {
   const { body } = req;
+  const { disabled, id } = body;
   try {
-    updateDoc(db, Entity.PAYMENTS_STUDENTS, body.id, { disabled: false, status: 'VALIDATED' }).then(() => {
-      res.send({
-        res: { status: 'ok' },
+    if (disabled) {
+      deleteDoc(db, Entity.PAYMENTS_STUDENTS, id).then(() => {
+        res.send({
+          res: { status: 'ok' },
+        });
+      }).catch(() => {
+        res.send({
+          res: { status: 'error' },
+        });
       });
-    }).catch(() => {
-      res.send({
-        res: { status: 'error' },
+    } else {
+      updateDoc(db, Entity.PAYMENTS_STUDENTS, id, { disabled, status: 'VALIDATED' }).then(() => {
+        res.send({
+          res: { status: 'ok' },
+        });
+      }).catch(() => {
+        res.send({
+          res: { status: 'error' },
+        });
       });
-    });
+    }
   } catch (e) {
     console.log('error validatePayment catch');
     res.send({

@@ -60,16 +60,39 @@ export const getDocsWithProps = <T>(
       });
   });
 
-export const updateDoc = (db: FirebaseFirestore.Firestore,
-  entityName: Entity, id: string, obj: any) => new Promise((resolve, reject) => {
+export const updateDoc = (
+  db: FirebaseFirestore.Firestore,
+  entityName: Entity,
+  id: string,
+  obj: any,
+) => new Promise((resolve, reject) => {
   const saveObj = { ...obj, updatedAt: new Date().getTime() };
   // @ts-ignore
   delete saveObj.id; // Allow id auto generation and remove exsting id params
 
-  db.collection(entityName).doc(id).update(saveObj).then((data: any) => {
-    // clearStore(entityName);
-    resolve(true);
-  })
+  db.collection(entityName)
+    .doc(id)
+    .update(saveObj)
+    .then((data: any) => {
+      resolve(true);
+    })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+});
+
+export const deleteDoc = (
+  db: FirebaseFirestore.Firestore,
+  entityName: Entity,
+  id: string,
+) => new Promise<boolean>((resolve, reject) => {
+  db.collection(entityName)
+    .doc(id)
+    .delete()
+    .then(() => {
+      resolve(true);
+    })
     .catch((err) => {
       console.error(err);
       reject(err);
