@@ -44,7 +44,7 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
     merchantPgIdentifier: 'PG00008532',
     chargeTotal: payable(teacher.commissionVideo, lesson.price),
     currency: 'LKR',
-    orderId: lesson.id,
+    orderId: 4, // Create random orderId
     invoiceNumber: lesson.id,
     storeName: 'MCO0002398',
     txnToken: '',
@@ -58,15 +58,16 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
     // eslint-disable-next-line max-len
     const token = `${options.storeName}${options.currency}${options.sharedScret}${options.transactionDateTime}${options.chargeTotal}${options.invoiceNumber}`;
     const sh = await sha256(token);
-    console.log(token);
-    console.log(sh);
+
+    const orderId = new Date().getTime();
+    console.log(orderId);
     setOptions((prev) => {
       const uniqueID = new Date().getTime();
       const clone = { ...prev };
 
       clone.txnToken = sh;
       clone.invoiceNumber = `INMK${uniqueID}`;
-      clone.orderId = `MKORDER${uniqueID}`;
+      clone.orderId = orderId;
 
       console.log(clone);
       return clone;
