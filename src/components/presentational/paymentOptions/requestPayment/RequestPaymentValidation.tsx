@@ -18,6 +18,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
     lesson, email, onSuccess, teacher,
   } = options;
   const [paymentRef, setPaymentRef] = useState<string|null>('');
+  const [fetchedPaymentRef, setfetchedPaymentRef] = useState<string|null>('');
   const [busy, setBusy] = useState(false);
   const [resultMsg, setResultMsg] = useState('');
   const { showSnackbar } = useContext(AppContext);
@@ -28,6 +29,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
       if (data.length > 0) {
         setResultMsg(REQ_SENT);
         setPaymentRef(data[0].paymentRef);
+        setfetchedPaymentRef(data[0].paymentRef);
       }
     });
   }, [lesson]);
@@ -83,7 +85,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
       <br />
       <span style={{ color: 'red' }}>{resultMsg}</span>
       <br />
-      {!paymentRef && (
+      {!fetchedPaymentRef && (
       <Button
         variant="contained"
         color="secondary"
