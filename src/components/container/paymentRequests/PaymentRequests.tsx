@@ -22,7 +22,7 @@ export const PaymentRequests = () => {
         status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true, paidFor: email,
       },
     ).then((data) => data && setPending(data));
-  }, [onUpdate]);
+  }, [onUpdate, email]);
 
   const approvePayment = (paymentId: string, disabled: boolean) => {
     setBusy(true);
