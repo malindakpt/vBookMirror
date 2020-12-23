@@ -98,7 +98,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
       )}
       <WhatsApp
         teacher={teacher}
-        msgPrefix={`email:${paymentRef}` ?? ''}
+        msgPrefix={`${email}:${paymentRef}` ?? ''}
       />
 
     </div>
