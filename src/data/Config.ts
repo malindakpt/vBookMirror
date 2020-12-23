@@ -63,4 +63,4 @@ export const OBS_HELP_VIDEO = 'https://firebasestorage.googleapis.com/v0/b/aksha
 export const AKSHARA_HELP_VIDEO = 'https://drive.google.com/file/d/1jWVH7JfI2mFp4QX72ADwveq2NVHusW4t/view?usp=sharing';
 export const SAMPLE_DESKTOP_COVER = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2FDesktopCover.png?alt=media&token=64a2527b-55e2-4ad7-9d65-5ee4fa1f5d89';
 export const SAMPLE_MOBILE_COVER = 'https://firebasestorage.googleapis.com/v0/b/akshara-8630e.appspot.com/o/admin%2FMobileCover.png?alt=media&token=d7338c71-c45f-4d9d-8296-6e0f01fe75bd';
-export const isTester = (email: string | undefined | null) => email === 'malindakpt@gmail.com' || email === 'rasikadri@gmail.com' || email === 'thusitha884@gmail.com';
+export const isTester = (email: string | undefined | null) => email === 'malindakpt@gmail.com' || email === 'rasikadri@gmail.com' || email === 'thusitha884@gmail.com' || email === 'contact.akshara.lk@gmail.com';

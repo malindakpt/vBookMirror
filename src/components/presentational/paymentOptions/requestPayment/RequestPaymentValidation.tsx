@@ -81,8 +81,9 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
         label="ඔබගේ අංකය/Ref. Code"
         value={paymentRef}
         onChange={(e) => setPaymentRef(e.target.value)}
+        variant="outlined"
+        style={{ margin: '5px' }}
       />
-      <br />
       <span style={{ color: 'red' }}>{resultMsg}</span>
       <br />
       {!fetchedPaymentRef && (
