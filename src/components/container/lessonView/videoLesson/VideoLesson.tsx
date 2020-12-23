@@ -4,7 +4,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import React, {
   useContext, useEffect, useRef, useState,
 } from 'react';
-import ReactWhatsapp from 'react-whatsapp';
 import classes from './VideoLesson.module.scss';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import {
@@ -174,12 +173,7 @@ export const VideoLesson: React.FC = () => {
               {teacher.phoneChat}
             </a>
           </div>
-          <ReactWhatsapp
-            number={teacher.phoneChat}
-            message={`[${lesson?.topic}]:`}
-          >
-            <div>WhatsApp Chat</div>
-          </ReactWhatsapp>
+
         </div>
         )}
 
