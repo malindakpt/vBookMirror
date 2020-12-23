@@ -7,8 +7,6 @@ import classes from './GeniePG.module.scss';
 export const GeniePG: React.FC<PaymentOptionProps> = ({
   email, lesson, teacher, onSuccess,
 }) => {
-  // const { email } = useParams<any>();
-
   const [hash, setHash] = useState('');
 
   const sha256 = async (message: string) => {
@@ -55,18 +53,19 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
 
   // MCO0002398LKR7b41da3d80654cfcb8bd7c9102080c752019-10-08 3:44:0910.00INV000132
   const createPaymentMeta = async () => {
+    console.log('lesson', lesson.id);
     // eslint-disable-next-line max-len
-    const token = `${options.storeName}${options.currency}${options.sharedScret}${options.transactionDateTime}${options.chargeTotal}${options.invoiceNumber}`;
+    const token = `${options.storeName}${options.currency}${options.sharedScret}${options.transactionDateTime}${options.chargeTotal.toFixed(2)}${options.invoiceNumber}`;
     const sh = await sha256(token);
 
     const orderId = new Date().getTime();
-    console.log(orderId);
+    console.log(token);
     setOptions((prev) => {
-      const uniqueID = new Date().getTime();
+      // const uniqueID = new Date().getTime();
       const clone = { ...prev };
 
       clone.txnToken = sh;
-      clone.invoiceNumber = `INMK${uniqueID}`;
+      clone.invoiceNumber = `INMK${orderId}`;
       clone.orderId = orderId;
 
       console.log(clone);
