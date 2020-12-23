@@ -91,14 +91,14 @@ export const PaperLesson = () => {
           if (email) {
             getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
-              const ready = readyToGo(data, paper);
+              const status = readyToGo(data, paper);
 
               // data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
               //   < Config.allowedWatchCount));
 
-              if (ready.payment) {
+              if (status.payment) {
                 setAlert(true);
-                setPayment(ready.payment);
+                setPayment(status.payment);
                 setTempLesson(paper);
               } else if (amIOwnerOfLesson(paper)) {
                 setWarn('Watch as owner');

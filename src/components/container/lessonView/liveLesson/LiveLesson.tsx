@@ -12,7 +12,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
-import { getHashFromString, Util } from '../../../../helper/util';
+import { getHashFromString, readyToGo, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
@@ -76,7 +76,9 @@ export const LiveLesson: React.FC = () => {
             getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
             // TODO:  Check refundable lessons here
-              if (data && data.length > 0) {
+              const status = readyToGo(data, lesson);
+
+              if (status.ok) {
                 setLesson(lesson);
                 setFreeOrPurchased(true);
               } else {

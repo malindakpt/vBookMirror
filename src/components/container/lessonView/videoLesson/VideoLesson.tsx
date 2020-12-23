@@ -15,7 +15,7 @@ import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
-import { Util } from '../../../../helper/util';
+import { readyToGo, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { Player } from '../../../presentational/player/Player';
@@ -94,12 +94,13 @@ export const VideoLesson: React.FC = () => {
                 lessonId,
                 ownerEmail: email,
               }).then((data) => {
-              const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
-                  < Config.allowedWatchCount));
+              // const validPayment = data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
+              //     < Config.allowedWatchCount));
+              const status = readyToGo(data, lesson);
 
-              if (validPayment) {
+              if (status.ok) {
                 setAlert(true);
-                setPayment(validPayment);
+                setPayment(status.payment);
                 setTempLesson(lesson);
               } else if (amIOwnerOfLesson(lesson)) {
                 setWarn('Watch as owner');
