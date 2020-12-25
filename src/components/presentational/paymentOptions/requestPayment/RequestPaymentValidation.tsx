@@ -37,7 +37,7 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
         setfetchedPaymentRef(data[0].paymentRef);
       }
     });
-  }, [lesson]);
+  }, [lesson, email]);
 
   const requestValidation = async () => {
     if (paymentRef === '') {
