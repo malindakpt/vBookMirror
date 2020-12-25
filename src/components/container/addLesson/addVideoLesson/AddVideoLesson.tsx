@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useContext,
+  useState, useEffect, useContext, useCallback,
 } from 'react';
 import {
   TextField, Button, Select, MenuItem, InputLabel, FormControl,
@@ -40,79 +40,63 @@ export const AddVideoLesson = () => {
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
-  const [allLessons, setAllLessons] = useState<IVideoLesson[]>([]);
   const [courseId, setCourseId] = useState<string>('');
   const [teacher, setTeacher] = useState<ITeacher>();
 
   const [courseLessons, setCourseLessons] = useState<IVideoLesson[]>([]);
 
-  // Component state
-  const [editingLesson, setEditingLesson] = useState<IVideoLesson>();
+  const getNewLesson = (courseId: string): IVideoLesson => ({
+    topic: '',
+    description: '',
 
-  const [topic, setTopic] = useState<string>('');
-  const [attachments, setAttachments] = useState<string[]>([]);
-  const [description, setDescription] = useState<string>('');
-  const [keywords, setKeywords] = useState<string>('');
-  const [videoURL, setVideoURL] = useState<string>('');
-  const [videoUrls, setVideoUrls] = useState<VideoUrlsObj>({
-    activeVideo: VideoType.None,
-    googleDrive: '',
-    mediaFire: '',
+    duration: 0,
+    keywords: '',
+    attachments: [],
+    courseId,
+    price: 0,
+    ownerEmail: email ?? '',
+
+    type: LessonType.VIDEO,
+    videoUrls: {
+      activeVideo: VideoType.None,
+      googleDrive: '',
+      mediaFire: '',
+    },
+
+    createdAt: 0,
+    id: '',
+    updatedAt: 0,
+    orderIndex: 0,
   });
-  // const [videoId, setVideoId] = useState<string>('');
-  const [price, setPrice] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
 
-  // Replicate changes of here for all #LessonModify
-  const addNew = () => {
-    setCourseOrderChaged(false);
-    setEditMode(false);
-    setTopic('');
-    setKeywords('');
-    setDescription('');
-    setAttachments([]);
-    setVideoURL('');
-    setPrice(0);
-    setDuration(0);
+  const [selectedLesson, setSelectedLesson] = useState<IVideoLesson>(getNewLesson(courseId));
 
-    // resetFileInput();
-    // No need to reset courseId
+  const handleChange = (obj: Record<string, any>) => {
+    setSelectedLesson((prev) => {
+      const clone = { ...prev, ...obj };
+      return clone;
+    });
   };
 
-  const onCourseChange = (_courses: ICourse[], _courseId: string, _allLessons: IVideoLesson[]) => {
-    if (!_courseId || _courseId === '') { return; }
+  // Replicate changes of here for all #LessonModify
+  const addNew = (courseId: string) => {
+    setSelectedLesson(getNewLesson(courseId));
+  };
 
+  const onCourseChange = (_courseId: string) => {
     setCourseId(_courseId);
-    const selectedCourse = _courses.filter((c) => c.id === _courseId)[0];
 
-    const orderedLessons: IVideoLesson[] = [];
-    for (const lessonId of selectedCourse.videoLessonOrder) {
-      const less = _allLessons.find((l) => l.id === lessonId);
-      if (less) {
-        orderedLessons.push(less);
-      }
-    }
-
-    setCourseLessons(orderedLessons);
-    addNew();
+    getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO,
+      { ownerEmail: email, courseId: _courseId }).then((lessons) => {
+      setCourseLessons(lessons);
+      addNew(_courseId);
+    });
   };
 
   useEffect(() => {
-    Promise.all([
-      getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email }),
-      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
-    ]).then((values) => {
-      const [courses, lessons] = values;
-
-      // state changes
-      setCourses(courses);
-      setAllLessons(lessons);
-
-      onCourseChange(courses, courseId, lessons);
-    });
-
     if (!email) return;
     // fetch unrelated data
+    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email }).then((data) => setCourses(data));
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
     getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
@@ -122,15 +106,15 @@ export const AddVideoLesson = () => {
   const disabled = !courseId || busy;
 
   const validateLesson = (): boolean => {
-    if (!topic || topic.length < 5) {
+    if (!selectedLesson.topic || selectedLesson.topic.length < 5) {
       showSnackbar('Topic should have minimum length of 5');
       return false;
     }
-    if (!description || description.length < 5) {
+    if (!selectedLesson.description || selectedLesson.description.length < 5) {
       showSnackbar('Description should have minimum length of 5');
       return false;
     }
-    if (price > 0 && price < 50) {
+    if (selectedLesson.price > 0 && selectedLesson.price < 50) {
       showSnackbar('Price can be 0 or more than 50');
       return false;
     }
@@ -148,88 +132,20 @@ export const AddVideoLesson = () => {
     }
 
     if (editMode) {
-      if (!editingLesson) return;
-      // Replicate changes of here for all #LessonModify
-      const less: IVideoLesson = {
-        ...editingLesson,
-        ...{
-          topic,
-          // watchCount, disable by business logic
-          description,
-          attachments,
-          keywords,
-          videoURL,
-          // videoId,
-          duration,
-          // No need to edit courseId
-          price,
-        },
-      };
-      updateDoc(Entity.LESSONS_VIDEO, editingLesson.id, less).then(() => {
-        showSnackbar(`${editingLesson.topic} modified successfully`);
-        addNew();
+      updateDoc(Entity.LESSONS_VIDEO, selectedLesson.id, selectedLesson).then(() => {
+        showSnackbar(`${selectedLesson.topic} modified successfully`);
+        addNew(courseId);
         fetchData();
         setBusy(false);
       });
-    // AddMode
     } else {
-      const selectedCourse = courses.filter((c) => c.id === courseId)[0];
-      // When you make a change here, replicate that on edit, copyLesson mode also
-      // Replicate changes of here for all #LessonModify
-      const lesson: IVideoLesson = {
-        id: '',
-        topic,
-        description,
-        attachments,
-        keywords: `${selectedCourse.examYear}`,
-        videoURL,
-        duration,
-        price,
-        courseId,
-        ownerEmail: email,
-        createdAt: 0,
-        type: LessonType.VIDEO,
-
-        videoUrls: {
-          activeVideo: VideoType.None,
-          googleDrive: '',
-          mediaFire: '',
-        },
-
-      };
-
-      // Add new lesson
-      lesson.id = await addDoc(Entity.LESSONS_VIDEO, lesson);
-      const { videoLessonOrder } = courses.filter((c) => c.id === courseId)[0];
-
-      // Update lesson order of course
-      updateDoc(Entity.COURSES, courseId, { videoLessonOrder: [...videoLessonOrder, lesson.id] }).then(() => {
+      addDoc(Entity.LESSONS_VIDEO, selectedLesson).then(() => {
         showSnackbar('Lesson Added');
-        addNew();
+        addNew(courseId);
         fetchData();
         setBusy(false);
       });
     }
-  };
-
-  // copyLessonMode
-  // Replicate changes of here for all #LessonModify
-  const copyLesson = (les: IVideoLesson) => {
-    setEditingLesson(les);
-    setTopic(les.topic);
-    setKeywords(les.keywords);
-    setDescription(les.description);
-    setAttachments(les.attachments);
-    setVideoURL(les.videoURL);
-    // setVideoId(les.videoId);
-    setPrice(les.price);
-    setDuration(les.duration);
-
-    const videoNode = document.querySelector('video');
-    if (videoNode) {
-      videoNode.src = les.videoURL;
-    }
-    // When change here, replicate it in addMode and editModes
   };
 
   const changeOrder = (index: number, isUp: boolean) => {
@@ -263,10 +179,11 @@ export const AddVideoLesson = () => {
       });
   };
 
-  const onVideoChange = (obj: VideoUrlsObj) => {
-    console.log('VideoUrlsObj', obj);
-    setVideoUrls(obj);
-  };
+  // const onVideoChange = (obj: VideoUrlsObj) => {
+  //   console.log('VideoUrlsObj', obj);
+  //   // setVideoUrls(obj);
+  //   handleChange(o);
+  // };
 
   if (!email) return <></>;
 
@@ -321,7 +238,7 @@ export const AddVideoLesson = () => {
             value={editMode}
             onChange={(e: any) => {
               if (e.target.value === 'false') {
-                addNew();
+                addNew(courseId);
               } else {
                 showSnackbar('Select a lesson from the lessons list');
               }
@@ -352,7 +269,7 @@ export const AddVideoLesson = () => {
               labelId="label1"
               id="id1"
               value={courseId}
-              onChange={(e) => onCourseChange(courses, e.target.value as string, allLessons)}
+              onChange={(e) => onCourseChange(e.target.value as string)}
             >
               {courses.map((course) => {
                 const subject = getObject(subjects, course.subjectId);
@@ -376,33 +293,25 @@ export const AddVideoLesson = () => {
               id="topic"
               label="Topic"
               inputProps={{ maxLength: 40 }}
-              value={topic}
+              value={selectedLesson.topic}
               disabled={disabled}
-              onChange={(e) => setTopic(e.target.value)}
+              onChange={(e) => handleChange({ topic: e.target.value })}
             />
 
             <TextField
               className={classes.input}
               id="filled-basic5"
               label="Description"
-              value={description}
+              value={selectedLesson.description}
               inputProps={{ maxLength: 120 }}
               disabled={disabled}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-
-            <TextField
-              className={classes.input}
-              id="filled-basic5"
-              label="Video URL(Google Drive Embed)"
-              value={videoURL}
-              disabled={disabled}
-              onChange={(e) => setVideoURL(e.target.value)}
+              onChange={(e) => handleChange({ description: e.target.value })}
             />
 
             <AddVideo
-              videoUrls={videoUrls}
-              onChange={onVideoChange}
+              videoUrls={selectedLesson.videoUrls}
+              // onChange={onVideoChange}
+              onChange={(e) => handleChange({ videoUrls: e })}
               disabled={busy}
             />
 
@@ -414,20 +323,22 @@ export const AddVideoLesson = () => {
               rows={3}
               variant="outlined"
               disabled={disabled}
-              value={attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setAttachments(e.target.value.split('\n'));
-              }}
+              value={selectedLesson.attachments.reduce((a, b) => (a !== '' ? `${a}\n${b}` : `${b}`), '')}
+              // onChange={(e) => {
+              //   console.log(e.target.value);
+              //   setAttachments(e.target.value.split('\n'));
+              // }}
+              onChange={(e) => handleChange({ attachments: e.target.value.split('\n') })}
             />
             <TextField
               className={classes.input}
               id="price"
               type="number"
               label="Price"
-              value={price}
+              value={selectedLesson.price}
               disabled={disabled || Config.paymentDisabled}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              // onChange={(e) => setPrice(Number(e.target.value))}
+              onChange={(e) => handleChange({ price: Number(e.target.value) })}
             />
             {teacher && (
             <div>
@@ -459,13 +370,13 @@ export const AddVideoLesson = () => {
             component="nav"
             aria-label="main mailbox folders"
           >
-            {videoURL && editMode && (
+            {/* {videoURL && editMode && (
             <iframe
               className={classes.player}
               title="video"
               src={videoURL}
             />
-            )}
+            )} */}
             {courseOrderChanged && (
             <ListItem
               button
@@ -487,7 +398,7 @@ export const AddVideoLesson = () => {
                 >
                   <ListItem
                     button
-                    onClick={() => { setEditMode(true); copyLesson(lesson); }}
+                    onClick={() => { setEditMode(true); setSelectedLesson(lesson); }}
                   >
                     <div
                       className="fc1"

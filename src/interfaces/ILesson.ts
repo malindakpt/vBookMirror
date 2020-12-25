@@ -26,6 +26,7 @@ export enum LessonType {
 export interface ILesson extends IBase {
   topic: string;
   description: string;
+  orderIndex: number;
 
   duration: number;
   keywords: string;
@@ -39,7 +40,6 @@ export interface ILesson extends IBase {
 }
 
 export interface IPaperLesson extends ILesson {
-  orderIndex: number;
   pdfURL: string;
   pdfId: string;
   possibleAnswers: string[];
@@ -48,7 +48,8 @@ export interface IPaperLesson extends ILesson {
 }
 
 export interface IVideoLesson extends ILesson {
-  videoURL: string;
+  // Remove this property
+  videoURL?: string;
 }
 
 export interface ILiveLesson extends ILesson {

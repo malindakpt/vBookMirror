@@ -54,6 +54,7 @@ const fresh: ILiveLesson = {
     googleDrive: '',
     mediaFire: '',
   },
+  orderIndex: 0,
 };
 export const AddLiveLesson = () => {
   const { showSnackbar, email } = useContext(AppContext);
