@@ -25,7 +25,12 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
 
   useEffect(() => {
     getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
-      { lessonId: lesson.id, status: PaymentStatus.NOT_VALIDATED }).then((data) => {
+      {
+        lessonId: lesson.id,
+        status: PaymentStatus.NOT_VALIDATED,
+        gateway: PaymentGateway.MANUAL,
+        ownerEmail: email,
+      }).then((data) => {
       if (data.length > 0) {
         setResultMsg(REQ_SENT);
         setPaymentRef(data[0].paymentRef);
