@@ -56,8 +56,8 @@ export const AddVideoLesson = () => {
   const [videoURL, setVideoURL] = useState<string>('');
   const [videoUrls, setVideoUrls] = useState<VideoUrlsObj>({
     activeVideo: VideoType.None,
-    [VideoType.GoogleDrive]: '',
-    [VideoType.MediaFire]: '',
+    googleDrive: '',
+    mediaFire: '',
   });
   // const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
@@ -192,8 +192,8 @@ export const AddVideoLesson = () => {
 
         videoUrls: {
           activeVideo: VideoType.None,
-          [VideoType.GoogleDrive]: '',
-          [VideoType.MediaFire]: '',
+          googleDrive: '',
+          mediaFire: '',
         },
 
       };

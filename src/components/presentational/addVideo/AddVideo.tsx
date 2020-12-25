@@ -58,9 +58,9 @@ export const AddVideo: React.FC<Props> = ({ disabled, videoUrls, onChange }) => 
           className={classes.input}
           id="1"
           label="Video URL(Drive Embed)"
-          value={videoUrls[VideoType.GoogleDrive]}
+          value={videoUrls.googleDrive}
           disabled={disabled}
-          onChange={(e) => onChangeValues({ [VideoType.GoogleDrive]: e.target.value })}
+          onChange={(e) => onChangeValues({ googleDrive: e.target.value })}
         />
         )}
 
@@ -70,9 +70,9 @@ export const AddVideo: React.FC<Props> = ({ disabled, videoUrls, onChange }) => 
           className={classes.input}
           id="2"
           label="Video URL(MediaFire Embed)"
-          value={videoUrls[VideoType.MediaFire]}
+          value={videoUrls.mediaFire}
           disabled={disabled}
-          onChange={(e) => onChangeValues({ [VideoType.MediaFire]: e.target.value })}
+          onChange={(e) => onChangeValues({ mediaFire: e.target.value })}
         />
         )}
     </div>

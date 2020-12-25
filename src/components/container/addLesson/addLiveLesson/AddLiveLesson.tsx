@@ -51,8 +51,8 @@ const fresh: ILiveLesson = {
   type: LessonType.LIVE,
   videoUrls: {
     activeVideo: VideoType.None,
-    [VideoType.GoogleDrive]: '',
-    [VideoType.MediaFire]: '',
+    googleDrive: '',
+    mediaFire: '',
   },
 };
 export const AddLiveLesson = () => {

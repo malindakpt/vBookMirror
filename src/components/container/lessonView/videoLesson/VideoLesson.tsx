@@ -20,6 +20,7 @@ import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { Player } from '../../../presentational/player/Player';
 import { Attachments } from '../../../presentational/attachments/Attachments';
+import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
@@ -160,6 +161,10 @@ export const VideoLesson: React.FC = () => {
       </div>
       {lesson?.videoURL && (
         <Player videoUrl={lesson.videoURL} />
+      )}
+
+      {lesson?.videoUrls && (
+      <VideoViewer lesson={lesson} />
       )}
       <div
         className={classes.lessonInfo}

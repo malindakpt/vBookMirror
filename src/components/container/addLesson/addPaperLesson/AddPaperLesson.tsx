@@ -48,8 +48,8 @@ export const AddPaperLesson = () => {
 
     videoUrls: {
       activeVideo: VideoType.None,
-      [VideoType.GoogleDrive]: '',
-      [VideoType.MediaFire]: '',
+      googleDrive: '',
+      mediaFire: '',
     },
   };
   const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
