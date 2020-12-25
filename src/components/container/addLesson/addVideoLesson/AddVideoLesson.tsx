@@ -198,6 +198,7 @@ export const AddVideoLesson = () => {
             onChange={(e: any) => {
               if (e.target.value === 'false') {
                 addNew(courseId);
+                setEditMode(false);
               } else {
                 showSnackbar('Select a lesson from the lessons list');
               }
