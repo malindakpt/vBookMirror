@@ -62,14 +62,8 @@ export const Course: React.FC = () => {
     ]).then((result) => {
       const [videoLessons, liveLessons, mcqPapers, course] = result;
 
-      const orderedVL: IVideoLesson[] = [];
-      course?.videoLessonOrder?.forEach((c) => {
-        const videoLessonObj = videoLessons?.find((vl) => vl.id === c);
-        videoLessonObj && orderedVL.push(videoLessonObj);
-      });
-      setVideoLessons(orderedVL);
+      videoLessons && setVideoLessons(videoLessons.sort((a, b) => a.orderIndex - b.orderIndex));
       setLiveLessons(liveLessons);
-      // course && setCourse(course);
       setMcqPapers(mcqPapers ?? []);
 
       course && getDocWithId<ITeacher>(Entity.TEACHERS, course.ownerEmail).then((teacher) => {

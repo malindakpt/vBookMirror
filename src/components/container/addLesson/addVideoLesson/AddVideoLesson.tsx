@@ -1,13 +1,11 @@
 import React, {
-  useState, useEffect, useContext, useCallback,
+  useState, useEffect, useContext,
 } from 'react';
 import {
   TextField, Button, Select, MenuItem, InputLabel, FormControl,
-  RadioGroup, FormControlLabel, Radio, List, ListItem, ListItemText, Divider,
+  RadioGroup, FormControlLabel, Radio,
 } from '@material-ui/core';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import SaveIcon from '@material-ui/icons/Save';
+
 import classes from './AddVideoLesson.module.scss';
 import {
   addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
@@ -15,7 +13,8 @@ import {
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import {
-  IVideoLesson, LessonType, VideoType, VideoUrlsObj,
+  ILesson,
+  IVideoLesson, LessonType, VideoType,
 } from '../../../../interfaces/ILesson';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
@@ -27,6 +26,7 @@ import Config, {
 } from '../../../../data/Config';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AddVideo } from '../../../presentational/addVideo/AddVideo';
+import { LessonList } from '../../../presentational/lessonList/LessonList';
 
 export const AddVideoLesson = () => {
   useBreadcrumb();
@@ -35,15 +35,12 @@ export const AddVideoLesson = () => {
   const { showSnackbar, email } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
 
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [courseId, setCourseId] = useState<string>('');
   const [teacher, setTeacher] = useState<ITeacher>();
-
-  const [courseLessons, setCourseLessons] = useState<IVideoLesson[]>([]);
 
   const getNewLesson = (courseId: string): IVideoLesson => ({
     topic: '',
@@ -85,17 +82,11 @@ export const AddVideoLesson = () => {
 
   const onCourseChange = (_courseId: string) => {
     setCourseId(_courseId);
-
-    getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO,
-      { ownerEmail: email, courseId: _courseId }).then((lessons) => {
-      setCourseLessons(lessons);
-      addNew(_courseId);
-    });
+    addNew(_courseId);
   };
 
   useEffect(() => {
     if (!email) return;
-    // fetch unrelated data
     getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email }).then((data) => setCourses(data));
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
@@ -148,42 +139,10 @@ export const AddVideoLesson = () => {
     }
   };
 
-  const changeOrder = (index: number, isUp: boolean) => {
-    const clone = [...courseLessons];
-    const nextIdx = isUp ? index - 1 : index + 1;
-    if (nextIdx < 0 || nextIdx >= courseLessons.length) {
-      return;
-    }
-    const item1 = { ...clone[index] };
-    const item2 = { ...clone[nextIdx] };
-
-    clone[index] = item2;
-    clone[nextIdx] = item1;
-
-    setCourseOrderChaged(true);
-    setCourseLessons(clone);
+  const handleLessonSelection = (lesson: ILesson) => {
+    setSelectedLesson(lesson);
+    setEditMode(true);
   };
-
-  const saveLessonsOrder = () => {
-    setCourseOrderChaged(false);
-    const courseLessonIds = courseLessons.map((less) => less.id);
-    updateDoc(Entity.COURSES, courseId, { videoLessonOrder: courseLessonIds })
-      .then(() => {
-        showSnackbar('Lessons order updated');
-        setCourses((prev) => {
-          const clone = [...prev];
-          const idx = clone.findIndex((c) => c.id === courseId);
-          clone[idx].videoLessonOrder = courseLessonIds;
-          return clone;
-        });
-      });
-  };
-
-  // const onVideoChange = (obj: VideoUrlsObj) => {
-  //   console.log('VideoUrlsObj', obj);
-  //   // setVideoUrls(obj);
-  //   handleChange(o);
-  // };
 
   if (!email) return <></>;
 
@@ -365,66 +324,11 @@ export const AddVideoLesson = () => {
           </div>
         </div>
 
-        <div>
-          <List
-            component="nav"
-            aria-label="main mailbox folders"
-          >
-            {/* {videoURL && editMode && (
-            <iframe
-              className={classes.player}
-              title="video"
-              src={videoURL}
-            />
-            )} */}
-            {courseOrderChanged && (
-            <ListItem
-              button
-              onClick={saveLessonsOrder}
-              className={classes.saveOrder}
-            >
-              <ListItemText
-                primary="Save order"
-              />
-              <SaveIcon />
-            </ListItem>
-            )}
-            {
-              courseLessons.map((lesson, index) => (
-                <div
-                // TODO: refresh on lesson add. do not local update
-                // c.id becomes undefined for newly added lesson since we refer that from local
-                  key={lesson.id}
-                >
-                  <ListItem
-                    button
-                    onClick={() => { setEditMode(true); setSelectedLesson(lesson); }}
-                  >
-                    <div
-                      className="fc1"
-                      style={{ fontSize: '11px', width: '100%' }}
-                    >
-                      {lesson.topic}
-                    </div>
-
-                    {index > 0 && (
-                    <ArrowUpwardIcon onClick={(e) => {
-                      changeOrder(index, true); e.stopPropagation();
-                    }}
-                    />
-                    )}
-                    {index < courseLessons.length - 1 && (
-                    <ArrowDownwardIcon
-                      onClick={(e) => { changeOrder(index, false); e.stopPropagation(); }}
-                    />
-                    )}
-                  </ListItem>
-                  <Divider />
-                </div>
-              ))
-            }
-          </List>
-        </div>
+        <LessonList
+          entity={Entity.LESSONS_VIDEO}
+          course={getObject<ICourse>(courses, courseId)}
+          onLessonSelect={handleLessonSelection}
+        />
       </form>
 
     </>
