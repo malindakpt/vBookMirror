@@ -7,10 +7,17 @@ export enum LiveMeetingStatus {
   CANCELLED,
 }
 
-// export enum PaperType {
-//   MCQ,
-//   WRITTEN,
-// }
+export enum VideoType {
+  None,
+  GoogleDrive,
+  MediaFire,
+}
+
+export interface VideoUrlsObj {
+  activeVideo: VideoType;
+  [VideoType.GoogleDrive]: string;
+  [VideoType.MediaFire]: string;
+}
 
 export enum LessonType {
   LIVE, VIDEO, PAPER
@@ -27,8 +34,8 @@ export interface ILesson extends IBase {
   price: number;
   ownerEmail: string;
 
-  // subCount: number;
-  type: LessonType
+  type: LessonType;
+  videoUrls: VideoUrlsObj;
 }
 
 export interface IPaperLesson extends ILesson {
@@ -42,7 +49,6 @@ export interface IPaperLesson extends ILesson {
 
 export interface IVideoLesson extends ILesson {
   videoURL: string;
-  // videoId: string;
 }
 
 export interface ILiveLesson extends ILesson {

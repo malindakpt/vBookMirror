@@ -14,7 +14,9 @@ import {
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
-import { IVideoLesson, LessonType } from '../../../../interfaces/ILesson';
+import {
+  IVideoLesson, LessonType, VideoType, VideoUrlsObj,
+} from '../../../../interfaces/ILesson';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
@@ -24,6 +26,7 @@ import Config, {
   AKSHARA_HELP_VIDEO, OBS_DOWNLOAD, OBS_HELP_VIDEO,
 } from '../../../../data/Config';
 import { ITeacher } from '../../../../interfaces/ITeacher';
+import { AddVideo } from '../../../presentational/addVideo/AddVideo';
 
 export const AddVideoLesson = () => {
   useBreadcrumb();
@@ -51,6 +54,11 @@ export const AddVideoLesson = () => {
   const [description, setDescription] = useState<string>('');
   const [keywords, setKeywords] = useState<string>('');
   const [videoURL, setVideoURL] = useState<string>('');
+  const [videoUrls, setVideoUrls] = useState<VideoUrlsObj>({
+    activeVideo: VideoType.None,
+    [VideoType.GoogleDrive]: '',
+    [VideoType.MediaFire]: '',
+  });
   // const [videoId, setVideoId] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
@@ -176,13 +184,18 @@ export const AddVideoLesson = () => {
         keywords: `${selectedCourse.examYear}`,
         videoURL,
         duration,
-        // videoId,
         price,
         courseId,
         ownerEmail: email,
-        // subCount: 0,
         createdAt: 0,
         type: LessonType.VIDEO,
+
+        videoUrls: {
+          activeVideo: VideoType.None,
+          [VideoType.GoogleDrive]: '',
+          [VideoType.MediaFire]: '',
+        },
+
       };
 
       // Add new lesson
@@ -250,6 +263,11 @@ export const AddVideoLesson = () => {
       });
   };
 
+  const onVideoChange = (obj: VideoUrlsObj) => {
+    console.log('VideoUrlsObj', obj);
+    setVideoUrls(obj);
+  };
+
   if (!email) return <></>;
 
   return (
@@ -287,14 +305,6 @@ export const AddVideoLesson = () => {
         >
           How to reduce size of a video
         </a>
-
-        {/* <a
-          rel="noopener noreferrer"
-          target="_blank"
-          href={OBS_HELP_DOC}
-        >
-          OBS Setup Issues
-        </a> */}
       </div>
 
       <form
@@ -388,6 +398,12 @@ export const AddVideoLesson = () => {
               value={videoURL}
               disabled={disabled}
               onChange={(e) => setVideoURL(e.target.value)}
+            />
+
+            <AddVideo
+              videoUrls={videoUrls}
+              onChange={onVideoChange}
+              disabled={busy}
             />
 
             <TextField

@@ -4,7 +4,8 @@ import React, {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import {
-  Button, FormControl, FormControlLabel, InputLabel, List, ListItem, ListItemText, MenuItem, Radio, RadioGroup, Select, TextField,
+  Button, FormControl, FormControlLabel, InputLabel, List,
+  ListItem, ListItemText, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -21,7 +22,7 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
-import { IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
+import { IPaperLesson, LessonType, VideoType } from '../../../../interfaces/ILesson';
 
 export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -44,6 +45,12 @@ export const AddPaperLesson = () => {
     pdfId: `${new Date().getTime()}`,
     ownerEmail: email || '',
     type: LessonType.PAPER,
+
+    videoUrls: {
+      activeVideo: VideoType.None,
+      [VideoType.GoogleDrive]: '',
+      [VideoType.MediaFire]: '',
+    },
   };
   const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
   const [busy, setBusy] = useState<boolean>(false);
