@@ -54,11 +54,11 @@ export const AddVideoLesson = () => {
     ownerEmail: email ?? '',
 
     type: LessonType.VIDEO,
-    videoUrls: {
+    videoUrls: [{
       activeVideo: VideoType.None,
       googleDrive: '',
       mediaFire: '',
-    },
+    }],
 
     createdAt: 0,
     id: '',

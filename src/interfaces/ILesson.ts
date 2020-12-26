@@ -36,7 +36,7 @@ export interface ILesson extends IBase {
   ownerEmail: string;
 
   type: LessonType;
-  videoUrls: VideoUrlsObj;
+  videoUrls: VideoUrlsObj[];
 }
 
 export interface IPaperLesson extends ILesson {
@@ -58,4 +58,5 @@ export interface ILiveLesson extends ILesson {
   status: LiveMeetingStatus;
   videoUrl?: string;
   isRunning: boolean;
+  // videoUrls: VideoUrlsObj[];
 }

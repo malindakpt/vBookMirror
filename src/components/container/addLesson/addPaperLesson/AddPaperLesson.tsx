@@ -46,11 +46,11 @@ export const AddPaperLesson = () => {
     ownerEmail: email || '',
     type: LessonType.PAPER,
 
-    videoUrls: {
+    videoUrls: [{
       activeVideo: VideoType.None,
       googleDrive: '',
       mediaFire: '',
-    },
+    }],
   };
   const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
   const [busy, setBusy] = useState<boolean>(false);

@@ -49,11 +49,11 @@ const fresh: ILiveLesson = {
   status: LiveMeetingStatus.NOT_STARTED,
   createdAt: 0,
   type: LessonType.LIVE,
-  videoUrls: {
+  videoUrls: [{
     activeVideo: VideoType.None,
     googleDrive: '',
     mediaFire: '',
-  },
+  }],
   orderIndex: 0,
 };
 export const AddLiveLesson = () => {

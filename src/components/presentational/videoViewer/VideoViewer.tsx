@@ -1,19 +1,19 @@
 import React from 'react';
-import { ILesson, VideoType } from '../../../interfaces/ILesson';
+import { ILesson, VideoType, VideoUrlsObj } from '../../../interfaces/ILesson';
 
 interface Props {
     lesson: ILesson;
 }
 export const VideoViewer: React.FC<Props> = ({ lesson }) => {
-  const { activeVideo, googleDrive, mediaFire } = lesson.videoUrls;
-  const getVideo = () => {
-    switch (activeVideo) {
+  // const { activeVideo, googleDrive, mediaFire } = lesson.videoUrls;
+  const getVideo = (videoUrl: VideoUrlsObj) => {
+    switch (videoUrl.activeVideo) {
       case VideoType.GoogleDrive:
         return (
           <div>
             Drive Video
             {' '}
-            {googleDrive}
+            {videoUrl.googleDrive}
           </div>
         );
       case VideoType.MediaFire:
@@ -21,7 +21,7 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
           <div>
             MF Video
             {' '}
-            {mediaFire}
+            {videoUrl.mediaFire}
           </div>
         );
 
@@ -33,7 +33,7 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
   return (
     <div>
       Video Viewer
-      {getVideo()}
+      {lesson.videoUrls?.map((videoUrl) => getVideo(videoUrl))}
     </div>
   );
 };
