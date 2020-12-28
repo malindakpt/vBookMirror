@@ -23,6 +23,7 @@ import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { IPaperLesson, LessonType, VideoType } from '../../../../interfaces/ILesson';
+import { LessonList } from '../../../presentational/lessonList/LessonList';
 
 export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -53,11 +54,11 @@ export const AddPaperLesson = () => {
       fileVideo: '',
     }],
   };
-  const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
+  // const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
   const [busy, setBusy] = useState<boolean>(false);
   const [isEditMode, setEditMode] = useState<boolean>(false);
   const [paper, setPaper] = useState<IPaperLesson>(newPaper);
-  const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
+  // const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [courseId, setCourseId] = useState<string>('');
 
@@ -72,15 +73,14 @@ export const AddPaperLesson = () => {
   const beforeAdd = () => {
     paper.courseId = courseId;
     paper.pdfId = `${new Date().getTime()}`;
-    paper.orderIndex = allPapers.length;
   };
 
-  const loadPapers = () => {
-    getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId })
-      .then((papers) => {
-        papers && setAllPapers(papers);
-      });
-  };
+  // const loadPapers = () => {
+  //   getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId })
+  //     .then((papers) => {
+  //       papers && setAllPapers(papers);
+  //     });
+  // };
   const initData = () => {
     getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
       .then((courses) => {
@@ -144,7 +144,7 @@ export const AddPaperLesson = () => {
         setEditMode(false);
         initData();
         setBusy(false);
-        loadPapers();
+        // loadPapers();
       });
     } else {
       beforeAdd();
@@ -152,49 +152,21 @@ export const AddPaperLesson = () => {
         showSnackbar(`Added: ${paper.topic}`);
         initData();
         setBusy(false);
-        loadPapers();
+        // loadPapers();
       });
     }
   };
 
   const onCourseChange = (_courseId: string) => {
-    getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId: _courseId })
-      .then((papers) => {
-        papers && setAllPapers(papers);
-      });
+    // getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId: _courseId })
+    //   .then((papers) => {
+    //     papers && setAllPapers(papers);
+    //   });
     setCourseId(_courseId);
   };
-
   const clickEdit = (paper: IPaperLesson) => {
     setPaper(paper);
     setEditMode(true);
-  };
-
-  const changeOrder = (index: number, isUp: boolean) => {
-    const clone = [...allPapers];
-    const nextIdx = isUp ? index - 1 : index + 1;
-    if (nextIdx < 0 || nextIdx >= allPapers.length) {
-      return;
-    }
-    const item1 = { ...clone[index] };
-    const item2 = { ...clone[nextIdx] };
-
-    clone[index] = item2;
-    clone[nextIdx] = item1;
-
-    setCourseOrderChaged(true);
-
-    clone.forEach((paper, idx) => {
-      paper.orderIndex = idx;
-    });
-    setAllPapers(clone);
-  };
-
-  const saveLessonsOrder = () => {
-    allPapers.forEach((paper, idx) => {
-      updateDoc(Entity.LESSONS_PAPER, paper.id, { orderIndex: idx });
-      setCourseOrderChaged(false);
-    });
   };
 
   const validate = () => {
@@ -425,52 +397,11 @@ export const AddPaperLesson = () => {
         </div>
         <div>
           {paper.pdfURL && <PDFView url={paper.pdfURL} />}
-          <div>
-            <List
-              component="nav"
-              aria-label="main mailbox folders"
-            >
-              {courseOrderChanged && (
-              <ListItem
-                button
-                onClick={saveLessonsOrder}
-                className={classes.saveOrder}
-              >
-                <ListItemText
-                  primary="Save order"
-                />
-                <SaveIcon />
-              </ListItem>
-              )}
-              {
-              allPapers.sort((a, b) => a.orderIndex - b.orderIndex).map((paper, index) => (
-
-                <ListItem
-                  button
-                  onClick={() => { clickEdit(paper); }}
-                  key={paper.id}
-                  className={classes.paperList}
-                >
-                  {paper.topic}
-
-                  <div>
-                    {index > 0 && (
-                    <ArrowUpwardIcon onClick={(e) => {
-                      changeOrder(index, true); e.stopPropagation();
-                    }}
-                    />
-                    )}
-                    {index < allPapers.length - 1 && (
-                    <ArrowDownwardIcon
-                      onClick={(e) => { changeOrder(index, false); e.stopPropagation(); }}
-                    />
-                    )}
-                  </div>
-                </ListItem>
-              ))
-            }
-            </List>
-          </div>
+          <LessonList
+            entity={Entity.LESSONS_PAPER}
+            courseId={courseId}
+            onLessonSelect={(e) => setPaper(e as IPaperLesson)}
+          />
         </div>
       </div>
 

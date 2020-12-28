@@ -10,18 +10,17 @@ import { AppContext } from '../../../App';
 import {
   deleteDoc, Entity, getDocsWithProps, updateDoc,
 } from '../../../data/Store';
-import { ICourse } from '../../../interfaces/ICourse';
 import { ILesson } from '../../../interfaces/ILesson';
 import classes from './LessonList.module.scss';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 
 interface Props {
     entity: Entity;
-    course: ICourse | null;
+    courseId: string | null;
     onLessonSelect: (lesson: ILesson)=> void;
 }
 export const LessonList: React.FC<Props> = ({
-  course, entity, onLessonSelect,
+  courseId, entity, onLessonSelect,
 }) => {
   const { email, showSnackbar } = useContext(AppContext);
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
@@ -29,14 +28,14 @@ export const LessonList: React.FC<Props> = ({
   const [onUpdate, forcedUpdate] = useForcedUpdate();
 
   useEffect(() => {
-    if (!course) {
+    if (!courseId) {
       return;
     }
     getDocsWithProps<ILesson[]>(entity,
-      { ownerEmail: email, courseId: course.id }).then((lessons) => {
+      { ownerEmail: email, courseId }).then((lessons) => {
       setCourseLessons(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
     });
-  }, [onUpdate, course, email, entity]);
+  }, [onUpdate, courseId, email, entity]);
 
   const saveLessonsOrder = () => {
     courseLessons.forEach((lesson, idx) => {

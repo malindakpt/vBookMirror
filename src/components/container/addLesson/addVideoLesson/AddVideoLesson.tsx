@@ -327,7 +327,7 @@ export const AddVideoLesson = () => {
 
         <LessonList
           entity={Entity.LESSONS_VIDEO}
-          course={getObject<ICourse>(courses, courseId)}
+          courseId={courseId}
           onLessonSelect={handleLessonSelection}
         />
       </form>
