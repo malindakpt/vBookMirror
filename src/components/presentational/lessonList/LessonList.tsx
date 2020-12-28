@@ -19,7 +19,7 @@ interface Props {
 export const LessonList: React.FC<Props> = ({
   course, entity, onLessonSelect,
 }) => {
-  const { showSnackbar, email } = useContext(AppContext);
+  const { email } = useContext(AppContext);
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
 
@@ -31,7 +31,7 @@ export const LessonList: React.FC<Props> = ({
       { ownerEmail: email, courseId: course.id }).then((lessons) => {
       setCourseLessons(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
     });
-  }, [course]);
+  }, [course, email, entity]);
 
   const saveLessonsOrder = () => {
     courseLessons.forEach((lesson, idx) => {

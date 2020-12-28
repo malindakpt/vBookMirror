@@ -18,7 +18,6 @@ import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDi
 import { readyToGo, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
-import { Player } from '../../../presentational/player/Player';
 import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 
@@ -160,7 +159,7 @@ export const VideoLesson: React.FC = () => {
         {lesson?.description}
       </div>
       {lesson?.videoURL && (
-        <Player videoUrl={lesson.videoURL} />
+        <VideoViewer lesson={lesson} />
       )}
 
       {lesson?.videoUrls && (

@@ -233,7 +233,8 @@ export const LiveLesson: React.FC = () => {
           : (
             <div className={classes.notStarted}>
               {lesson.videoUrl
-                ? 'Video will available only for 12 hours ' : `Meeting starts @ ${new Date(lesson.dateTime).toString().split('GMT')[0]}`}
+                ? 'Video will available only for 12 hours ' : `Meeting 
+                starts @ ${new Date(lesson.dateTime).toString().split('GMT')[0]}`}
             </div>
           )}
 

@@ -1,20 +1,16 @@
 import React from 'react';
 import { ILesson, VideoType, VideoUrlsObj } from '../../../interfaces/ILesson';
+import { GoogleDriveVideo } from './googleDriveVideo/GoogleDriveVideo';
 
 interface Props {
     lesson: ILesson;
 }
 export const VideoViewer: React.FC<Props> = ({ lesson }) => {
-  // const { activeVideo, googleDrive, mediaFire } = lesson.videoUrls;
   const getVideo = (videoUrl: VideoUrlsObj) => {
     switch (videoUrl.activeVideo) {
       case VideoType.GoogleDrive:
         return (
-          <div>
-            Drive Video
-            {' '}
-            {videoUrl.googleDrive}
-          </div>
+          <GoogleDriveVideo videoUrl={videoUrl.googleDrive} />
         );
       case VideoType.MediaFire:
         return (

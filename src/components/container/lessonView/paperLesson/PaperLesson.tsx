@@ -16,9 +16,9 @@ import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
-import { Player } from '../../../presentational/player/Player';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
+import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 import { MCQAnswer, Status } from '../../addLesson/addPaperLesson/mcqAnswer/MCQAnswer';
 import classes from './PaperLesson.module.scss';
 
@@ -268,7 +268,7 @@ export const PaperLesson = () => {
             {paper.videoUrl && (
             <div>
               { showVideo ? (
-                <Player videoUrl={paper.videoUrl} />
+                <VideoViewer lesson={paper} />
               )
                 : (
                   <Button
