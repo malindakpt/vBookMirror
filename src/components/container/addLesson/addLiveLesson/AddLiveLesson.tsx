@@ -6,15 +6,18 @@ import React, { useEffect, useState, useContext } from 'react';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { AppContext } from '../../../../App';
 import {
-  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
+  addDoc, deleteDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { formattedTime } from '../../../../helper/util';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
+
 import {
+  ILesson,
   ILiveLesson, LessonType, LiveMeetingStatus, VideoType,
 } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
@@ -197,6 +200,17 @@ export const AddLiveLesson = () => {
     }
   };
 
+  const deleteItem = (lesson: ILesson) => {
+    // eslint-disable-next-line no-restricted-globals
+    const r = confirm(`Are you sure?  ${lesson.topic} will be deleted permenantly`);
+    if (r === true && selectedCourse) {
+      deleteDoc(Entity.LESSONS_LIVE, lesson.id).then(() => {
+        showSnackbar(`${lesson.topic} removed`);
+        onCourseChange(selectedCourse.id);
+      });
+    }
+  };
+
   const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => b.dateTime
    - a.dateTime).sort((a, b) => (a.isRunning ? -1 : 1)).map((liveLesson) => (
      <div
@@ -231,6 +245,11 @@ export const AddLiveLesson = () => {
            copyLessonURL(liveLesson.id); e.stopPropagation();
          }}
          />
+
+         <DeleteForeverIcon
+           onClick={(e) => { deleteItem(liveLesson); e.stopPropagation(); }}
+         />
+
          {liveLesson.isRunning && (
          <>
            <Button
