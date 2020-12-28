@@ -1,5 +1,6 @@
 import React from 'react';
 import { ILesson, VideoType, VideoUrlsObj } from '../../../interfaces/ILesson';
+import { FileVideo } from './fileVideo/FileVideo';
 import { GoogleDriveVideo } from './googleDriveVideo/GoogleDriveVideo';
 import classes from './VideoViewer.module.scss';
 
@@ -13,13 +14,9 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
         return (
           <GoogleDriveVideo videoUrl={videoUrl.googleDrive} />
         );
-      case VideoType.MediaFire:
+      case VideoType.FileVideo:
         return (
-          <div>
-            MF Video
-            {' '}
-            {videoUrl.mediaFire}
-          </div>
+          <FileVideo videoUrl={videoUrl.fileVideo} />
         );
 
       default:
@@ -31,7 +28,7 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
     <div>
       Video Viewer
       {lesson.videoUrls?.map((videoUrl) => (
-        <div>
+        <div key={videoUrl.googleDrive + videoUrl.fileVideo + videoUrl.description}>
           <div className={classes.subTitle}>{videoUrl.description}</div>
           {getVideo(videoUrl)}
         </div>

@@ -58,7 +58,7 @@ export const AddVideoLesson = () => {
       activeVideo: VideoType.None,
       description: '',
       googleDrive: '',
-      mediaFire: '',
+      fileVideo: '',
     }],
 
     createdAt: 0,

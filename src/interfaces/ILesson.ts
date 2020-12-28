@@ -10,14 +10,14 @@ export enum LiveMeetingStatus {
 export enum VideoType {
   None,
   GoogleDrive,
-  MediaFire,
+  FileVideo,
 }
 
 export interface VideoUrlsObj {
   activeVideo: VideoType;
   description: string;
   googleDrive: string;
-  mediaFire: string;
+  fileVideo: string;
 }
 
 export enum LessonType {

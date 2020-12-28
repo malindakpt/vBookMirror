@@ -72,6 +72,7 @@ export const adminRoutes: routeConfig = [
 ];
 
 const Router: React.FC = () => {
+  document.addEventListener('contextmenu', (event) => event.preventDefault());
   const { isTeacher, isAdmin, isLoading } = useContext(AppContext);
 
   return (

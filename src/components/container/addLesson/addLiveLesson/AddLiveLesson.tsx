@@ -54,7 +54,7 @@ const fresh: ILiveLesson = {
     activeVideo: VideoType.None,
     description: '',
     googleDrive: '',
-    mediaFire: '',
+    fileVideo: '',
   }],
   orderIndex: 0,
 };

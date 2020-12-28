@@ -50,7 +50,7 @@ export const AddPaperLesson = () => {
       activeVideo: VideoType.None,
       description: '',
       googleDrive: '',
-      mediaFire: '',
+      fileVideo: '',
     }],
   };
   const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);

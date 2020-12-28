@@ -23,7 +23,6 @@ export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
 
   // disble context menu for avoid right click
-  document.addEventListener('contextmenu', (event) => event.preventDefault());
 
   useBreadcrumb();
   const { lessonId } = useParams<any>();

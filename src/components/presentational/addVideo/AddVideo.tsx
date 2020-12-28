@@ -27,7 +27,7 @@ export const AddVideo: React.FC<Props> = ({
       activeVideo: VideoType.None,
       description: '',
       googleDrive: '',
-      mediaFire: '',
+      fileVideo: '',
     });
     onChange(videoUrls);
   };
@@ -71,10 +71,10 @@ export const AddVideo: React.FC<Props> = ({
                   GoogleDrive
                 </MenuItem>
                 <MenuItem
-                  value={VideoType.MediaFire}
-                  key={VideoType.MediaFire}
+                  value={VideoType.FileVideo}
+                  key={VideoType.FileVideo}
                 >
-                  MediaFire
+                  File Video
                 </MenuItem>
               </Select>
             </FormControl>
@@ -102,15 +102,15 @@ export const AddVideo: React.FC<Props> = ({
                 />
               )}
 
-            {videoUrl.activeVideo === VideoType.MediaFire
+            {videoUrl.activeVideo === VideoType.FileVideo
               && (
                 <TextField
                   className={classes.input}
-                  id="2"
+                  id="3"
                   label="Video URL(MediaFire Embed)"
-                  value={videoUrl.mediaFire}
+                  value={videoUrl.fileVideo}
                   disabled={disabled}
-                  onChange={(e) => onChangeArrayValues(index, { mediaFire: e.target.value })}
+                  onChange={(e) => onChangeArrayValues(index, { fileVideo: e.target.value })}
                 />
               )}
           </div>
