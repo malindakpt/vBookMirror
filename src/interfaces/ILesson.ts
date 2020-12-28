@@ -15,6 +15,7 @@ export enum VideoType {
 
 export interface VideoUrlsObj {
   activeVideo: VideoType;
+  description: string;
   googleDrive: string;
   mediaFire: string;
 }

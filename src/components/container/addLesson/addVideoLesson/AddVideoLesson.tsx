@@ -56,6 +56,7 @@ export const AddVideoLesson = () => {
     type: LessonType.VIDEO,
     videoUrls: [{
       activeVideo: VideoType.None,
+      description: '',
       googleDrive: '',
       mediaFire: '',
     }],
@@ -270,7 +271,6 @@ export const AddVideoLesson = () => {
 
             <AddVideo
               videoUrls={selectedLesson.videoUrls}
-              // onChange={onVideoChange}
               onChange={(e) => handleChange({ videoUrls: e })}
               disabled={busy}
             />

@@ -21,6 +21,7 @@ import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import classes from './AddLiveLesson.module.scss';
 import Config from '../../../../data/Config';
+import { AddVideo } from '../../../presentational/addVideo/AddVideo';
 
 export enum JOIN_MODES {
   ONLY_APP,
@@ -51,6 +52,7 @@ const fresh: ILiveLesson = {
   type: LessonType.LIVE,
   videoUrls: [{
     activeVideo: VideoType.None,
+    description: '',
     googleDrive: '',
     mediaFire: '',
   }],
@@ -362,13 +364,11 @@ export const AddLiveLesson = () => {
             />
 
             {editMode && (
-            <TextField
-              className={classes.input}
-              id="videoUrl"
-              label="Video URL"
+            <AddVideo
               disabled={disabled}
-              value={liveLesson.videoUrl || ''}
-              onChange={(e) => setSessionProps({ videoUrl: e.target.value })}
+              onChange={(e) => setSessionProps({ videoUrls: e })}
+              videoUrls={liveLesson.videoUrls}
+              allowAddNew
             />
             )}
 

@@ -48,6 +48,7 @@ export const AddPaperLesson = () => {
 
     videoUrls: [{
       activeVideo: VideoType.None,
+      description: '',
       googleDrive: '',
       mediaFire: '',
     }],
