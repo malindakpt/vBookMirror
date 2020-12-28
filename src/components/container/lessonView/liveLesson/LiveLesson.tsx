@@ -233,14 +233,13 @@ export const LiveLesson: React.FC = () => {
           : (
             <div className={classes.notStarted}>
               {lesson.videoUrl
-                ? 'Video will available only for 12 hours ' : `Meeting 
+                ? 'Video will available only for 12 hours ' : `Live Meeting 
                 starts @ ${new Date(lesson.dateTime).toString().split('GMT')[0]}`}
             </div>
           )}
 
         <Attachments lesson={lesson} />
 
-        <VideoViewer lesson={lesson} />
         <p>
           අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.
           නැතිනම් ඔබව ගෙවීම් නොකළ පුද්ගලයෙකු ලෙස ගුරුවරයාට පෙන්වනු ලබන අතර ඔබව විසන්ධි
@@ -262,6 +261,8 @@ export const LiveLesson: React.FC = () => {
             allowFullScreen
           />
         </div>
+
+        <VideoViewer lesson={lesson} />
       </div>
       ) }
       <input

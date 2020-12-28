@@ -1,6 +1,7 @@
 import React from 'react';
 import { ILesson, VideoType, VideoUrlsObj } from '../../../interfaces/ILesson';
 import { GoogleDriveVideo } from './googleDriveVideo/GoogleDriveVideo';
+import classes from './VideoViewer.module.scss';
 
 interface Props {
     lesson: ILesson;
@@ -29,7 +30,12 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
   return (
     <div>
       Video Viewer
-      {lesson.videoUrls?.map((videoUrl) => getVideo(videoUrl))}
+      {lesson.videoUrls?.map((videoUrl) => (
+        <div>
+          <div className={classes.subTitle}>{videoUrl.description}</div>
+          {getVideo(videoUrl)}
+        </div>
+      ))}
     </div>
   );
 };
