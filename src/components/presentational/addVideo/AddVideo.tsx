@@ -10,7 +10,7 @@ interface Props {
   title?: string;
   disabled: boolean;
   videoUrls: VideoUrlsObj[];
-  onChange: (videoUrls: VideoUrlsObj[])=> void;
+  onChange: (videoUrls: VideoUrlsObj[]) => void;
   allowAddNew?: boolean;
 }
 
@@ -38,7 +38,9 @@ export const AddVideo: React.FC<Props> = ({
         {videoUrls && videoUrls.map((videoUrl, index) => (
           <div
             className={classes.container}
-            key={videoUrl.googleDrive + videoUrl.mediaFire}
+            // This does not have any other unique property
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
           >
             <FormControl className={classes.input}>
               <InputLabel
@@ -76,39 +78,41 @@ export const AddVideo: React.FC<Props> = ({
                 </MenuItem>
               </Select>
             </FormControl>
+
             {videoUrl.activeVideo !== VideoType.None && (
-            <TextField
-              className={classes.input}
-              id="1"
-              label="Description"
-              value={videoUrl.description}
-              disabled={disabled}
-              onChange={(e) => onChangeArrayValues(index, { description: e.target.value })}
-            />
+              <TextField
+                className={classes.input}
+                id="1"
+                label="Description"
+                value={videoUrl.description}
+                disabled={disabled}
+                onChange={(e) => onChangeArrayValues(index, { description: e.target.value })}
+              />
             )}
+
             {videoUrl.activeVideo === VideoType.GoogleDrive
-        && (
-        <TextField
-          className={classes.input}
-          id="1"
-          label="Video URL(Drive Embed)"
-          value={videoUrl.googleDrive}
-          disabled={disabled}
-          onChange={(e) => onChangeArrayValues(index, { googleDrive: e.target.value })}
-        />
-        )}
+              && (
+                <TextField
+                  className={classes.input}
+                  id="2"
+                  label="Video URL(Drive Embed)"
+                  value={videoUrl.googleDrive}
+                  disabled={disabled}
+                  onChange={(e) => onChangeArrayValues(index, { googleDrive: e.target.value })}
+                />
+              )}
 
             {videoUrl.activeVideo === VideoType.MediaFire
-        && (
-        <TextField
-          className={classes.input}
-          id="2"
-          label="Video URL(MediaFire Embed)"
-          value={videoUrl.mediaFire}
-          disabled={disabled}
-          onChange={(e) => onChangeArrayValues(index, { mediaFire: e.target.value })}
-        />
-        )}
+              && (
+                <TextField
+                  className={classes.input}
+                  id="2"
+                  label="Video URL(MediaFire Embed)"
+                  value={videoUrl.mediaFire}
+                  disabled={disabled}
+                  onChange={(e) => onChangeArrayValues(index, { mediaFire: e.target.value })}
+                />
+              )}
           </div>
         ))}
       </div>

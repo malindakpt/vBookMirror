@@ -16,8 +16,8 @@ import { getHashFromString, readyToGo, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
-import { Player } from '../../../presentational/player/Player';
 import { Attachments } from '../../../presentational/attachments/Attachments';
+import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
@@ -227,10 +227,7 @@ export const LiveLesson: React.FC = () => {
         <div className={classes.desc}>
           {lesson?.description}
         </div>
-        {lesson?.videoUrl
-           && (
-           <Player videoUrl={lesson?.videoUrl} />
-           )}
+
         { teacher && lesson.isRunning
           ? getDisplay(teacher)
           : (
@@ -242,6 +239,7 @@ export const LiveLesson: React.FC = () => {
 
         <Attachments lesson={lesson} />
 
+        <VideoViewer lesson={lesson} />
         <p>
           අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.
           නැතිනම් ඔබව ගෙවීම් නොකළ පුද්ගලයෙකු ලෙස ගුරුවරයාට පෙන්වනු ලබන අතර ඔබව විසන්ධි
