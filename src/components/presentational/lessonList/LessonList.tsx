@@ -3,13 +3,17 @@ import {
 } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import SaveIcon from '@material-ui/icons/Save';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { AppContext } from '../../../App';
-import { Entity, getDocsWithProps, updateDoc } from '../../../data/Store';
+import {
+  deleteDoc, Entity, getDocsWithProps, updateDoc,
+} from '../../../data/Store';
 import { ICourse } from '../../../interfaces/ICourse';
 import { ILesson } from '../../../interfaces/ILesson';
 import classes from './LessonList.module.scss';
+import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 
 interface Props {
     entity: Entity;
@@ -19,9 +23,10 @@ interface Props {
 export const LessonList: React.FC<Props> = ({
   course, entity, onLessonSelect,
 }) => {
-  const { email } = useContext(AppContext);
+  const { email, showSnackbar } = useContext(AppContext);
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
   const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
+  const [onUpdate, forcedUpdate] = useForcedUpdate();
 
   useEffect(() => {
     if (!course) {
@@ -31,13 +36,24 @@ export const LessonList: React.FC<Props> = ({
       { ownerEmail: email, courseId: course.id }).then((lessons) => {
       setCourseLessons(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
     });
-  }, [course, email, entity]);
+  }, [onUpdate, course, email, entity]);
 
   const saveLessonsOrder = () => {
     courseLessons.forEach((lesson, idx) => {
       updateDoc(entity, lesson.id, { orderIndex: idx });
     });
     setCourseOrderChaged(false);
+  };
+
+  const deleteItem = (lesson: ILesson) => {
+    // eslint-disable-next-line no-restricted-globals
+    const r = confirm(`Are you sure?  ${lesson.topic} will be deleted permenantly`);
+    if (r === true) {
+      deleteDoc(entity, lesson.id).then(() => {
+        showSnackbar(`${lesson.topic} removed`);
+        forcedUpdate();
+      });
+    }
   };
 
   const changeOrder = (index: number, isUp: boolean) => {
@@ -98,16 +114,20 @@ export const LessonList: React.FC<Props> = ({
             </div>
 
             {index > 0 && (
-            <ArrowUpwardIcon onClick={(e) => {
+            <ArrowDropUpIcon onClick={(e) => {
               changeOrder(index, true); e.stopPropagation();
             }}
             />
             )}
             {index < courseLessons.length - 1 && (
-            <ArrowDownwardIcon
+            <ArrowDropDownIcon
               onClick={(e) => { changeOrder(index, false); e.stopPropagation(); }}
             />
+
             )}
+            <DeleteForeverIcon
+              onClick={(e) => { deleteItem(lesson); e.stopPropagation(); }}
+            />
           </ListItem>
           <Divider />
         </div>
