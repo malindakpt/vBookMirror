@@ -20,7 +20,6 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import { useForcedUpdate } from '../../../../hooks/useForcedUpdate';
 import Config, {
   AKSHARA_HELP_VIDEO, OBS_DOWNLOAD, OBS_HELP_VIDEO,
 } from '../../../../data/Config';
@@ -31,11 +30,11 @@ import { LessonList } from '../../../presentational/lessonList/LessonList';
 export const AddVideoLesson = () => {
   useBreadcrumb();
   const [busy, setBusy] = useState<boolean>(false);
-  const [onDataFetch, fetchData] = useForcedUpdate();
   const { showSnackbar, email } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState<boolean>(false);
 
+  const [lastUpdated, setLastUpdate] = useState<number>(0);
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
@@ -93,7 +92,7 @@ export const AddVideoLesson = () => {
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
     getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
     // eslint-disable-next-line
-  }, [onDataFetch]);
+  }, [email]);
 
   const disabled = !courseId || busy;
 
@@ -127,14 +126,14 @@ export const AddVideoLesson = () => {
       updateDoc(Entity.LESSONS_VIDEO, selectedLesson.id, selectedLesson).then(() => {
         showSnackbar(`${selectedLesson.topic} modified successfully`);
         addNew(courseId);
-        fetchData();
+        setLastUpdate(new Date().getTime());
         setBusy(false);
       });
     } else {
       addDoc(Entity.LESSONS_VIDEO, selectedLesson).then(() => {
         showSnackbar('Lesson Added');
         addNew(courseId);
-        fetchData();
+        setLastUpdate(new Date().getTime());
         setBusy(false);
       });
     }
@@ -329,6 +328,7 @@ export const AddVideoLesson = () => {
           entity={Entity.LESSONS_VIDEO}
           courseId={courseId}
           onLessonSelect={handleLessonSelection}
+          lastUpdated={lastUpdated}
         />
       </form>
 

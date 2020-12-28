@@ -4,13 +4,8 @@ import React, {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import {
-  Button, FormControl, FormControlLabel, InputLabel, List,
-  ListItem, ListItemText, MenuItem, Radio, RadioGroup, Select, TextField,
+  Button, FormControl, FormControlLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import SaveIcon from '@material-ui/icons/Save';
-import classes from './AddPaperLesson.module.scss';
 import { MCQAnswer, Status } from './mcqAnswer/MCQAnswer';
 import { FileUploader } from '../../../presentational/fileUploader/FileUploader';
 import {
@@ -24,6 +19,8 @@ import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { IPaperLesson, LessonType, VideoType } from '../../../../interfaces/ILesson';
 import { LessonList } from '../../../presentational/lessonList/LessonList';
+import { AddVideo } from '../../../presentational/addVideo/AddVideo';
+import classes from './AddPaperLesson.module.scss';
 
 export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -58,6 +55,7 @@ export const AddPaperLesson = () => {
   const [busy, setBusy] = useState<boolean>(false);
   const [isEditMode, setEditMode] = useState<boolean>(false);
   const [paper, setPaper] = useState<IPaperLesson>(newPaper);
+  const [lastUpdated, setLastUpdate] = useState<number>(0);
   // const [courseOrderChanged, setCourseOrderChaged] = useState<boolean>(false);
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [courseId, setCourseId] = useState<string>('');
@@ -81,24 +79,32 @@ export const AddPaperLesson = () => {
   //       papers && setAllPapers(papers);
   //     });
   // };
-  const initData = () => {
-    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
-      .then((courses) => {
-        courses && setCourses(courses);
-      });
-    // eslint-disable-next-line
-    addNew();
-  };
+  // const initaData = () => {
+  //   getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
+  //     .then((courses) => {
+  //       courses && setCourses(courses);
+  //     });
+  //   // eslint-disable-next-line
+  //   addNew();
+  // };
 
   useEffect(() => {
-    initData();
     // fetch unrelated data
+    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
+      .then((courses) => { courses && setCourses(courses); });
     getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);
 
   const disabled = !courseId || busy;
+
+  const handleChange = (obj: Record<string, any>) => {
+    setPaper((prev) => {
+      const clone = { ...prev, ...obj };
+      return clone;
+    });
+  };
 
   const addQuestion = () => {
     if (disabled) return;
@@ -142,28 +148,25 @@ export const AddPaperLesson = () => {
       updateDoc(Entity.LESSONS_PAPER, paper.id, paper).then(() => {
         showSnackbar(`Edited: ${paper.topic}`);
         setEditMode(false);
-        initData();
+        addNew();
         setBusy(false);
-        // loadPapers();
+        setLastUpdate(new Date().getTime());
       });
     } else {
       beforeAdd();
       addDoc<IPaperLesson>(Entity.LESSONS_PAPER, paper).then(() => {
         showSnackbar(`Added: ${paper.topic}`);
-        initData();
+        addNew();
         setBusy(false);
-        // loadPapers();
+        setLastUpdate(new Date().getTime());
       });
     }
   };
 
   const onCourseChange = (_courseId: string) => {
-    // getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId: _courseId })
-    //   .then((papers) => {
-    //     papers && setAllPapers(papers);
-    //   });
     setCourseId(_courseId);
   };
+
   const clickEdit = (paper: IPaperLesson) => {
     setPaper(paper);
     setEditMode(true);
@@ -282,14 +285,7 @@ export const AddPaperLesson = () => {
               disabled={disabled}
               value={paper.topic}
               inputProps={{ maxLength: 50 }}
-              onChange={(e) => {
-                e.persist();
-                setPaper((prev) => {
-                  const clone = { ...prev };
-                  clone.topic = e.target.value;
-                  return clone;
-                });
-              }}
+              onChange={(e) => handleChange({ topic: e.target.value })}
             />
             <TextField
               className={classes.input}
@@ -298,31 +294,15 @@ export const AddPaperLesson = () => {
               disabled={disabled}
               value={paper.description}
               inputProps={{ maxLength: 120 }}
-              onChange={(e) => {
-                e.persist();
-                setPaper((prev) => {
-                  const clone = { ...prev };
-                  clone.description = e.target.value;
-                  return clone;
-                });
-              }}
+              onChange={(e) => handleChange({ description: e.target.value })}
             />
-            <TextField
-              className={classes.input}
-              id="video"
-              label="Video URL"
-              disabled={disabled}
-              value={paper.videoUrl}
-              inputProps={{ maxLength: 120 }}
-              onChange={(e) => {
-                e.persist();
-                setPaper((prev) => {
-                  const clone = { ...prev };
-                  clone.videoUrl = e.target.value;
-                  return clone;
-                });
-              }}
+
+            <AddVideo
+              videoUrls={paper.videoUrls}
+              onChange={(e) => handleChange({ videoUrls: e })}
+              disabled={busy}
             />
+
             <TextField
               className={classes.input}
               id="price"
@@ -330,14 +310,7 @@ export const AddPaperLesson = () => {
               disabled={disabled}
               type="number"
               value={paper.price}
-              onChange={(e) => {
-                e.persist();
-                setPaper((prev) => {
-                  const clone = { ...prev };
-                  clone.price = Number(e.target.value);
-                  return clone;
-                });
-              }}
+              onChange={(e) => handleChange({ price: Number(e.target.value) })}
             />
             <div
               className={classes.addRemove}
@@ -400,7 +373,8 @@ export const AddPaperLesson = () => {
           <LessonList
             entity={Entity.LESSONS_PAPER}
             courseId={courseId}
-            onLessonSelect={(e) => setPaper(e as IPaperLesson)}
+            onLessonSelect={(e) => clickEdit(e as IPaperLesson)}
+            lastUpdated={lastUpdated}
           />
         </div>
       </div>

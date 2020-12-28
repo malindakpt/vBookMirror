@@ -15,12 +15,13 @@ import classes from './LessonList.module.scss';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 
 interface Props {
+    lastUpdated: number;
     entity: Entity;
     courseId: string | null;
     onLessonSelect: (lesson: ILesson)=> void;
 }
 export const LessonList: React.FC<Props> = ({
-  courseId, entity, onLessonSelect,
+  courseId, entity, onLessonSelect, lastUpdated,
 }) => {
   const { email, showSnackbar } = useContext(AppContext);
   const [courseLessons, setCourseLessons] = useState<ILesson[]>([]);
@@ -35,7 +36,7 @@ export const LessonList: React.FC<Props> = ({
       { ownerEmail: email, courseId }).then((lessons) => {
       setCourseLessons(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
     });
-  }, [onUpdate, courseId, email, entity]);
+  }, [onUpdate, lastUpdated, courseId, email, entity]);
 
   const saveLessonsOrder = () => {
     courseLessons.forEach((lesson, idx) => {
