@@ -3,7 +3,7 @@ import {
   FormControl, InputLabel, MenuItem, Select, TextField,
 } from '@material-ui/core';
 import React from 'react';
-import { VideoType, VideoUrlsObj } from '../../../interfaces/ILesson';
+import { emptyVideoObj, VideoType, VideoUrlsObj } from '../../../interfaces/ILesson';
 import classes from './AddVideo.module.scss';
 
 interface Props {
@@ -23,12 +23,7 @@ export const AddVideo: React.FC<Props> = ({
   };
 
   const addNewVideo = () => {
-    videoUrls.push({
-      activeVideo: VideoType.None,
-      description: '',
-      googleDrive: '',
-      fileVideo: '',
-    });
+    videoUrls.push(emptyVideoObj);
     onChange(videoUrls);
   };
 
@@ -76,6 +71,12 @@ export const AddVideo: React.FC<Props> = ({
                 >
                   File Video
                 </MenuItem>
+                <MenuItem
+                  value={VideoType.EmbedVideo}
+                  key={VideoType.EmbedVideo}
+                >
+                  Embed Video
+                </MenuItem>
               </Select>
             </FormControl>
 
@@ -111,6 +112,18 @@ export const AddVideo: React.FC<Props> = ({
                   value={videoUrl.fileVideo}
                   disabled={disabled}
                   onChange={(e) => onChangeArrayValues(index, { fileVideo: e.target.value })}
+                />
+              )}
+
+            {videoUrl.activeVideo === VideoType.EmbedVideo
+              && (
+                <TextField
+                  className={classes.input}
+                  id="4"
+                  label="Embed link)"
+                  value={videoUrl.embedVideo}
+                  disabled={disabled}
+                  onChange={(e) => onChangeArrayValues(index, { embedVideo: e.target.value })}
                 />
               )}
           </div>

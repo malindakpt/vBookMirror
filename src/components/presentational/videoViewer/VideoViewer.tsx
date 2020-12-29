@@ -1,5 +1,6 @@
 import React from 'react';
 import { ILesson, VideoType, VideoUrlsObj } from '../../../interfaces/ILesson';
+import { EmbedVideo } from './embedVideo/EmbedVideo';
 import { FileVideo } from './fileVideo/FileVideo';
 import { GoogleDriveVideo } from './googleDriveVideo/GoogleDriveVideo';
 import classes from './VideoViewer.module.scss';
@@ -14,9 +15,15 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
         return (
           <GoogleDriveVideo videoUrl={videoUrl.googleDrive} />
         );
+
       case VideoType.FileVideo:
         return (
           <FileVideo videoUrl={videoUrl.fileVideo} />
+        );
+
+      case VideoType.EmbedVideo:
+        return (
+          <EmbedVideo videoUrl={videoUrl.embedVideo} />
         );
 
       default:

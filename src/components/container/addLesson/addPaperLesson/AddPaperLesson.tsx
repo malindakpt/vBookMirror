@@ -17,7 +17,9 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
-import { IPaperLesson, LessonType, VideoType } from '../../../../interfaces/ILesson';
+import {
+  emptyVideoObj, IPaperLesson, LessonType,
+} from '../../../../interfaces/ILesson';
 import { LessonList } from '../../../presentational/lessonList/LessonList';
 import { AddVideo } from '../../../presentational/addVideo/AddVideo';
 import classes from './AddPaperLesson.module.scss';
@@ -44,12 +46,7 @@ export const AddPaperLesson = () => {
     ownerEmail: email || '',
     type: LessonType.PAPER,
 
-    videoUrls: [{
-      activeVideo: VideoType.None,
-      description: '',
-      googleDrive: '',
-      fileVideo: '',
-    }],
+    videoUrls: [emptyVideoObj],
   };
   // const [allPapers, setAllPapers] = useState<IPaperLesson[]>([]);
   const [busy, setBusy] = useState<boolean>(false);

@@ -17,8 +17,9 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 
 import {
+  emptyVideoObj,
   ILesson,
-  ILiveLesson, LessonType, LiveMeetingStatus, VideoType,
+  ILiveLesson, LessonType, LiveMeetingStatus,
 } from '../../../../interfaces/ILesson';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { ITeacher } from '../../../../interfaces/ITeacher';
@@ -53,12 +54,7 @@ const fresh: ILiveLesson = {
   status: LiveMeetingStatus.NOT_STARTED,
   createdAt: 0,
   type: LessonType.LIVE,
-  videoUrls: [{
-    activeVideo: VideoType.None,
-    description: '',
-    googleDrive: '',
-    fileVideo: '',
-  }],
+  videoUrls: [emptyVideoObj],
   orderIndex: 0,
 };
 export const AddLiveLesson = () => {

@@ -13,8 +13,7 @@ import {
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
 import {
-  ILesson,
-  IVideoLesson, LessonType, VideoType,
+  emptyVideoObj, ILesson, IVideoLesson, LessonType,
 } from '../../../../interfaces/ILesson';
 import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
@@ -53,12 +52,7 @@ export const AddVideoLesson = () => {
     ownerEmail: email ?? '',
 
     type: LessonType.VIDEO,
-    videoUrls: [{
-      activeVideo: VideoType.None,
-      description: '',
-      googleDrive: '',
-      fileVideo: '',
-    }],
+    videoUrls: [emptyVideoObj],
 
     createdAt: 0,
     id: '',

@@ -11,6 +11,7 @@ export enum VideoType {
   None,
   GoogleDrive,
   FileVideo,
+  EmbedVideo
 }
 
 export interface VideoUrlsObj {
@@ -18,11 +19,20 @@ export interface VideoUrlsObj {
   description: string;
   googleDrive: string;
   fileVideo: string;
+  embedVideo: string;
 }
 
 export enum LessonType {
   LIVE, VIDEO, PAPER
 }
+
+export const emptyVideoObj: VideoUrlsObj = {
+  activeVideo: VideoType.None,
+  description: '',
+  googleDrive: '',
+  fileVideo: '',
+  embedVideo: '',
+};
 
 export interface ILesson extends IBase {
   topic: string;
