@@ -168,20 +168,6 @@ export const VideoLesson: React.FC = () => {
       <div
         className={classes.lessonInfo}
       >
-        {teacher && lesson && (
-        <div>
-          <div>
-            <a
-              href={`tel:${teacher.phoneChat}`}
-            >
-              Call Teacher:
-              {teacher.phoneChat}
-            </a>
-          </div>
-
-        </div>
-        )}
-
         <Attachments lesson={lesson} />
       </div>
       {alert && payment && (
