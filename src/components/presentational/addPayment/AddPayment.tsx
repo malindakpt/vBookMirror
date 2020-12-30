@@ -1,4 +1,4 @@
-import { Button, TextField } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Button, TextField, Typography } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import { addDoc, deleteDoc, Entity, getDocsWithProps } from '../../../data/Store';
@@ -8,6 +8,8 @@ import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
 import { PaymentStatus } from '../paymentOptions/requestPayment/RequestPaymentValidation';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import classes from './AddPayment.module.scss';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SaveIcon from '@material-ui/icons/Save';
 
 interface Props {
     lesson: ILesson;
@@ -53,7 +55,7 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
     };
 
     const addPayment = () => {
-        if(!payment.ownerEmail.includes('@gmail') || payment.paymentRef === ''){
+        if (!payment.ownerEmail.includes('@gmail') || payment.paymentRef === '') {
             showSnackbar('Invalid inputs!');
             return;
         }
@@ -74,40 +76,55 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
 
     return (
         <>
-            <div>
-                <TextField
-                    className={classes.input}
-                    id="ownerEmail"
-                    label="Student Email"
-                    inputProps={{ maxLength: 140 }}
-                    value={payment.ownerEmail}
-                    disabled={busy}
-                    onChange={(e) => handleChange({ ownerEmail: e.target.value })}
-                />
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Typography >Payment Details</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography>
+                        <div className={classes.inputs}>
+                            
+                            <TextField
+                                className={classes.input}
+                                id="ownerEmail"
+                                label="Student Email"
+                                inputProps={{ maxLength: 140 }}
+                                value={payment.ownerEmail}
+                                disabled={busy}
+                                onChange={(e) => handleChange({ ownerEmail: e.target.value })}
+                            />
 
-                <TextField
-                    className={classes.input}
-                    id="paymentRef"
-                    label="Payment Ref"
-                    inputProps={{ maxLength: 140 }}
-                    value={payment.paymentRef}
-                    disabled={busy}
-                    onChange={(e) => handleChange({ paymentRef: e.target.value })}
-                />
+                            <TextField
+                                className={classes.input}
+                                id="paymentRef"
+                                label="Payment Ref"
+                                inputProps={{ maxLength: 140 }}
+                                value={payment.paymentRef}
+                                disabled={busy}
+                                onChange={(e) => handleChange({ paymentRef: e.target.value })}
+                            />
 
-                <Button disabled={busy} onClick={addPayment}>Add</Button>
-            </div>
-            <div>
-                <table><tbody>{payments.map(pmt =>
-                    <tr key={pmt.id}>
-                        <td>{pmt.ownerEmail}</td>
-                        <td>{pmt.paymentRef}</td>
-                        <td> <DeleteForeverIcon
-                            onClick={(e) => { deleteItem(pmt.id); e.stopPropagation(); }}
-                        /></td>
-                    </tr>)}</tbody></table>
+                            <SaveIcon onClick={addPayment} />
+                        </div>
+                        <div>
+                            <table><tbody>{payments.map(pmt =>
+                                <tr key={pmt.id}>
+                                    <td>{pmt.ownerEmail}</td>
+                                    <td>{pmt.paymentRef}</td>
+                                    <td> <DeleteForeverIcon
+                                        onClick={(e) => { deleteItem(pmt.id); e.stopPropagation(); }}
+                                    /></td>
+                                </tr>)}</tbody></table>
 
-            </div>
+                        </div>
+                    </Typography>
+                </AccordionDetails>
+            </Accordion>
+
         </>
     );
 };
