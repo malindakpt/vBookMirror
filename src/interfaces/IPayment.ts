@@ -13,7 +13,7 @@ export interface IPayment extends IBase {
     lessonId: string;
     paymentType: LessonType;
     paidFor: string; // for calculating teacher salary
-    paymentRef: string;
+    paymentRef: string; // this is the card number for MANUAL payments
     paymentObject: any;
 
     gateway: PaymentGateway;
