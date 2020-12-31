@@ -377,14 +377,12 @@ export const AddLiveLesson = () => {
               onChange={(e) => setSessionProps({ duration: Number(e.target.value) })}
             />
 
-            {editMode && (
             <AddVideo
               disabled={disabled}
               onChange={(e) => setSessionProps({ videoUrls: e })}
               videoUrls={liveLesson.videoUrls}
               allowAddNew
             />
-            )}
 
             <TextField
               className={classes.inputMulti}

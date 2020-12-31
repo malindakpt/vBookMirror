@@ -60,16 +60,17 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>Payment Details</Typography>
+        <Typography>Payment Codes and Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div style={{ width: '100%' }}>
             <div className={classes.inputs}>
 
               <TextField
+               fullWidth
                 className={classes.input}
                 id="paymentRef"
-                label="Payment Ref"
+                label="Enter Payment Codes(No spaces) Eg. A123,B321,C32"
                 value={accessCodes.codes}
                 onChange={(e) => handleChange({ codes: e.target.value })}
               />

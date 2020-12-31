@@ -20,6 +20,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import {
+  isLessonOwner,
   readyToGo, Util,
 } from '../../../helper/util';
 import { Banner } from '../../presentational/banner/Banner';
@@ -73,7 +74,6 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-  const amIOwnerOfLesson = (lesson: ILesson) => email === lesson.ownerEmail;
 
   // TODO: Memory leek here when user make payment and open the lesson, stil this thread is alive
   const updatePayments = async () => {
@@ -196,7 +196,7 @@ export const Course: React.FC = () => {
                 title5="Zoom"
                 title6={`${live.duration} hrs`}
                 navURL={(readyToGo(payments, live).ok
-                  || amIOwnerOfLesson(live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                  || isLessonOwner(email, live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>
@@ -234,7 +234,7 @@ export const Course: React.FC = () => {
                   title3={lesson.price > 0
                     ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                   navURL={(readyToGo(payments, lesson).ok
-                    || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
+                    || isLessonOwner(email, lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                   status={status}
                 />
               </div>
@@ -274,7 +274,7 @@ export const Course: React.FC = () => {
                   title3={paper.price > 0
                     ? `Watched: ${watchedCount(paper)}/${Config.allowedWatchCount}` : 'Free'}
                   navURL={(readyToGo(payments, paper).ok
-                    || amIOwnerOfLesson(paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
+                    || isLessonOwner(email, paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
                   status={status}
                 />
               </div>

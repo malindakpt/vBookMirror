@@ -4,9 +4,15 @@
   margin: auto;
   max-width: 900px;
 
-  background: #ffffff94;
+  // background: #ffffff94;
   padding: 15px;
   border-radius: 2px;
+
+  .warn {
+    font-weight: bold;
+    color: black;
+    text-align: center;
+  }
 
   .fsButton {
     position: relative;

@@ -17,5 +17,6 @@ export const EmbedVideo: React.FC<Props> = ({ videoUrl }) => (
       allowFullScreen
       allow="autoplay"
     />
+    <div className={classes.help}>වීඩියොව නැරඹීමට වීඩියෝවේ පහතම සීමාවේ ක්ලික් කරන්න </div>
   </div>
 );

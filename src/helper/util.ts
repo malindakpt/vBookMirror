@@ -13,6 +13,8 @@ export class Util {
     public static fullName = DEFAULT_FULL_NAME;
 }
 
+export const isLessonOwner = (email: string|null, lesson: ILesson) => email === lesson.ownerEmail;
+
 export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean, payment?: IPayment} => {
   let okPayment;
   if (lesson.type === LessonType.LIVE) {

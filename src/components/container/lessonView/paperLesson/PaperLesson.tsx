@@ -8,7 +8,7 @@ import Config from '../../../../data/Config';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { readyToGo, Util } from '../../../../helper/util';
+import { isLessonOwner, readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ILesson, IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 import { IPayment } from '../../../../interfaces/IPayment';
@@ -42,8 +42,6 @@ export const PaperLesson = () => {
   const [alert, setAlert] = useState<boolean>(false);
   const [payment, setPayment] = useState<IPayment>();
   const [tempLesson, setTempLesson] = useState<IPaperLesson>();
-
-  const amIOwnerOfLesson = (lesson: ILesson) => email === lesson.ownerEmail;
 
   const startPaperRendering = (lesson: IPaperLesson) => {
     setPaper(lesson);
@@ -97,7 +95,7 @@ export const PaperLesson = () => {
                 setAlert(true);
                 setPayment(status.payment);
                 setTempLesson(paper);
-              } else if (amIOwnerOfLesson(paper)) {
+              } else if (isLessonOwner(email, paper)) {
                 setWarn('Watch as owner');
                 startPaperRendering(paper);
               } else {

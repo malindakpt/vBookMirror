@@ -15,7 +15,7 @@ import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
-import { readyToGo, Util } from '../../../../helper/util';
+import { isLessonOwner, readyToGo, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
@@ -60,8 +60,6 @@ export const VideoLesson: React.FC = () => {
     }
   };
 
-  const amIOwnerOfLesson = (lesson: IVideoLesson) => email === lesson.ownerEmail;
-
   const startVideoRendering = (lesson: IVideoLesson) => {
     setLesson(lesson);
   };
@@ -102,7 +100,7 @@ export const VideoLesson: React.FC = () => {
                 setAlert(true);
                 setPayment(status.payment);
                 setTempLesson(lesson);
-              } else if (amIOwnerOfLesson(lesson)) {
+              } else if (isLessonOwner(email, lesson)) {
                 setWarn('Watch as owner');
                 startVideoRendering(lesson);
               } else {
