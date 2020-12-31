@@ -9,9 +9,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const express = require('express');
-// const serviceAccount = require('./akshara-8630e-firebase-adminsdk-epyf1-f2d7315ffb.json');
 
-// import { response } from 'express';
 const app = express();
 
 app.use(
@@ -91,4 +89,4 @@ app.post('/notify/3', (req: any, res: any) => {
 });
 
 exports.akshara = functions.https.onRequest(app); // firebase run
-app.listen(4000, () => console.log('------------------Server started on :4000----------------------'));
+app.listen(4000, () => console.log('------------------Server started on :4000 new----------------------'));
