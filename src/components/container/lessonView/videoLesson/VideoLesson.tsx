@@ -20,6 +20,7 @@ import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
+import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
@@ -143,6 +144,7 @@ export const VideoLesson: React.FC = () => {
 
   return (
     <div className={`${classes.root}`}>
+      <PaymentManger lesson={lesson} />
       {lesson && (
       <CollectInfo
         reference={lesson.id}

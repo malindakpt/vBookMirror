@@ -18,6 +18,7 @@ import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDi
 import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
+import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
@@ -123,9 +124,6 @@ export const LiveLesson: React.FC = () => {
       if (copyText) {
         copyText.value = fullName;
         copyText.select();
-        // copyText.setSelectionRange(0, 99999);
-        // document.execCommand('copy');
-        // showSnackbar(`Your name '${fullName}' is copied. Paste it when login to zoom`);
       }
     }
   };
@@ -218,6 +216,7 @@ export const LiveLesson: React.FC = () => {
 
   return (
     <div className={classes.root}>
+      <PaymentManger lesson={lesson} />
       {freeOrPurchased && lesson && (
       <div>
         <div className={classes.topic}>

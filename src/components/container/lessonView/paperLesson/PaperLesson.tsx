@@ -15,6 +15,7 @@ import { IPayment } from '../../../../interfaces/IPayment';
 import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
+import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
@@ -93,9 +94,6 @@ export const PaperLesson = () => {
               { lessonId, ownerEmail: email }).then((data) => {
               const status = readyToGo(data, paper);
 
-              // data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
-              //   < Config.allowedWatchCount));
-
               if (status.payment) {
                 setAlert(true);
                 setPayment(status.payment);
@@ -173,6 +171,7 @@ export const PaperLesson = () => {
 
   return (
     <div>
+      <PaymentManger lesson={paper} />
       {paper && (
         <>
           <CollectInfo
@@ -202,17 +201,6 @@ export const PaperLesson = () => {
 
           <PDFView url={paper.pdfURL} />
 
-          {teacher && (
-          <div>
-            {/* <a
-              href={`tel:${teacher.phoneChat}`}
-              style={{ color: 'white', textDecoration: 'none' }}
-            >
-              Call Teacher:
-              {teacher.phoneChat}
-            </a> */}
-          </div>
-          )}
           <br />
           <div>පහතින් පිළිතුරු ලකුණු කරන්න. Mark the answers here.</div>
           <div className={classes.questions}>

@@ -1,0 +1,19 @@
+.container{
+    margin-bottom: 20px;
+    
+    .inputs{
+        margin-bottom: 25px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 10px;
+        place-items: center;
+    }
+
+    .payments {
+        .row {
+            display: grid;
+            grid-template-columns: 3fr 5fr 2fr 2fr 1fr 1fr;
+            grid-gap: 10px;
+        }
+    }
+}
