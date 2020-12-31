@@ -3,7 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
 import Config from '../../../data/Config';
 import {
-  Entity, getDocsWithProps, sendHttp,
+  deleteDoc,
+  Entity, getDocsWithProps, sendHttp, updateDoc,
 } from '../../../data/Store';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
@@ -26,11 +27,17 @@ export const PaymentRequests = () => {
 
   const approvePayment = (paymentId: string, disabled: boolean) => {
     setBusy(true);
-    sendHttp(Config.validatePaymentUrl,
-      { id: paymentId, disabled, status: PaymentStatus.VALIDATED }).then(() => {
-      forceUpdate();
-      setBusy(false);
-    });
+    if(disabled){
+      deleteDoc(Entity.PAYMENTS_STUDENTS, paymentId).then(() => {
+        setBusy(false);
+        forceUpdate();
+      })
+    }else{
+      updateDoc(Entity.PAYMENTS_STUDENTS, paymentId, { disabled, status: PaymentStatus.VALIDATED }).then(() => {
+        setBusy(false);
+        forceUpdate();
+      })
+    }
   };
 
   return (

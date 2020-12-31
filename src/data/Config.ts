@@ -11,7 +11,7 @@ const APP_CONFIG_DEV = {
 
   watchedTimeout: 500,
   realoadTimeoutAferSuccessPay: 10000,
-  allowedWatchCount: 2,
+  allowedWatchCount: 1,
   isProd: false,
   // zoomURL: 'http://127.0.0.1:8887',
   paymentDisabled: false,
