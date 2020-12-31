@@ -1,7 +1,7 @@
 /* eslint-disable max-len */ 
 import Config from '../data/Config';
 import {  addDoc, Entity} from '../data/Store';
-import { ILesson, ILiveLesson, LessonType } from '../interfaces/ILesson';
+import { ILesson, LessonType } from '../interfaces/ILesson';
 import { IPayment } from '../interfaces/IPayment';
 import { ITeacher } from '../interfaces/ITeacher';
 import { paymentJS, startPay } from './payment';
@@ -42,12 +42,6 @@ export const payable = (commissionRate:number, amount: number) => Math.ceil((amo
           * ((100 + commissionRate) / 100)));
 
 export const round = (num: number) => Math.round(num * 10) / 10;
-
-export const isLiveLessonRunning = (l: ILiveLesson) => {
-  const now = new Date().getTime();
-  const finish = l.dateTime + l.duration * 60 * 60 * 1000;
-  return now < finish;
-};
 
 export const displayDate = (d: number): string=> {
   const date = new Date(d);

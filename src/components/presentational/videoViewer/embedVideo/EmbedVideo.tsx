@@ -6,6 +6,7 @@ interface Props {
 }
 export const EmbedVideo: React.FC<Props> = ({ videoUrl }) => (
   <div className={classes.container}>
+    <div className={classes.cover1}/>
     <iframe
       title="embedvideo"
       className={classes.frame}
