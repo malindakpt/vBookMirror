@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 import { privateKey } from './config';
-import { deleteDoc, Entity, updateDoc } from './util';
+import { Entity } from './util';
 
 const cors = require('cors');
 
@@ -54,68 +54,7 @@ app.post('/notify/1', (req: any, res: any) => {
   });
 });
 
-app.post('/validatePayment', (req: any, res: any) => {
-  const { body } = req;
-  const { disabled, id } = body;
-  console.log('/validatePayment');
-  try {
-    if (disabled) {
-      deleteDoc(db, Entity.PAYMENTS_STUDENTS, id).then(() => {
-        res.send({
-          res: { status: 'ok' },
-        });
-      }).catch((e) => {
-        res.send({
-          res: { status: e },
-        });
-      });
-    } else {
-      updateDoc(db, Entity.PAYMENTS_STUDENTS, id, { disabled, status: 'VALIDATED' }).then(() => {
-        res.send({
-          res: { status: 'ok' },
-        });
-      }).catch((e) => {
-        res.send({
-          res: { status: e },
-        });
-      });
-    }
-  } catch (e) {
-    console.log('error validatePayment catch');
-    res.send({
-      res: { status: 'error' },
-    });
-  }
-});
 
-app.post('/studentupdate', (req: any, res: any) => {
-  const { body } = req;
-
-  try {
-    const update = {
-      name: body.name,
-      ownerEmail: body.ownerEmail,
-      phone: body.phone,
-      birthYear: body.birthYear,
-      reference: body.reference,
-      createdAt: body.createdAt,
-      type: body.type,
-    };
-
-    db.collection(Entity.STUDENT_INFO).add(update).then((ref) => {
-    }).catch((err) => {
-      console.log('error studentupdate fb');
-    });
-    res.send({
-      res: { status: 'ok' },
-    });
-  } catch (e) {
-    console.log('error studentupdate catch');
-    res.send({
-      res: { status: 'error' },
-    });
-  }
-});
 
 /**
  * Update payement status

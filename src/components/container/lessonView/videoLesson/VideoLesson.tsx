@@ -9,7 +9,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { IVideoLesson } from '../../../../interfaces/ILesson';
+import { IVideoLesson, LessonType } from '../../../../interfaces/ILesson';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
@@ -17,7 +17,6 @@ import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { readyToGo, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
-import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
@@ -148,7 +147,7 @@ export const VideoLesson: React.FC = () => {
       {lesson && (
       <CollectInfo
         reference={lesson.id}
-        lessonType={InteractionType.VIDEO_LESSON}
+        lessonType={LessonType.VIDEO}
       />
       )}
       <div className={classes.warn}>

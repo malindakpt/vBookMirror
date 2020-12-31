@@ -10,9 +10,8 @@ import {
 } from '../../../../data/Store';
 import { readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import { ILesson, IPaperLesson } from '../../../../interfaces/ILesson';
+import { ILesson, IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 import { IPayment } from '../../../../interfaces/IPayment';
-import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
 import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
@@ -176,7 +175,7 @@ export const PaperLesson = () => {
         <>
           <CollectInfo
             reference={paper.id}
-            lessonType={InteractionType.MCQ_PAPER}
+            lessonType={LessonType.PAPER}
           />
         </>
       )}

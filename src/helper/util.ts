@@ -1,9 +1,6 @@
-/* eslint-disable max-len */
-// import * as firebase from 'firebase/app';
+/* eslint-disable max-len */ 
 import Config from '../data/Config';
-import {
-  addDoc, Entity, getDocsWithProps, updateDoc,
-} from '../data/Store';
+import {  addDoc, Entity} from '../data/Store';
 import { ILesson, ILiveLesson, LessonType } from '../interfaces/ILesson';
 import { IPayment } from '../interfaces/IPayment';
 import { ITeacher } from '../interfaces/ITeacher';
@@ -34,23 +31,6 @@ export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean,
     ok: !!okPayment,
     payment: okPayment,
   };
-};
-
-export const checkRefund = (email: string, lessonId: string,
-  maxCount: number, onError: (msg: string) => void) => {
-  getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId }).then((allPaymentsForCourse) => {
-    if (allPaymentsForCourse && (allPaymentsForCourse.length > maxCount)) {
-      allPaymentsForCourse.sort((a, b) => a.date - b.date);
-      const myIndex = allPaymentsForCourse.findIndex((ap) => ap.ownerEmail === email);
-
-      if (myIndex >= maxCount) {
-        const myPayment = allPaymentsForCourse[myIndex];
-        onError('Maximum allowed students reached. Money will be refunded back soon');
-        addDoc(Entity.REFUND_REQUESTS, myPayment);
-        updateDoc(Entity.PAYMENTS_STUDENTS, myPayment.id, { disabled: true });
-      }
-    }
-  });
 };
 
 export const isMobile = () => window.innerWidth < 599;
