@@ -17,7 +17,7 @@ import classes from './AddPayment.module.scss';
 import Config from '../../../data/Config';
 
 interface Props {
-    lesson: ILesson;
+  lesson: ILesson;
 }
 export const AddPayment: React.FC<Props> = ({ lesson }) => {
   const [onUpdate, forcedUpdate] = useForcedUpdate();
@@ -35,7 +35,7 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
     ownerName: '',
 
     status: PaymentStatus.NOT_VALIDATED,
-    disabled: true, // This is mandetory when multiple payments exists and calculate the watch count
+    disabled: false, // This is mandetory when multiple payments exists and calculate the watch count
     watchedCount: 0,
 
     gateway: PaymentGateway.MANUAL,
@@ -85,14 +85,10 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
     setBusy(true);
     sendHttp(Config.validatePaymentUrl,
       { id: paymentId, disabled: false, status: PaymentStatus.VALIDATED }).then(() => {
-      forcedUpdate();
-      setBusy(false);
-    });
+        forcedUpdate();
+        setBusy(false);
+      });
   };
-
-  if (email !== lesson.ownerEmail) {
-    return <></>;
-  }
 
   return (
     <div className={classes.container}>
@@ -105,7 +101,7 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
           <Typography>Payment Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography style={{ width: '100%' }}>
+          <div style={{width: '100%'}}>
             <div className={classes.inputs}>
 
               <TextField
@@ -146,15 +142,14 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
                     />
                   </div>
                   <div>
-                    <DoneOutlineIcon
+                    {pmt.status === PaymentStatus.NOT_VALIDATED && payment.disabled && <DoneOutlineIcon
                       onClick={(e) => { approvePayment(pmt.id); e.stopPropagation(); }}
-                    />
+                    />}
                   </div>
                 </div>
               ))}
-
             </div>
-          </Typography>
+          </div>
         </AccordionDetails>
       </Accordion>
     </div>
