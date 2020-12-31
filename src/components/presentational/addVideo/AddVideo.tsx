@@ -85,7 +85,7 @@ export const AddVideo: React.FC<Props> = ({
               <TextField
                 className={classes.input}
                 id="1"
-                label="Description"
+                label="Video Sub Description"
                 value={videoUrl.description}
                 disabled={disabled}
                 onChange={(e) => onChangeArrayValues(index, { description: e.target.value })}
@@ -121,7 +121,7 @@ export const AddVideo: React.FC<Props> = ({
                 <TextField
                   className={classes.input}
                   id="4"
-                  label="Embed link)"
+                  label="Embed src link"
                   value={videoUrl.embedVideo}
                   disabled={disabled}
                   onChange={(e) => onChangeArrayValues(index, { embedVideo: e.target.value })}
