@@ -4,33 +4,28 @@ import {
 import React, { useContext, useEffect, useState } from 'react';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import { AppContext } from '../../../App';
-import {
-  addDoc, addDocWithId, deleteDoc, Entity, getDocsWithProps, getDocWithId, sendHttp,
-} from '../../../data/Store';
+import { addDocWithId, deleteDoc, Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 import { ILesson } from '../../../interfaces/ILesson';
-import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
-import { PaymentStatus } from '../paymentOptions/requestPayment/RequestPaymentValidation';
-import classes from './AddPayment.module.scss';
-import Config from '../../../data/Config';
+import { IPayment} from '../../../interfaces/IPayment';
+import classes from './AddPaymentCodes.module.scss';
 import { IAccessCodes } from '../../../interfaces/IAccessCodes';
+import { displayDate } from '../../../helper/util';
 
 interface Props {
   lesson: ILesson;
 }
 export const AddPayment: React.FC<Props> = ({ lesson }) => {
   const [onUpdate, forcedUpdate] = useForcedUpdate();
-  const { showSnackbar, email } = useContext(AppContext);
- 
-  const [busy, setBusy] = useState<boolean>(false);
+  const { showSnackbar } = useContext(AppContext);
 
-  const [accessCodes, setAccessCodes] = useState<IAccessCodes>({id: '', codes: ''});
+  const [accessCodes, setAccessCodes] = useState<IAccessCodes>({ id: '', codes: '' });
   const [payments, setPayments] = useState<IPayment[]>([]);
 
   useEffect(() => {
     getDocWithId<IAccessCodes>(Entity.ACCESS_CODES, lesson.id).then((data) => data && setAccessCodes(data));
+    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => data && setPayments(data));
   }, [onUpdate, lesson]);
 
   const handleChange = (obj: Record<string, any>) => {
@@ -46,6 +41,17 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
     })
   };
 
+  const deletePayment = (id: string) => {
+    
+    const res = window.confirm("Are you sure you need to remove this payment");
+    if (res === true) {
+      deleteDoc(Entity.PAYMENTS_STUDENTS, id).then(() => {
+        showSnackbar('Payment removed');
+        forcedUpdate();
+      })
+    }
+  }
+
   return (
     <div className={classes.container}>
       <Accordion>
@@ -57,7 +63,7 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
           <Typography>Payment Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <div style={{width: '100%'}}>
+          <div style={{ width: '100%' }}>
             <div className={classes.inputs}>
 
               <TextField
@@ -65,7 +71,6 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
                 id="paymentRef"
                 label="Payment Ref"
                 value={accessCodes.codes}
-                disabled={busy}
                 onChange={(e) => handleChange({ codes: e.target.value })}
               />
 
@@ -74,25 +79,25 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
             {accessCodes.codes.length > 0 && <div className={classes.codes}>
               {accessCodes.codes.split(',').map(code => <div key={code} className={classes.code}>{code}</div>)}
             </div>}
-            {/* <div className={classes.payments}>
+            {<div className={classes.payments}>
               {payments.sort((a, b) => a.date - b.date).map((pmt) => (
                 <div
                   key={pmt.id}
                   className={classes.row}
                 >
-                  <div>{new Date(pmt.date).toDateString()}</div>
+                  <div>{displayDate(pmt.date)}</div>
                   <div>{pmt.ownerEmail}</div>
                   <div>{pmt.paymentRef}</div>
                   <div>{pmt.disabled}</div>
-             
+
                   <div>
-                    {pmt.status === PaymentStatus.NOT_VALIDATED && payment.disabled && <DoneOutlineIcon
-                      onClick={(e) => { saveAccessCodes(pmt.id); e.stopPropagation(); }}
+                    {<DeleteForeverIcon
+                      onClick={(e) => { deletePayment(pmt.id); e.stopPropagation(); }}
                     />}
                   </div>
                 </div>
               ))}
-            </div> */}
+            </div>}
           </div>
         </AccordionDetails>
       </Accordion>

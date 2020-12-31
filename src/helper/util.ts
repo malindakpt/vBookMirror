@@ -69,6 +69,11 @@ export const isLiveLessonRunning = (l: ILiveLesson) => {
   return now < finish;
 };
 
+export const displayDate = (d: number): string=> {
+  const date = new Date(d);
+  return `${date.getMonth()+1}/${date.getDate()}`;
+}
+
 export const formattedTime = (x: Date) => {
   const mmm = x.getMonth() + 1;
   const month = mmm > 9 ? mmm : `0${mmm}`;

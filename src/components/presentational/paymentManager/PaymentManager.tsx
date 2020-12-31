@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../../../App';
 import { ILesson } from '../../../interfaces/ILesson';
-import { AddPayment } from './AddPayment';
+import { AddPayment } from './AddPaymentCodes';
 
 interface Props {
   lesson?: ILesson;
