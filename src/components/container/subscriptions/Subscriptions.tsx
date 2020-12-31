@@ -139,7 +139,7 @@ export const Subscriptions = () => {
               </tr>
               {
 
-            lessons.sort((a, b) => b.lesson.createdAt - a.lesson.createdAt).map((val) => {
+            lessons.sort((a, b) => (b.lesson.createdAt?? 0) - (a.lesson.createdAt ?? 0)).map((val) => {
               let manualTot = 0;
               let gatewayTot = 0;
 

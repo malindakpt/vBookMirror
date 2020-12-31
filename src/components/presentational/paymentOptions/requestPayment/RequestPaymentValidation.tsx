@@ -67,7 +67,6 @@ export const RequestPaymentValidation: React.FC<{options: PaymentOptionProps}> =
         gateway: PaymentGateway.MANUAL,
 
         id: '',
-        createdAt: 0,
       };
 
       addDoc(Entity.PAYMENTS_STUDENTS, paymentObj).then(() => {

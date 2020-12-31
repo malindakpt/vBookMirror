@@ -34,7 +34,8 @@ export enum Entity {
   PAYMENTS_TEACHER = 'PAYMENTS_TEACHER',
   REFUND_REQUESTS = 'REFUND_REQUESTS',
   LOGS = 'LOGS',
-  STUDENT_INFO = 'STUDENT_INFO'// used by BE
+  STUDENT_INFO = 'STUDENT_INFO',// used by BE
+  ACCESS_CODES = 'ACCESS_CODES'
 }
 
 const app = firebase.initializeApp(appConfig);

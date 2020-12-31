@@ -32,7 +32,6 @@ export const AddPaperLesson = () => {
     attachments: [],
     duration: 0,
     keywords: '',
-    createdAt: 0,
     courseId: '',
     orderIndex: 0,
     answers: [],

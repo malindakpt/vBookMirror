@@ -55,7 +55,6 @@ export const AddCourse = () => {
       examYear: '',
       subjectId,
       ownerEmail,
-      createdAt: 0,
     };
     addDoc(Entity.COURSES, newCourse).then(() => {
       setCourses((prev) => {

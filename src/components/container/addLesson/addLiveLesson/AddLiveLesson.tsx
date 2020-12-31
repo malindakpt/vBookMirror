@@ -52,7 +52,6 @@ const fresh: ILiveLesson = {
   isRunning: false,
   dateTime: new Date().getTime(),
   status: LiveMeetingStatus.NOT_STARTED,
-  createdAt: 0,
   type: LessonType.LIVE,
   videoUrls: [emptyVideoObj],
   orderIndex: 0,

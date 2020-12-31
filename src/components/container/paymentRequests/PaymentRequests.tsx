@@ -63,7 +63,7 @@ export const PaymentRequests = () => {
               <td>{payment.paymentRef}</td>
               <td>{`${payment.paymentObject}`}</td>
               <td>{payment.amount}</td>
-              <td>{new Date(payment.createdAt).toDateString()}</td>
+              <td>{new Date(payment.createdAt ?? 0).toDateString()}</td>
             </tr>
           ))}
         </tbody>

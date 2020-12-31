@@ -45,7 +45,6 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
   const addStudentInfo = () => {
     const info: IStudentUpdate = {
       id: '',
-      createdAt: 0,
       name,
       phone,
       ownerEmail,

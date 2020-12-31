@@ -54,9 +54,7 @@ export const AddVideoLesson = () => {
     type: LessonType.VIDEO,
     videoUrls: [emptyVideoObj],
 
-    createdAt: 0,
     id: '',
-    updatedAt: 0,
     orderIndex: 0,
   });
 
