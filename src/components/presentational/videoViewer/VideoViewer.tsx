@@ -4,9 +4,10 @@ import { EmbedVideo } from './embedVideo/EmbedVideo';
 import { FileVideo } from './fileVideo/FileVideo';
 import { GoogleDriveVideo } from './googleDriveVideo/GoogleDriveVideo';
 import classes from './VideoViewer.module.scss';
+import { YoutubeVideo } from './youtubeVideo/YoutubeVideo';
 
 interface Props {
-    lesson: ILesson;
+  lesson: ILesson;
 }
 export const VideoViewer: React.FC<Props> = ({ lesson }) => {
   const getVideo = (videoUrl: VideoUrlsObj) => {
@@ -26,8 +27,13 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
           <EmbedVideo videoUrl={videoUrl.embedVideo} />
         );
 
+      case VideoType.YoutubeVideo:
+        return (
+          <YoutubeVideo videoUrl={videoUrl.youtubeVideo} />
+        );
+
       default:
-        return <div></div>;
+        return <div>No Video Found</div>;
     }
   };
 

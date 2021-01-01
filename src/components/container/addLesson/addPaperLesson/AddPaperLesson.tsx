@@ -296,7 +296,7 @@ export const AddPaperLesson = () => {
             <AddVideo
               videoUrls={paper.videoUrls}
               onChange={(e) => handleChange({ videoUrls: e })}
-              disabled={busy}
+              disabled={disabled}
             />
 
             <TextField

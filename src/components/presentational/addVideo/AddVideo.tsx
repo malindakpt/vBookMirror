@@ -61,6 +61,12 @@ export const AddVideo: React.FC<Props> = ({
                   No Video
                 </MenuItem>
                 <MenuItem
+                  value={VideoType.YoutubeVideo}
+                  key={VideoType.YoutubeVideo}
+                >
+                  Youtube
+                </MenuItem>
+                <MenuItem
                   value={VideoType.GoogleDrive}
                   key={VideoType.GoogleDrive}
                 >
@@ -109,7 +115,7 @@ export const AddVideo: React.FC<Props> = ({
                 <TextField
                   className={classes.input}
                   id="3"
-                  label="Video URL(MediaFire Embed)"
+                  label="Video download URL"
                   value={videoUrl.fileVideo}
                   disabled={disabled}
                   onChange={(e) => onChangeArrayValues(index, { fileVideo: e.target.value })}
@@ -127,6 +133,17 @@ export const AddVideo: React.FC<Props> = ({
                   onChange={(e) => onChangeArrayValues(index, { embedVideo: e.target.value })}
                 />
               )}
+
+            {videoUrl.activeVideo === VideoType.YoutubeVideo && (
+              <TextField
+                className={classes.input}
+                id="1"
+                label="Youtube Video Id"
+                value={videoUrl.youtubeVideo}
+                disabled={disabled}
+                onChange={(e) => onChangeArrayValues(index, { youtubeVideo: e.target.value })}
+              />
+            )}
           </div>
         ))}
       </div>

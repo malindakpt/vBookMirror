@@ -263,7 +263,7 @@ export const AddVideoLesson = () => {
             <AddVideo
               videoUrls={selectedLesson.videoUrls}
               onChange={(e) => handleChange({ videoUrls: e })}
-              disabled={busy}
+              disabled={disabled}
             />
 
             <TextField

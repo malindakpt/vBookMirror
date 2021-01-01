@@ -250,7 +250,7 @@ export const PaperLesson = () => {
             </div>
           )}
           <div>
-            {paper.videoUrl && (
+            
             <div>
               { showVideo ? (
                 <VideoViewer lesson={paper} />
@@ -265,7 +265,7 @@ export const PaperLesson = () => {
                   </Button>
                 )}
             </div>
-            )}
+            
           </div>
         </div>
       ) : <div>Paper Not Loaded</div>}
