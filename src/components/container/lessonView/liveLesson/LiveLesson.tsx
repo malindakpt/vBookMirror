@@ -238,8 +238,8 @@ export const LiveLesson: React.FC = () => {
             වීමද සිදුවිය හැකිය.පහත video මගින් Zoom වෙත login වන අකාරය නරඹන්න.
         </p>
           <div className={classes.tutorials}>
-            <a href="https://www.youtube.com/embed/wZ9RCeyzRzE" target="_blank">Windows</a>
-            <a href="https://www.youtube.com/embed/LgWOwoEBBcg" target="_blank">Android</a>
+            <a href="https://www.youtube.com/embed/wZ9RCeyzRzE" target="_blank" rel="noopener noreferrer">Windows</a>
+            <a href="https://www.youtube.com/embed/LgWOwoEBBcg" target="_blank" rel="noopener noreferrer">Android</a>
           </div>
 
           <VideoViewer lesson={lesson} />

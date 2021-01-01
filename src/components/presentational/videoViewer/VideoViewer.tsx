@@ -27,7 +27,7 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
         );
 
       default:
-        return <div>No Video</div>;
+        return <div></div>;
     }
   };
 

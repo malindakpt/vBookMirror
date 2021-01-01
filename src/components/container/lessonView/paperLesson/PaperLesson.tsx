@@ -10,7 +10,7 @@ import {
 } from '../../../../data/Store';
 import { isLessonOwner, readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import { ILesson, IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
+import { IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
