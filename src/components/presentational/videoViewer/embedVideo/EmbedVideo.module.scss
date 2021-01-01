@@ -23,12 +23,14 @@
   }
 
   .help {
-    width: 100%;
+    width: calc(100% - 20px);
     position: absolute;
-    left: 0px;
-    top: 0px;
+    left: 0;
+    top: 0;
+    background: white;
     overflow: hidden;
-    background: #ffffff82;
     padding: 10px;
+    color: red;
+    font-weight: bold
   }
 }

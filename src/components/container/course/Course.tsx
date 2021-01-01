@@ -193,7 +193,7 @@ export const Course: React.FC = () => {
                 title1={`${live.topic}`}
                 title2={`${live.description}`}
                 title3={timeF}
-                title5="Zoom"
+                title5="LIVE"
                 title6={`${live.duration} hrs`}
                 navURL={(readyToGo(payments, live).ok
                   || isLessonOwner(email, live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
