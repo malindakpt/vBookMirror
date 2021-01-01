@@ -231,17 +231,7 @@ export const LiveLesson: React.FC = () => {
             )}
 
           <Attachments lesson={lesson} />
-
-          <p>
-            අක්ෂර.lk  වෙත login වී ඇති email එක මගින්ම  ඔබ Zoom වෙතද login වීම අනිවාර්ය වේ.
-            නැතිනම් ඔබව ගෙවීම් නොකළ පුද්ගලයෙකු ලෙස ගුරුවරයාට පෙන්වනු ලබන අතර ඔබව විසන්ධි
-            වීමද සිදුවිය හැකිය.පහත video මගින් Zoom වෙත login වන අකාරය නරඹන්න.
-        </p>
-          <div className={classes.tutorials}>
-            <a href="https://www.youtube.com/embed/wZ9RCeyzRzE" target="_blank" rel="noopener noreferrer">Windows</a>
-            <a href="https://www.youtube.com/embed/LgWOwoEBBcg" target="_blank" rel="noopener noreferrer">Android</a>
-          </div>
-
+          <br/>
           <VideoViewer lesson={lesson} />
         </div>
       )}
