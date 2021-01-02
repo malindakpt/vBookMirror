@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import YouTube from 'react-youtube';
 import classes from './YoutubeVideo.module.scss';
-import { PlayArrow, Stop, Pause, Fullscreen } from '@material-ui/icons';
+import { Stop, Fullscreen } from '@material-ui/icons';
 
 interface Props {
   videoUrl: string;
@@ -10,6 +10,17 @@ export const YoutubeVideo: React.FC<Props> = ({ videoUrl }) => {
 
   const target = useRef<any>();
   const [isFull, setFull] = useState(false);
+  const [isPlaying, setPlaying] = useState(false);
+
+  const handlePlay = () => {
+    if (target.current) {
+      if (isPlaying) {
+        target.current.pauseVideo()
+      } else {
+        target.current.playVideo()
+      }
+    }
+  }
 
   return (
     <div className={classes.root}>
@@ -21,13 +32,14 @@ export const YoutubeVideo: React.FC<Props> = ({ videoUrl }) => {
             onReady={(e) => {
               target.current = e.target;
             }}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}                    // defaults -> noop
+            onEnd={() => setPlaying(false)}
           />}
-          <div className={isFull ? classes.fullCover : classes.cover1} />
+        <div className={isFull ? classes.fullCover : classes.cover1} role="button" onClick={handlePlay} />
       </div>
-      <div className={ `${classes.buttons} ${isFull && classes.full}` } >
-        <PlayArrow onClick={() => target.current.playVideo()}/>
-        <Pause onClick={() => target.current.pauseVideo()}/>
-        <Stop onClick={() => target.current.stopVideo()}/>
+      <div className={`${classes.buttons} ${isFull && classes.full}`} >
+        <Stop onClick={() => target.current.stopVideo()} />
         <Fullscreen onClick={() => setFull(!isFull)}/>
       </div>
     </div>

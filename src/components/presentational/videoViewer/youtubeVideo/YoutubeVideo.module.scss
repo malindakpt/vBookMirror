@@ -47,17 +47,18 @@
 
   .buttons{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-gap: 5px;
     z-index: 1002;
     position: absolute;
-    background: white;
+    background: red;
+    color: white;
 
     &.full{
       position: fixed;
       top: 10px;
       left: 10px;
-      background-color: #ffffff73;
+      background-color: #f706068e;
     }
   }
 
