@@ -43,7 +43,7 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
     chargeTotal: payable(teacher.commissionVideo, lesson.price),
     currency: 'LKR',
     orderId: 4, // Create random orderId
-    invoiceNumber: lesson.id,
+    invoiceNumber: lesson.id+new Date().getTime(),
     storeName: 'MCO0002398',
     txnToken: '',
     transactionDateTime: getDate(),
@@ -55,7 +55,8 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
   const createPaymentMeta = async () => {
     console.log('lesson', lesson.id);
     // eslint-disable-next-line max-len
-    const token = `${options.storeName}${options.currency}${options.sharedScret}${options.transactionDateTime}${options.chargeTotal.toFixed(2)}${options.invoiceNumber}`;
+    const token = `${options.storeName}${options.currency}${options.sharedScret}${options.transactionDateTime}${options.chargeTotal}${options.invoiceNumber}`;
+    console.log('token', token)
     const sh = await sha256(token);
 
     const orderId = new Date().getTime();
@@ -65,7 +66,7 @@ export const GeniePG: React.FC<PaymentOptionProps> = ({
       const clone = { ...prev };
 
       clone.txnToken = sh;
-      clone.invoiceNumber = `INMK${orderId}`;
+      // clone.invoiceNumber = `INMK${orderId}`;
       clone.orderId = orderId;
 
       console.log(clone);
