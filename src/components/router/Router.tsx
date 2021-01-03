@@ -30,10 +30,13 @@ import { AddPaperLesson } from '../container/addLesson/addPaperLesson/AddPaperLe
 import { PaperLesson } from '../container/lessonView/paperLesson/PaperLesson';
 import { GeniePG } from '../presentational/GeniePG/GeniePG';
 import { PaymentRequests } from '../container/paymentRequests/PaymentRequests';
+import { PaySuccess } from '../container/lessonView/paySuccess/PaySuccess';
 
 type routeConfig = [string, any, string, boolean][]; // route, component, labelName, showInNavPanel
 
 export const commonRoutes: routeConfig = [
+  ['/paySuccess', PaySuccess, 'Success', false],
+
   ['/intro/:id', Intro, 'Intro', false],
   ['/notify/:type', NotifyPayment, 'Notify', false],
   ['/payment/:email', GeniePG, 'Payments', false],
