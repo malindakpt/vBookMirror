@@ -1,10 +1,7 @@
-/* eslint-disable max-len */
-// import * as firebase from 'firebase/app';
+/* eslint-disable max-len */ 
 import Config from '../data/Config';
-import {
-  addDoc, Entity, getDocsWithProps, updateDoc,
-} from '../data/Store';
-import { ILesson, ILiveLesson, LessonType } from '../interfaces/ILesson';
+import {  addDoc, Entity} from '../data/Store';
+import { ILesson, LessonType } from '../interfaces/ILesson';
 import { IPayment } from '../interfaces/IPayment';
 import { ITeacher } from '../interfaces/ITeacher';
 import { paymentJS, startPay } from './payment';
@@ -15,6 +12,8 @@ export class Util {
 
     public static fullName = DEFAULT_FULL_NAME;
 }
+
+export const isLessonOwner = (email: string|null, lesson: ILesson) => email === lesson.ownerEmail;
 
 export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean, payment?: IPayment} => {
   let okPayment;
@@ -36,23 +35,6 @@ export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean,
   };
 };
 
-export const checkRefund = (email: string, lessonId: string,
-  maxCount: number, onError: (msg: string) => void) => {
-  getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { lessonId }).then((allPaymentsForCourse) => {
-    if (allPaymentsForCourse && (allPaymentsForCourse.length > maxCount)) {
-      allPaymentsForCourse.sort((a, b) => a.date - b.date);
-      const myIndex = allPaymentsForCourse.findIndex((ap) => ap.ownerEmail === email);
-
-      if (myIndex >= maxCount) {
-        const myPayment = allPaymentsForCourse[myIndex];
-        onError('Maximum allowed students reached. Money will be refunded back soon');
-        addDoc(Entity.REFUND_REQUESTS, myPayment);
-        updateDoc(Entity.PAYMENTS_STUDENTS, myPayment.id, { disabled: true });
-      }
-    }
-  });
-};
-
 export const isMobile = () => window.innerWidth < 599;
 
 export const teacherPortion = (commission:number, amount: number) => Math.ceil((amount
@@ -63,11 +45,10 @@ export const payable = (commissionRate:number, amount: number) => Math.ceil((amo
 
 export const round = (num: number) => Math.round(num * 10) / 10;
 
-export const isLiveLessonRunning = (l: ILiveLesson) => {
-  const now = new Date().getTime();
-  const finish = l.dateTime + l.duration * 60 * 60 * 1000;
-  return now < finish;
-};
+export const displayDate = (d: number): string=> {
+  const date = new Date(d);
+  return `${date.getMonth()+1}/${date.getDate()}`;
+}
 
 export const formattedTime = (x: Date) => {
   const mmm = x.getMonth() + 1;

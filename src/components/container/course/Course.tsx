@@ -20,6 +20,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import Config from '../../../data/Config';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import {
+  isLessonOwner,
   readyToGo, Util,
 } from '../../../helper/util';
 import { Banner } from '../../presentational/banner/Banner';
@@ -62,14 +63,8 @@ export const Course: React.FC = () => {
     ]).then((result) => {
       const [videoLessons, liveLessons, mcqPapers, course] = result;
 
-      const orderedVL: IVideoLesson[] = [];
-      course?.videoLessonOrder?.forEach((c) => {
-        const videoLessonObj = videoLessons?.find((vl) => vl.id === c);
-        videoLessonObj && orderedVL.push(videoLessonObj);
-      });
-      setVideoLessons(orderedVL);
+      videoLessons && setVideoLessons(videoLessons.sort((a, b) => a.orderIndex - b.orderIndex));
       setLiveLessons(liveLessons);
-      // course && setCourse(course);
       setMcqPapers(mcqPapers ?? []);
 
       course && getDocWithId<ITeacher>(Entity.TEACHERS, course.ownerEmail).then((teacher) => {
@@ -79,7 +74,6 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-  const amIOwnerOfLesson = (lesson: ILesson) => email === lesson.ownerEmail;
 
   // TODO: Memory leek here when user make payment and open the lesson, stil this thread is alive
   const updatePayments = async () => {
@@ -199,10 +193,10 @@ export const Course: React.FC = () => {
                 title1={`${live.topic}`}
                 title2={`${live.description}`}
                 title3={timeF}
-                title5="Zoom"
+                title5="LIVE"
                 title6={`${live.duration} hrs`}
                 navURL={(readyToGo(payments, live).ok
-                  || amIOwnerOfLesson(live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
+                  || isLessonOwner(email, live)) ? `${courseId}/live/${live.id}` : `${courseId}`}
                 status={status}
               />
             </div>
@@ -240,7 +234,7 @@ export const Course: React.FC = () => {
                   title3={lesson.price > 0
                     ? `Watched: ${watchedCount(lesson)}/${Config.allowedWatchCount}` : 'Free'}
                   navURL={(readyToGo(payments, lesson).ok
-                    || amIOwnerOfLesson(lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
+                    || isLessonOwner(email, lesson)) ? `${courseId}/video/${lesson.id}` : `${courseId}`}
                   status={status}
                 />
               </div>
@@ -280,7 +274,7 @@ export const Course: React.FC = () => {
                   title3={paper.price > 0
                     ? `Watched: ${watchedCount(paper)}/${Config.allowedWatchCount}` : 'Free'}
                   navURL={(readyToGo(payments, paper).ok
-                    || amIOwnerOfLesson(paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
+                    || isLessonOwner(email, paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
                   status={status}
                 />
               </div>

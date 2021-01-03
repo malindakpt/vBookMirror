@@ -18,7 +18,7 @@ export const Exams = () => {
 
   return (
     <div className="container">
-      {exams.sort((a, b) => a.createdAt - b.createdAt)?.map((ex) => (
+      {exams.sort((a, b) => (a.createdAt ?? 0) - (b.createdAt ?? 0))?.map((ex) => (
         <Category
           key={ex.id}
           title1={`${ex.name}   ${ex.type ?? ''}`}

@@ -9,17 +9,17 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { IVideoLesson } from '../../../../interfaces/ILesson';
+import { IVideoLesson, LessonType } from '../../../../interfaces/ILesson';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
-import { readyToGo, Util } from '../../../../helper/util';
+import { isLessonOwner, readyToGo, Util } from '../../../../helper/util';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
-import { InteractionType } from '../../../../interfaces/IStudentUpdate';
-import { Player } from '../../../presentational/player/Player';
 import { Attachments } from '../../../presentational/attachments/Attachments';
+import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
+import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
 
 export const VideoLesson: React.FC = () => {
   const history = useHistory();
@@ -59,8 +59,6 @@ export const VideoLesson: React.FC = () => {
       }, Config.watchedTimeout);
     }
   };
-
-  const amIOwnerOfLesson = (lesson: IVideoLesson) => email === lesson.ownerEmail;
 
   const startVideoRendering = (lesson: IVideoLesson) => {
     setLesson(lesson);
@@ -102,7 +100,7 @@ export const VideoLesson: React.FC = () => {
                 setAlert(true);
                 setPayment(status.payment);
                 setTempLesson(lesson);
-              } else if (amIOwnerOfLesson(lesson)) {
+              } else if (isLessonOwner(email, lesson)) {
                 setWarn('Watch as owner');
                 startVideoRendering(lesson);
               } else {
@@ -143,10 +141,11 @@ export const VideoLesson: React.FC = () => {
 
   return (
     <div className={`${classes.root}`}>
+      <PaymentManger lesson={lesson} />
       {lesson && (
       <CollectInfo
         reference={lesson.id}
-        lessonType={InteractionType.VIDEO_LESSON}
+        lessonType={LessonType.VIDEO}
       />
       )}
       <div className={classes.warn}>
@@ -159,25 +158,15 @@ export const VideoLesson: React.FC = () => {
         {lesson?.description}
       </div>
       {lesson?.videoURL && (
-        <Player videoUrl={lesson.videoURL} />
+        <VideoViewer lesson={lesson} />
+      )}
+
+      {lesson?.videoUrls && (
+      <VideoViewer lesson={lesson} />
       )}
       <div
         className={classes.lessonInfo}
       >
-        {teacher && lesson && (
-        <div>
-          <div>
-            <a
-              href={`tel:${teacher.phoneChat}`}
-            >
-              Call Teacher:
-              {teacher.phoneChat}
-            </a>
-          </div>
-
-        </div>
-        )}
-
         <Attachments lesson={lesson} />
       </div>
       {alert && payment && (

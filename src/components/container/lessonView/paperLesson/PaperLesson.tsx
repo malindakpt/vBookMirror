@@ -8,17 +8,17 @@ import Config from '../../../../data/Config';
 import {
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
-import { readyToGo, Util } from '../../../../helper/util';
+import { isLessonOwner, readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import { ILesson, IPaperLesson } from '../../../../interfaces/ILesson';
+import { IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 import { IPayment } from '../../../../interfaces/IPayment';
-import { InteractionType } from '../../../../interfaces/IStudentUpdate';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
+import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
 import { PDFView } from '../../../presentational/pdfView/PDFView';
-import { Player } from '../../../presentational/player/Player';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
 import { CollectInfo } from '../../../presentational/snackbar/CollectInfo';
+import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 import { MCQAnswer, Status } from '../../addLesson/addPaperLesson/mcqAnswer/MCQAnswer';
 import classes from './PaperLesson.module.scss';
 
@@ -42,8 +42,6 @@ export const PaperLesson = () => {
   const [alert, setAlert] = useState<boolean>(false);
   const [payment, setPayment] = useState<IPayment>();
   const [tempLesson, setTempLesson] = useState<IPaperLesson>();
-
-  const amIOwnerOfLesson = (lesson: ILesson) => email === lesson.ownerEmail;
 
   const startPaperRendering = (lesson: IPaperLesson) => {
     setPaper(lesson);
@@ -93,14 +91,11 @@ export const PaperLesson = () => {
               { lessonId, ownerEmail: email }).then((data) => {
               const status = readyToGo(data, paper);
 
-              // data.find((pay) => (!pay.disabled && (pay.watchedCount || 0)
-              //   < Config.allowedWatchCount));
-
               if (status.payment) {
                 setAlert(true);
                 setPayment(status.payment);
                 setTempLesson(paper);
-              } else if (amIOwnerOfLesson(paper)) {
+              } else if (isLessonOwner(email, paper)) {
                 setWarn('Watch as owner');
                 startPaperRendering(paper);
               } else {
@@ -173,11 +168,12 @@ export const PaperLesson = () => {
 
   return (
     <div>
+      <PaymentManger lesson={paper} />
       {paper && (
         <>
           <CollectInfo
             reference={paper.id}
-            lessonType={InteractionType.MCQ_PAPER}
+            lessonType={LessonType.PAPER}
           />
         </>
       )}
@@ -202,17 +198,6 @@ export const PaperLesson = () => {
 
           <PDFView url={paper.pdfURL} />
 
-          {teacher && (
-          <div>
-            {/* <a
-              href={`tel:${teacher.phoneChat}`}
-              style={{ color: 'white', textDecoration: 'none' }}
-            >
-              Call Teacher:
-              {teacher.phoneChat}
-            </a> */}
-          </div>
-          )}
           <br />
           <div>පහතින් පිළිතුරු ලකුණු කරන්න. Mark the answers here.</div>
           <div className={classes.questions}>
@@ -265,10 +250,10 @@ export const PaperLesson = () => {
             </div>
           )}
           <div>
-            {paper.videoUrl && (
+            
             <div>
               { showVideo ? (
-                <Player videoUrl={paper.videoUrl} />
+                <VideoViewer lesson={paper} />
               )
                 : (
                   <Button
@@ -280,7 +265,7 @@ export const PaperLesson = () => {
                   </Button>
                 )}
             </div>
-            )}
+            
           </div>
         </div>
       ) : <div>Paper Not Loaded</div>}
