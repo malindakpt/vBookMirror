@@ -51,12 +51,10 @@ export const AddCourse = () => {
     setBusy(true);
     const newCourse: ICourse = {
       id: '',
-      videoLessonOrder: [],
       examId,
       examYear: '',
       subjectId,
       ownerEmail,
-      createdAt: 0,
     };
     addDoc(Entity.COURSES, newCourse).then(() => {
       setCourses((prev) => {

@@ -14,7 +14,7 @@ import { ILesson } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
 import { teacherPortion } from '../../../helper/util';
-import { IStudentUpdate } from '../../../interfaces/IStudentUpdate';
+import { IStudentInfo } from '../../../interfaces/IStudentInfo';
 import { FileUploader } from '../../presentational/fileUploader/FileUploader';
 import { PaymentStatus } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
 
@@ -109,7 +109,7 @@ export const Subscriptions = () => {
   const [views, setViews] = useState<{lessonId: string, count: number}>();
 
   const checkViews = (lesson: ILesson) => {
-    getDocsWithProps<IStudentUpdate[]>(Entity.STUDENT_INFO, { reference: lesson.id }).then((data) => {
+    getDocsWithProps<IStudentInfo[]>(Entity.STUDENT_INFO, { reference: lesson.id }).then((data) => {
       if (data) {
         setViews({
           lessonId: lesson.id,
@@ -139,7 +139,7 @@ export const Subscriptions = () => {
               </tr>
               {
 
-            lessons.sort((a, b) => b.lesson.createdAt - a.lesson.createdAt).map((val) => {
+            lessons.sort((a, b) => (b.lesson.createdAt?? 0) - (a.lesson.createdAt ?? 0)).map((val) => {
               let manualTot = 0;
               let gatewayTot = 0;
 

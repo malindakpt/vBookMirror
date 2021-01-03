@@ -1,12 +1,12 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/interactive-supports-focus */
 import React, { useState } from 'react';
-import classes from './Player.module.scss';
+import classes from './GoogleDriveVideo.module.scss';
 
 interface Props {
     videoUrl: string;
 }
-
-export const Player: React.FC<Props> = ({ videoUrl }) => {
+export const GoogleDriveVideo: React.FC<Props> = ({ videoUrl }) => {
   const [isFull, setFull] = useState<boolean>(false);
 
   return (
@@ -19,9 +19,7 @@ export const Player: React.FC<Props> = ({ videoUrl }) => {
           setFull((prev) => !prev);
           e.stopPropagation();
         }}
-      >
-        .
-      </div>
+      />
       <iframe
         className={classes.player}
         title="video"

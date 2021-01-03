@@ -1,0 +1,65 @@
+@import '../../../../mixins.scss';
+
+.root {
+  display: grid;
+  place-items: center;
+
+  .container {
+    width: 100%;
+    height: 400px;
+
+    .cover1 {
+      position: relative;
+      z-index: 2;
+      left: 0px;
+      top: -101%;
+      width: 100%;
+      height: 100%;
+      // background-color: rgba(255, 0, 0, 0.384);
+      z-index: 1001;
+    }
+
+    .fullCover {
+      height: 100vh;
+      width: 100vw;
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      // background-color: rgba(0, 26, 255, 0.384);
+      z-index: 1001;
+    }
+
+    .player {
+      height: 400px;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .full {
+      height: 100vh;
+      width: 100vw;
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      z-index: 1000;
+    }
+  }
+
+  .buttons{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
+    z-index: 1002;
+    position: absolute;
+    background: red;
+    color: white;
+
+    &.full{
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #f706068e;
+    }
+  }
+
+}

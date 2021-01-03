@@ -7,15 +7,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextField } from '@material-ui/core';
-import { sendHttp } from '../../../data/Store';
-import { InteractionType, IStudentUpdate } from '../../../interfaces/IStudentUpdate';
+import { addDoc, Entity } from '../../../data/Store';
+import { IStudentInfo } from '../../../interfaces/IStudentInfo';
 import { addToStorage, getFromStorage, LocalStorageKeys } from '../../../data/LocalStorage';
 import { AppContext } from '../../../App';
-import Config from '../../../data/Config';
+import { LessonType } from '../../../interfaces/ILesson';
 
 export interface Props {
     reference: string;
-    lessonType: InteractionType;
+    lessonType: LessonType;
 }
 export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -24,18 +24,14 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
   const [phone, setPhone] = useState<string>('');
   const [ownerEmail, setOwnerEmail] = useState<string>('');
   const [birthYear, setBirthYear] = useState<string>('');
-
   const { email, isTeacher, showSnackbar } = useContext(AppContext);
-  const handleClose = () => {
-    // setOpen(false);
-    // onCancel();
-  };
 
   useEffect(() => {
+    // Info is recorded if user is not a teacher
     if (isTeacher === false) {
       const info = getFromStorage(LocalStorageKeys.STUDENT_INFO);
       if (info) {
-        sendHttp(Config.studentUpdateUrl, info).then(() => console.log('info sent'));
+        addDoc<IStudentInfo>(Entity.STUDENT_INFO, info as IStudentInfo);
       } else {
         setOpen(true);
       }
@@ -43,9 +39,8 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
   }, [email, isTeacher]);
 
   const addStudentInfo = () => {
-    const info: IStudentUpdate = {
+    const info: IStudentInfo = {
       id: '',
-      createdAt: 0,
       name,
       phone,
       ownerEmail,
@@ -54,7 +49,7 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
       type: lessonType,
     };
     addToStorage(LocalStorageKeys.STUDENT_INFO, info);
-    sendHttp(Config.studentUpdateUrl, info).then(() => console.log('Added student info'));
+    addDoc<IStudentInfo>(Entity.STUDENT_INFO, info);
   };
 
   const onSave = () => {
@@ -76,7 +71,6 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
     <div>
       <Dialog
         open={open}
-        onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -122,7 +116,6 @@ export const CollectInfo: React.FC<Props> = ({ reference, lessonType }) => {
               />
             </div>
           </form>
-          {/* </DialogContentText> */}
 
         </DialogContent>
         <DialogActions>

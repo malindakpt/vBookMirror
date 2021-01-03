@@ -1,9 +1,6 @@
 import React, { useContext } from 'react';
-import {
-  Switch,
-  Route,
-} from 'react-router-dom';
-import loader from '../../images/loading/e.gif';
+import { Switch, Route } from 'react-router-dom';
+import loader from '../../images/loading/a.gif';
 import classes from './Router.module.scss';
 import { Exams } from '../container/exams/Exams';
 import { Subjects } from '../container/subjects/Subjects';
@@ -77,6 +74,7 @@ export const adminRoutes: routeConfig = [
 ];
 
 const Router: React.FC = () => {
+  document.addEventListener('contextmenu', (event) => event.preventDefault());
   const { isTeacher, isAdmin, isLoading } = useContext(AppContext);
 
   return (

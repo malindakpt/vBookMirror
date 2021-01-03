@@ -39,7 +39,6 @@ export const AddExam = () => {
 
     setBusy(true);
     if (exam) {
-      exam.createdAt = new Date().getTime();
       addDoc(Entity.EXAMS, exam).then(() => {
         showSnackbar('Exam added');
         updateUI();
