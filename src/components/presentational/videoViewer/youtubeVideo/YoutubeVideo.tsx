@@ -15,7 +15,6 @@ export const YoutubeVideo: React.FC<Props> = ({ videoUrl }) => {
   const [isPlaying, setPlaying] = useState(false);
 
   const handleState = (e: any) => {
-    console.log(e);
     if (target.current) {
       if (e.data === YT_IS_pLAYING) {
         setPlaying(true);
@@ -25,9 +24,7 @@ export const YoutubeVideo: React.FC<Props> = ({ videoUrl }) => {
     }
   }
 
-
   const handlePlay = (e: any) => {
-    console.log(e);
     if (target.current) {
       if (isPlaying) {
         target.current.pauseVideo()
