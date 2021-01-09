@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import YouTube from 'react-youtube';
 import classes from './YoutubeVideo.module.scss';
-import { Stop, Fullscreen } from '@material-ui/icons';
+import { Stop, Fullscreen, FastForward, FastRewind } from '@material-ui/icons';
 
+const VIDEO_SEEK_SECONDS = 120;
 interface Props {
   videoUrl: string;
 }
@@ -40,6 +41,8 @@ export const YoutubeVideo: React.FC<Props> = ({ videoUrl }) => {
       </div>
       <div className={`${classes.buttons} ${isFull && classes.full}`} >
         <Stop onClick={() => target.current.stopVideo()} />
+        <FastRewind onClick={() => target.current.seekTo(target.current.getCurrentTime() - VIDEO_SEEK_SECONDS, true)} />
+        <FastForward onClick={() => target.current.seekTo(target.current.getCurrentTime() + VIDEO_SEEK_SECONDS, true)} />
         <Fullscreen onClick={() => setFull(!isFull)}/>
       </div>
     </div>
