@@ -33,7 +33,8 @@ export enum Entity {
   PAYMENTS_STUDENTS = 'PAYMENTS', // used by BE
   LOGS = 'LOGS',
   STUDENT_INFO = 'STUDENT_INFO',// used by BE
-  ACCESS_CODES = 'ACCESS_CODES'
+  ACCESS_CODES = 'ACCESS_CODES',
+  COMMENTS = 'COMMENTS'
 }
 
 const app = firebase.initializeApp(appConfig);
