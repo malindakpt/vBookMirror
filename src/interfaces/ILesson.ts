@@ -58,7 +58,7 @@ export interface IPaperLesson extends ILesson {
   pdfId: string;
   possibleAnswers: string[];
   answers: { ans: string }[];
-  videoUrl: string;
+  // videoUrl: string;
 }
 
 export interface IVideoLesson extends ILesson {

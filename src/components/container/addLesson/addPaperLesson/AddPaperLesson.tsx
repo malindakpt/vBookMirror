@@ -35,7 +35,6 @@ export const AddPaperLesson = () => {
     courseId: '',
     orderIndex: 0,
     answers: [],
-    videoUrl: '',
     price: 0,
     possibleAnswers: ['1', '2', '3', '4', '5'],
     topic: '',
