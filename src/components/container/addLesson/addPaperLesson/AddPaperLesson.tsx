@@ -18,6 +18,7 @@ import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import {
+  AnswerSheetStatus,
   emptyVideoObj, IPaperLesson, LessonType,
 } from '../../../../interfaces/ILesson';
 import { LessonList } from '../../../presentational/lessonList/LessonList';
@@ -36,6 +37,7 @@ export const AddPaperLesson = () => {
     orderIndex: 0,
     answers: [],
     videoUrl: '',
+    answersSheetStatus: AnswerSheetStatus.SHOW,
     price: 0,
     possibleAnswers: ['1', '2', '3', '4', '5'],
     topic: '',
@@ -122,7 +124,7 @@ export const AddPaperLesson = () => {
     });
   };
 
-  const handleSuccess = (pdfUrl: string|null) => {
+  const handleSuccess = (pdfUrl: string | null) => {
     // const clone = { ...paper };
 
     if (isEditMode) {
@@ -216,9 +218,7 @@ export const AddPaperLesson = () => {
         </div>
       </div>
       <div className={classes.container}>
-
         <div>
-
           <div className={classes.top}>
             <RadioGroup
               className={classes.twoColumn}
@@ -299,6 +299,35 @@ export const AddPaperLesson = () => {
               disabled={disabled}
             />
 
+            <FormControl className={classes.input}>
+              <InputLabel
+                id="showans"
+                className="fc1"
+              >
+                Show/Hide Answers
+              </InputLabel>
+              <Select
+                className={`${classes.input}`}
+                labelId="label1"
+                id="id1"
+                value={paper.answersSheetStatus}
+                onChange={(e) => handleChange({ answersSheetStatus: e.target.value })}
+              >
+
+                <MenuItem
+                  value={AnswerSheetStatus.SHOW}
+                >
+                  Show Answers
+                    </MenuItem>
+
+                    <MenuItem
+                  value={AnswerSheetStatus.HIDE}
+                >
+                  Hide Answers
+                    </MenuItem>
+
+              </Select>
+            </FormControl>
             <TextField
               className={classes.input}
               id="price"
@@ -341,27 +370,27 @@ export const AddPaperLesson = () => {
 
           <div className={classes.questions}>
             {
-        paper?.answers.map((q, idx) => (
-          <div
-            className={classes.question}
-            key={idx}
-          >
-            <MCQAnswer
-              idx={idx}
-              status={Status.Correct}
-              ans={q.ans}
-              possibleAnswers={paper.possibleAnswers}
-              onSelectAnswer={(idx, ans) => {
-                setPaper((prev) => {
-                  const clone = { ...prev };
-                  clone.answers[idx].ans = ans;
-                  return clone;
-                });
-              }}
-            />
-          </div>
-        ))
-      }
+              paper?.answers.map((q, idx) => (
+                <div
+                  className={classes.question}
+                  key={idx}
+                >
+                  <MCQAnswer
+                    idx={idx}
+                    status={Status.Correct}
+                    ans={q.ans}
+                    possibleAnswers={paper.possibleAnswers}
+                    onSelectAnswer={(idx, ans) => {
+                      setPaper((prev) => {
+                        const clone = { ...prev };
+                        clone.answers[idx].ans = ans;
+                        return clone;
+                      });
+                    }}
+                  />
+                </div>
+              ))
+            }
           </div>
         </div>
         <div>
