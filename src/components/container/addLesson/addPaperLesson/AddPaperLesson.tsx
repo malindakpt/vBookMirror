@@ -307,6 +307,7 @@ export const AddPaperLesson = () => {
                 Show/Hide Answers
               </InputLabel>
               <Select
+                disabled={disabled}
                 className={`${classes.input}`}
                 labelId="label1"
                 id="id1"
@@ -320,7 +321,7 @@ export const AddPaperLesson = () => {
                   Show Answers
                     </MenuItem>
 
-                    <MenuItem
+                <MenuItem
                   value={AnswerSheetStatus.HIDE}
                 >
                   Hide Answers

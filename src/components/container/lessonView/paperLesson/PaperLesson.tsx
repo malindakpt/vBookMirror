@@ -10,7 +10,7 @@ import {
 } from '../../../../data/Store';
 import { isLessonOwner, readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import { IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
+import { AnswerSheetStatus, IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
@@ -226,19 +226,11 @@ export const PaperLesson = () => {
           </div>
           {validated && (
           <h3 style={{ color: 'red', textAlign: 'center' }}>
-            Wow!!
-            {' '}
-            {' '}
-            {correctCount()}
-            {' '}
-            out of
-            {' '}
-            {answers.length}
-            {' '}
-            are correct.
+            Final Marks:{' '}
+            {Math.round(correctCount()*100/answers.length)}%
           </h3>
           )}
-          {paper.answers.length > 0 && !validated && (
+          {paper.answers.length > 0 && !validated && paper.answersSheetStatus === AnswerSheetStatus.SHOW && (
             <div className={classes.validate}>
               <Button
                 variant="contained"
