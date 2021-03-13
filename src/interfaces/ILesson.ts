@@ -15,6 +15,10 @@ export enum VideoType {
   YoutubeVideo
 }
 
+export enum AnswerSheetStatus {
+  SHOW, HIDE
+}
+
 export interface VideoUrlsObj {
   activeVideo: VideoType;
   description: string;
@@ -58,6 +62,7 @@ export interface IPaperLesson extends ILesson {
   pdfId: string;
   possibleAnswers: string[];
   answers: { ans: string }[];
+  answersSheetStatus: AnswerSheetStatus;
   videoUrl: string;
 }
 
@@ -72,5 +77,4 @@ export interface ILiveLesson extends ILesson {
   status: LiveMeetingStatus;
   videoUrl?: string;
   isRunning: boolean;
-  // videoUrls: VideoUrlsObj[];
 }

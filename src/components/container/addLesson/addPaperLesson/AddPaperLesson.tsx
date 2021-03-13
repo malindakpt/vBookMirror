@@ -18,11 +18,13 @@ import { getObject } from '../../../../data/StoreHelper';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import {
+  AnswerSheetStatus,
   emptyVideoObj, IPaperLesson, LessonType,
 } from '../../../../interfaces/ILesson';
 import { LessonList } from '../../../presentational/lessonList/LessonList';
 import { AddVideo } from '../../../presentational/addVideo/AddVideo';
 import classes from './AddPaperLesson.module.scss';
+import { IReport } from '../../../../interfaces/IReport';
 
 export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -36,6 +38,7 @@ export const AddPaperLesson = () => {
     orderIndex: 0,
     answers: [],
     videoUrl: '',
+    answersSheetStatus: AnswerSheetStatus.SHOW,
     price: 0,
     possibleAnswers: ['1', '2', '3', '4', '5'],
     topic: '',
@@ -58,6 +61,7 @@ export const AddPaperLesson = () => {
 
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
+  const [reports, setReports] = useState<IReport[]>([]);
 
   const addNew = () => {
     setPaper(newPaper);
@@ -68,21 +72,6 @@ export const AddPaperLesson = () => {
     paper.courseId = courseId;
     paper.pdfId = `${new Date().getTime()}`;
   };
-
-  // const loadPapers = () => {
-  //   getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId })
-  //     .then((papers) => {
-  //       papers && setAllPapers(papers);
-  //     });
-  // };
-  // const initaData = () => {
-  //   getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
-  //     .then((courses) => {
-  //       courses && setCourses(courses);
-  //     });
-  //   // eslint-disable-next-line
-  //   addNew();
-  // };
 
   useEffect(() => {
     // fetch unrelated data
@@ -122,7 +111,7 @@ export const AddPaperLesson = () => {
     });
   };
 
-  const handleSuccess = (pdfUrl: string|null) => {
+  const handleSuccess = (pdfUrl: string | null) => {
     // const clone = { ...paper };
 
     if (isEditMode) {
@@ -167,6 +156,10 @@ export const AddPaperLesson = () => {
     setPaper(paper);
     setEditMode(true);
   };
+
+  const fetchTopMarks = () => {
+    getDocsWithProps<IReport[]>(Entity.REPORTS, {}).then((data) => setReports(data));
+  }
 
   const validate = () => {
     if (paper.topic === '') {
@@ -216,9 +209,7 @@ export const AddPaperLesson = () => {
         </div>
       </div>
       <div className={classes.container}>
-
         <div>
-
           <div className={classes.top}>
             <RadioGroup
               className={classes.twoColumn}
@@ -299,6 +290,36 @@ export const AddPaperLesson = () => {
               disabled={disabled}
             />
 
+            <FormControl className={classes.input}>
+              <InputLabel
+                id="showans"
+                className="fc1"
+              >
+                Show/Hide Answers
+              </InputLabel>
+              <Select
+                disabled={disabled}
+                className={`${classes.input}`}
+                labelId="label1"
+                id="id1"
+                value={paper.answersSheetStatus}
+                onChange={(e) => handleChange({ answersSheetStatus: e.target.value })}
+              >
+
+                <MenuItem
+                  value={AnswerSheetStatus.SHOW}
+                >
+                  Show Answers
+                    </MenuItem>
+
+                <MenuItem
+                  value={AnswerSheetStatus.HIDE}
+                >
+                  Hide Answers
+                    </MenuItem>
+
+              </Select>
+            </FormControl>
             <TextField
               className={classes.input}
               id="price"
@@ -308,6 +329,10 @@ export const AddPaperLesson = () => {
               value={paper.price}
               onChange={(e) => handleChange({ price: Number(e.target.value) })}
             />
+            {paper && paper.id && <div>
+              <Button onClick={fetchTopMarks}>Show Top Marks</Button>
+              {reports.sort((a, b) => b.marks - a.marks).map(rep => <div className={classes.marks}><span>{rep.name}</span><span>{rep.ownerEmail}</span><span>{rep.marks}%</span></div>)}
+            </div>}
             <div
               className={classes.addRemove}
             >
@@ -341,27 +366,27 @@ export const AddPaperLesson = () => {
 
           <div className={classes.questions}>
             {
-        paper?.answers.map((q, idx) => (
-          <div
-            className={classes.question}
-            key={idx}
-          >
-            <MCQAnswer
-              idx={idx}
-              status={Status.Correct}
-              ans={q.ans}
-              possibleAnswers={paper.possibleAnswers}
-              onSelectAnswer={(idx, ans) => {
-                setPaper((prev) => {
-                  const clone = { ...prev };
-                  clone.answers[idx].ans = ans;
-                  return clone;
-                });
-              }}
-            />
-          </div>
-        ))
-      }
+              paper?.answers.map((q, idx) => (
+                <div
+                  className={classes.question}
+                  key={idx}
+                >
+                  <MCQAnswer
+                    idx={idx}
+                    status={Status.Correct}
+                    ans={q.ans}
+                    possibleAnswers={paper.possibleAnswers}
+                    onSelectAnswer={(idx, ans) => {
+                      setPaper((prev) => {
+                        const clone = { ...prev };
+                        clone.answers[idx].ans = ans;
+                        return clone;
+                      });
+                    }}
+                  />
+                </div>
+              ))
+            }
           </div>
         </div>
         <div>

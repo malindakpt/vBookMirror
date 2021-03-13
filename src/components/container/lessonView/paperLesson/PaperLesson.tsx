@@ -6,12 +6,14 @@ import { useHistory, useParams } from 'react-router-dom';
 import { AppContext } from '../../../../App';
 import Config from '../../../../data/Config';
 import {
+  addDoc,
   Entity, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../../data/Store';
 import { isLessonOwner, readyToGo, Util } from '../../../../helper/util';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import { IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
+import { AnswerSheetStatus, IPaperLesson, LessonType } from '../../../../interfaces/ILesson';
 import { IPayment } from '../../../../interfaces/IPayment';
+import { IReport } from '../../../../interfaces/IReport';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { Banner } from '../../../presentational/banner/Banner';
 import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
@@ -24,7 +26,7 @@ import classes from './PaperLesson.module.scss';
 
 export const PaperLesson = () => {
   const history = useHistory();
-  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
+  const { email, showSnackbar, showPaymentPopup, } = useContext(AppContext);
   const timerRef = useRef<any>();
 
   // disble context menu for avoid right click
@@ -89,33 +91,33 @@ export const PaperLesson = () => {
           if (email) {
             getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
-              const status = readyToGo(data, paper);
+                const status = readyToGo(data, paper);
 
-              if (status.payment) {
-                setAlert(true);
-                setPayment(status.payment);
-                setTempLesson(paper);
-              } else if (isLessonOwner(email, paper)) {
-                setWarn('Watch as owner');
-                startPaperRendering(paper);
-              } else {
-                // eslint-disable-next-line max-len
-                setWarn('මුදල් ගෙවියයුතු ප්‍රශ්න පත්‍රයකි .  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid exam paper. Please try again in 2 miniutes if you have paid already');
-                if (teacher) {
-                  showPaymentPopup({
-                    email,
-                    paidFor: teacher.ownerEmail,
-                    lesson: paper,
-                    teacher,
-                    onSuccess: () => {},
-                    onCancel: () => {},
-                  });
+                if (status.payment) {
+                  setAlert(true);
+                  setPayment(status.payment);
+                  setTempLesson(paper);
+                } else if (isLessonOwner(email, paper)) {
+                  setWarn('Watch as owner');
+                  startPaperRendering(paper);
+                } else {
+                  // eslint-disable-next-line max-len
+                  setWarn('මුදල් ගෙවියයුතු ප්‍රශ්න පත්‍රයකි .  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid exam paper. Please try again in 2 miniutes if you have paid already');
+                  if (teacher) {
+                    showPaymentPopup({
+                      email,
+                      paidFor: teacher.ownerEmail,
+                      lesson: paper,
+                      teacher,
+                      onSuccess: () => { },
+                      onCancel: () => { },
+                    });
+                  }
+                  // teacher && promptPayment(email, teacher, paper, PaymentType.VIDEO_LESSON, () => {
+                  // // DO not reload this page since it can cause to reset your watch count
+                  // }, showSnackbar);
                 }
-                // teacher && promptPayment(email, teacher, paper, PaymentType.VIDEO_LESSON, () => {
-                // // DO not reload this page since it can cause to reset your watch count
-                // }, showSnackbar);
-              }
-            });
+              });
           } else {
             // showSnackbar('Please login with your Gmail address');
             Util.invokeLogin();
@@ -166,6 +168,24 @@ export const PaperLesson = () => {
     return okCount;
   };
 
+  const completePaper = () => {
+    setValidate(true);
+    getDocsWithProps<IReport[]>(Entity.REPORTS, { ownerEmail: email, ref: paper?.id }).then(data => {
+      if (data.length === 0) {
+        const marks = Math.round(correctCount() * 100 / answers.length);
+        const report = {
+          name: Util.fullName,
+          marks,
+          ref: paper?.id,
+          ownerEmail: email
+        };
+        addDoc(Entity.REPORTS, report).then(() => {
+          showSnackbar('Your marks are sent to the teacher');
+        });
+      }
+    })
+  }
+
   return (
     <div>
       <PaymentManger lesson={paper} />
@@ -178,7 +198,7 @@ export const PaperLesson = () => {
         </>
       )}
       { teacher && (
-      <Banner teacher={teacher} />
+        <Banner teacher={teacher} />
       )}
       {paper ? (
         <div>
@@ -225,34 +245,25 @@ export const PaperLesson = () => {
             }
           </div>
           {validated && (
-          <h3 style={{ color: 'red', textAlign: 'center' }}>
-            Wow!!
-            {' '}
-            {' '}
-            {correctCount()}
-            {' '}
-            out of
-            {' '}
-            {answers.length}
-            {' '}
-            are correct.
-          </h3>
+            <h3 style={{ color: 'red', textAlign: 'center' }}>
+              Final Marks:{' '}
+              {Math.round(correctCount() * 100 / answers.length)}%
+            </h3>
           )}
-          {paper.answers.length > 0 && !validated && (
+          {paper.answers.length > 0 && !validated && paper.answersSheetStatus === AnswerSheetStatus.SHOW && (
             <div className={classes.validate}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => setValidate(true)}
+                onClick={completePaper}
               >
                 Complete
               </Button>
             </div>
           )}
           <div>
-            
             <div>
-              { showVideo ? (
+              {showVideo ? (
                 <VideoViewer lesson={paper} />
               )
                 : (
@@ -265,23 +276,23 @@ export const PaperLesson = () => {
                   </Button>
                 )}
             </div>
-            
+
           </div>
         </div>
       ) : <div>Paper Not Loaded</div>}
       {alert && payment && (
-      <AlertDialog
-        type={AlertMode.VIDEO}
-        onAccept={() => {
-          setAlert(false);
-          onAcceptAlert();
-        }}
+        <AlertDialog
+          type={AlertMode.VIDEO}
+          onAccept={() => {
+            setAlert(false);
+            onAcceptAlert();
+          }}
 
-        onCancel={() => {
-          setAlert(false);
-          history.goBack();
-        }}
-      />
+          onCancel={() => {
+            setAlert(false);
+            history.goBack();
+          }}
+        />
       )}
     </div>
   );
