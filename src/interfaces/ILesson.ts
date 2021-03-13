@@ -77,5 +77,4 @@ export interface ILiveLesson extends ILesson {
   status: LiveMeetingStatus;
   videoUrl?: string;
   isRunning: boolean;
-  // videoUrls: VideoUrlsObj[];
 }

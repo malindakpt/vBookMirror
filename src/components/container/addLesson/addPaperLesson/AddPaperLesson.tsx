@@ -24,6 +24,7 @@ import {
 import { LessonList } from '../../../presentational/lessonList/LessonList';
 import { AddVideo } from '../../../presentational/addVideo/AddVideo';
 import classes from './AddPaperLesson.module.scss';
+import { IReport } from '../../../../interfaces/IReport';
 
 export const AddPaperLesson = () => {
   const { email, showSnackbar } = useContext(AppContext);
@@ -60,6 +61,7 @@ export const AddPaperLesson = () => {
 
   const [exams, setExams] = useState<IExam[]>([]);
   const [subjects, setSubjects] = useState<ISubject[]>([]);
+  const [reports, setReports] = useState<IReport[]>([]);
 
   const addNew = () => {
     setPaper(newPaper);
@@ -70,21 +72,6 @@ export const AddPaperLesson = () => {
     paper.courseId = courseId;
     paper.pdfId = `${new Date().getTime()}`;
   };
-
-  // const loadPapers = () => {
-  //   getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email, courseId })
-  //     .then((papers) => {
-  //       papers && setAllPapers(papers);
-  //     });
-  // };
-  // const initaData = () => {
-  //   getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
-  //     .then((courses) => {
-  //       courses && setCourses(courses);
-  //     });
-  //   // eslint-disable-next-line
-  //   addNew();
-  // };
 
   useEffect(() => {
     // fetch unrelated data
@@ -169,6 +156,10 @@ export const AddPaperLesson = () => {
     setPaper(paper);
     setEditMode(true);
   };
+
+  const fetchTopMarks = () => {
+    getDocsWithProps<IReport[]>(Entity.REPORTS, {}).then((data) => setReports(data));
+  }
 
   const validate = () => {
     if (paper.topic === '') {
@@ -338,6 +329,10 @@ export const AddPaperLesson = () => {
               value={paper.price}
               onChange={(e) => handleChange({ price: Number(e.target.value) })}
             />
+            {paper && paper.id && <div>
+              <Button onClick={fetchTopMarks}>Show Top Marks</Button>
+              {reports.sort((a, b) => a.marks - b.marks).map(rep => <div className={classes.marks}><span>{rep.name}</span><span>{rep.ownerEmail}</span><span>{rep.marks}%</span></div>)}
+            </div>}
             <div
               className={classes.addRemove}
             >
