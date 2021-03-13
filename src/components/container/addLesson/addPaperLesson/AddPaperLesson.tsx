@@ -331,7 +331,7 @@ export const AddPaperLesson = () => {
             />
             {paper && paper.id && <div>
               <Button onClick={fetchTopMarks}>Show Top Marks</Button>
-              {reports.sort((a, b) => a.marks - b.marks).map(rep => <div className={classes.marks}><span>{rep.name}</span><span>{rep.ownerEmail}</span><span>{rep.marks}%</span></div>)}
+              {reports.sort((a, b) => b.marks - a.marks).map(rep => <div className={classes.marks}><span>{rep.name}</span><span>{rep.ownerEmail}</span><span>{rep.marks}%</span></div>)}
             </div>}
             <div
               className={classes.addRemove}
