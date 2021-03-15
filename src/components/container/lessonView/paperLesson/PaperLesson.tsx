@@ -169,6 +169,10 @@ export const PaperLesson = () => {
   };
 
   const completePaper = () => {
+    if(!email){
+      showSnackbar('Please login to check answers');
+      return;
+    }
     setValidate(true);
     getDocsWithProps<IReport[]>(Entity.REPORTS, { ownerEmail: email, ref: paper?.id }).then(data => {
       if (data.length === 0) {
