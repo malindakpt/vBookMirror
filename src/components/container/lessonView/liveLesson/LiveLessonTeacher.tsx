@@ -30,7 +30,7 @@ interface StudentConnection {
   }
 }
 
-const REPEAT_START_TIMES = 20;
+const REPEAT_START_TIMES = 21;
 export const LiveLessonTeacher: React.FC = () => {
   const { email, showSnackbar } = useContext(AppContext);
 
@@ -289,13 +289,8 @@ export const LiveLessonTeacher: React.FC = () => {
 
           <div className={classes.check}>
             <table className={classes.payList}>
-              <tr><th>Not paid students for this lesson</th></tr>
-              {/* <thead>
-              <th>Student Email</th>
-              <th>User Name</th>
-              <th>Status</th>
-            </thead> */}
               <tbody>
+                <tr><th>Not paid students for this lesson</th></tr>
                 {
                 nonPaid.map((usr) => (
                   <tr key={usr.userId}>

@@ -16,7 +16,7 @@ const APP_CONFIG_DEV = {
   // zoomURL: 'http://127.0.0.1:8887',
   paymentDisabled: false,
   techPhone: '0771141194',
-  zoomURL: 'https://smsm-54fa3.web.app',
+  zoomURL: 'http://127.0.0.1:8887/',
 
   // Variables valid only for dev
   payOnDismiss: false,

@@ -148,7 +148,9 @@
     <script src="https://source.zoom.us/1.8.1/lib/vendor/jquery.min.js"></script>
     <script src="https://source.zoom.us/1.8.1/lib/vendor/lodash.min.js"></script>
 
-    <script src="https://source.zoom.us/zoom-meeting-1.8.1.min.js"></script>
+    <!-- <script src="js/zoom-meeting-1.8.1.min.js"></script> -->
+    <script src="js/zoom-meeting-1.9.5.min.js"></script>
+    <!-- <script src="js/zoom-meeting-1.8.1.min.js"></script> -->
     <script src="js/tool.js"></script>
     <script src="js/vconsole.min.js"></script>
     <script src="js/index.js"></script>
@@ -160,7 +162,7 @@
                     var ele = document.getElementById('join_meeting');
                     if (ele){
                         document.getElementById('join_meeting').click();
-                    }ot
+                    }
                 }else if (e.data.type === 'STOP'){
                     ZoomMtg.leaveMeeting({});
                 }else if (e.data.type === 'RELOAD'){
