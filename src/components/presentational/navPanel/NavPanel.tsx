@@ -14,6 +14,7 @@ import MailIcon from '@material-ui/icons/BlurOn';
 import { Link } from 'react-router-dom';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
+import packageJson from '../../../../package.json';
 import { AppContext } from '../../../App';
 import { adminRoutes, teacherRoutes, commonRoutes } from '../../router/Router';
 import { Entity, getDocsWithProps } from '../../../data/Store';
@@ -174,8 +175,13 @@ export const NavPanel = () => {
             </Button>
           </div>
           )}
+          <div style={{ padding: '10px' }}>
+            version:
+            {packageJson.version}
+          </div>
         </Drawer>
       </>
+
     </div>
   );
 };
