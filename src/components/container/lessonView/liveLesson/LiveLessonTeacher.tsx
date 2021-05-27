@@ -126,7 +126,7 @@ export const LiveLessonTeacher: React.FC = () => {
 
       const lesson = selectedLesson.current;
 
-      if (lesson && (lesson?.price > 0)) {
+      if (lesson) {
         const userPayment = paymentsForSelectedLesson.current?.find(
           (pay) => pay.ownerName === zUser.userName);
         if (!userPayment) {
