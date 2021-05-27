@@ -68,7 +68,11 @@ function getStringFromHash (s) {
         leaveUrl: meetingConfig.leaveUrl,
         webEndpoint: meetingConfig.webEndpoint,
         success: function () {
-          $.i18n.reload(meetingConfig.lang);
+          // $.i18n.reload(meetingConfig.lang);
+          setTimeout(() => {
+            $('.joinWindowBtn').click();
+            console.log('Joined')
+          }, 1000);
           ZoomMtg.join({
             meetingNumber: meetingConfig.meetingNumber,
             userName: meetingConfig.userName,

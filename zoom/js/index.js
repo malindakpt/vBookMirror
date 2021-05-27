@@ -40,7 +40,8 @@ function getStringFromHash (s) {
    * The below generateSignature should be done server side as not to expose your api secret in public
    * You can find an eaxmple in here: https://marketplace.zoom.us/docs/sdk/native-sdks/web/essential/signature
    */
-  var API_SECRET = "tK4MMHy85pd7zaRuc9kJVw1Tj7wtLdole0qF";
+  var API_SECRET = "g7XLvW6BkCAQev7TeStg7AeMYEzupf0ubTHV";
+
 
   // some help code, remember mn, pwd, lang to cookie, and autofill.
   document.getElementById("display_name").value =
