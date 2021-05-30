@@ -21,6 +21,7 @@ import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
+import { Recorder } from '../../../presentational/recorder/Recorder';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
@@ -212,6 +213,12 @@ export const LiveLesson: React.FC = () => {
       <div className={classes.warn}>
         {warn}
       </div>
+      {email && lessonId && (
+      <Recorder
+        email={email}
+        lessonId={lessonId}
+      />
+      )}
       <PaymentManger lesson={lesson} />
       {freeOrPurchased && lesson && (
         <div>

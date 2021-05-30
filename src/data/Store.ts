@@ -17,6 +17,7 @@ export interface UploadStatus {
 
 export enum FileType {
   VIDEO= 'VIDEO',
+  AUDIO = 'AUDIO',
   IMAGE = 'IMAGE',
   PDF = 'PDF'
 }
@@ -32,7 +33,7 @@ export enum Entity {
   SUBJECTS = 'SUBJECTS',
   PAYMENTS_STUDENTS = 'PAYMENTS', // used by BE
   LOGS = 'LOGS',
-  STUDENT_INFO = 'STUDENT_INFO',// used by BE
+  STUDENT_INFO = 'STUDENT_INFO', // used by BE
   ACCESS_CODES = 'ACCESS_CODES',
   REPORTS = 'REPORTS'
 }

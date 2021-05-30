@@ -1,12 +1,32 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { FileType, uploadFileToServer } from '../../../data/Store';
+import {
+  Entity, FileType, updateDoc, uploadFileToServer,
+} from '../../../data/Store';
 
-export const Recorder: React.FC = () => {
+export interface Props {
+  email: string;
+  lessonId: string;
+}
+export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
   const mediaRecorder = useRef<MediaRecorder|undefined>();
+  const audioChunks = useRef<any>([]);
+  const audioBlob = useRef<any>();
 
   const initRecorder = useCallback(async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder.current = new MediaRecorder(stream);
+    if (mediaRecorder.current) {
+      mediaRecorder.current.addEventListener('dataavailable', (event) => {
+        audioChunks.current.push(event.data);
+      });
+
+      mediaRecorder.current.addEventListener('stop', () => {
+        audioBlob.current = new Blob(audioChunks.current);
+        const audioUrl = URL.createObjectURL(audioBlob.current);
+        const audio = new Audio(audioUrl);
+        audio.play();
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -16,30 +36,28 @@ export const Recorder: React.FC = () => {
   const handleStartRecord = () => {
     console.log('Start');
 
-    const audioChunks: any = [];
+    audioChunks.current = [];
 
     if (mediaRecorder.current) {
       mediaRecorder.current.start();
-
-      mediaRecorder.current.addEventListener('dataavailable', (event) => {
-        audioChunks.push(event.data);
-      });
-
-      mediaRecorder.current.addEventListener('stop', () => {
-        const audioBlob = new Blob(audioChunks);
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        audio.play();
-
-        uploadFileToServer(FileType.AUDIO, audioBlob, 'voice', '123').subscribe((data) => {
-          console.log(data);
-        });
-      });
     }
   };
   const handleStopRecord = () => {
     console.log('Stop');
     mediaRecorder.current?.stop();
+  };
+
+  const handleSend = () => {
+    const timestamp = new Date().getTime().toString();
+
+    uploadFileToServer(FileType.AUDIO, audioBlob.current, email, timestamp).subscribe((data) => {
+      if (data.downloadURL) {
+        console.log(data.downloadURL);
+        updateDoc(Entity.LESSONS_LIVE, lessonId, { [`audioQuestions.${timestamp}`]: data.downloadURL }).then(() => {
+          console.log('Lesson Updated');
+        });
+      }
+    });
   };
 
   return (
@@ -56,6 +74,13 @@ export const Recorder: React.FC = () => {
         onClick={handleStopRecord}
       >
         Stop Record
+      </button>
+
+      <button
+        type="button"
+        onClick={handleSend}
+      >
+        Send
       </button>
     </div>
   );
