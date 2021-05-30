@@ -71,6 +71,16 @@ export const listAllVideos = (ownerEmail: string)
     .then((data) => resolve(data));
 });
 
+export const listenChanges = <T>(entity: Entity, id: string, onChange: (file: T) => void) => {
+  const unsubscribe = db.collection(entity).doc(id)
+    .onSnapshot((doc) => {
+      const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server';
+      onChange(doc.data() as T);
+    });
+
+  return unsubscribe;
+};
+
 // export const updateMeta = (email: string, vId: string) => {
 //   const storageRef = storage.ref();
 //   // Create a reference to the file whose metadata we want to change

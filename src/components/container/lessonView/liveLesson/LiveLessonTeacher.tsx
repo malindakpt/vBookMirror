@@ -11,7 +11,9 @@ import Config from '../../../../data/Config';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILesson, ILiveLesson } from '../../../../interfaces/ILesson';
-import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
+import {
+  Entity, getDocsWithProps, getDocWithId, listenChanges,
+} from '../../../../data/Store';
 import { getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import logo from '../../../../images/logo.png';
@@ -235,13 +237,18 @@ export const LiveLessonTeacher: React.FC = () => {
     Notification.requestPermission().then((result) => {
       console.log(result);
     });
-    // TODO: what is false here
-    window.addEventListener('message', onMsgZoomClientListener, false);
-    window.addEventListener('beforeunload', onBeforeunloadListener, false);
+    // // TODO: what is false here
+    // window.addEventListener('message', onMsgZoomClientListener, false);
+    // window.addEventListener('beforeunload', onBeforeunloadListener, false);
 
-    processVideo();
+    // processVideo();
+
+    const unsubscribe = listenChanges<ILiveLesson>(Entity.LESSONS_LIVE, lessonId, (data) => {
+      console.log(data);
+    });
 
     return () => {
+      unsubscribe();
       disconnectAll();
     };
     // eslint-disable-next-line
