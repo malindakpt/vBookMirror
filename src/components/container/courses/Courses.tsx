@@ -19,16 +19,16 @@ export const Courses: React.FC = () => {
   const [exams, setExams] = useState<IExam[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<ICourse[]>(Entity.COURSES, { subjectId, examId })
+    getDocsWithProps<ICourse>(Entity.COURSES, { subjectId, examId })
       .then((data) => {
         setCourses(data);
         keyMap(data);
       });
-    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => {
+    getDocsWithProps<ITeacher>(Entity.TEACHERS, {}).then((data) => {
       setTeachers(data);
       keyMap(data);
     });
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);
 

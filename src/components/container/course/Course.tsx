@@ -47,18 +47,18 @@ export const Course: React.FC = () => {
   const [teacher, setTeacher] = useState<ITeacher>();
 
   useEffect(() => {
-    getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }).then((user) => {
+    getDocsWithProps<IUser>(Entity.USERS, { ownerEmail: email }).then((user) => {
       if (user) {
-        getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
+        getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
           setPayments(payments);
         });
       }
     });
 
     Promise.all([
-      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
-      getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
-      getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { courseId }),
+      getDocsWithProps<IVideoLesson>(Entity.LESSONS_VIDEO, { courseId }),
+      getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE, { courseId }),
+      getDocsWithProps<IPaperLesson>(Entity.LESSONS_PAPER, { courseId }),
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
       const [videoLessons, liveLessons, mcqPapers, course] = result;
@@ -74,7 +74,6 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-
   // TODO: Memory leek here when user make payment and open the lesson, stil this thread is alive
   const updatePayments = async () => {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -85,7 +84,7 @@ export const Course: React.FC = () => {
       // if (email && teacher) { checkRefund(email, le, teacher.zoomMaxCount, showSnackbar); }
 
       // eslint-disable-next-line no-await-in-loop
-      const myPayments = await getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
+      const myPayments = await getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
       setPayments(myPayments);
       // eslint-disable-next-line no-await-in-loop
       await sleep(2000);

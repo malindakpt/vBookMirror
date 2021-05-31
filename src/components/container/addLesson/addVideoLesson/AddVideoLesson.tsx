@@ -79,9 +79,9 @@ export const AddVideoLesson = () => {
 
   useEffect(() => {
     if (!email) return;
-    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email }).then((data) => setCourses(data));
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: email }).then((data) => setCourses(data));
+    getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
     getDocWithId<ITeacher>(Entity.TEACHERS, email).then((data) => data && setTeacher(data));
     // eslint-disable-next-line
   }, [email]);

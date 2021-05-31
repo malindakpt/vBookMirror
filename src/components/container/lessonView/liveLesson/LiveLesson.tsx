@@ -85,7 +85,7 @@ export const LiveLesson: React.FC = () => {
 
         if (lesson.price) {
           if (email) {
-            getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+            getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
               // TODO:  Check refundable lessons here
               const status = readyToGo(data, lesson);
@@ -186,7 +186,7 @@ export const LiveLesson: React.FC = () => {
   useEffect(() => {
     processVideo();
     const glob: any = window;
-    livePingTimer.current = setInterval(sendLiveAttendancePing, Config.liveAttendancePingInterval);
+    livePingTimer.current = setInterval(sendLiveAttendancePing, Config.liveAttendanceSendInterval);
 
     return () => {
       stopLive();

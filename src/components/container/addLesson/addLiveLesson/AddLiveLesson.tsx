@@ -98,9 +98,9 @@ export const AddLiveLesson = () => {
           setTeacher(teacher);
         }
       });
-      getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-      getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-      getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
+      getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+      getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
+      getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: email })
         .then((data) => data && setCourses(data));
     }
   }, [email]);
@@ -108,7 +108,7 @@ export const AddLiveLesson = () => {
   const onCourseChange = (id: string) => {
     setSessionProps({ courseId: id });
     setSelectedCourse(courses.find((c) => c.id === id));
-    getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
+    getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
       .then((data) => data && setLiveLessons(data));
   };
 
@@ -138,7 +138,7 @@ export const AddLiveLesson = () => {
     if (editMode) {
       updateDoc(Entity.LESSONS_LIVE, liveLesson.id, liveLesson).then((data) => {
         showSnackbar('Live Session Edited');
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+        getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
         addNew();
@@ -146,7 +146,7 @@ export const AddLiveLesson = () => {
     } else {
       addDoc(Entity.LESSONS_LIVE, { ...liveLesson, ownerEmail: email }).then((data) => {
         showSnackbar('Live Session Added');
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+        getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
         addNew();
@@ -173,7 +173,7 @@ export const AddLiveLesson = () => {
     if (teacher && email) {
       updateDoc(Entity.LESSONS_LIVE, less.id, { isRunning }).then((data) => {
         showSnackbar(`${less.topic} ${isRunning ? 'Started' : 'Stopped'}`);
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+        getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
       });

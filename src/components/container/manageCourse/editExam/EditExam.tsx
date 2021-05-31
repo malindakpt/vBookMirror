@@ -20,8 +20,8 @@ export const EditExam = () => {
   const [selectedExamIdx, setSelectedExamIdx] = useState<number>(-1);
 
   useEffect(() => {
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
   }, []);
 
   const onSelectedExamChange = (e: any) => {

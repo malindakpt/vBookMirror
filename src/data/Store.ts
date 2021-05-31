@@ -223,8 +223,8 @@ export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promi
 
 export const getDocsWithProps = <T>(
   entityName: Entity,
-  conditions: any,
-): Promise<T> => new Promise((resolves, reject) => {
+  conditions: Partial<T>,
+): Promise<T[]> => new Promise((resolves, reject) => {
     // const cachedResponse = store[generateRequestKey(entityName, conditions)];
     // if (cachedResponse) {
     //   // Resolve result from cache and skip network

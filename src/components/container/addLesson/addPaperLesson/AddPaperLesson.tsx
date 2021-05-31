@@ -75,10 +75,10 @@ export const AddPaperLesson = () => {
 
   useEffect(() => {
     // fetch unrelated data
-    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
+    getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: email })
       .then((courses) => { courses && setCourses(courses); });
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);
 
@@ -158,8 +158,8 @@ export const AddPaperLesson = () => {
   };
 
   const fetchTopMarks = () => {
-    getDocsWithProps<IReport[]>(Entity.REPORTS, {}).then((data) => setReports(data));
-  }
+    getDocsWithProps<IReport>(Entity.REPORTS, {}).then((data) => setReports(data));
+  };
 
   const validate = () => {
     if (paper.topic === '') {
@@ -310,13 +310,13 @@ export const AddPaperLesson = () => {
                   value={AnswerSheetStatus.SHOW}
                 >
                   Show Answers
-                    </MenuItem>
+                </MenuItem>
 
                 <MenuItem
                   value={AnswerSheetStatus.HIDE}
                 >
                   Hide Answers
-                    </MenuItem>
+                </MenuItem>
 
               </Select>
             </FormControl>
@@ -329,10 +329,21 @@ export const AddPaperLesson = () => {
               value={paper.price}
               onChange={(e) => handleChange({ price: Number(e.target.value) })}
             />
-            {paper && paper.id && <div>
+            {paper && paper.id && (
+            <div>
               <Button onClick={fetchTopMarks}>Show Top Marks</Button>
-              {reports.sort((a, b) => b.marks - a.marks).map(rep => <div className={classes.marks}><span>{rep.name}</span><span>{rep.ownerEmail}</span><span>{rep.marks}%</span></div>)}
-            </div>}
+              {reports.sort((a, b) => b.marks - a.marks).map((rep) => (
+                <div className={classes.marks}>
+                  <span>{rep.name}</span>
+                  <span>{rep.ownerEmail}</span>
+                  <span>
+                    {rep.marks}
+                    %
+                  </span>
+                </div>
+              ))}
+            </div>
+            )}
             <div
               className={classes.addRemove}
             >

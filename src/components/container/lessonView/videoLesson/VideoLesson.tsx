@@ -87,7 +87,7 @@ export const VideoLesson: React.FC = () => {
           setWarn('Free Video');
         } else {
           if (email) {
-            getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+            getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
               {
                 lessonId,
                 ownerEmail: email,

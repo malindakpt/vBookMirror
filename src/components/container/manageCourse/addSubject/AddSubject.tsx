@@ -26,7 +26,7 @@ export const AddSubject = () => {
   };
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     // eslint-disable-next-line
   },[onUpdate])
 

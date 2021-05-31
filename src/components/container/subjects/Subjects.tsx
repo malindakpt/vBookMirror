@@ -17,7 +17,7 @@ export const Subjects = () => {
 
   const fetchData = async () => {
     const exam = await getDocWithId<IExam>(Entity.EXAMS, examId);
-    const subjects = await getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {});
+    const subjects = await getDocsWithProps<ISubject>(Entity.SUBJECTS, {});
     let filtered = subjects.filter((sub) => exam?.subjectIds?.includes(sub.id));
 
     // Remove testing lesson from actual users

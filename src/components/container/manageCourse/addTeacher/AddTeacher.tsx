@@ -22,7 +22,7 @@ export const AddTeacher = () => {
 
   useEffect(() => {
     // display existing teachers
-    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
+    getDocsWithProps<ITeacher>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
   }, [onUpdate]);
 
   const setTeacherProps = (obj: any) => {

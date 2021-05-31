@@ -219,7 +219,7 @@ export const LiveLessonTeacher: React.FC = () => {
         teacher && setTeacher(teacher);
 
         if (email) {
-          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+          getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
             { lessonId }).then((data) => {
             setLesson(lesson);
             selectedLesson.current = lesson;

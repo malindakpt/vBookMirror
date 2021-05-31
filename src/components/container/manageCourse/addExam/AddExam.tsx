@@ -28,7 +28,7 @@ export const AddExam = () => {
   };
 
   useEffect(() => {
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => data && setExams(data));
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => data && setExams(data));
   }, [onUpdate]);
 
   const onSave = () => {

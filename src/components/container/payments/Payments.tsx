@@ -10,7 +10,7 @@ export const Payments = () => {
   const [payments, setPayments] = useState<IPayment[]>([]);
 
   useEffect(() => {
-    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, {}).then((data) => setPayments(data));
+    getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, {}).then((data) => setPayments(data));
   }, []);
 
   const resetWatchCount = (paymentId: string) => {

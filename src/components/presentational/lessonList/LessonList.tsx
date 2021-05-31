@@ -32,7 +32,7 @@ export const LessonList: React.FC<Props> = ({
     if (!courseId) {
       return;
     }
-    getDocsWithProps<ILesson[]>(entity,
+    getDocsWithProps<ILesson>(entity,
       { ownerEmail: email, courseId }).then((lessons) => {
       setCourseLessons(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
     });
