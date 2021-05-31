@@ -27,7 +27,7 @@ export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
   const mediaRecorder = useRef<MediaRecorder|undefined>();
   const audioChunks = useRef<any>([]);
   const audioBlob = useRef<any>();
-  const audioFile = useRef<HTMLAudioElement>();
+  // const audioFile = useRef<HTMLAudioElement>();
   const [status, setStatus] = useState<RecordingStatus>(RecordingStatus.Default);
 
   const initRecorder = useCallback(async () => {

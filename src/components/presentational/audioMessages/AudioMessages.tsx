@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import classes from './AudioMessages.module.scss';
 import { Entity, listenFileChanges } from '../../../data/Store';
 import { IAudioQuestion } from '../../../interfaces/IAudioQuestion';
@@ -15,14 +17,9 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
   //   const playedQuestions = useRef<Record<string, boolean>>({});
   const [audioQuestions, setAudioQuestions] = useState<Record<string, IAudioQuestion>>();
   const playedQuestions = useRef<Record<string, IAudioQuestion>>({});
+  const [autoPlay, setAutoPlay] = useState<boolean>(true);
 
-  useEffect(() => () => {
-    if (audioQuestionsSubscription.current) {
-      audioQuestionsSubscription.current.unsubscribe();
-    }
-  }, []);
-
-  const startListenAudioQuestions = () => {
+  const startListenAudioQuestions = useCallback(() => {
     if (!audioQuestionsSubscription.current) {
       audioQuestionsSubscription.current = listenFileChanges<ILiveLesson>(Entity.LESSONS_LIVE, lessonId, (data) => {
         console.log(data);
@@ -38,11 +35,7 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
         }, 3000);
       });
     }
-  };
-
-  if (!lessonId || lessonId.length < 4) {
-    return <div>Invalid Lesson Id</div>;
-  }
+  }, [lessonId, readyToListenQuestions]);
 
   const addtoPlayedList = (key: string, audio: IAudioQuestion) => {
     playedQuestions.current[key] = audio;
@@ -50,15 +43,48 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
     new Notification('New Question', { body: audio.studentName, icon: askImage });
   };
 
+  useEffect(() => {
+    startListenAudioQuestions();
+
+    return () => {
+      if (audioQuestionsSubscription.current) {
+        audioQuestionsSubscription.current.unsubscribe();
+      }
+    };
+  }, [startListenAudioQuestions]);
+
+  if (!lessonId || lessonId.length < 4) {
+    return <div>Invalid Lesson Id</div>;
+  }
+
   return (
     <div>
       {readyToListenQuestions && <div>Listening Stared</div>}
+      {/* {!audioQuestionsSubscription.current && (
       <button
         onClick={startListenAudioQuestions}
         type="button"
       >
         Listen Audio Questions
       </button>
+      )} */}
+
+      {!autoPlay && (
+      <button
+        onClick={() => setAutoPlay(true)}
+        type="button"
+      >
+        Enable auto play questions
+      </button>
+      )}
+      {autoPlay && (
+      <button
+        onClick={() => setAutoPlay(false)}
+        type="button"
+      >
+        Disable auto play questions
+      </button>
+      )}
 
       <div className={classes.container}>
         {audioQuestions && Object.keys(audioQuestions).sort((a, b) => (a < b ? 1 : -1)).map((key) => (
@@ -69,7 +95,7 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
             <div>{audioQuestions[key].studentName}</div>
             <audio
               controls
-              autoPlay={readyToListenQuestions && !playedQuestions.current[key]}
+              autoPlay={autoPlay && readyToListenQuestions && !playedQuestions.current[key]}
               onPlay={() => addtoPlayedList(key, audioQuestions[key])}
             >
               <source

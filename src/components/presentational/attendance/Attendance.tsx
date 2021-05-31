@@ -1,4 +1,5 @@
 import React, {
+  useCallback,
   useEffect, useRef, useState,
 } from 'react';
 import classes from './Attendance.module.scss';
@@ -13,18 +14,19 @@ export const Attendance: React.FC<Props> = ({ lessonId }) => {
   const checkAttendanceTimer = useRef<any>();
   const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
 
-  const checkAttendance = () => {
+  const checkAttendance = useCallback(() => {
     getDocsWithProps<IAttendance>(Entity.ATTENDANCE, {
       lessonId,
     }).then((data) => setAttendanceList(data));
-  };
+  }, [lessonId]);
+
   useEffect(() => {
     checkAttendanceTimer.current = setInterval(checkAttendance, Config.liveAttendanceCheckInterval);
 
     return () => {
       clearInterval(checkAttendanceTimer.current);
     };
-  }, []);
+  }, [checkAttendance]);
 
   const activeGap = (time: number) => {
     const now = new Date().getTime();
