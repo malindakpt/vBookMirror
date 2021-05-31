@@ -47,13 +47,15 @@ export const Course: React.FC = () => {
   const [teacher, setTeacher] = useState<ITeacher>();
 
   useEffect(() => {
-    getDocsWithProps<IUser>(Entity.USERS, { ownerEmail: email }).then((user) => {
-      if (user) {
-        getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
-          setPayments(payments);
-        });
-      }
-    });
+    if (email) {
+      getDocsWithProps<IUser>(Entity.USERS, { ownerEmail: email }).then((user) => {
+        if (user) {
+          getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
+            setPayments(payments);
+          });
+        }
+      });
+    }
 
     Promise.all([
       getDocsWithProps<IVideoLesson>(Entity.LESSONS_VIDEO, { courseId }),
@@ -84,8 +86,10 @@ export const Course: React.FC = () => {
       // if (email && teacher) { checkRefund(email, le, teacher.zoomMaxCount, showSnackbar); }
 
       // eslint-disable-next-line no-await-in-loop
-      const myPayments = await getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
-      setPayments(myPayments);
+      if (email) {
+        const myPayments = await getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
+        setPayments(myPayments);
+      }
       // eslint-disable-next-line no-await-in-loop
       await sleep(2000);
     }

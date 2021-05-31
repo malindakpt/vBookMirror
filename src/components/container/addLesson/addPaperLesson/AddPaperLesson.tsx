@@ -75,8 +75,10 @@ export const AddPaperLesson = () => {
 
   useEffect(() => {
     // fetch unrelated data
-    getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: email })
-      .then((courses) => { courses && setCourses(courses); });
+    if (email) {
+      getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: email })
+        .then((courses) => { courses && setCourses(courses); });
+    }
     getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
     getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
     // eslint-disable-next-line

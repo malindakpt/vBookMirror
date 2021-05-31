@@ -15,12 +15,14 @@ export const PaymentRequests = () => {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    getDocsWithProps<IPayment>(
-      Entity.PAYMENTS_STUDENTS,
-      {
-        status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true, paidFor: email,
-      },
-    ).then((data) => data && setPending(data));
+    if (email) {
+      getDocsWithProps<IPayment>(
+        Entity.PAYMENTS_STUDENTS,
+        {
+          status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true, paidFor: email,
+        },
+      ).then((data) => data && setPending(data));
+    }
   }, [onUpdate, email]);
 
   const approvePayment = (paymentId: string, disabled: boolean) => {

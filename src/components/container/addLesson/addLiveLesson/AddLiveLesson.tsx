@@ -108,8 +108,11 @@ export const AddLiveLesson = () => {
   const onCourseChange = (id: string) => {
     setSessionProps({ courseId: id });
     setSelectedCourse(courses.find((c) => c.id === id));
-    getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
-      .then((data) => data && setLiveLessons(data));
+
+    if (email) {
+      getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
+        .then((data) => data && setLiveLessons(data));
+    }
   };
 
   const editLesson = (sess: ILiveLesson) => {

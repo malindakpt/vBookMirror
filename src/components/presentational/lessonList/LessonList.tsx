@@ -32,10 +32,13 @@ export const LessonList: React.FC<Props> = ({
     if (!courseId) {
       return;
     }
-    getDocsWithProps<ILesson>(entity,
-      { ownerEmail: email, courseId }).then((lessons) => {
-      setCourseLessons(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
-    });
+
+    if (email) {
+      getDocsWithProps<ILesson>(entity,
+        { ownerEmail: email, courseId }).then((lessons) => {
+        setCourseLessons(lessons.sort((a, b) => a.orderIndex - b.orderIndex));
+      });
+    }
   }, [onUpdate, lastUpdated, courseId, email, entity]);
 
   const saveLessonsOrder = () => {

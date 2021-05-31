@@ -1,6 +1,6 @@
-/* eslint-disable max-len */ 
+/* eslint-disable max-len */
 import Config from '../data/Config';
-import {  addDoc, Entity} from '../data/Store';
+import { addDoc, Entity } from '../data/Store';
 import { ILesson, LessonType } from '../interfaces/ILesson';
 import { IPayment } from '../interfaces/IPayment';
 import { ITeacher } from '../interfaces/ITeacher';
@@ -45,10 +45,10 @@ export const payable = (commissionRate:number, amount: number) => Math.ceil((amo
 
 export const round = (num: number) => Math.round(num * 10) / 10;
 
-export const displayDate = (d: number): string=> {
+export const displayDate = (d: number): string => {
   const date = new Date(d);
-  return `${date.getMonth()+1}/${date.getDate()}`;
-}
+  return `${date.getMonth() + 1}/${date.getDate()}`;
+};
 
 export const formattedTime = (x: Date) => {
   const mmm = x.getMonth() + 1;

@@ -27,19 +27,21 @@ export const RequestPaymentValidation: React.FC<{ options: PaymentOptionProps }>
   const { showSnackbar } = useContext(AppContext);
 
   useEffect(() => {
-    getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
-      {
-        lessonId: lesson.id,
-        status: PaymentStatus.NOT_VALIDATED,
-        gateway: PaymentGateway.MANUAL,
-        ownerEmail: email,
-      }).then((data) => {
-      if (data.length > 0) {
-        setResultMsg(REQ_SENT);
-        setPaymentRef(data[0].paymentRef);
-        setfetchedPaymentRef(data[0].paymentRef);
-      }
-    });
+    if (email) {
+      getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
+        {
+          lessonId: lesson.id,
+          status: PaymentStatus.NOT_VALIDATED,
+          gateway: PaymentGateway.MANUAL,
+          ownerEmail: email,
+        }).then((data) => {
+        if (data.length > 0) {
+          setResultMsg(REQ_SENT);
+          setPaymentRef(data[0].paymentRef);
+          setfetchedPaymentRef(data[0].paymentRef);
+        }
+      });
+    }
   }, [lesson, email]);
 
   const requestValidation = async () => {
