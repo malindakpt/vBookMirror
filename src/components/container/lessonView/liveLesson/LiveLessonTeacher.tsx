@@ -58,6 +58,7 @@ export const LiveLessonTeacher: React.FC = () => {
 
   const startConnectTimerRef = useRef<any>();
   const memeberCount = useRef<number>(0);
+  const audioQuestionsSubscription = useRef<any>();
 
   const sendStartAction = () => {
     setSentStartCommands((prev) => prev + 1);
@@ -237,22 +238,31 @@ export const LiveLessonTeacher: React.FC = () => {
     Notification.requestPermission().then((result) => {
       console.log(result);
     });
-    // // TODO: what is false here
-    // window.addEventListener('message', onMsgZoomClientListener, false);
-    // window.addEventListener('beforeunload', onBeforeunloadListener, false);
-
-    // processVideo();
-
-    const unsubscribe = listenChanges<ILiveLesson>(Entity.LESSONS_LIVE, lessonId, (data) => {
-      console.log(data);
-    });
 
     return () => {
-      unsubscribe();
       disconnectAll();
+      if (audioQuestionsSubscription.current) {
+        audioQuestionsSubscription.current.unsubscribe();
+      }
     };
     // eslint-disable-next-line
   }, []);
+
+  const strtCheckZoomAttendance = () => {
+    // TODO: what is false here
+    window.addEventListener('message', onMsgZoomClientListener, false);
+    window.addEventListener('beforeunload', onBeforeunloadListener, false);
+
+    processVideo();
+  };
+
+  const startListenAudioQuestions = () => {
+    if (!audioQuestionsSubscription.current) {
+      audioQuestionsSubscription.current = listenChanges<ILiveLesson>(Entity.LESSONS_LIVE, lessonId, (data) => {
+        console.log(data);
+      });
+    }
+  };
 
   const getIframe = (teacher: ITeacher) => (
     <>
@@ -271,6 +281,18 @@ export const LiveLessonTeacher: React.FC = () => {
 
   return (
     <div className={classes.root}>
+      <button
+        onClick={strtCheckZoomAttendance}
+        type="button"
+      >
+        Check Zoom attendance
+      </button>
+      <button
+        onClick={startListenAudioQuestions}
+        type="button"
+      >
+        Listen Audio Questions
+      </button>
       { (lesson && !disconnected) ? (
         <div>
           {connected && (
