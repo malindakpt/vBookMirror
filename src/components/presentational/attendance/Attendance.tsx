@@ -6,6 +6,7 @@ import classes from './Attendance.module.scss';
 import Config from '../../../data/Config';
 import { Entity, getDocsWithProps } from '../../../data/Store';
 import { IAttendance } from '../../../interfaces/IAttendance';
+import logo from '../../../images/logo.png';
 
 interface Props {
     lessonId: string;
@@ -13,11 +14,28 @@ interface Props {
 export const Attendance: React.FC<Props> = ({ lessonId }) => {
   const checkAttendanceTimer = useRef<any>();
   const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
+  const addedUsers = useRef<Record<string, boolean>>({});
+  const reportedUsers = useRef<Record<string, boolean>>({});
 
   const checkAttendance = useCallback(() => {
     getDocsWithProps<IAttendance>(Entity.ATTENDANCE, {
       lessonId,
-    }).then((data) => setAttendanceList(data));
+    }).then((data) => {
+      if (data) {
+        addedUsers.current = {};
+        data.forEach((user) => {
+          if (addedUsers.current[user.ownerEmail]) {
+            if (!reportedUsers.current[user.ownerEmail]) {
+            // eslint-disable-next-line no-new
+              new Notification('Shared Account Detected', { body: user.ownerEmail, icon: logo });
+              reportedUsers.current[user.ownerEmail] = true;
+            }
+          }
+          addedUsers.current[user.ownerEmail] = true;
+        });
+      }
+      setAttendanceList(data);
+    });
   }, [lessonId]);
 
   useEffect(() => {
@@ -37,7 +55,10 @@ export const Attendance: React.FC<Props> = ({ lessonId }) => {
     <div>
       {attendanceList.map((att) => ({ ...att, gap: activeGap(att.timestamp) })).sort((a, b) => a.timestamp - b.timestamp)
         .map((atten) => (
-          <div className={classes.container}>
+          <div
+            className={classes.container}
+            key={atten.timestamp}
+          >
             <div>{atten.id}</div>
             <div>{atten.gap > 0 ? `${atten.gap} mins.` : 'LIVE'}</div>
             <div>{new Date(atten.timestamp).toUTCString()}</div>

@@ -51,7 +51,8 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
         audioQuestionsSubscription.current.unsubscribe();
       }
     };
-  }, [startListenAudioQuestions]);
+    // @ts-ignore
+  }, []);
 
   if (!lessonId || lessonId.length < 4) {
     return <div>Invalid Lesson Id</div>;
