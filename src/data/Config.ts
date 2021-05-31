@@ -20,6 +20,7 @@ const APP_CONFIG_DEV = {
 
   // Variables valid only for dev
   payOnDismiss: false,
+  liveAttendancePingInterval: 3000,
 };
 
 const APP_CONFIG_PROD = {
@@ -41,6 +42,7 @@ const APP_CONFIG_PROD = {
   techPhone: '0771141194',
 
   payOnDismiss: false,
+  liveAttendancePingInterval: 10000,
 };
 
 export default process.env.REACT_APP_ENV === 'dev' ? APP_CONFIG_DEV : APP_CONFIG_PROD;

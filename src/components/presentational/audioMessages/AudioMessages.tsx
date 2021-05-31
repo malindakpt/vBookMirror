@@ -3,6 +3,7 @@ import classes from './AudioMessages.module.scss';
 import { Entity, listenFileChanges } from '../../../data/Store';
 import { IAudioQuestion } from '../../../interfaces/IAudioQuestion';
 import { ILiveLesson } from '../../../interfaces/ILesson';
+import askImage from '../../../images/ask.png';
 
 export interface Props {
     lessonId: string
@@ -45,6 +46,8 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
 
   const addtoPlayedList = (key: string, audio: IAudioQuestion) => {
     playedQuestions.current[key] = audio;
+    // eslint-disable-next-line no-new
+    new Notification('Question', { body: audio.studentName, icon: askImage });
   };
 
   return (

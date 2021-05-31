@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback, useContext, useEffect, useRef, useState,
+} from 'react';
 
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
@@ -11,7 +13,10 @@ import Config from '../../../../data/Config';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
-import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
+import {
+  addDocWithId,
+  Entity, getDocsWithProps, getDocWithId,
+} from '../../../../data/Store';
 import {
   getHashFromString, isLessonOwner, readyToGo, Util,
 } from '../../../../helper/util';
@@ -22,6 +27,7 @@ import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
 import { Recorder } from '../../../presentational/recorder/Recorder';
+import { IAttendance } from '../../../../interfaces/IAttendance';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
@@ -38,6 +44,8 @@ export const LiveLesson: React.FC = () => {
   const [copyLessonWarn, setCopyLessonWarn] = useState<boolean>(false);
   const [showInView, setShowInView] = useState<boolean>(false);
   const [warn, setWarn] = useState<string>('');
+
+  const livePingTimer = useRef<any>();
 
   const sendStartAction = () => {
     const ele = document.getElementsByTagName('iframe');
@@ -130,15 +138,19 @@ export const LiveLesson: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    processVideo();
-    const glob: any = window;
-    return () => {
-      stopLive();
-      clearInterval(glob.timer);
-    };
-    // eslint-disable-next-line
-  }, []);
+  const sendLiveAttendancePing = useCallback(() => {
+    if (lessonId && email) {
+      const attendance:IAttendance = {
+        id: email,
+        lessonId,
+        ownerEmail: email,
+        timestamp: new Date().getTime(),
+      };
+      addDocWithId(Entity.ATTENDANCE, email, attendance).then(() => {
+        console.log('Attendance sent', attendance.timestamp);
+      });
+    }
+  }, [email, lessonId]);
 
   const getAppButton = (teacher: ITeacher) => (
     <Button
@@ -170,6 +182,19 @@ export const LiveLesson: React.FC = () => {
       />
     </>
   );
+
+  useEffect(() => {
+    processVideo();
+    const glob: any = window;
+    livePingTimer.current = setInterval(sendLiveAttendancePing, Config.liveAttendancePingInterval);
+
+    return () => {
+      stopLive();
+      clearInterval(glob.timer);
+      clearInterval(livePingTimer.current);
+    };
+    // eslint-disable-next-line
+  }, []);
 
   const getInViewButton = (teacher: ITeacher) => (
     showInView ? (
