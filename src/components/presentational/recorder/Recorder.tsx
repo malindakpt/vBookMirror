@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import {
   Entity, FileType, updateDoc, uploadFileToServer,
 } from '../../../data/Store';
+import { DEFAULT_FULL_NAME, Util } from '../../../helper/util';
+import { IAudioQuestion } from '../../../interfaces/IAudioQuestion';
 
 export interface Props {
   email: string;
@@ -53,7 +55,13 @@ export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
     uploadFileToServer(FileType.AUDIO, audioBlob.current, email, timestamp).subscribe((data) => {
       if (data.downloadURL) {
         console.log(data.downloadURL);
-        updateDoc(Entity.LESSONS_LIVE, lessonId, { [`audioQuestions.${timestamp}`]: data.downloadURL }).then(() => {
+        const question: Record<string, IAudioQuestion> = {
+          [`audioQuestions.${timestamp}`]: {
+            questionURL: data.downloadURL,
+            studentName: Util.fullName !== DEFAULT_FULL_NAME ? Util.fullName : email,
+          },
+        };
+        updateDoc(Entity.LESSONS_LIVE, lessonId, question).then(() => {
           console.log('Lesson Updated');
         });
       }

@@ -1,3 +1,4 @@
+import { IAudioQuestion } from './IAudioQuestion';
 import { IBase } from './IBase';
 
 export enum LiveMeetingStatus {
@@ -77,5 +78,5 @@ export interface ILiveLesson extends ILesson {
   status: LiveMeetingStatus;
   videoUrl?: string;
   isRunning: boolean;
-  audioQuestions?: Record<string, string>;
+  audioQuestions?: Record<string, IAudioQuestion>;
 }

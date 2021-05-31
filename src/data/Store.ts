@@ -71,10 +71,10 @@ export const listAllVideos = (ownerEmail: string)
     .then((data) => resolve(data));
 });
 
-export const listenChanges = <T>(entity: Entity, id: string, onChange: (file: T) => void) => {
+export const listenFileChanges = <T>(entity: Entity, id: string, onChange: (file: T) => void) => {
   const unsubscribe = db.collection(entity).doc(id)
     .onSnapshot((doc) => {
-      const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server';
+      // const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server';
       onChange(doc.data() as T);
     });
 
