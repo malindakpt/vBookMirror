@@ -1,6 +1,7 @@
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useEffect, useRef, useState,
 } from 'react';
+import classes from './Attendance.module.scss';
 import Config from '../../../data/Config';
 import { Entity, getDocsWithProps } from '../../../data/Store';
 import { IAttendance } from '../../../interfaces/IAttendance';
@@ -25,5 +26,21 @@ export const Attendance: React.FC<Props> = ({ lessonId }) => {
     };
   }, []);
 
-  return <div>{attendanceList.map((atten) => <div>{atten.ownerEmail}</div>)}</div>;
+  const activeGap = (time: number) => {
+    const now = new Date().getTime();
+    return Math.round((now - time) / 60000);
+  };
+
+  return (
+    <div>
+      {attendanceList.map((att) => ({ ...att, gap: activeGap(att.timestamp) })).sort((a, b) => a.timestamp - b.timestamp)
+        .map((atten) => (
+          <div className={classes.container}>
+            <div>{atten.id}</div>
+            <div>{atten.gap > 0 ? `${atten.gap} mins.` : 'LIVE'}</div>
+            <div>{new Date(atten.timestamp).toUTCString()}</div>
+          </div>
+        ))}
+    </div>
+  );
 };

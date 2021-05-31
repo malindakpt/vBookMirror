@@ -28,6 +28,7 @@ import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
 import { Recorder } from '../../../presentational/recorder/Recorder';
 import { IAttendance } from '../../../../interfaces/IAttendance';
+import { addToStorage, getFromStorage, LocalStorageKeys } from '../../../../data/LocalStorage';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
@@ -139,14 +140,22 @@ export const LiveLesson: React.FC = () => {
   };
 
   const sendLiveAttendancePing = useCallback(() => {
-    if (lessonId && email) {
+    let initialLoggedTime = getFromStorage(LocalStorageKeys.INITIAL_LOGGED_TIME);
+    if (!initialLoggedTime) {
+      initialLoggedTime = new Date().getTime();
+      addToStorage(LocalStorageKeys.INITIAL_LOGGED_TIME, initialLoggedTime);
+    }
+
+    const uid = `${email}-${initialLoggedTime}`;
+
+    if (lessonId && uid) {
       const attendance:IAttendance = {
-        id: email,
+        id: uid,
         lessonId,
-        ownerEmail: email,
+        ownerEmail: email ?? 'Not logged in',
         timestamp: new Date().getTime(),
       };
-      addDocWithId(Entity.ATTENDANCE, email, attendance).then(() => {
+      addDocWithId(Entity.ATTENDANCE, uid, attendance).then(() => {
         console.log('Attendance sent', attendance.timestamp);
       });
     }

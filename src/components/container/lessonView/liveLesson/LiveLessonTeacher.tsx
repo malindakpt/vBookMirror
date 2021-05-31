@@ -18,6 +18,7 @@ import { getHashFromString, Util } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import logo from '../../../../images/logo.png';
 import { AudioMessages } from '../../../presentational/audioMessages/AudioMessages';
+import { Attendance } from '../../../presentational/attendance/Attendance';
 
 interface ZoomUser{
   userName: string;
@@ -277,7 +278,7 @@ export const LiveLessonTeacher: React.FC = () => {
         Check Zoom attendance
       </button>
       <AudioMessages lessonId={lessonId} />
-
+      <Attendance lessonId={lessonId} />
       { (lesson && !disconnected) ? (
         <div>
           {connected && (
