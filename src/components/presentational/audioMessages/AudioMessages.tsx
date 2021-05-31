@@ -47,7 +47,7 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
   const addtoPlayedList = (key: string, audio: IAudioQuestion) => {
     playedQuestions.current[key] = audio;
     // eslint-disable-next-line no-new
-    new Notification('Question', { body: audio.studentName, icon: askImage });
+    new Notification('New Question', { body: audio.studentName, icon: askImage });
   };
 
   return (
