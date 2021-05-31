@@ -55,6 +55,7 @@ export const LiveLessonTeacher: React.FC = () => {
 
   const [users, setUsers] = useState< StudentConnection >({});
   const [connected, setConnected] = useState<boolean>(false);
+  const [zoomStarted, setZoomStarted] = useState<boolean>(false);
   const [disconnected, setDisconnected] = useState<boolean>(false);
   const [sentStartCommands, setSentStartCommands] = useState<number>(0);
 
@@ -212,6 +213,13 @@ export const LiveLessonTeacher: React.FC = () => {
     }, 1000);
   };
 
+  const fetchLesson = async () => {
+    getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
+      if (!lesson) return;
+      setLesson(lesson);
+    });
+  };
+
   const processVideo = async () => {
     getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
       if (!lesson) return;
@@ -236,6 +244,7 @@ export const LiveLessonTeacher: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchLesson();
     Notification.requestPermission().then((result) => {
       console.log(result);
     });
@@ -250,7 +259,7 @@ export const LiveLessonTeacher: React.FC = () => {
     // TODO: what is false here
     window.addEventListener('message', onMsgZoomClientListener, false);
     window.addEventListener('beforeunload', onBeforeunloadListener, false);
-
+    setZoomStarted(true);
     processVideo();
   };
 
@@ -271,41 +280,35 @@ export const LiveLessonTeacher: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <button
-        onClick={strtCheckZoomAttendance}
-        type="button"
-      >
-        Check Zoom attendance
-      </button>
+      <div className={classes.topic}>
+        {lesson?.topic}
+      </div>
+      <div className={classes.desc}>
+        {lesson?.description}
+      </div>
       <AudioMessages lessonId={lessonId} />
       <Attendance lessonId={lessonId} />
-      { (lesson && !disconnected) ? (
+      { (lesson && !disconnected && zoomStarted) ? (
         <div>
           {connected && (
           <div>
-            <h3 style={{ color: 'red' }}>Click `DISCONNECT` before reload/close the page</h3>
+            <h4 style={{ color: 'red' }}>Click `DISCONNECT` before reload/close the page</h4>
             <Button onClick={disconnectAll}>
               Disconnect
             </Button>
           </div>
           )}
-          <div className={classes.topic}>
-            {lesson.topic}
-          </div>
-          <div className={classes.desc}>
-            {lesson?.description}
-          </div>
 
           {!connected && (
-          <h3>
+          <h4>
             {`Connecting to meeting... ${REPEAT_START_TIMES - sentStartCommands}`}
-          </h3>
+          </h4>
           )}
 
           <div className={classes.check}>
             <table className={classes.payList}>
               <tbody>
-                <tr><th>Not paid students for this lesson</th></tr>
+                <tr><th>Not paid ZOOM students for this lesson</th></tr>
                 {
                 nonPaid.map((usr) => (
                   <tr key={usr.userId}>
@@ -316,7 +319,7 @@ export const LiveLessonTeacher: React.FC = () => {
                 ))
               }
 
-                <tr><th>Paid students for this lesson</th></tr>
+                <tr><th>Paid ZOOM students for this lesson</th></tr>
                 {paymentForLesson.sort((b, a) => (users[a.ownerName]?.count ?? 0)
                      - (users[b.ownerName]?.count ?? 0)).map((pay) => (
                        <tr key={pay.id}>
@@ -349,7 +352,13 @@ export const LiveLessonTeacher: React.FC = () => {
           </div>
           )}
         </div>
-      ) : <h3>Disconnected</h3> }
+      ) : <h4>Zoom Attendance Disconnected</h4> }
+      <button
+        onClick={strtCheckZoomAttendance}
+        type="button"
+      >
+        Check Zoom attendance
+      </button>
     </div>
   );
 };

@@ -60,16 +60,6 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
 
   return (
     <div>
-      {readyToListenQuestions && <div>Listening Stared</div>}
-      {/* {!audioQuestionsSubscription.current && (
-      <button
-        onClick={startListenAudioQuestions}
-        type="button"
-      >
-        Listen Audio Questions
-      </button>
-      )} */}
-
       {!autoPlay && (
       <button
         onClick={() => setAutoPlay(true)}
