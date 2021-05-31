@@ -244,14 +244,15 @@ export const getDocsWithProps = <T>(
         query = (query ?? ref).where(
           key.substring(0, key.length - 1),
           key.charAt(key.length - 1),
-          conditions[key],
+          conditions[key as keyof T],
         );
       } else if (key === 'limit') {
-        query = (query ?? ref).limit(conditions[key]);
-      } else if (Array.isArray(conditions[key])) {
+        query = (query ?? ref).limit(conditions[key as keyof T]);
+      } else if (Array.isArray(conditions[key as keyof T])) {
+        // @ts-ignore
         query = (query ?? ref).where(key, 'array-contains', conditions[key][0]);
       } else {
-        query = (query ?? ref).where(key, '==', conditions[key]);
+        query = (query ?? ref).where(key, '==', conditions[key as keyof T]);
       }
     });
 
