@@ -4,8 +4,8 @@ import React, {
 } from 'react';
 import classes from './Attendance.module.scss';
 import Config from '../../../data/Config';
-import { Entity, getDocsWithProps } from '../../../data/Store';
-import { IAttendance } from '../../../interfaces/IAttendance';
+import { Entity, getDocWithId } from '../../../data/Store';
+import { IAttendance, IStudentAttendanceRecord } from '../../../interfaces/IAttendance';
 import logo from '../../../images/logo.png';
 
 interface Props {
@@ -13,17 +13,16 @@ interface Props {
 }
 export const Attendance: React.FC<Props> = ({ lessonId }) => {
   const checkAttendanceTimer = useRef<any>();
-  const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
+  const [attendanceList, setAttendanceList] = useState<Record<string, IStudentAttendanceRecord>>({});
   const addedUsers = useRef<Record<string, boolean>>({});
   const reportedUsers = useRef<Record<string, boolean>>({});
 
   const checkAttendance = useCallback(() => {
-    getDocsWithProps<IAttendance>(Entity.ATTENDANCE, {
-      lessonId,
-    }).then((data) => {
+    getDocWithId<IAttendance>(Entity.ATTENDANCE,
+      lessonId, false).then((data) => {
       if (data) {
         addedUsers.current = {};
-        data.forEach((user) => {
+        Object.values(data.students).forEach((user) => {
           if (addedUsers.current[user.ownerEmail]) {
             if (!reportedUsers.current[user.ownerEmail]) {
             // eslint-disable-next-line no-new
@@ -33,12 +32,15 @@ export const Attendance: React.FC<Props> = ({ lessonId }) => {
           }
           addedUsers.current[user.ownerEmail] = true;
         });
+        setAttendanceList(data.students);
       }
-      setAttendanceList(data);
     });
   }, [lessonId]);
 
   useEffect(() => {
+    if (checkAttendanceTimer.current) {
+      clearInterval(checkAttendanceTimer.current);
+    }
     checkAttendanceTimer.current = setInterval(checkAttendance, Config.liveAttendanceCheckInterval);
 
     return () => {
@@ -53,7 +55,9 @@ export const Attendance: React.FC<Props> = ({ lessonId }) => {
 
   return (
     <div>
-      {attendanceList.map((att) => ({ ...att, gap: activeGap(att.timestamp) })).sort((a, b) => a.timestamp - b.timestamp)
+      {Object.values(attendanceList).map((att) => ({ ...att, gap: activeGap(att.timestamp) })).sort(
+        (a, b) => a.timestamp - b.timestamp,
+      )
         .map((atten) => (
           <div
             className={classes.container}

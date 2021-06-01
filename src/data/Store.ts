@@ -182,11 +182,24 @@ export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promi
     });
 });
 
+export const addOrUpdate = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve, reject) => {
+  const saveObj = { ...obj, updatedAt: new Date().getTime() };
+
+  db.collection(entityName).doc(id).set(saveObj, { merge: true }).then(() => {
+    resolve(true);
+  })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+});
+
 export const getDocsWithProps = <T>(
   entityName: Entity,
   conditions: Partial<T>,
+  showLoading: boolean = true,
 ): Promise<T[]> => new Promise((resolves, reject) => {
-    setLoading(true);
+    setLoading(showLoading);
 
     const ref = db.collection(entityName);
     let query: any;
@@ -230,9 +243,9 @@ export const getDocsWithProps = <T>(
       });
   });
 
-export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | null> => new Promise(
+export const getDocWithId = <T>(entityName: Entity, id: string, showLoading: boolean = true): Promise<T | null> => new Promise(
   (resolves, reject) => {
-    setLoading(true);
+    setLoading(showLoading);
     db.collection(entityName).doc(id).get().then((doc: any) => {
       if (doc.exists) {
         const dat = doc.data();

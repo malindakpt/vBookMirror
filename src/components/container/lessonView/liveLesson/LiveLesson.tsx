@@ -14,7 +14,7 @@ import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
 import {
-  addDocWithId,
+  addOrUpdate,
   Entity, getDocsWithProps, getDocWithId,
 } from '../../../../data/Store';
 import {
@@ -47,6 +47,7 @@ export const LiveLesson: React.FC = () => {
   const [warn, setWarn] = useState<string>('');
 
   const livePingTimer = useRef<any>();
+  const sendStartTimer = useRef<any>();
 
   const sendStartAction = () => {
     const ele = document.getElementsByTagName('iframe');
@@ -64,15 +65,18 @@ export const LiveLesson: React.FC = () => {
 
   const startVideoRendering = () => {
     sendStartAction();
-    const glob: any = window;
 
-    glob.timer = setInterval(() => {
+    if (sendStartTimer.current) {
+      clearInterval(sendStartTimer.current);
+    }
+
+    sendStartTimer.current = setInterval(() => {
       console.log('send start mkpt');
       sendStartAction();
     }, 1000);
 
     setTimeout(() => {
-      clearInterval(glob.timer);
+      clearInterval(sendStartTimer.current);
     }, 30000);
   };
 
@@ -149,14 +153,19 @@ export const LiveLesson: React.FC = () => {
     const uid = `${email}-${initialLoggedTime}`;
 
     if (lessonId && uid) {
-      const attendance:IAttendance = {
-        id: uid,
-        lessonId,
-        ownerEmail: email ?? 'Not logged in',
-        timestamp: new Date().getTime(),
+      const attendance: IAttendance = {
+        id: lessonId,
+        students: {
+          [uid]: {
+            id: uid,
+            ownerEmail: email ?? 'Not logged in',
+            timestamp: new Date().getTime(),
+          },
+        },
+
       };
-      addDocWithId(Entity.ATTENDANCE, uid, attendance).then(() => {
-        console.log('Attendance sent', attendance.timestamp);
+      addOrUpdate<IAttendance>(Entity.ATTENDANCE, lessonId, attendance).then(() => {
+        console.log('Attendance sent');
       });
     }
   }, [email, lessonId]);
@@ -194,12 +203,18 @@ export const LiveLesson: React.FC = () => {
 
   useEffect(() => {
     processVideo();
-    const glob: any = window;
+
+    if (sendStartTimer.current) {
+      clearInterval(sendStartTimer.current);
+    }
+    if (livePingTimer.current) {
+      clearInterval(livePingTimer.current);
+    }
     livePingTimer.current = setInterval(sendLiveAttendancePing, Config.liveAttendanceSendInterval);
 
     return () => {
       stopLive();
-      clearInterval(glob.timer);
+      clearInterval(sendStartTimer.current);
       clearInterval(livePingTimer.current);
     };
     // eslint-disable-next-line
