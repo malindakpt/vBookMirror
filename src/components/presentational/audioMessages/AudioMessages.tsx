@@ -12,16 +12,16 @@ export interface Props {
  }
 
 export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
-  const audioQuestionsSubscription = useRef<any>();
-  const [readyToListenQuestions, setReadyTOListenQuestions] = useState<boolean>(false);
-  //   const playedQuestions = useRef<Record<string, boolean>>({});
+  const audioQuestionsUnsubscribe = useRef<any>();
+  const [readyToListenQuestions, setReadyToListenQuestions] = useState<boolean>(false);
+
   const [audioQuestions, setAudioQuestions] = useState<Record<string, IAudioQuestion>>();
   const playedQuestions = useRef<Record<string, IAudioQuestion>>({});
   const [autoPlay, setAutoPlay] = useState<boolean>(true);
 
   const startListenAudioQuestions = useCallback(() => {
-    if (!audioQuestionsSubscription.current) {
-      audioQuestionsSubscription.current = listenFileChanges<ILiveLesson>(Entity.LESSONS_LIVE, lessonId, (data) => {
+    if (!audioQuestionsUnsubscribe.current) {
+      audioQuestionsUnsubscribe.current = listenFileChanges<ILiveLesson>(Entity.LESSONS_LIVE, lessonId, (data) => {
         console.log(data);
         if (data && data.audioQuestions) {
           setAudioQuestions(data.audioQuestions);
@@ -31,7 +31,7 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
         }
 
         setTimeout(() => {
-          setReadyTOListenQuestions(true);
+          setReadyToListenQuestions(true);
         }, 3000);
       });
     }
@@ -47,12 +47,11 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
     startListenAudioQuestions();
 
     return () => {
-      if (audioQuestionsSubscription.current) {
-        audioQuestionsSubscription.current.unsubscribe();
+      if (audioQuestionsUnsubscribe.current) {
+        audioQuestionsUnsubscribe.current();
       }
     };
-    // @ts-ignore
-  }, []);
+  }, [startListenAudioQuestions]);
 
   if (!lessonId || lessonId.length < 4) {
     return <div>Invalid Lesson Id</div>;
