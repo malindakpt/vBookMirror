@@ -78,5 +78,5 @@ export interface ILiveLesson extends ILesson {
   status: LiveMeetingStatus;
   videoUrl?: string;
   isRunning: boolean;
-  audioQuestions?: Record<string, IAudioQuestion>;
+  audioQuestions?: Record<string, IAudioQuestion>; // string is the timestamp
 }

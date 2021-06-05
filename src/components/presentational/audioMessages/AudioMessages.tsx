@@ -15,14 +15,15 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
   const audioQuestionsUnsubscribe = useRef<any>();
   const [readyToListenQuestions, setReadyToListenQuestions] = useState<boolean>(false);
 
-  const [audioQuestions, setAudioQuestions] = useState<Record<string, IAudioQuestion>>();
+  const [audioQuestions, setAudioQuestions] = useState<Record<string, IAudioQuestion>>({});
   const playedQuestions = useRef<Record<string, IAudioQuestion>>({});
   const [autoPlay, setAutoPlay] = useState<boolean>(true);
 
   const startListenAudioQuestions = useCallback(() => {
     if (!audioQuestionsUnsubscribe.current) {
+      console.log('Subscribed to questions');
       audioQuestionsUnsubscribe.current = listenFileChanges<ILiveLesson>(Entity.LESSONS_LIVE, lessonId, (data) => {
-        console.log(data);
+        console.log('New questions', data);
         if (data && data.audioQuestions) {
           setAudioQuestions(data.audioQuestions);
           if (!readyToListenQuestions) {
@@ -30,9 +31,11 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
           }
         }
 
-        setTimeout(() => {
-          setReadyToListenQuestions(true);
-        }, 3000);
+        if (!readyToListenQuestions) {
+          setTimeout(() => {
+            setReadyToListenQuestions(true);
+          }, 3000);
+        }
       });
     }
   }, [lessonId, readyToListenQuestions]);
@@ -45,13 +48,14 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
 
   useEffect(() => {
     startListenAudioQuestions();
-
-    return () => {
-      if (audioQuestionsUnsubscribe.current) {
-        audioQuestionsUnsubscribe.current();
-      }
-    };
   }, [startListenAudioQuestions]);
+
+  // cleanup function
+  useEffect(() => () => {
+    if (audioQuestionsUnsubscribe.current) {
+      audioQuestionsUnsubscribe.current();
+    }
+  }, []);
 
   if (!lessonId || lessonId.length < 4) {
     return <div>Invalid Lesson Id</div>;
@@ -82,7 +86,11 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
             key={key}
             className={classes.message}
           >
-            <div>{audioQuestions[key].studentName}</div>
+            <div>
+              {audioQuestions[key].studentName}
+              :
+              {new Date(Number(key)).toLocaleTimeString()}
+            </div>
             <audio
               controls
               autoPlay={autoPlay && readyToListenQuestions && !playedQuestions.current[key]}
