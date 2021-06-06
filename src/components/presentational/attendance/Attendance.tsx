@@ -2,6 +2,11 @@ import React, {
   useCallback,
   useEffect, useRef, useState,
 } from 'react';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import classes from './Attendance.module.scss';
 import Config from '../../../data/Config';
 import { Entity, getDocWithId } from '../../../data/Store';
@@ -54,20 +59,32 @@ export const Attendance: React.FC<Props> = ({ lessonId }) => {
   };
 
   return (
-    <div>
-      {Object.values(attendanceList).map((att) => ({ ...att, gap: activeGap(att.timestamp) })).sort(
-        (a, b) => a.timestamp - b.timestamp,
-      )
-        .map((atten) => (
-          <div
-            className={classes.container}
-            key={atten.timestamp}
-          >
-            <div>{atten.id}</div>
-            <div>{atten.gap > 0 ? `${atten.gap} mins.` : 'LIVE'}</div>
-            <div>{new Date(atten.timestamp).toUTCString()}</div>
-          </div>
-        ))}
-    </div>
+    <Accordion>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >
+        <Typography className={classes.heading}>Attendance Details</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <div>
+          {Object.values(attendanceList).map((att) => ({ ...att, gap: activeGap(att.timestamp) })).sort(
+            (a, b) => a.timestamp - b.timestamp,
+          )
+            .map((atten) => (
+              <div
+                className={classes.container}
+                key={atten.timestamp}
+              >
+                <div>{atten.id}</div>
+                <div>{atten.gap > 0 ? `${atten.gap} mins.` : 'LIVE'}</div>
+                <div>{new Date(atten.timestamp).toUTCString()}</div>
+              </div>
+            ))}
+        </div>
+      </AccordionDetails>
+    </Accordion>
+
   );
 };

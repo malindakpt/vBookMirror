@@ -1,6 +1,10 @@
 import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
+import {
+  Accordion, AccordionDetails, AccordionSummary, Typography,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import classes from './AudioMessages.module.scss';
 import { Entity, listenFileChanges } from '../../../data/Store';
 import { IAudioQuestion } from '../../../interfaces/IAudioQuestion';
@@ -80,36 +84,48 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
       </button>
       )}
 
-      <div className={classes.container}>
-        {audioQuestions && Object.keys(audioQuestions).sort((a, b) => (a < b ? 1 : -1)).map((key) => (
-          <div
-            key={key}
-            className={classes.message}
-          >
-            <div>
-              {audioQuestions[key].studentName}
-              :
-              {new Date(Number(key)).toLocaleTimeString()}
-            </div>
-            <audio
-              controls
-              autoPlay={autoPlay && readyToListenQuestions && !playedQuestions.current[key]}
-              onPlay={() => addtoPlayedList(key, audioQuestions[key])}
-            >
-              <source
-                src={audioQuestions[key].questionURL}
-                type="audio/ogg"
-              />
-              <track
-                default
-                kind="captions"
-                srcLang="en"
-              />
-              Your browser does not support the audio tag.
-            </audio>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography className={classes.heading}>Audio Questions</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className={classes.container}>
+            {audioQuestions && Object.keys(audioQuestions).sort((a, b) => (a < b ? 1 : -1)).map((key) => (
+              <div
+                key={key}
+                className={classes.message}
+              >
+                <div>
+                  {audioQuestions[key].studentName}
+                  :
+                  {new Date(Number(key)).toLocaleTimeString()}
+                </div>
+                <audio
+                  controls
+                  autoPlay={autoPlay && readyToListenQuestions && !playedQuestions.current[key]}
+                  onPlay={() => addtoPlayedList(key, audioQuestions[key])}
+                >
+                  <source
+                    src={audioQuestions[key].questionURL}
+                    type="audio/ogg"
+                  />
+                  <track
+                    default
+                    kind="captions"
+                    srcLang="en"
+                  />
+                  Your browser does not support the audio tag.
+                </audio>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </AccordionDetails>
+      </Accordion>
+
     </div>
   );
 };
