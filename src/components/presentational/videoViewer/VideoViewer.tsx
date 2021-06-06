@@ -39,7 +39,7 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
 
   return (
     <div>
-      {lesson.videoUrls?.map((videoUrl) => (
+      {lesson.videoUrls?.reverse().map((videoUrl) => (
         <div key={videoUrl.googleDrive + videoUrl.fileVideo + videoUrl.description}>
           <div className={classes.subTitle}>{videoUrl.description}</div>
           {getVideo(videoUrl)}
