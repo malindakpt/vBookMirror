@@ -67,23 +67,6 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
 
   return (
     <div>
-      {!autoPlay && (
-      <button
-        onClick={() => setAutoPlay(true)}
-        type="button"
-      >
-        Enable auto play questions
-      </button>
-      )}
-      {autoPlay && (
-      <button
-        onClick={() => setAutoPlay(false)}
-        type="button"
-      >
-        Disable auto play questions
-      </button>
-      )}
-
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -93,35 +76,57 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
           <Typography className={classes.heading}>Audio Questions</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <div className={classes.container}>
-            {audioQuestions && Object.keys(audioQuestions).sort((a, b) => (a < b ? 1 : -1)).map((key) => (
-              <div
-                key={key}
-                className={classes.message}
+          <div>
+            <div>
+              {!autoPlay && (
+              <button
+                onClick={() => setAutoPlay(true)}
+                type="button"
               >
-                <div>
-                  {audioQuestions[key].studentName}
-                  :
-                  {new Date(Number(key)).toLocaleTimeString()}
-                </div>
-                <audio
-                  controls
-                  autoPlay={autoPlay && readyToListenQuestions && !playedQuestions.current[key]}
-                  onPlay={() => addtoPlayedList(key, audioQuestions[key])}
+                Enable auto play questions
+              </button>
+              )}
+              {autoPlay && (
+              <button
+                onClick={() => setAutoPlay(false)}
+                type="button"
+              >
+                Disable auto play questions
+              </button>
+              )}
+            </div>
+            <div className={classes.container}>
+
+              {audioQuestions && Object.keys(audioQuestions).sort((a, b) => (a < b ? 1 : -1)).map((key) => (
+                <div
+                  key={key}
+                  className={classes.message}
                 >
-                  <source
-                    src={audioQuestions[key].questionURL}
-                    type="audio/ogg"
-                  />
-                  <track
-                    default
-                    kind="captions"
-                    srcLang="en"
-                  />
-                  Your browser does not support the audio tag.
-                </audio>
-              </div>
-            ))}
+                  <div>
+                    {audioQuestions[key].studentName}
+                    :
+                    {new Date(Number(key)).toLocaleTimeString()}
+                  </div>
+                  <audio
+                    controls
+                    autoPlay={autoPlay && readyToListenQuestions && !playedQuestions.current[key]}
+                    onPlay={() => addtoPlayedList(key, audioQuestions[key])}
+                  >
+                    <source
+                      src={audioQuestions[key].questionURL}
+                      type="audio/ogg"
+                    />
+                    <track
+                      default
+                      kind="captions"
+                      srcLang="en"
+                    />
+                    Your browser does not support the audio tag.
+                  </audio>
+                </div>
+              ))}
+            </div>
+
           </div>
         </AccordionDetails>
       </Accordion>
