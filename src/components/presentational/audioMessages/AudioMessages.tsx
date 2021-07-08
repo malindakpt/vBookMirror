@@ -19,33 +19,53 @@ export interface Props {
 export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
   const audioQuestionsUnsubscribe = useRef<any>();
   const [readyToListenQuestions, setReadyToListenQuestions] =
-    useState<boolean>(false);
+    useState<boolean>(true);
 
   const [audioQuestions, setAudioQuestions] = useState<
-    Record<string, IAudioQuestion>
-  >({});
-  const [playedQuestions, setPlayedQuestions] = useState<
-    Record<string, IAudioQuestion>
-  >({});
-  const [autoPlay, setAutoPlay] = useState<boolean>(true);
+    Record<string, IAudioQuestion> | undefined
+  >(undefined);
+  const [processedQuestions, setProcessedQuestions] = useState<
+    Record<string, IAudioQuestion> | undefined
+  >(undefined);
+  const [allowAutoPlay, setAllowAutoPlay] = useState<boolean>(false);
 
   useEffect(() => {
     const newQuestions: Record<string, IAudioQuestion> = {};
-    Object.entries(audioQuestions).forEach(([key, question]) => {
-      if (!playedQuestions[key]) {
-        newQuestions[key] = question;
-      }
-    });
-    setPlayedQuestions(audioQuestions);
-    console.log(newQuestions);
 
-    const keys = Object.keys(newQuestions);
-    if (keys.length > 0) {
-      const audio = new Audio(newQuestions[keys[0]].questionURL);
-      audio?.onended(() => {
-        return setReadyToListenQuestions(true);
+    if (audioQuestions) {
+      Object.entries(audioQuestions).forEach(([key, question]) => {
+        if (processedQuestions && !processedQuestions[key]) {
+          newQuestions[key] = question;
+        }
       });
-      audio.play();
+
+
+      console.log(newQuestions);
+
+      const keys = Object.keys(newQuestions);
+      if (keys.length > 0 && processedQuestions) {
+        // If this is not the first data fetch
+        const question = newQuestions[keys[0]];
+        const audio = new Audio(question.questionURL);
+
+        audio.onended = () => {
+          setReadyToListenQuestions(true);
+        };
+
+        if (allowAutoPlay) {
+          if (readyToListenQuestions) {
+            console.log('Playing...');
+            audio.play();
+          }
+        } else {
+          // eslint-disable-next-line no-new
+          new Notification("New Question", {
+            body: question.studentName,
+            icon: askImage,
+          });
+        }
+      }
+      setProcessedQuestions(audioQuestions);
     }
   }, [audioQuestions]);
 
@@ -56,32 +76,13 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
         Entity.LESSONS_LIVE,
         lessonId,
         (data) => {
-          // console.log('New questions', data);
           if (data && data.audioQuestions) {
             setAudioQuestions(data.audioQuestions);
-            // if (!readyToListenQuestions) {
-            //   playedQuestions.current = (data.audioQuestions);
-            // }
           }
-
-          // if (!readyToListenQuestions) {
-          //   setTimeout(() => {
-          //     setReadyToListenQuestions(true);
-          //   }, 3000);
-          // }
         }
       );
     }
   }, [lessonId, readyToListenQuestions]);
-
-  const addtoPlayedList = (key: string, audio: IAudioQuestion) => {
-    // playedQuestions.current[key] = audio;
-    // eslint-disable-next-line no-new
-    new Notification("New Question", {
-      body: audio.studentName,
-      icon: askImage,
-    });
-  };
 
   useEffect(() => {
     startListenAudioQuestions();
@@ -103,6 +104,20 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
 
   return (
     <div>
+      <div>
+        {!allowAutoPlay && (
+          <button onClick={() => setAllowAutoPlay(true)}
+            type="button">
+            Enable auto play questions
+          </button>
+        )}
+        {allowAutoPlay && (
+          <button onClick={() => setAllowAutoPlay(false)}
+            type="button">
+            Disable auto play questions
+          </button>
+        )}
+      </div>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -113,42 +128,29 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <div>
-              {!autoPlay && (
-                <button onClick={() => setAutoPlay(true)} type="button">
-                  Enable auto play questions
-                </button>
-              )}
-              {autoPlay && (
-                <button onClick={() => setAutoPlay(false)} type="button">
-                  Disable auto play questions
-                </button>
-              )}
-            </div>
             <div className={classes.container}>
               {audioQuestions &&
                 Object.keys(audioQuestions)
                   .sort((a, b) => (a < b ? 1 : -1))
                   .map((key) => (
-                    <div key={key} className={classes.message}>
+                    <div
+                      key={key}
+                      className={classes.message}>
                       <div>
                         {audioQuestions[key].studentName}:
                         {new Date(Number(key)).toLocaleTimeString()}
                       </div>
                       <audio
                         controls
-                        autoPlay={
-                          autoPlay &&
-                          readyToListenQuestions &&
-                          !playedQuestions[key]
-                        }
-                        onPlay={() => addtoPlayedList(key, audioQuestions[key])}
                       >
                         <source
                           src={audioQuestions[key].questionURL}
                           type="audio/ogg"
                         />
-                        <track default kind="captions" srcLang="en" />
+                        <track
+                          default
+                          kind="captions"
+                          srcLang="en" />
                         Your browser does not support the audio tag.
                       </audio>
                     </div>
