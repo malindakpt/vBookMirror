@@ -178,38 +178,6 @@ export const AddPaperLesson = () => {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
-        <div className={classes.help}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://youtu.be/vSQTMkHxiag"
-            style={{ margin: '10px' }}
-          >
-            Papers add කරන අකාරය
-          </a>
-        </div>
-        <div className={classes.help}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://youtu.be/24HPqXjVIBo"
-            style={{ margin: '10px' }}
-          >
-            How to upload a video to GoogleDrive
-          </a>
-        </div>
-        <div className={classes.help}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://youtu.be/YmFne6P5cOc"
-            style={{ margin: '10px' }}
-          >
-            සිසුවන්ට Papers  පෙන්වන ආකාරය
-          </a>
-        </div>
-      </div>
       <div className={classes.container}>
         <div>
           <div className={classes.top}>

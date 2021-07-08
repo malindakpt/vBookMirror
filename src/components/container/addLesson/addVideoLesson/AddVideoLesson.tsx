@@ -19,9 +19,7 @@ import { ICourse } from '../../../../interfaces/ICourse';
 import { IExam } from '../../../../interfaces/IExam';
 import { ISubject } from '../../../../interfaces/ISubject';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
-import Config, {
-  AKSHARA_HELP_VIDEO, OBS_DOWNLOAD, OBS_HELP_VIDEO,
-} from '../../../../data/Config';
+import Config from '../../../../data/Config';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AddVideo } from '../../../presentational/addVideo/AddVideo';
 import { LessonList } from '../../../presentational/lessonList/LessonList';
@@ -140,41 +138,6 @@ export const AddVideoLesson = () => {
 
   return (
     <>
-      <div className={classes.help}>
-        <a
-          rel="noopener noreferrer"
-          target="_blank"
-          href={AKSHARA_HELP_VIDEO}
-          style={{ margin: '10px' }}
-        >
-          Videos upload කරන අකාරය
-        </a>
-        <a
-          rel="noopener noreferrer"
-          target="_blank"
-          href={OBS_HELP_VIDEO}
-          style={{ marginRight: '10px' }}
-        >
-          OBS STUDIO හසුරුවන ආකාරය
-        </a>
-        <a
-          rel="noopener noreferrer"
-          target="_blank"
-          href={OBS_DOWNLOAD}
-          style={{ marginRight: '10px' }}
-        >
-          Download  OBS Studio Screen Recorder
-        </a>
-        <a
-          rel="noopener noreferrer"
-          target="_blank"
-          href="https://www.youtube.com/watch?v=FUtle-pIFs8"
-          style={{ marginRight: '10px' }}
-        >
-          How to reduce size of a video
-        </a>
-      </div>
-
       <form
         className={classes.root}
         noValidate
