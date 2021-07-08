@@ -56,20 +56,24 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
             }
           } else {
             // eslint-disable-next-line no-new
-            new Notification("New Question", {
-              body: question.studentName,
+            const noti = new Notification(question.studentName, {
+              body: 'Audio',
               icon: askImage,
             });
+            noti.onclick = () => {
+              window.focus();
+            }
           }
         }
 
         if (question.questionText) {
-          if (allowAutoPlay) {
-            // eslint-disable-next-line no-new
-            new Notification("New Question", {
-              body: question.studentName,
-              icon: askImage,
-            });
+          // eslint-disable-next-line no-new
+          const noti = new Notification(question.studentName, {
+            body: question.questionText,
+            icon: askImage,
+          });
+          noti.onclick = () => {
+            window.focus();
           }
         }
       }
@@ -135,37 +139,35 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
           <Typography className={classes.heading}>Questions From Students</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <div>
-            <div className={classes.container}>
-              {questions &&
-                Object.keys(questions)
-                  .sort((a, b) => (a < b ? 1 : -1))
-                  .map((key) => (
-                    <div
-                      key={key}
-                      className={classes.message}>
-                      <div>
-                        {questions[key].studentName}:
-                        {new Date(Number(key)).toLocaleTimeString()}
-                      </div>
-                      {
-                        questions[key].audioURL && <audio
-                          controls
-                        >
-                          <source
-                            src={questions[key].audioURL ?? ''}
-                            type="audio/ogg"
-                          />
-                          <track
-                            default
-                            kind="captions"
-                            srcLang="en" />
-                          Your browser does not support the audio tag.
-                        </audio>
-                      }
+          <div className={classes.container}>
+            {questions &&
+              Object.keys(questions)
+                .sort((a, b) => (a < b ? 1 : -1))
+                .map((key) => (
+                  <div
+                    key={key}
+                    className={classes.message}>
+                    <div>
+                      {questions[key].studentName}:
+                      {new Date(Number(key)).toLocaleTimeString()}
                     </div>
-                  ))}
-            </div>
+                    {
+                      questions[key].audioURL && <audio
+                        controls
+                      >
+                        <source
+                          src={questions[key].audioURL ?? ''}
+                          type="audio/ogg"
+                        />
+                        <track
+                          default
+                          kind="captions"
+                          srcLang="en" />
+                        Your browser does not support the audio tag.
+                      </audio>
+                    }
+                  </div>
+                ))}
           </div>
         </AccordionDetails>
       </Accordion>

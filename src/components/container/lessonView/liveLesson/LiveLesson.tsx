@@ -92,33 +92,33 @@ export const LiveLesson: React.FC = () => {
           if (email) {
             getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
-              // TODO:  Check refundable lessons here
-              const status = readyToGo(data, lesson);
+                // TODO:  Check refundable lessons here
+                const status = readyToGo(data, lesson);
 
-              if (status.ok) {
-                setLesson(lesson);
-                setFreeOrPurchased(true);
-              } else if (isLessonOwner(email, lesson)) {
-                setLesson(lesson);
-                setFreeOrPurchased(true);
-                setWarn('Watch as owner');
-              } else {
-                if (teacher) {
-                  showPaymentPopup({
-                    email,
-                    paidFor: teacher.ownerEmail,
-                    lesson,
-                    teacher,
-                    onSuccess: () => {
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, Config.realoadTimeoutAferSuccessPay);
-                    },
-                    onCancel: () => { },
-                  });
+                if (status.ok) {
+                  setLesson(lesson);
+                  setFreeOrPurchased(true);
+                } else if (isLessonOwner(email, lesson)) {
+                  setLesson(lesson);
+                  setFreeOrPurchased(true);
+                  setWarn('Watch as owner');
+                } else {
+                  if (teacher) {
+                    showPaymentPopup({
+                      email,
+                      paidFor: teacher.ownerEmail,
+                      lesson,
+                      teacher,
+                      onSuccess: () => {
+                        setTimeout(() => {
+                          window.location.reload();
+                        }, Config.realoadTimeoutAferSuccessPay);
+                      },
+                      onCancel: () => { },
+                    });
+                  }
                 }
-              }
-            });
+              });
           } else {
             showSnackbar('Please login with your Gmail address');
             Util.invokeLogin();
@@ -263,10 +263,10 @@ export const LiveLesson: React.FC = () => {
         {warn}
       </div>
       {email && lessonId && (
-      <Recorder
-        email={email}
-        lessonId={lessonId}
-      />
+        <Recorder
+          email={email}
+          lessonId={lessonId}
+        />
       )}
       <PaymentManger lesson={lesson} />
       {freeOrPurchased && lesson && (
@@ -278,7 +278,7 @@ export const LiveLesson: React.FC = () => {
             {lesson?.description}
           </div>
 
-          { teacher && lesson.isRunning
+          {teacher && lesson.isRunning
             ? getDisplay(teacher)
             : (
               <div className={classes.notStarted}>

@@ -4,6 +4,7 @@ import React, {
 import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import StopIcon from '@material-ui/icons/Stop';
 import SendIcon from '@material-ui/icons/Send';
+import ChatIcon from '@material-ui/icons/Chat';
 import {
   Entity, FileType, updateDoc, uploadFileToServer,
 } from '../../../data/Store';
@@ -105,8 +106,29 @@ export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
     });
   };
 
+  const getTxtMessage = () => {
+    const txt = window.prompt("Type a message and click OK", "");
+    console.log(txt)
+    if (txt) {
+      const timestamp = new Date().getTime().toString();
+      const question: Record<string, IQuestion> = {
+        [`questions.${timestamp}`]: {
+          audioURL: null,
+          questionText: txt,
+          studentName: Util.fullName !== DEFAULT_FULL_NAME ? Util.fullName : email,
+        },
+      };
+      updateDoc(Entity.LESSONS_LIVE, lessonId, question).then(() => {
+        console.log('Lesson Updated');
+        setStatus(RecordingStatus.Default);
+        showSnackbar('ගුරුවරයා වෙත යැවීම සාර්ථකයි ');
+      });
+    }
+  }
+
   return (
     <div className={classes.container}>
+      {(status === RecordingStatus.Default || status === RecordingStatus.Recorded) && <ChatIcon onClick={getTxtMessage} />}
 
       {(status === RecordingStatus.Default || status === RecordingStatus.Recorded) && (
         <SettingsVoiceIcon onClick={handleStartRecord} />
