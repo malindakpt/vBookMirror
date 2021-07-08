@@ -92,7 +92,7 @@ export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
         const question: Record<string, IQuestion> = {
           [`questions.${timestamp}`]: {
             audioURL: data.downloadURL,
-            questionText: undefined,
+            questionText: null,
             studentName: Util.fullName !== DEFAULT_FULL_NAME ? Util.fullName : email,
           },
         };

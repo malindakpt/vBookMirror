@@ -153,7 +153,7 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
                           controls
                         >
                           <source
-                            src={questions[key].audioURL}
+                            src={questions[key].audioURL ?? ''}
                             type="audio/ogg"
                           />
                           <track
