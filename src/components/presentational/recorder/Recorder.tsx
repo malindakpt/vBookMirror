@@ -8,7 +8,7 @@ import {
   Entity, FileType, updateDoc, uploadFileToServer,
 } from '../../../data/Store';
 import { DEFAULT_FULL_NAME, Util } from '../../../helper/util';
-import { IAudioQuestion } from '../../../interfaces/IAudioQuestion';
+import { IQuestion } from '../../../interfaces/IQuestion';
 import classes from './Recorder.module.scss';
 import { AppContext } from '../../../App';
 
@@ -24,7 +24,7 @@ export interface Props {
 }
 export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
   const { showSnackbar } = useContext(AppContext);
-  const mediaRecorder = useRef<MediaRecorder|undefined>();
+  const mediaRecorder = useRef<MediaRecorder | undefined>();
   const audioChunks = useRef<any>([]);
   const audioBlob = useRef<any>();
   // const audioFile = useRef<HTMLAudioElement>();
@@ -89,9 +89,10 @@ export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
     uploadFileToServer(FileType.AUDIO, audioBlob.current, email, timestamp).subscribe((data) => {
       if (data.downloadURL) {
         console.log(data.downloadURL);
-        const question: Record<string, IAudioQuestion> = {
-          [`audioQuestions.${timestamp}`]: {
-            questionURL: data.downloadURL,
+        const question: Record<string, IQuestion> = {
+          [`questions.${timestamp}`]: {
+            audioURL: data.downloadURL,
+            questionText: undefined,
             studentName: Util.fullName !== DEFAULT_FULL_NAME ? Util.fullName : email,
           },
         };
@@ -112,11 +113,11 @@ export const Recorder: React.FC<Props> = ({ email, lessonId }) => {
       )}
 
       {status === RecordingStatus.Recording && (
-      <StopIcon onClick={handleStopRecord} />
+        <StopIcon onClick={handleStopRecord} />
       )}
 
       {status === RecordingStatus.Recorded && (
-      <SendIcon onClick={handleSend} />
+        <SendIcon onClick={handleSend} />
       )}
     </div>
   );

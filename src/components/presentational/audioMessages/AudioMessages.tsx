@@ -8,7 +8,7 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classes from "./AudioMessages.module.scss";
 import { Entity, listenFileChanges } from "../../../data/Store";
-import { IAudioQuestion } from "../../../interfaces/IAudioQuestion";
+import { IQuestion } from "../../../interfaces/IQuestion";
 import { ILiveLesson } from "../../../interfaces/ILesson";
 import askImage from "../../../images/ask.png";
 
@@ -17,82 +17,90 @@ export interface Props {
 }
 
 export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
-  const audioQuestionsUnsubscribe = useRef<any>();
+  const questionsUnsubscribe = useRef<any>();
   const [readyToListenQuestions, setReadyToListenQuestions] =
     useState<boolean>(true);
 
-  const [audioQuestions, setAudioQuestions] = useState<
-    Record<string, IAudioQuestion> | undefined
+  const [questions, setQuestions] = useState<
+    Record<string, IQuestion> | undefined
   >(undefined);
   const [processedQuestions, setProcessedQuestions] = useState<
-    Record<string, IAudioQuestion> | undefined
+    Record<string, IQuestion> | undefined
   >(undefined);
   const [allowAutoPlay, setAllowAutoPlay] = useState<boolean>(false);
 
   useEffect(() => {
-    const newQuestions: Record<string, IAudioQuestion> = {};
+    const newQuestions: Record<string, IQuestion> = {};
 
-    if (audioQuestions) {
-      Object.entries(audioQuestions).forEach(([key, question]) => {
+    if (questions) {
+      Object.entries(questions).forEach(([key, question]) => {
         if (processedQuestions && !processedQuestions[key]) {
           newQuestions[key] = question;
         }
       });
 
-
-      console.log(newQuestions);
-
       const keys = Object.keys(newQuestions);
       if (keys.length > 0 && processedQuestions) {
         // If this is not the first data fetch
         const question = newQuestions[keys[0]];
-        const audio = new Audio(question.questionURL);
 
-        audio.onended = () => {
-          setReadyToListenQuestions(true);
-        };
-
-        if (allowAutoPlay) {
-          if (readyToListenQuestions) {
-            console.log('Playing...');
-            audio.play();
+        if (question.audioURL) {
+          const audio = new Audio(question.audioURL);
+          audio.onended = () => {
+            setReadyToListenQuestions(true);
+          };
+          if (allowAutoPlay) {
+            if (readyToListenQuestions) {
+              console.log('Playing...');
+              audio.play();
+            }
+          } else {
+            // eslint-disable-next-line no-new
+            new Notification("New Question", {
+              body: question.studentName,
+              icon: askImage,
+            });
           }
-        } else {
-          // eslint-disable-next-line no-new
-          new Notification("New Question", {
-            body: question.studentName,
-            icon: askImage,
-          });
+        }
+
+        if (question.questionText) {
+          if (allowAutoPlay) {
+            // eslint-disable-next-line no-new
+            new Notification("New Question", {
+              body: question.studentName,
+              icon: askImage,
+            });
+          }
         }
       }
-      setProcessedQuestions(audioQuestions);
+      setProcessedQuestions(questions);
     }
-  }, [audioQuestions]);
+  }, [questions, allowAutoPlay, processedQuestions, readyToListenQuestions]);
 
-  const startListenAudioQuestions = useCallback(() => {
-    if (!audioQuestionsUnsubscribe.current) {
+  const startListenquestions = useCallback(() => {
+    if (!questionsUnsubscribe.current) {
       console.log("Subscribed to questions");
-      audioQuestionsUnsubscribe.current = listenFileChanges<ILiveLesson>(
+      questionsUnsubscribe.current = listenFileChanges<ILiveLesson>(
         Entity.LESSONS_LIVE,
         lessonId,
         (data) => {
-          if (data && data.audioQuestions) {
-            setAudioQuestions(data.audioQuestions);
+          if (data && data.questions) {
+            setQuestions(data.questions);
           }
         }
       );
     }
-  }, [lessonId, readyToListenQuestions]);
+  }, [lessonId]);
 
   useEffect(() => {
-    startListenAudioQuestions();
-  }, [startListenAudioQuestions]);
+    startListenquestions();
+  }, [startListenquestions]);
 
   // cleanup function
   useEffect(
     () => () => {
-      if (audioQuestionsUnsubscribe.current) {
-        audioQuestionsUnsubscribe.current();
+      if (questionsUnsubscribe.current) {
+        questionsUnsubscribe.current();
       }
     },
     []
@@ -124,35 +132,37 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography className={classes.heading}>Audio Questions</Typography>
+          <Typography className={classes.heading}>Questions From Students</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
             <div className={classes.container}>
-              {audioQuestions &&
-                Object.keys(audioQuestions)
+              {questions &&
+                Object.keys(questions)
                   .sort((a, b) => (a < b ? 1 : -1))
                   .map((key) => (
                     <div
                       key={key}
                       className={classes.message}>
                       <div>
-                        {audioQuestions[key].studentName}:
+                        {questions[key].studentName}:
                         {new Date(Number(key)).toLocaleTimeString()}
                       </div>
-                      <audio
-                        controls
-                      >
-                        <source
-                          src={audioQuestions[key].questionURL}
-                          type="audio/ogg"
-                        />
-                        <track
-                          default
-                          kind="captions"
-                          srcLang="en" />
-                        Your browser does not support the audio tag.
-                      </audio>
+                      {
+                        questions[key].audioURL && <audio
+                          controls
+                        >
+                          <source
+                            src={questions[key].audioURL}
+                            type="audio/ogg"
+                          />
+                          <track
+                            default
+                            kind="captions"
+                            srcLang="en" />
+                          Your browser does not support the audio tag.
+                        </audio>
+                      }
                     </div>
                   ))}
             </div>
