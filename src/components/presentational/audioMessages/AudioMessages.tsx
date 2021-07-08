@@ -148,7 +148,7 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
                     key={key}
                     className={classes.message}>
                     <div>
-                      {questions[key].studentName}:
+                      <b>{questions[key].studentName}</b>:
                       {new Date(Number(key)).toLocaleTimeString()}
                     </div>
                     {
@@ -165,6 +165,10 @@ export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
                           srcLang="en" />
                         Your browser does not support the audio tag.
                       </audio>
+                    }
+
+                    {
+                      questions[key].questionText && <div>{questions[key].questionText}</div>
                     }
                   </div>
                 ))}
