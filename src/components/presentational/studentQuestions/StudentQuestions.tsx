@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import classes from "./AudioMessages.module.scss";
+import classes from "./StudentQuestions.module.scss";
 import { Entity, listenFileChanges } from "../../../data/Store";
 import { IQuestion } from "../../../interfaces/IQuestion";
 import { ILiveLesson } from "../../../interfaces/ILesson";
@@ -16,7 +16,7 @@ export interface Props {
   lessonId: string;
 }
 
-export const AudioMessages: React.FC<Props> = ({ lessonId }) => {
+export const StudentQuestions: React.FC<Props> = ({ lessonId }) => {
   const questionsUnsubscribe = useRef<any>();
   const [readyToListenQuestions, setReadyToListenQuestions] =
     useState<boolean>(true);

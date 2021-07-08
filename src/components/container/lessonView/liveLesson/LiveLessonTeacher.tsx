@@ -7,7 +7,7 @@ import { ILiveLesson } from '../../../../interfaces/ILesson';
 import {
   Entity, getDocWithId,
 } from '../../../../data/Store';
-import { AudioMessages } from '../../../presentational/audioMessages/AudioMessages';
+import { StudentQuestions } from '../../../presentational/studentQuestions/StudentQuestions';
 import { Attendance } from '../../../presentational/attendance/Attendance';
 import { AttendaceZoom } from '../../../presentational/attendanceZoom/AttendanceZoom';
 
@@ -38,7 +38,7 @@ export const LiveLessonTeacher: React.FC = () => {
       <div className={classes.desc}>
         {lesson?.description}
       </div>
-      <AudioMessages lessonId={lessonId} />
+      <StudentQuestions lessonId={lessonId} />
       <Attendance lessonId={lessonId} />
       <AttendaceZoom />
     </div>
