@@ -255,17 +255,17 @@ export const AddVideoLesson = () => {
               onChange={(e) => handleChange({ price: Number(e.target.value) })}
             />
             {teacher && (
-            <div>
-              <span style={{ marginRight: '5px' }}>Profile url:</span>
-              <a
-                rel="noopener noreferrer"
-                target="_blank"
-                href={`teacher/${teacher.url}`}
-              >
-                akshara.lk/teacher/
-                {teacher.url}
-              </a>
-            </div>
+              <div>
+                <span style={{ marginRight: '5px' }}>Profile url:</span>
+                <a
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  href={`teacher/${teacher.url}`}
+                >
+                  akshara.lk/teacher/
+                  {teacher.url}
+                </a>
+              </div>
             )}
             <Button
               size="small"

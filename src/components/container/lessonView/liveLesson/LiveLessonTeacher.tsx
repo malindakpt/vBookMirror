@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import classes from './LiveLesson.module.scss';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
@@ -10,10 +10,12 @@ import {
 import { StudentQuestions } from '../../../presentational/studentQuestions/StudentQuestions';
 import { Attendance } from '../../../presentational/attendance/Attendance';
 import { AttendaceZoom } from '../../../presentational/attendanceZoom/AttendanceZoom';
+import { AppContext } from '../../../../App';
 
 export const LiveLessonTeacher: React.FC = () => {
   // disable context menu for avoid right click
   document.addEventListener('contextmenu', (event) => event.preventDefault());
+  const { email, showSnackbar } = useContext(AppContext);
 
   useBreadcrumb();
   const { lessonId } = useParams<any>();
@@ -21,10 +23,19 @@ export const LiveLessonTeacher: React.FC = () => {
 
   const fetchLesson = useCallback(async () => {
     getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
-      if (!lesson) return;
-      setLesson(lesson);
+      if (lesson) {
+        if (email && (email === lesson.ownerEmail || email === lesson.assistantEmail)) {
+          setLesson(lesson);
+        } else {
+          if (email) {
+            showSnackbar(`${email} is not allowed to view this page`);
+          } else {
+            showSnackbar(`Please login with your email address`);
+          }
+        }
+      }
     });
-  }, [lessonId]);
+  }, [lessonId, email, showSnackbar]);
 
   useEffect(() => {
     fetchLesson();
@@ -38,9 +49,11 @@ export const LiveLessonTeacher: React.FC = () => {
       <div className={classes.desc}>
         {lesson?.description}
       </div>
-      <StudentQuestions lessonId={lessonId} />
-      <Attendance lessonId={lessonId} />
-      <AttendaceZoom />
+      {lesson && <div>
+        <StudentQuestions lessonId={lessonId} />
+        <Attendance lessonId={lessonId} />
+        <AttendaceZoom />
+      </div>}
     </div>
   );
 };

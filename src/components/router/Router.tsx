@@ -32,6 +32,7 @@ type routeConfig = [string, any, string, boolean][]; // route, component, labelN
 export const commonRoutes: routeConfig = [
   ['/intro/:id', Intro, 'Intro', false],
   ['/notify/:type', NotifyPayment, 'Notify', false],
+  ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
 
   ['/teacher/:teacherId/:courseId/live/:lessonId', LiveLesson, 'Live Lesson', false],
   ['/teacher/:teacherId/:courseId/video/:lessonId', VideoLesson, 'Video Lesson', false],
@@ -54,7 +55,6 @@ export const teacherRoutes: routeConfig = [
   ['/addLesson', AddVideoLesson, 'Video', true],
   ['/addLive', AddLiveLesson, 'Live', true],
   ['/addPaper', AddPaperLesson, 'Paper', true],
-  ['/liveStat/:lessonId', LiveLessonTeacher, 'Check Live Attendance', false],
   ['/paymentRequests', PaymentRequests, 'Requests', true],
   ['/profile', Subscriptions, 'Profile', true],
 ];
@@ -75,12 +75,12 @@ const Router: React.FC = () => {
   return (
     <>
       {isLoading && (
-      <div className={classes.loader}>
-        <img
-          alt="loading"
-          src={loader}
-        />
-      </div>
+        <div className={classes.loader}>
+          <img
+            alt="loading"
+            src={loader}
+          />
+        </div>
       )}
       <div
         className={classes.help}

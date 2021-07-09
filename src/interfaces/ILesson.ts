@@ -82,4 +82,8 @@ export interface ILiveLesson extends ILesson {
   videoUrl?: string;
   isRunning: boolean;
   questions?: Record<string, IQuestion>; // string is the timestamp
+
+  assistantEmail: string | null;
+  assistantZoomMeetingId: string | null;
+  assistantZoomPwd: string | null;
 }
