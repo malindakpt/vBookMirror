@@ -11,6 +11,7 @@ import { StudentQuestions } from '../../../presentational/studentQuestions/Stude
 import { Attendance } from '../../../presentational/attendance/Attendance';
 import { AttendaceZoom } from '../../../presentational/attendanceZoom/AttendanceZoom';
 import { AppContext } from '../../../../App';
+import { Util } from '../../../../helper/util';
 
 export const LiveLessonTeacher: React.FC = () => {
   // disable context menu for avoid right click
@@ -31,6 +32,7 @@ export const LiveLessonTeacher: React.FC = () => {
             showSnackbar(`${email} is not allowed to view this page`);
           } else {
             showSnackbar(`Please login with your email address`);
+            Util.invokeLogin();
           }
         }
       }
@@ -39,7 +41,7 @@ export const LiveLessonTeacher: React.FC = () => {
 
   useEffect(() => {
     fetchLesson();
-  }, [fetchLesson, lessonId]);
+  }, [fetchLesson]);
 
   return (
     <div className={classes.root}>

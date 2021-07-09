@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Header from './components/container/header/Header';
 // import Footer from './components/presentational/footer/Footer';
@@ -16,9 +16,9 @@ export interface IContext {
   isTeacher: boolean | undefined;
   breadcrumbs?: any[];
   setIsTeacher: (isTeacher: boolean) => void;
-  setEmail: (email: string|null) => void,
+  setEmail: (email: string | null) => void,
   updateBreadcrumbs: (bcrumbs: any) => void;
-  showSnackbar:(message: string) => void;
+  showSnackbar: (message: string) => void;
   showPaymentPopup: (options: PaymentOptionProps) => void;
   isAdmin: () => boolean;
   // global loading status
@@ -30,14 +30,14 @@ const initialState = {
   email: null,
   isTeacher: false,
   breadcrumbs: [],
-  setIsTeacher: (isTeacher: boolean) => {},
-  setEmail: (email: string|null) => {},
-  updateBreadcrumbs: (bcrumbs: any) => {},
-  showSnackbar: (message: string) => {},
-  showPaymentPopup: (options: PaymentOptionProps) => {},
+  setIsTeacher: (isTeacher: boolean) => { },
+  setEmail: (email: string | null) => { },
+  updateBreadcrumbs: (bcrumbs: any) => { },
+  showSnackbar: (message: string) => { },
+  showPaymentPopup: (options: PaymentOptionProps) => { },
   isAdmin: () => false,
   isLoading: false,
-  setLoading: (loading: boolean) => {},
+  setLoading: (loading: boolean) => { },
 };
 export const AppContext = React.createContext<IContext>(
   initialState,
@@ -46,7 +46,7 @@ export const AppContext = React.createContext<IContext>(
 const App: React.FC = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
   const [snackText, setSnackText] = useState<string>('');
-  const [email, setEmail] = useState<string|null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   // const [isShowPayment, setShowPayment] = useState<boolean>(true);
   const [paymentOptionProps, setPaymentOptionProps] = useState<PaymentOptionProps | undefined>();
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -62,13 +62,13 @@ const App: React.FC = () => {
     horizontal: 'center',
   });
 
-  const showSnackbar = (text: string) => {
+  const showSnackbar = useCallback((text: string) => {
     setSnackText(text);
     setState((prev) => {
       const next = { ...prev, open: true };
       return next;
     });
-  };
+  }, [setSnackText, setState]);
 
   const showPaymentPopup = (options: PaymentOptionProps) => {
     setPaymentOptionProps(options);
@@ -111,11 +111,11 @@ const App: React.FC = () => {
         {
 
           paymentOptionProps && (
-          <PaymentOptions
-               // eslint-disable-next-line react/jsx-props-no-spreading
-            {...paymentOptionProps}
-            onCancel={() => setPaymentOptionProps(undefined)}
-          />
+            <PaymentOptions
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...paymentOptionProps}
+              onCancel={() => setPaymentOptionProps(undefined)}
+            />
           )
         }
         <Header />
