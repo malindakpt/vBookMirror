@@ -21,7 +21,7 @@ import { IPayment } from '../../../interfaces/IPayment';
 import logo from '../../../images/logo.png';
 import { AppContext } from '../../../App';
 
-interface ZoomUser{
+interface ZoomUser {
   userName: string;
   userId: string;
   isHost: boolean;
@@ -54,7 +54,7 @@ export const AttendaceZoom: React.FC = () => {
   const [paymentForLesson, setPaymentsForLesson] = useState<IPayment[]>([]);
   const [nonPaid, setNonPaid] = useState<ZoomUser[]>([]);
 
-  const [users, setUsers] = useState< StudentConnection >({});
+  const [users, setUsers] = useState<StudentConnection>({});
   const [connected, setConnected] = useState<boolean>(false);
   const [zoomStarted, setZoomStarted] = useState<boolean>(false);
   const [disconnected, setDisconnected] = useState<boolean>(false);
@@ -231,12 +231,12 @@ export const AttendaceZoom: React.FC = () => {
         if (email) {
           getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
             { lessonId }).then((data) => {
-            setLesson(lesson);
-            selectedLesson.current = lesson;
-            paymentsForSelectedLesson.current = data;
-            setPaymentsForLesson(data);
-            startVideoRendering(lesson, userNames, data);
-          });
+              setLesson(lesson);
+              selectedLesson.current = lesson;
+              paymentsForSelectedLesson.current = data;
+              setPaymentsForLesson(data);
+              startVideoRendering(lesson, userNames, data);
+            });
         } else {
           showSnackbar('Please login with your gmail address');
         }
@@ -267,8 +267,7 @@ export const AttendaceZoom: React.FC = () => {
   const getIframe = (teacher: ITeacher) => (
     <>
       <iframe
-        src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${
-          getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+        src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
         name="iframe_a"
         height="300px"
         width="100%"
@@ -290,21 +289,21 @@ export const AttendaceZoom: React.FC = () => {
       </AccordionSummary>
       <AccordionDetails>
         <div className={classes.root}>
-          { (lesson && !disconnected && zoomStarted) ? (
+          {(lesson && !disconnected && zoomStarted) ? (
             <div>
               {connected && (
-              <div>
-                <h4 style={{ color: 'red' }}>Click `DISCONNECT` before reload/close the page</h4>
-                <Button onClick={disconnectAll}>
-                  Disconnect
-                </Button>
-              </div>
+                <div>
+                  <h4 style={{ color: 'red' }}>Click `DISCONNECT` before reload/close the page</h4>
+                  <Button onClick={disconnectAll}>
+                    Disconnect
+                  </Button>
+                </div>
               )}
 
               {!connected && (
-              <h4>
-                {`Connecting to meeting... ${REPEAT_START_TIMES - sentStartCommands}`}
-              </h4>
+                <h4>
+                  {`Connecting to meeting... ${REPEAT_START_TIMES - sentStartCommands}`}
+                </h4>
               )}
 
               <div className={classes.check}>
@@ -312,24 +311,24 @@ export const AttendaceZoom: React.FC = () => {
                   <tbody>
                     <tr><th>Not paid ZOOM students for this lesson</th></tr>
                     {
-                nonPaid.map((usr) => (
-                  <tr key={usr.userId}>
-                    <td>{usr.userId}</td>
-                    <td>{usr.userName}</td>
-                    <td>Not Paid</td>
-                  </tr>
-                ))
-              }
+                      nonPaid.map((usr) => (
+                        <tr key={usr.userId}>
+                          <td>{usr.userId}</td>
+                          <td>{usr.userName}</td>
+                          <td>Not Paid</td>
+                        </tr>
+                      ))
+                    }
 
                     <tr><th>Paid ZOOM students for this lesson</th></tr>
                     {paymentForLesson.sort((b, a) => (users[a.ownerName]?.count ?? 0)
-                     - (users[b.ownerName]?.count ?? 0)).map((pay) => (
-                       <tr key={pay.id}>
-                         <td>{pay.ownerEmail}</td>
-                         <td>{pay.ownerName}</td>
-                         <td>{users[pay.ownerName]?.count ?? 0}</td>
-                       </tr>
-                    ))}
+                      - (users[b.ownerName]?.count ?? 0)).map((pay) => (
+                        <tr key={pay.id}>
+                          <td>{pay.ownerEmail}</td>
+                          <td>{pay.ownerName}</td>
+                          <td>{users[pay.ownerName]?.count ?? 0}</td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
@@ -339,28 +338,28 @@ export const AttendaceZoom: React.FC = () => {
                 : <div className={classes.notStarted}>Meeting Not Started Yet</div>}
 
               {lesson.attachments && (
-              <div className={classes.attachments}>
-                {lesson.attachments.map((atta) => (
-                  <li key={atta}>
-                    <a
-                      href={atta}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {atta}
-                    </a>
-                  </li>
-                ))}
-              </div>
+                <div className={classes.attachments}>
+                  {lesson.attachments.map((atta) => (
+                    <li key={atta}>
+                      <a
+                        href={atta}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {atta}
+                      </a>
+                    </li>
+                  ))}
+                </div>
               )}
             </div>
-          ) : <h4>Zoom Attendance Disconnected</h4> }
-          <button
+          ) : <h4>Zoom Attendance Disconnected</h4>}
+          {!zoomStarted && <button
             onClick={strtCheckZoomAttendance}
             type="button"
           >
             Check Zoom attendance
-          </button>
+          </button>}
         </div>
       </AccordionDetails>
     </Accordion>
