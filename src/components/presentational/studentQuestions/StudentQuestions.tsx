@@ -118,15 +118,19 @@ export const StudentQuestions: React.FC<Props> = ({ lessonId }) => {
     <div>
       <div>
         {!allowAutoPlay && (
-          <button onClick={() => setAllowAutoPlay(true)}
+          <button className={classes.btnAutoPlay}
+            onClick={() => setAllowAutoPlay(true)}
+            style={{ background: 'red' }}
             type="button">
-            Enable auto play questions
+            Auto Play Disabled
           </button>
         )}
         {allowAutoPlay && (
-          <button onClick={() => setAllowAutoPlay(false)}
+          <button className={classes.btnAutoPlay}
+            onClick={() => setAllowAutoPlay(false)}
+            style={{ background: 'green' }}
             type="button">
-            Disable auto play questions
+            Auto Play Enabled
           </button>
         )}
       </div>
