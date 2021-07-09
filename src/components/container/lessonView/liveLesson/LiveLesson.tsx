@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
 import React, {
   useCallback, useContext, useEffect, useRef, useState,
@@ -181,8 +180,17 @@ export const LiveLesson: React.FC = () => {
     </Button>
   );
 
-  const getIframe = (teacher: ITeacher) => (
-    <>
+  const getIframe = (teacher: ITeacher, lesson: ILiveLesson) => {
+    let zoomLink = `${Config.zoomURL}?&a=${getHashFromString(
+      teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`;
+
+    if ((lesson.assistantZoomMeetingId && lesson.assistantZoomMeetingId.length > 3)
+      && (lesson.assistantZoomPwd && lesson.assistantZoomPwd.length > 3)) {
+      zoomLink = `${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)
+        }&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`;
+    }
+
+    return (<>
       <div
         className={`${classes.fsButton} ${isFullScr ? classes.exit : ''}`}
       >
@@ -191,15 +199,15 @@ export const LiveLesson: React.FC = () => {
       </div>
       <iframe
         className={isFullScr ? classes.fullScr : ''}
-        src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+        src={zoomLink}
         name="iframe_a"
         height="300px"
         width="100%"
         allow="camera *;microphone *"
         title="Live Lessons"
       />
-    </>
-  );
+    </>);
+  };
 
   useEffect(() => {
     processVideo();
@@ -223,7 +231,7 @@ export const LiveLesson: React.FC = () => {
   const getInViewButton = (teacher: ITeacher) => (
     showInView ? (
       <>
-        {getIframe(teacher)}
+        {lesson && getIframe(teacher, lesson)}
       </>
     ) : (
       <>
