@@ -171,6 +171,8 @@ export const LiveLesson: React.FC = () => {
 
   const getAppButton = (teacher: ITeacher) => (
     <Button
+      variant="contained"
+      color="primary"
       onClick={() => {
         setCopyLessonWarn(true);
         copyName();
@@ -180,15 +182,26 @@ export const LiveLesson: React.FC = () => {
     </Button>
   );
 
-  const getIframe = (teacher: ITeacher, lesson: ILiveLesson) => {
-    let zoomLink = `${Config.zoomURL}?&a=${getHashFromString(
-      teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`;
-
-    if ((lesson.assistantZoomMeetingId && lesson.assistantZoomMeetingId.length > 3)
-      && (lesson.assistantZoomPwd && lesson.assistantZoomPwd.length > 3)) {
-      zoomLink = `${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)
-        }&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`;
+  const getZoomInfo = (teacher: ITeacher, lesson: ILiveLesson) => {
+    if ((lesson.assistantZoomMeetingId && lesson.assistantZoomMeetingId.length > 1)
+      && (lesson.assistantZoomPwd && lesson.assistantZoomPwd.length > 1)) {
+      return {
+        id: lesson.assistantZoomMeetingId,
+        pwd: lesson.assistantZoomPwd
+      }
     }
+
+    return {
+      id: teacher.zoomMeetingId,
+      pwd: teacher.zoomPwd
+    }
+  }
+
+  const getIframe = (teacher: ITeacher, lesson: ILiveLesson) => {
+    const { id, pwd } = getZoomInfo(teacher, lesson);
+
+    const zoomLink = `${Config.zoomURL}?&a=${getHashFromString(id)
+      }&a=${getHashFromString(pwd)}&a=${getHashFromString(Util.fullName)}`;
 
     return (<>
       <div
@@ -265,6 +278,16 @@ export const LiveLesson: React.FC = () => {
     }
   };
 
+
+  const openZoomApp = () => {
+    if (teacher && lesson) {
+      setCopyLessonWarn(false);
+      const { id, pwd } = getZoomInfo(teacher, lesson);
+      window.open(`https://us04web.zoom.us/j/${id}?pwd=${pwd}`,
+        '_blank');
+    }
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.warn}>
@@ -311,11 +334,7 @@ export const LiveLesson: React.FC = () => {
       {copyLessonWarn && (
         <AlertDialog
           type={AlertMode.COPY_NAME}
-          onAccept={() => {
-            setCopyLessonWarn(false);
-            window.open(`https://us04web.zoom.us/j/${teacher?.zoomMeetingId}?pwd=${teacher?.zoomPwd}`,
-              '_blank');
-          }}
+          onAccept={openZoomApp}
           onCancel={() => {
             setCopyLessonWarn(false);
           }}

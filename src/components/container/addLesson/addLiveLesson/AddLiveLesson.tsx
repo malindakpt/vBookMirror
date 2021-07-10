@@ -435,7 +435,7 @@ export const AddLiveLesson = () => {
               id="assistantZoomMeetingId"
               label="Assistant Zoom Id"
               disabled={disabled}
-              value={liveLesson.assistantEmail ?? ''}
+              value={liveLesson.assistantZoomMeetingId ?? ''}
               onChange={(e) => setSessionProps({ assistantZoomMeetingId: e.target.value })}
             />
             <TextField
@@ -443,7 +443,7 @@ export const AddLiveLesson = () => {
               id="assistantZoomPwd"
               label="Assistant Zoom Pwd"
               disabled={disabled}
-              value={liveLesson.assistantEmail ?? ''}
+              value={liveLesson.assistantZoomPwd ?? ''}
               onChange={(e) => setSessionProps({ assistantZoomPwd: e.target.value })}
             />
             <div>
