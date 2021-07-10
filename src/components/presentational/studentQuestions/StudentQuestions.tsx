@@ -114,12 +114,18 @@ export const StudentQuestions: React.FC<Props> = ({ lessonId }) => {
     return <div>Invalid Lesson Id</div>;
   }
 
+  const enableAutoPlay = () => {
+    setAllowAutoPlay(true);
+    const audio = new Audio('http://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg');
+    audio.play();
+  }
+
   return (
     <div>
       <div>
         {!allowAutoPlay && (
           <button className={classes.btnAutoPlay}
-            onClick={() => setAllowAutoPlay(true)}
+            onClick={enableAutoPlay}
             style={{ background: 'red' }}
             type="button">
             Auto Play Disabled
