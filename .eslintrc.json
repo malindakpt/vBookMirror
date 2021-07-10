@@ -39,6 +39,7 @@
         "jsx-a11y/control-has-associated-label" : "off",
         "react/jsx-max-props-per-line": [1, { "maximum": 1 }],
         "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
-        "linebreak-style": "off"
+        "linebreak-style": "off",
+        "react/no-array-index-key": "off"
     }
 }

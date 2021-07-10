@@ -147,7 +147,8 @@ export const AddVideo: React.FC<Props> = ({
           </div>
         ))}
       </div>
-      {allowAddNew && <Button disabled={disabled} onClick={addNewVideo}>Add More Video</Button>}
+      {allowAddNew && <Button disabled={disabled}
+        onClick={addNewVideo}>Add More Video</Button>}
     </div>
   );
 };

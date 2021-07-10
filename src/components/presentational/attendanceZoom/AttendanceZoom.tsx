@@ -16,7 +16,7 @@ import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { ILesson, ILiveLesson } from '../../../interfaces/ILesson';
 import { Entity, getDocsWithProps, getDocWithId } from '../../../data/Store';
-import { getHashFromString, Util } from '../../../helper/util';
+import { getHashFromString, getZoomInfo, Util } from '../../../helper/util';
 import { IPayment } from '../../../interfaces/IPayment';
 import logo from '../../../images/logo.png';
 import { AppContext } from '../../../App';
@@ -264,10 +264,17 @@ export const AttendaceZoom: React.FC = () => {
     processVideo();
   };
 
+  const getZoomUrl = () => {
+    const { id, pwd } = getZoomInfo(teacher, lesson);
+    const url = `${Config.zoomURL}?&a=${getHashFromString(
+      id)}&a=${getHashFromString(pwd)}&a=${getHashFromString(Util.fullName)}`
+    return url
+  }
+
   const getIframe = (teacher: ITeacher) => (
     <>
       <iframe
-        src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+        src={getZoomUrl()}
         name="iframe_a"
         height="300px"
         width="100%"

@@ -17,7 +17,7 @@ import {
   Entity, getDocsWithProps, getDocWithId,
 } from '../../../../data/Store';
 import {
-  getHashFromString, isLessonOwner, readyToGo, Util,
+  getHashFromString, getZoomInfo, isLessonOwner, readyToGo, Util,
 } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
@@ -181,21 +181,6 @@ export const LiveLesson: React.FC = () => {
       OPEN LESSON WITH ZOOM
     </Button>
   );
-
-  const getZoomInfo = (teacher: ITeacher, lesson: ILiveLesson) => {
-    if ((lesson.assistantZoomMeetingId && lesson.assistantZoomMeetingId.length > 1)
-      && (lesson.assistantZoomPwd && lesson.assistantZoomPwd.length > 1)) {
-      return {
-        id: lesson.assistantZoomMeetingId,
-        pwd: lesson.assistantZoomPwd
-      }
-    }
-
-    return {
-      id: teacher.zoomMeetingId,
-      pwd: teacher.zoomPwd
-    }
-  }
 
   const getIframe = (teacher: ITeacher, lesson: ILiveLesson) => {
     const { id, pwd } = getZoomInfo(teacher, lesson);

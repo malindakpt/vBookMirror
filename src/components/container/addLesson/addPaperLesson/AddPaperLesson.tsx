@@ -350,6 +350,7 @@ export const AddPaperLesson = () => {
               paper?.answers.map((q, idx) => (
                 <div
                   className={classes.question}
+                  // eslint-disable-next-line react/no-array-index-key
                   key={idx}
                 >
                   <MCQAnswer
