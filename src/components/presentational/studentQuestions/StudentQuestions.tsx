@@ -45,15 +45,18 @@ export const StudentQuestions: React.FC<Props> = ({ lessonId }) => {
         const question = newQuestions[keys[0]];
 
         if (question.audioURL) {
-          const audio = new Audio(question.audioURL);
-          audio.onended = () => {
-            setReadyToListenQuestions(true);
-          };
-          if (allowAutoPlay) {
-            if (readyToListenQuestions) {
-              console.log('Playing...');
-              audio.play();
-            }
+          if (allowAutoPlay && readyToListenQuestions) {
+
+
+            const audio = new Audio(question.audioURL);
+            audio.onended = () => {
+              setReadyToListenQuestions(true);
+              console.log('Stop');
+            };
+            console.log('Play');
+            audio.play();
+            setReadyToListenQuestions(false);
+
           } else {
             // eslint-disable-next-line no-new
             const noti = new Notification(question.studentName, {
