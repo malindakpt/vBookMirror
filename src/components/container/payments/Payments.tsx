@@ -21,11 +21,17 @@ export const Payments = () => {
     <div className={classes.container}>
       <table>
         <tbody>
-          { payments.sort((a, b) => b.date - a.date).map((p) => (
+          { payments.sort((a, b) => b.date - a.date).map((p, idx) => (
             <tr key={p.id}>
+              <td>{idx}</td>
               <td>{new Date(p.date).toDateString()}</td>
               <td>{p.ownerEmail}</td>
               <td>{p.ownerName}</td>
+              <td>{p.paidFor}</td>
+              <td><a
+               rel="noreferrer"
+               href={`/liveStat/${p.lessonId}`}
+               target="_blank">{p.lessonId}</a></td>
               <td>{p.amount}</td>
               <td>{p.watchedCount ?? 0}</td>
               <td><Button onClick={() => resetWatchCount(p.id)}>Reset</Button></td>

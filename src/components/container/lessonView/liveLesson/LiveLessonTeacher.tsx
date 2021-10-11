@@ -12,6 +12,7 @@ import { Attendance } from '../../../presentational/attendance/Attendance';
 import { AttendaceZoom } from '../../../presentational/attendanceZoom/AttendanceZoom';
 import { AppContext } from '../../../../App';
 import { Util } from '../../../../helper/util';
+import { ADMIN_EMAIL } from '../../../../data/Config';
 
 export const LiveLessonTeacher: React.FC = () => {
   // disable context menu for avoid right click
@@ -25,7 +26,7 @@ export const LiveLessonTeacher: React.FC = () => {
   const fetchLesson = useCallback(async () => {
     getDocWithId<ILiveLesson>(Entity.LESSONS_LIVE, lessonId).then((lesson) => {
       if (lesson) {
-        if (email && (email === lesson.ownerEmail || email === lesson.assistantEmail)) {
+        if (email && (email === lesson.ownerEmail || email === lesson.assistantEmail  || email === ADMIN_EMAIL)) {
           setLesson(lesson);
         } else {
           if (email) {
