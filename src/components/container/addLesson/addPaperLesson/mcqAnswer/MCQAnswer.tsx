@@ -8,18 +8,19 @@ export enum Status {
   Correct, Wrong, Unknown
 }
 interface Props {
-    idx: number;
-    ans: string;
-    possibleAnswers: string[];
-    status: Status;
-    onSelectAnswer: (idx:number, ans: string) => void;
+  idx: number;
+  ans: string;
+  possibleAnswers: string[];
+  status: Status;
+  onSelectAnswer: (idx: number, ans: string) => void;
 }
 
 export const MCQAnswer: React.FC<Props> = ({
   idx, ans, possibleAnswers, onSelectAnswer, status,
 }) => (
   <FormControl className={classes.container}>
-    <div className={`${classes.section2} ${status === Status.Correct && classes.correct} ${status === Status.Wrong && classes.wrong}`}>
+    <div className={`${classes.section2} ${status
+      === Status.Correct && classes.correct} ${status === Status.Wrong && classes.wrong}`}>
       <h3>
         {idx + 1}
       </h3>
@@ -44,15 +45,15 @@ export const MCQAnswer: React.FC<Props> = ({
             ---
           </MenuItem>
           {
-          possibleAnswers.map((ans) => (
-            <MenuItem
-              value={ans}
-              key={ans}
-            >
-              {`${ans}`}
-            </MenuItem>
-          ))
-        }
+            possibleAnswers.map((ans) => (
+              <MenuItem
+                value={ans}
+                key={ans}
+              >
+                {`${ans}`}
+              </MenuItem>
+            ))
+          }
 
         </Select>
       </div>

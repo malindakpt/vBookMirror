@@ -1,0 +1,91 @@
+@import "../../../mixins.scss";
+
+.root {
+  margin: auto;
+  max-width: 900px;
+
+  background: #FFFFFFCC;
+  padding: 15px;
+  border-radius: 2px;
+
+  .warn {
+    font-weight: bold;
+    color: black;
+    text-align: center;
+  }
+
+  .fsButton {
+    position: relative;
+    z-index: 99999;
+    top: 43px;
+    left: calc(100% - 28px);
+    width: 24px;
+    background-color: white;
+    color: black;
+    font-size: 8px;
+    border-radius: 0px;
+    padding-bottom: 0px;
+
+    &.exit {
+      position: fixed;
+      top: 12px;
+      right: 4px;
+    }
+
+    @include mobile {
+    }
+
+    &:hover {
+      background-color: white;
+    }
+  }
+
+  .fullScr {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+  }
+
+  .tutorials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      grid-gap: 5px;
+    }
+  }
+
+  table{
+    th{
+      text-align: left;
+      color: #473ab7;
+      padding-top: 20px;
+    }
+  }
+
+  .payList {
+    margin: auto;
+    width: 100%;
+  }
+
+  .notStarted {
+    text-align: center; 
+    font-weight: bold;
+  }
+
+  button {
+    background: #413fb5;
+    color: #fff;
+    border: none;
+    padding: 4px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: auto;
+    display: block;
+    margin-top: 5px;
+  }
+}

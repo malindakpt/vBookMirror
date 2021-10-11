@@ -1,7 +1,9 @@
 import { Button, TextField } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../../App';
-import { addDoc, Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
+import {
+  addDoc, Entity, getDocsWithProps, getDocWithId,
+} from '../../../../data/Store';
 import { Util } from '../../../../helper/util';
 import { IAccessCodes } from '../../../../interfaces/IAccessCodes';
 import { IPayment, PaymentGateway } from '../../../../interfaces/IPayment';
@@ -25,19 +27,21 @@ export const RequestPaymentValidation: React.FC<{ options: PaymentOptionProps }>
   const { showSnackbar } = useContext(AppContext);
 
   useEffect(() => {
-    getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
-      {
-        lessonId: lesson.id,
-        status: PaymentStatus.NOT_VALIDATED,
-        gateway: PaymentGateway.MANUAL,
-        ownerEmail: email,
-      }).then((data) => {
+    if (email) {
+      getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
+        {
+          lessonId: lesson.id,
+          status: PaymentStatus.NOT_VALIDATED,
+          gateway: PaymentGateway.MANUAL,
+          ownerEmail: email,
+        }).then((data) => {
         if (data.length > 0) {
           setResultMsg(REQ_SENT);
           setPaymentRef(data[0].paymentRef);
           setfetchedPaymentRef(data[0].paymentRef);
         }
       });
+    }
   }, [lesson, email]);
 
   const requestValidation = async () => {
@@ -69,9 +73,9 @@ export const RequestPaymentValidation: React.FC<{ options: PaymentOptionProps }>
 
         id: '',
       };
-      getDocWithId<IAccessCodes>(Entity.ACCESS_CODES, lesson.id).then(access => {
+      getDocWithId<IAccessCodes>(Entity.ACCESS_CODES, lesson.id).then((access) => {
         if (access && access.codes.includes(paymentRef)) {
-          getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { paymentRef, status: PaymentStatus.VALIDATED }).then(data => {
+          getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { paymentRef, status: PaymentStatus.VALIDATED }).then((data) => {
             if (data.length === 0) {
               // Code is valid and no one has taken it. Then create a validated payment for him.
               paymentObj.status = PaymentStatus.VALIDATED;
@@ -93,8 +97,7 @@ export const RequestPaymentValidation: React.FC<{ options: PaymentOptionProps }>
           });
         }
         onSuccess && onSuccess();
-      })
-
+      });
     }
   };
 

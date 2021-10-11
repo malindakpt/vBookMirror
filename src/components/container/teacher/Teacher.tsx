@@ -22,20 +22,20 @@ export const Teacher = () => {
   const idMap = useBreadcrumb();
 
   useEffect(() => {
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => {
+    getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => {
       setSubjects(data);
       idMap(data);
     });
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => {
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => {
       setExams(data);
       idMap(data);
     });
-    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { url: teacherId }).then((data) => {
+    getDocsWithProps<ITeacher>(Entity.TEACHERS, { url: teacherId }).then((data) => {
       idMap(data);
       if (data.length > 0) {
         const teacher = data[0];
         setTeacher(teacher);
-        getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: teacher.ownerEmail })
+        getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: teacher.ownerEmail })
           .then((data) => {
             idMap(data);
             setCourses(data);

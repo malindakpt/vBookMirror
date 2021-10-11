@@ -32,10 +32,10 @@ export const AddCourse = () => {
   const [examId, setExamId] = useState('');
 
   useEffect(() => {
-    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-    getDocsWithProps<ICourse[]>(Entity.COURSES, {}).then((data) => setCourses(data));
+    getDocsWithProps<ITeacher>(Entity.TEACHERS, {}).then((data) => setTeachers(data));
+    getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
+    getDocsWithProps<ICourse>(Entity.COURSES, {}).then((data) => setCourses(data));
   }, [onUpdate]);
 
   const disabled = !examId || !subjectId || !ownerEmail;

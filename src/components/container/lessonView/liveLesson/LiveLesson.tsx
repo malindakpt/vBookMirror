@@ -1,6 +1,7 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 import { useParams } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback, useContext, useEffect, useRef, useState,
+} from 'react';
 
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
@@ -11,9 +12,12 @@ import Config from '../../../../data/Config';
 import { useBreadcrumb } from '../../../../hooks/useBreadcrumb';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { ILiveLesson } from '../../../../interfaces/ILesson';
-import { Entity, getDocsWithProps, getDocWithId } from '../../../../data/Store';
 import {
-  getHashFromString, isLessonOwner, readyToGo, Util,
+  addOrUpdate,
+  Entity, getDocsWithProps, getDocWithId,
+} from '../../../../data/Store';
+import {
+  getHashFromString, getZoomInfo, isLessonOwner, readyToGo, Util,
 } from '../../../../helper/util';
 import { IPayment } from '../../../../interfaces/IPayment';
 import { AlertDialog, AlertMode } from '../../../presentational/snackbar/AlertDialog';
@@ -21,6 +25,9 @@ import { JOIN_MODES } from '../../addLesson/addLiveLesson/AddLiveLesson';
 import { Attachments } from '../../../presentational/attachments/Attachments';
 import { VideoViewer } from '../../../presentational/videoViewer/VideoViewer';
 import { PaymentManger } from '../../../presentational/paymentManager/PaymentManager';
+import { Recorder } from '../../../presentational/recorder/Recorder';
+import { IAttendance } from '../../../../interfaces/IAttendance';
+import { addToStorage, getFromStorage, LocalStorageKeys } from '../../../../data/LocalStorage';
 
 export const LiveLesson: React.FC = () => {
   const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
@@ -38,6 +45,9 @@ export const LiveLesson: React.FC = () => {
   const [showInView, setShowInView] = useState<boolean>(false);
   const [warn, setWarn] = useState<string>('');
 
+  const livePingTimer = useRef<any>();
+  const sendStartTimer = useRef<any>();
+
   const sendStartAction = () => {
     const ele = document.getElementsByTagName('iframe');
     if (ele && ele.length > 0 && ele[0]) {
@@ -54,15 +64,18 @@ export const LiveLesson: React.FC = () => {
 
   const startVideoRendering = () => {
     sendStartAction();
-    const glob: any = window;
 
-    glob.timer = setInterval(() => {
+    if (sendStartTimer.current) {
+      clearInterval(sendStartTimer.current);
+    }
+
+    sendStartTimer.current = setInterval(() => {
       console.log('send start mkpt');
       sendStartAction();
     }, 1000);
 
     setTimeout(() => {
-      clearInterval(glob.timer);
+      clearInterval(sendStartTimer.current);
     }, 30000);
   };
 
@@ -76,35 +89,35 @@ export const LiveLesson: React.FC = () => {
 
         if (lesson.price) {
           if (email) {
-            getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+            getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
-              // TODO:  Check refundable lessons here
-              const status = readyToGo(data, lesson);
+                // TODO:  Check refundable lessons here
+                const status = readyToGo(data, lesson);
 
-              if (status.ok) {
-                setLesson(lesson);
-                setFreeOrPurchased(true);
-              } else if (isLessonOwner(email, lesson)) {
-                setLesson(lesson);
-                setFreeOrPurchased(true);
-                setWarn('Watch as owner');
-              } else {
-                if (teacher) {
-                  showPaymentPopup({
-                    email,
-                    paidFor: teacher.ownerEmail,
-                    lesson,
-                    teacher,
-                    onSuccess: () => {
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, Config.realoadTimeoutAferSuccessPay);
-                    },
-                    onCancel: () => { },
-                  });
+                if (status.ok) {
+                  setLesson(lesson);
+                  setFreeOrPurchased(true);
+                } else if (isLessonOwner(email, lesson)) {
+                  setLesson(lesson);
+                  setFreeOrPurchased(true);
+                  setWarn('Watch as owner');
+                } else {
+                  if (teacher) {
+                    showPaymentPopup({
+                      email,
+                      paidFor: teacher.ownerEmail,
+                      lesson,
+                      teacher,
+                      onSuccess: () => {
+                        setTimeout(() => {
+                          window.location.reload();
+                        }, Config.realoadTimeoutAferSuccessPay);
+                      },
+                      onCancel: () => { },
+                    });
+                  }
                 }
-              }
-            });
+              });
           } else {
             showSnackbar('Please login with your Gmail address');
             Util.invokeLogin();
@@ -129,18 +142,37 @@ export const LiveLesson: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    processVideo();
-    const glob: any = window;
-    return () => {
-      stopLive();
-      clearInterval(glob.timer);
-    };
-    // eslint-disable-next-line
-  }, []);
+  const sendLiveAttendancePing = useCallback(() => {
+    let initialLoggedTime = getFromStorage(LocalStorageKeys.INITIAL_LOGGED_TIME);
+    if (!initialLoggedTime) {
+      initialLoggedTime = new Date().getTime();
+      addToStorage(LocalStorageKeys.INITIAL_LOGGED_TIME, initialLoggedTime);
+    }
+
+    const uid = `${email}-${initialLoggedTime}`;
+
+    if (lessonId && uid) {
+      const attendance: IAttendance = {
+        id: lessonId,
+        students: {
+          [uid]: {
+            id: uid,
+            ownerEmail: email ?? 'Not logged in',
+            timestamp: new Date().getTime(),
+          },
+        },
+
+      };
+      addOrUpdate<IAttendance>(Entity.ATTENDANCE, lessonId, attendance).then(() => {
+        console.log('Attendance sent');
+      });
+    }
+  }, [email, lessonId]);
 
   const getAppButton = (teacher: ITeacher) => (
     <Button
+      variant="contained"
+      color="primary"
       onClick={() => {
         setCopyLessonWarn(true);
         copyName();
@@ -150,8 +182,13 @@ export const LiveLesson: React.FC = () => {
     </Button>
   );
 
-  const getIframe = (teacher: ITeacher) => (
-    <>
+  const getIframe = (teacher: ITeacher, lesson: ILiveLesson) => {
+    const { id, pwd } = getZoomInfo(teacher, lesson);
+
+    const zoomLink = `${Config.zoomURL}?&a=${getHashFromString(id)
+      }&a=${getHashFromString(pwd)}&a=${getHashFromString(Util.fullName)}`;
+
+    return (<>
       <div
         className={`${classes.fsButton} ${isFullScr ? classes.exit : ''}`}
       >
@@ -160,20 +197,39 @@ export const LiveLesson: React.FC = () => {
       </div>
       <iframe
         className={isFullScr ? classes.fullScr : ''}
-        src={`${Config.zoomURL}?&a=${getHashFromString(teacher.zoomMeetingId)}&a=${getHashFromString(teacher.zoomPwd)}&a=${getHashFromString(Util.fullName)}`}
+        src={zoomLink}
         name="iframe_a"
         height="300px"
         width="100%"
         allow="camera *;microphone *"
         title="Live Lessons"
       />
-    </>
-  );
+    </>);
+  };
+
+  useEffect(() => {
+    processVideo();
+
+    if (sendStartTimer.current) {
+      clearInterval(sendStartTimer.current);
+    }
+    if (livePingTimer.current) {
+      clearInterval(livePingTimer.current);
+    }
+    livePingTimer.current = setInterval(sendLiveAttendancePing, Config.liveAttendanceSendInterval);
+
+    return () => {
+      stopLive();
+      clearInterval(sendStartTimer.current);
+      clearInterval(livePingTimer.current);
+    };
+    // eslint-disable-next-line
+  }, []);
 
   const getInViewButton = (teacher: ITeacher) => (
     showInView ? (
       <>
-        {getIframe(teacher)}
+        {lesson && getIframe(teacher, lesson)}
       </>
     ) : (
       <>
@@ -207,11 +263,27 @@ export const LiveLesson: React.FC = () => {
     }
   };
 
+
+  const openZoomApp = () => {
+    if (teacher && lesson) {
+      setCopyLessonWarn(false);
+      const { id, pwd } = getZoomInfo(teacher, lesson);
+      window.open(`https://us04web.zoom.us/j/${id}?pwd=${pwd}`,
+        '_blank');
+    }
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.warn}>
         {warn}
       </div>
+      {email && lessonId && (
+        <Recorder
+          email={email}
+          lessonId={lessonId}
+        />
+      )}
       <PaymentManger lesson={lesson} />
       {freeOrPurchased && lesson && (
         <div>
@@ -222,7 +294,7 @@ export const LiveLesson: React.FC = () => {
             {lesson?.description}
           </div>
 
-          { teacher && lesson.isRunning
+          {teacher && lesson.isRunning
             ? getDisplay(teacher)
             : (
               <div className={classes.notStarted}>
@@ -247,11 +319,7 @@ export const LiveLesson: React.FC = () => {
       {copyLessonWarn && (
         <AlertDialog
           type={AlertMode.COPY_NAME}
-          onAccept={() => {
-            setCopyLessonWarn(false);
-            window.open(`https://us04web.zoom.us/j/${teacher?.zoomMeetingId}?pwd=${teacher?.zoomPwd}`,
-              '_blank');
-          }}
+          onAccept={openZoomApp}
           onCancel={() => {
             setCopyLessonWarn(false);
           }}

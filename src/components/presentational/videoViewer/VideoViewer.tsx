@@ -44,7 +44,7 @@ export const VideoViewer: React.FC<Props> = ({ lesson }) => {
           <div className={classes.subTitle}>{videoUrl.description}</div>
           {getVideo(videoUrl)}
         </div>
-      ))}
+      )).reverse()}
     </div>
   );
 };

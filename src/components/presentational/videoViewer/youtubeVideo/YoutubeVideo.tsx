@@ -55,6 +55,8 @@ export const YoutubeVideo: React.FC<Props> = ({ videoUrl }) => {
               <div
                 className={isFull ? classes.fullCover : classes.cover1}
                 role="button"
+                tabIndex={0}
+                onKeyDown={handlePlay}
                 onClick={handlePlay}
               />
             </div>

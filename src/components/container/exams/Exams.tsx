@@ -9,7 +9,7 @@ export const Exams = () => {
   const [exams, setExams] = useState<IExam[]>([]);
   const idMap = useBreadcrumb();
   useEffect(() => {
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => {
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => {
       setExams(data);
       idMap(data);
     });

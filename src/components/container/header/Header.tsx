@@ -32,7 +32,7 @@ export const Header:React.FC = () => {
       photo: result.photoURL,
     });
 
-    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, { ownerEmail: email }).then((data) => {
+    getDocsWithProps<ITeacher>(Entity.TEACHERS, { ownerEmail: email }).then((data) => {
       if (data.length > 0) {
         setIsTeacher(true);
       } else {

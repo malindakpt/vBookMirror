@@ -54,13 +54,13 @@ export const Subscriptions = () => {
       // TODO: add live lessons here
       Promise.all([
         getDocWithId<ITeacher>(Entity.TEACHERS, email),
-        getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, {
+        getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, {
           paidFor: email,
           ...getPeriodObj(selectedMonth),
         }),
-        getDocsWithProps<ILesson[]>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
-        getDocsWithProps<ILesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email }),
-        getDocsWithProps<ILesson[]>(Entity.LESSONS_PAPER, { ownerEmail: email }),
+        getDocsWithProps<ILesson>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
+        getDocsWithProps<ILesson>(Entity.LESSONS_LIVE, { ownerEmail: email }),
+        getDocsWithProps<ILesson>(Entity.LESSONS_PAPER, { ownerEmail: email }),
       ]).then(([teacher, payments, lessonsV, lessonsL, lessonsP]) => {
         const vlessonArr: LessMap[] = [];
         const llessonArr: LessMap[] = [];
@@ -109,7 +109,7 @@ export const Subscriptions = () => {
   const [views, setViews] = useState<{lessonId: string, count: number}>();
 
   const checkViews = (lesson: ILesson) => {
-    getDocsWithProps<IStudentInfo[]>(Entity.STUDENT_INFO, { reference: lesson.id }).then((data) => {
+    getDocsWithProps<IStudentInfo>(Entity.STUDENT_INFO, { reference: lesson.id }).then((data) => {
       if (data) {
         setViews({
           lessonId: lesson.id,
@@ -139,7 +139,7 @@ export const Subscriptions = () => {
               </tr>
               {
 
-            lessons.sort((a, b) => (b.lesson.createdAt?? 0) - (a.lesson.createdAt ?? 0)).map((val) => {
+            lessons.sort((a, b) => (b.lesson.createdAt ?? 0) - (a.lesson.createdAt ?? 0)).map((val) => {
               let manualTot = 0;
               let gatewayTot = 0;
 

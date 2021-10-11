@@ -47,18 +47,20 @@ export const Course: React.FC = () => {
   const [teacher, setTeacher] = useState<ITeacher>();
 
   useEffect(() => {
-    getDocsWithProps<IUser[]>(Entity.USERS, { ownerEmail: email }).then((user) => {
-      if (user) {
-        getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
-          setPayments(payments);
-        });
-      }
-    });
+    if (email) {
+      getDocsWithProps<IUser>(Entity.USERS, { ownerEmail: email }).then((user) => {
+        if (user) {
+          getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email }).then((payments) => {
+            setPayments(payments);
+          });
+        }
+      });
+    }
 
     Promise.all([
-      getDocsWithProps<IVideoLesson[]>(Entity.LESSONS_VIDEO, { courseId }),
-      getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { courseId }),
-      getDocsWithProps<IPaperLesson[]>(Entity.LESSONS_PAPER, { courseId }),
+      getDocsWithProps<IVideoLesson>(Entity.LESSONS_VIDEO, { courseId }),
+      getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE, { courseId }),
+      getDocsWithProps<IPaperLesson>(Entity.LESSONS_PAPER, { courseId }),
       getDocWithId<ICourse>(Entity.COURSES, courseId),
     ]).then((result) => {
       const [videoLessons, liveLessons, mcqPapers, course] = result;
@@ -74,7 +76,6 @@ export const Course: React.FC = () => {
     // eslint-disable-next-line
   }, [email]);
 
-
   // TODO: Memory leek here when user make payment and open the lesson, stil this thread is alive
   const updatePayments = async () => {
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -84,9 +85,12 @@ export const Course: React.FC = () => {
       // TODO : enhance this logic
       // if (email && teacher) { checkRefund(email, le, teacher.zoomMaxCount, showSnackbar); }
 
-      // eslint-disable-next-line no-await-in-loop
-      const myPayments = await getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
-      setPayments(myPayments);
+
+      if (email) {
+        // eslint-disable-next-line no-await-in-loop
+        const myPayments = await getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { ownerEmail: email });
+        setPayments(myPayments);
+      }
       // eslint-disable-next-line no-await-in-loop
       await sleep(2000);
     }
@@ -106,7 +110,7 @@ export const Course: React.FC = () => {
           lesson,
           teacher,
           onSuccess: updatePayments,
-          onCancel: () => {},
+          onCancel: () => { },
         });
       }
       // teacher && promptPayment(email, teacher, lesson, paymentType, updatePayments, showSnackbar);
@@ -115,13 +119,13 @@ export const Course: React.FC = () => {
 
   // If multiple payments exists, get the lowest watch count payment
   const watchedCount = (lesson: ILesson) => payments?.find(
-      (pay) => (pay.lessonId === lesson.id) && !pay.disabled)?.watchedCount ?? 0;
+    (pay) => (pay.lessonId === lesson.id) && !pay.disabled)?.watchedCount ?? 0;
 
   const now = new Date().getTime();
 
   return (
     <div className="container">
-      { teacher && (
+      {teacher && (
         <Banner teacher={teacher} />
       )}
       <form
@@ -245,41 +249,41 @@ export const Course: React.FC = () => {
       {
         (displayMode === ModuleType.ANY
           || displayMode === ModuleType.PAPER)
-          && mcqPapers.sort((a, b) => a.orderIndex - b.orderIndex)?.map((paper, idx) => {
-            let status: 'yes' | 'no' | 'none' | undefined;
-            if (paper.price) {
-              if (readyToGo(payments, paper).ok) {
-                status = 'yes';
-              } else {
-                status = 'no';
-              }
+        && mcqPapers.sort((a, b) => a.orderIndex - b.orderIndex)?.map((paper, idx) => {
+          let status: 'yes' | 'no' | 'none' | undefined;
+          if (paper.price) {
+            if (readyToGo(payments, paper).ok) {
+              status = 'yes';
             } else {
-              status = 'none';
+              status = 'no';
             }
+          } else {
+            status = 'none';
+          }
 
-            return (
-              <div
-                onClick={() => handleLessonSelection(paper)}
+          return (
+            <div
+              onClick={() => handleLessonSelection(paper)}
+              key={idx}
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => handleLessonSelection(paper)}
+            >
+              <Category
+                id={paper.id}
                 key={idx}
-                role="button"
-                tabIndex={0}
-                onKeyDown={() => handleLessonSelection(paper)}
-              >
-                <Category
-                  id={paper.id}
-                  key={idx}
-                  CategoryImg={DescriptionIcon}
-                  title1={`${paper.topic}`}
-                  title2={`${paper.description}`}
-                  title3={paper.price > 0
-                    ? `Watched: ${watchedCount(paper)}/${Config.allowedWatchCount}` : 'Free'}
-                  navURL={(readyToGo(payments, paper).ok
-                    || isLessonOwner(email, paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
-                  status={status}
-                />
-              </div>
-            );
-          })
+                CategoryImg={DescriptionIcon}
+                title1={`${paper.topic}`}
+                title2={`${paper.description}`}
+                title3={paper.price > 0
+                  ? `Watched: ${watchedCount(paper)}/${Config.allowedWatchCount}` : 'Free'}
+                navURL={(readyToGo(payments, paper).ok
+                  || isLessonOwner(email, paper)) ? `${courseId}/paper/${paper.id}` : `${courseId}`}
+                status={status}
+              />
+            </div>
+          );
+        })
       }
     </div>
   );

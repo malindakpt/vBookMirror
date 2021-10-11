@@ -1,7 +1,9 @@
 import { Button } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../App';
-import { deleteDoc, Entity, getDocsWithProps, updateDoc } from '../../../data/Store';
+import {
+  deleteDoc, Entity, getDocsWithProps, updateDoc,
+} from '../../../data/Store';
 import { useForcedUpdate } from '../../../hooks/useForcedUpdate';
 import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
 import { PaymentStatus } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
@@ -13,12 +15,14 @@ export const PaymentRequests = () => {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    getDocsWithProps<IPayment[]>(
-      Entity.PAYMENTS_STUDENTS,
-      {
-        status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true, paidFor: email,
-      },
-    ).then((data) => data && setPending(data));
+    if (email) {
+      getDocsWithProps<IPayment>(
+        Entity.PAYMENTS_STUDENTS,
+        {
+          status: PaymentStatus.NOT_VALIDATED, gateway: PaymentGateway.MANUAL, disabled: true, paidFor: email,
+        },
+      ).then((data) => data && setPending(data));
+    }
   }, [onUpdate, email]);
 
   const approvePayment = (paymentId: string, disabled: boolean) => {
@@ -27,12 +31,12 @@ export const PaymentRequests = () => {
       deleteDoc(Entity.PAYMENTS_STUDENTS, paymentId).then(() => {
         setBusy(false);
         forceUpdate();
-      })
+      });
     } else {
       updateDoc(Entity.PAYMENTS_STUDENTS, paymentId, { disabled, status: PaymentStatus.VALIDATED }).then(() => {
         setBusy(false);
         forceUpdate();
-      })
+      });
     }
   };
 

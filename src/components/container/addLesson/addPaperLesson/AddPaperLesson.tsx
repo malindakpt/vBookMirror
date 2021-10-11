@@ -75,10 +75,12 @@ export const AddPaperLesson = () => {
 
   useEffect(() => {
     // fetch unrelated data
-    getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
-      .then((courses) => { courses && setCourses(courses); });
-    getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-    getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
+    if (email) {
+      getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: email })
+        .then((courses) => { courses && setCourses(courses); });
+    }
+    getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+    getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
     // eslint-disable-next-line
   }, []);
 
@@ -158,8 +160,8 @@ export const AddPaperLesson = () => {
   };
 
   const fetchTopMarks = () => {
-    getDocsWithProps<IReport[]>(Entity.REPORTS, {}).then((data) => setReports(data));
-  }
+    getDocsWithProps<IReport>(Entity.REPORTS, {}).then((data) => setReports(data));
+  };
 
   const validate = () => {
     if (paper.topic === '') {
@@ -176,38 +178,6 @@ export const AddPaperLesson = () => {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
-        <div className={classes.help}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://youtu.be/vSQTMkHxiag"
-            style={{ margin: '10px' }}
-          >
-            Papers add කරන අකාරය
-          </a>
-        </div>
-        <div className={classes.help}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://youtu.be/24HPqXjVIBo"
-            style={{ margin: '10px' }}
-          >
-            How to upload a video to GoogleDrive
-          </a>
-        </div>
-        <div className={classes.help}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://youtu.be/YmFne6P5cOc"
-            style={{ margin: '10px' }}
-          >
-            සිසුවන්ට Papers  පෙන්වන ආකාරය
-          </a>
-        </div>
-      </div>
       <div className={classes.container}>
         <div>
           <div className={classes.top}>
@@ -310,13 +280,13 @@ export const AddPaperLesson = () => {
                   value={AnswerSheetStatus.SHOW}
                 >
                   Show Answers
-                    </MenuItem>
+                </MenuItem>
 
                 <MenuItem
                   value={AnswerSheetStatus.HIDE}
                 >
                   Hide Answers
-                    </MenuItem>
+                </MenuItem>
 
               </Select>
             </FormControl>
@@ -329,10 +299,21 @@ export const AddPaperLesson = () => {
               value={paper.price}
               onChange={(e) => handleChange({ price: Number(e.target.value) })}
             />
-            {paper && paper.id && <div>
-              <Button onClick={fetchTopMarks}>Show Top Marks</Button>
-              {reports.sort((a, b) => b.marks - a.marks).map(rep => <div className={classes.marks}><span>{rep.name}</span><span>{rep.ownerEmail}</span><span>{rep.marks}%</span></div>)}
-            </div>}
+            {paper && paper.id && (
+              <div>
+                <Button onClick={fetchTopMarks}>Show Top Marks</Button>
+                {reports.sort((a, b) => b.marks - a.marks).map((rep) => (
+                  <div className={classes.marks}>
+                    <span>{rep.name}</span>
+                    <span>{rep.ownerEmail}</span>
+                    <span>
+                      {rep.marks}
+                      %
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
             <div
               className={classes.addRemove}
             >
@@ -369,6 +350,7 @@ export const AddPaperLesson = () => {
               paper?.answers.map((q, idx) => (
                 <div
                   className={classes.question}
+                  // eslint-disable-next-line react/no-array-index-key
                   key={idx}
                 >
                   <MCQAnswer

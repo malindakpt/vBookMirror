@@ -1,0 +1,19 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  row-gap: 15px;
+  margin: auto;
+  place-items: center;
+  width: 100%;
+}
+
+.btnAutoPlay {
+  cursor: pointer;
+  border: none;
+  padding: 5px 20px;
+  color: white;
+  margin: 10px auto;
+  display: block;
+  font-size: 15px;
+  font-weight: bold;
+}

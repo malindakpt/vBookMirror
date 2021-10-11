@@ -17,6 +17,7 @@ export interface UploadStatus {
 
 export enum FileType {
   VIDEO= 'VIDEO',
+  AUDIO = 'AUDIO',
   IMAGE = 'IMAGE',
   PDF = 'PDF'
 }
@@ -26,13 +27,14 @@ export enum Entity {
   TEACHERS = 'TEACHERS',
   COURSES = 'COURSES',
   EXAMS = 'EXAMS',
+  ATTENDANCE = 'ATTENDANCE',
   LESSONS_PAPER = 'LESSONS_PAPER',
   LESSONS_VIDEO = 'LESSONS_VIDEO', // used by BE
   LESSONS_LIVE = 'LESSONS_LIVE', // used by BE
   SUBJECTS = 'SUBJECTS',
   PAYMENTS_STUDENTS = 'PAYMENTS', // used by BE
   LOGS = 'LOGS',
-  STUDENT_INFO = 'STUDENT_INFO',// used by BE
+  STUDENT_INFO = 'STUDENT_INFO', // used by BE
   ACCESS_CODES = 'ACCESS_CODES',
   REPORTS = 'REPORTS'
 }
@@ -40,17 +42,6 @@ export enum Entity {
 const app = firebase.initializeApp(appConfig);
 const db = firebase.firestore(app);
 const storage = firebase.storage(app);
-// const store: {[key: string]: any} = {};
-
-// const clearStore = (entityName: string) => {
-//   for (const key of Object.keys(store)) {
-//     if (key.startsWith(entityName)) {
-//       store[key] = null;
-//     }
-//   }
-// };
-
-// TODO: clear data store for all edit data queries
 
 export const getVideo = (ownerEmail: string, vId: string): Promise<string> => new Promise((resolve) => {
   storage.ref().child('video').child(ownerEmail).child(vId)
@@ -70,24 +61,15 @@ export const listAllVideos = (ownerEmail: string)
     .then((data) => resolve(data));
 });
 
-// export const updateMeta = (email: string, vId: string) => {
-//   const storageRef = storage.ref();
-//   // Create a reference to the file whose metadata we want to change
-//   const forestRef = storageRef.child(`video/${email}/${vId}`);
+export const listenFileChanges = <T>(entity: Entity, id: string, onChange: (file: T) => void) => {
+  const unsubscribe = db.collection(entity).doc(id)
+    .onSnapshot((doc) => {
+      // const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server';
+      onChange(doc.data() as T);
+    });
 
-//   // Create file metadata to update
-//   const newMetadata = {
-//     contentType: 'image/jpeg',
-//   };
-
-//   // Update metadata properties
-//   forestRef.updateMetadata(newMetadata).then((metadata) => {
-//     // Updated metadata for 'images/forest.jpg' is returned in the Promise
-//   }).catch((error) => {
-//     console.error(error);
-//   // Uh-oh, an error occurred!
-//   });
-// };
+  return unsubscribe;
+};
 
 export const uploadFileToServer = (fileType: FileType, file: any,
   email: string, fileId: string): Subject<UploadStatus> => {
@@ -155,8 +137,6 @@ export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((re
   delete saveObj.id; // Allow id auto generation and remove exsting id params
 
   db.collection(entityName).add(saveObj).then((docRef: any) => {
-    // console.log(docRef.id);
-    // clearStore(entityName);
     resolve(docRef.id);
   }).catch((err) => {
     console.error(err);
@@ -166,7 +146,6 @@ export const addDoc = <T>(entityName: Entity, obj: T) => new Promise<string>((re
 
 export const deleteDoc = (entityName: Entity, id: string) => new Promise<boolean>((resolve, reject) => {
   db.collection(entityName).doc(id).delete().then(() => {
-    // clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
@@ -181,7 +160,6 @@ export const addDocWithId = <T>(entityName: Entity, id: string, obj: T) => new P
   delete saveObj.id; // Allow id auto generation and remove exsting id params
 
   db.collection(entityName).doc(id).set(saveObj).then((data: any) => {
-    // clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
@@ -196,7 +174,6 @@ export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promi
   delete saveObj.id; // Allow id auto generation and remove exsting id params
 
   db.collection(entityName).doc(id).update(saveObj).then((data: any) => {
-    // clearStore(entityName);
     resolve(true);
   })
     .catch((err) => {
@@ -205,23 +182,24 @@ export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promi
     });
 });
 
-// const generateRequestKey = (
-//   entityName: string, conditions: any,
-// ) => `${entityName}-${JSON.stringify(conditions)}}`;
+export const addOrUpdate = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve, reject) => {
+  const saveObj = { ...obj, updatedAt: new Date().getTime() };
+
+  db.collection(entityName).doc(id).set(saveObj, { merge: true }).then(() => {
+    resolve(true);
+  })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+});
 
 export const getDocsWithProps = <T>(
   entityName: Entity,
-  conditions: any,
-): Promise<T> => new Promise((resolves, reject) => {
-    // const cachedResponse = store[generateRequestKey(entityName, conditions)];
-    // if (cachedResponse) {
-    //   // Resolve result from cache and skip network
-    //   console.log('ch');
-    //   resolves(cachedResponse);
-    //   return;
-    // }export
-
-    setLoading(true);
+  conditions: Partial<T>,
+  showLoading: boolean = true,
+): Promise<T[]> => new Promise((resolves, reject) => {
+    setLoading(showLoading);
 
     const ref = db.collection(entityName);
     let query: any;
@@ -232,14 +210,15 @@ export const getDocsWithProps = <T>(
         query = (query ?? ref).where(
           key.substring(0, key.length - 1),
           key.charAt(key.length - 1),
-          conditions[key],
+          conditions[key as keyof T],
         );
       } else if (key === 'limit') {
-        query = (query ?? ref).limit(conditions[key]);
-      } else if (Array.isArray(conditions[key])) {
+        query = (query ?? ref).limit(conditions[key as keyof T]);
+      } else if (Array.isArray(conditions[key as keyof T])) {
+        // @ts-ignore
         query = (query ?? ref).where(key, 'array-contains', conditions[key][0]);
       } else {
-        query = (query ?? ref).where(key, '==', conditions[key]);
+        query = (query ?? ref).where(key, '==', conditions[key as keyof T]);
       }
     });
 
@@ -264,9 +243,9 @@ export const getDocsWithProps = <T>(
       });
   });
 
-export const getDocWithId = <T>(entityName: Entity, id: string): Promise<T | null> => new Promise(
+export const getDocWithId = <T>(entityName: Entity, id: string, showLoading: boolean = true): Promise<T | null> => new Promise(
   (resolves, reject) => {
-    setLoading(true);
+    setLoading(showLoading);
     db.collection(entityName).doc(id).get().then((doc: any) => {
       if (doc.exists) {
         const dat = doc.data();

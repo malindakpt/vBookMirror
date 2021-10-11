@@ -1,28 +1,67 @@
-/* eslint-disable max-len */ 
-import Config from '../data/Config';
-import {  addDoc, Entity} from '../data/Store';
-import { ILesson, LessonType } from '../interfaces/ILesson';
-import { IPayment } from '../interfaces/IPayment';
-import { ITeacher } from '../interfaces/ITeacher';
-import { paymentJS, startPay } from './payment';
+/* eslint-disable max-len */
+import Config from "../data/Config";
+import { addDoc, Entity } from "../data/Store";
+import { ILesson, ILiveLesson, LessonType } from "../interfaces/ILesson";
+import { IPayment } from "../interfaces/IPayment";
+import { ITeacher } from "../interfaces/ITeacher";
+import { paymentJS, startPay } from "./payment";
 
-export const DEFAULT_FULL_NAME = 'Unknown';
+export const DEFAULT_FULL_NAME = "Unknown";
 export class Util {
-    public static invokeLogin: any = null;
+  public static invokeLogin: any = null;
 
-    public static fullName = DEFAULT_FULL_NAME;
+  public static fullName = DEFAULT_FULL_NAME;
 }
 
-export const isLessonOwner = (email: string|null, lesson: ILesson) => email === lesson.ownerEmail;
+export const getZoomInfo = (
+  teacher?: ITeacher | null,
+  lesson?: ILiveLesson | null
+) => {
+  if (
+    lesson &&
+    lesson.assistantZoomMeetingId &&
+    lesson.assistantZoomMeetingId.length > 1 &&
+    lesson.assistantZoomPwd &&
+    lesson.assistantZoomPwd.length > 1
+  ) {
+    return {
+      id: lesson.assistantZoomMeetingId,
+      pwd: lesson.assistantZoomPwd,
+    };
+  }
 
-export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean, payment?: IPayment} => {
+  if (teacher) {
+    return {
+      id: teacher.zoomMeetingId,
+      pwd: teacher.zoomPwd,
+    };
+  }
+  return {
+    id: "",
+    pwd: "",
+  };
+};
+
+export const isLessonOwner = (email: string | null, lesson: ILesson) =>
+  email === lesson.ownerEmail;
+
+export const readyToGo = (
+  payments: IPayment[],
+  lesson: ILesson
+): { ok: boolean; payment?: IPayment } => {
   let okPayment;
   if (lesson.type === LessonType.LIVE) {
-    okPayment = payments?.filter((p) => !p.disabled).find(
-      (pay) => pay.lessonId === lesson.id);
+    okPayment = payments
+      ?.filter((p) => !p.disabled)
+      .find((pay) => pay.lessonId === lesson.id);
   } else {
-    okPayment = payments?.filter((p) => !p.disabled).find(
-      (pay) => (pay.lessonId === lesson.id) && ((pay.watchedCount ?? 0) < Config.allowedWatchCount));
+    okPayment = payments
+      ?.filter((p) => !p.disabled)
+      .find(
+        (pay) =>
+          pay.lessonId === lesson.id &&
+          (pay.watchedCount ?? 0) < Config.allowedWatchCount
+      );
   }
   if (lesson.price === 0) {
     return {
@@ -37,18 +76,18 @@ export const readyToGo = (payments: IPayment[], lesson: ILesson): { ok: boolean,
 
 export const isMobile = () => window.innerWidth < 599;
 
-export const teacherPortion = (commission:number, amount: number) => Math.ceil((amount
-        * ((100) / (100 + commission))));
+export const teacherPortion = (commission: number, amount: number) =>
+  Math.ceil(amount * (100 / (100 + commission)));
 
-export const payable = (commissionRate:number, amount: number) => Math.ceil((amount
-          * ((100 + commissionRate) / 100)));
+export const payable = (commissionRate: number, amount: number) =>
+  Math.ceil(amount * ((100 + commissionRate) / 100));
 
 export const round = (num: number) => Math.round(num * 10) / 10;
 
-export const displayDate = (d: number): string=> {
+export const displayDate = (d: number): string => {
   const date = new Date(d);
-  return `${date.getMonth()+1}/${date.getDate()}`;
-}
+  return `${date.getMonth() + 1}/${date.getDate()}`;
+};
 
 export const formattedTime = (x: Date) => {
   const mmm = x.getMonth() + 1;
@@ -63,11 +102,11 @@ export const formattedTime = (x: Date) => {
 
 export const getHashFromString = (s: string) => {
   if (!s) {
-    return '';
+    return "";
   }
-  let res = '';
+  let res = "";
 
-  s.split('').forEach((c) => {
+  s.split("").forEach((c) => {
     const code = c.charCodeAt(0) + 103;
     res += code;
   });
@@ -76,9 +115,9 @@ export const getHashFromString = (s: string) => {
 
 export const getStringFromHash = (s: string) => {
   if (!s) {
-    return '';
+    return "";
   }
-  let res = '';
+  let res = "";
 
   while (s.length > 0) {
     const code = Number(s.substr(0, 3)) - 103;
@@ -89,20 +128,28 @@ export const getStringFromHash = (s: string) => {
 };
 
 const showPaymentGuide = (show: boolean) => {
-  const ele = document.getElementById('payGuide');
+  const ele = document.getElementById("payGuide");
   if (ele) {
-    ele.style.display = show ? 'block' : 'none';
+    ele.style.display = show ? "block" : "none";
   }
 };
 
-export const promptPayment = (email: string, paidFor: string, lesson: ILesson, teacher: ITeacher,
-  onComplete: () => void, showSnackbar: (msg: string) => void) => {
+export const promptPayment = (
+  email: string,
+  paidFor: string,
+  lesson: ILesson,
+  teacher: ITeacher,
+  onComplete: () => void,
+  showSnackbar: (msg: string) => void
+) => {
   // const dd = new Date().getTime();
   paymentJS.onDismissed = function onDismissed() {
     showPaymentGuide(false);
     if (Config.isProd) {
-      console.log('Payment Dismissed');
-      showSnackbar('ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+      console.log("Payment Dismissed");
+      showSnackbar(
+        "ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes"
+      );
       onComplete();
     } else {
       /// ////////////////////// This works only in Dev Mode////////////////////////
@@ -112,19 +159,27 @@ export const promptPayment = (email: string, paidFor: string, lesson: ILesson, t
       console.log(`Succeed lessonId: ${lesson.id}`);
       /// /////////FAKE UPDATE START////////////
       addDoc(Entity.PAYMENTS_STUDENTS, {
-        lessonId: lesson.id, ownerEmail: email, paidFor: lesson.ownerEmail, amount: lesson.price, ownerName: Util.fullName,
+        lessonId: lesson.id,
+        ownerEmail: email,
+        paidFor: lesson.ownerEmail,
+        amount: lesson.price,
+        ownerName: Util.fullName,
       });
       onComplete();
       /// ////////FAKE UPDATE END///////////////
 
-      showSnackbar('DEV: ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+      showSnackbar(
+        "DEV: ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes"
+      );
     }
   };
 
   paymentJS.onCompleted = function onCompleted() {
     showPaymentGuide(false);
-    console.log('Payment Succeed');
-    showSnackbar('ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes');
+    console.log("Payment Succeed");
+    showSnackbar(
+      "ඔබ මුදල් ගෙවීම සාර්ථකද නැද්ද යන්න බලාගැනීමට මිනිත්තු 2 කින් පමණ නැවත මෙම පිටුවට පිවිසෙන්න. Payment is processing. Please refresh the page after 2 minutes"
+    );
     onComplete();
   };
   startPay({

@@ -1,4 +1,5 @@
-import { IBase } from './IBase';
+import { IQuestion } from "./IQuestion";
+import { IBase } from "./IBase";
 
 export enum LiveMeetingStatus {
   NOT_STARTED,
@@ -12,11 +13,12 @@ export enum VideoType {
   GoogleDrive,
   FileVideo,
   EmbedVideo,
-  YoutubeVideo
+  YoutubeVideo,
 }
 
 export enum AnswerSheetStatus {
-  SHOW, HIDE
+  SHOW,
+  HIDE,
 }
 
 export interface VideoUrlsObj {
@@ -29,16 +31,18 @@ export interface VideoUrlsObj {
 }
 
 export enum LessonType {
-  LIVE, VIDEO, PAPER
+  LIVE,
+  VIDEO,
+  PAPER,
 }
 
 export const emptyVideoObj: VideoUrlsObj = {
   activeVideo: VideoType.None,
-  description: '',
-  googleDrive: '',
-  fileVideo: '',
-  embedVideo: '',
-  youtubeVideo: '',
+  description: "",
+  googleDrive: "",
+  fileVideo: "",
+  embedVideo: "",
+  youtubeVideo: "",
 };
 
 export interface ILesson extends IBase {
@@ -77,4 +81,9 @@ export interface ILiveLesson extends ILesson {
   status: LiveMeetingStatus;
   videoUrl?: string;
   isRunning: boolean;
+  questions?: Record<string, IQuestion>; // string is the timestamp
+
+  assistantEmail: string | null;
+  assistantZoomMeetingId: string | null;
+  assistantZoomPwd: string | null;
 }

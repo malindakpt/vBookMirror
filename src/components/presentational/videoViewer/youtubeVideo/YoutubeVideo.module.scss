@@ -51,14 +51,14 @@
     grid-gap: 5px;
     z-index: 1002;
     position: absolute;
-    background: red;
-    color: white;
+    background: #FFFFFF;
+    // color: black;
 
     &.full{
       position: fixed;
-      top: 10px;
-      left: 10px;
-      background-color: #f706068e;
+      top: 0px;
+      left: 0px;
+      background: #FFFFFF99;
     }
   }
 

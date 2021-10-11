@@ -55,6 +55,10 @@ const fresh: ILiveLesson = {
   type: LessonType.LIVE,
   videoUrls: [emptyVideoObj],
   orderIndex: 0,
+
+  assistantEmail: null,
+  assistantZoomMeetingId: null,
+  assistantZoomPwd: null
 };
 export const AddLiveLesson = () => {
   const { showSnackbar, email } = useContext(AppContext);
@@ -98,9 +102,9 @@ export const AddLiveLesson = () => {
           setTeacher(teacher);
         }
       });
-      getDocsWithProps<ISubject[]>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
-      getDocsWithProps<IExam[]>(Entity.EXAMS, {}).then((data) => setExams(data));
-      getDocsWithProps<ICourse[]>(Entity.COURSES, { ownerEmail: email })
+      getDocsWithProps<ISubject>(Entity.SUBJECTS, {}).then((data) => setSubjects(data));
+      getDocsWithProps<IExam>(Entity.EXAMS, {}).then((data) => setExams(data));
+      getDocsWithProps<ICourse>(Entity.COURSES, { ownerEmail: email })
         .then((data) => data && setCourses(data));
     }
   }, [email]);
@@ -108,8 +112,11 @@ export const AddLiveLesson = () => {
   const onCourseChange = (id: string) => {
     setSessionProps({ courseId: id });
     setSelectedCourse(courses.find((c) => c.id === id));
-    getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
-      .then((data) => data && setLiveLessons(data));
+
+    if (email) {
+      getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE, { ownerEmail: email, courseId: id })
+        .then((data) => data && setLiveLessons(data));
+    }
   };
 
   const editLesson = (sess: ILiveLesson) => {
@@ -138,7 +145,7 @@ export const AddLiveLesson = () => {
     if (editMode) {
       updateDoc(Entity.LESSONS_LIVE, liveLesson.id, liveLesson).then((data) => {
         showSnackbar('Live Session Edited');
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+        getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
         addNew();
@@ -146,7 +153,7 @@ export const AddLiveLesson = () => {
     } else {
       addDoc(Entity.LESSONS_LIVE, { ...liveLesson, ownerEmail: email }).then((data) => {
         showSnackbar('Live Session Added');
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+        getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
         addNew();
@@ -173,7 +180,7 @@ export const AddLiveLesson = () => {
     if (teacher && email) {
       updateDoc(Entity.LESSONS_LIVE, less.id, { isRunning }).then((data) => {
         showSnackbar(`${less.topic} ${isRunning ? 'Started' : 'Stopped'}`);
-        getDocsWithProps<ILiveLesson[]>(Entity.LESSONS_LIVE,
+        getDocsWithProps<ILiveLesson>(Entity.LESSONS_LIVE,
           { courseId: selectedCourse?.id }).then((data) => setLiveLessons(data));
         setBusy(false);
       });
@@ -207,66 +214,66 @@ export const AddLiveLesson = () => {
   };
 
   const renderLessonList = (lessonsList: ILiveLesson[]) => (lessonsList.sort((a, b) => b.dateTime
-   - a.dateTime).sort((a, b) => (a.isRunning ? -1 : 1)).map((liveLesson) => (
-     <div
-       key={liveLesson.id}
-     >
-       <ListItem
-         button
-         onClick={() => { setEditMode(true); editLesson(liveLesson); }}
-       >
+    - a.dateTime).sort((a, b) => (a.isRunning ? -1 : 1)).map((liveLesson) => (
+      <div
+        key={liveLesson.id}
+      >
+        <ListItem
+          button
+          onClick={() => { setEditMode(true); editLesson(liveLesson); }}
+        >
 
-         { liveLesson.isRunning ? (
-           <StopIcon onClick={(e) => {
-             startMeeting(liveLesson, false); e.stopPropagation();
-           }}
-           />
-         ) : (
-           <PlayCircleOutlineIcon
-             className={classes.play}
-             onClick={(e) => {
-               startMeeting(liveLesson, true); e.stopPropagation();
-             }}
-           />
-         )}
+          {liveLesson.isRunning ? (
+            <StopIcon onClick={(e) => {
+              startMeeting(liveLesson, false); e.stopPropagation();
+            }}
+            />
+          ) : (
+            <PlayCircleOutlineIcon
+              className={classes.play}
+              onClick={(e) => {
+                startMeeting(liveLesson, true); e.stopPropagation();
+              }}
+            />
+          )}
 
-         <div
-           className={liveLesson.isRunning ? classes.running : ''}
-           style={{ fontSize: '11px', width: '100%' }}
-         >
-           {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
-         </div>
-         <FileCopyIcon onClick={(e) => {
-           copyLessonURL(liveLesson.id); e.stopPropagation();
-         }}
-         />
+          <div
+            className={liveLesson.isRunning ? classes.running : ''}
+            style={{ fontSize: '11px', width: '100%' }}
+          >
+            {`${new Date(liveLesson.dateTime).toString().split('GMT')[0]} : ${liveLesson.topic}`}
+          </div>
+          <FileCopyIcon onClick={(e) => {
+            copyLessonURL(liveLesson.id); e.stopPropagation();
+          }}
+          />
 
-         <DeleteForeverIcon
-           onClick={(e) => { deleteItem(liveLesson); e.stopPropagation(); }}
-         />
+          <DeleteForeverIcon
+            onClick={(e) => { deleteItem(liveLesson); e.stopPropagation(); }}
+          />
 
-         {liveLesson.isRunning && (
-         <>
-           <Button
-             style={{ fontSize: '10px' }}
-             variant="contained"
-             color="secondary"
-             onClick={(e) => {
-               // history.push(`/liveStat/${liveLesson.id}`);
-               const win = window.open(`/liveStat/${liveLesson.id}`, '_blank');
-                win?.focus();
-                e.stopPropagation();
-             }}
-           >
-             Check Attendance
+          {liveLesson.isRunning && (
+            <>
+              <Button
+                style={{ fontSize: '10px' }}
+                variant="contained"
+                color="secondary"
+                onClick={(e) => {
+                  // history.push(`/liveStat/${liveLesson.id}`);
+                  const win = window.open(`/liveStat/${liveLesson.id}`, '_blank');
+                  win?.focus();
+                  e.stopPropagation();
+                }}
+              >
+                Check Attendance
 
-           </Button>
-         </>
-         )}
-       </ListItem>
-       <Divider />
-     </div>
-  ))
+              </Button>
+            </>
+          )}
+        </ListItem>
+        <Divider />
+      </div>
+    ))
   );
 
   return (
@@ -408,11 +415,36 @@ export const AddLiveLesson = () => {
                 console.log(e.target.value);
                 setSessionProps({ dateTime: new Date(e.target.value).getTime() });
               }}
-            // defaultValue="2017-05-24T10:30"
+              // defaultValue="2017-05-24T10:30"
               className={classes.textField}
               InputLabelProps={{
                 shrink: true,
               }}
+            />
+
+            <TextField
+              className={classes.input}
+              id="assistantEmail"
+              label="Assistant Email"
+              disabled={disabled}
+              value={liveLesson.assistantEmail ?? ''}
+              onChange={(e) => setSessionProps({ assistantEmail: e.target.value })}
+            />
+            <TextField
+              className={classes.input}
+              id="assistantZoomMeetingId"
+              label="Assistant Zoom Id"
+              disabled={disabled}
+              value={liveLesson.assistantZoomMeetingId ?? ''}
+              onChange={(e) => setSessionProps({ assistantZoomMeetingId: e.target.value })}
+            />
+            <TextField
+              className={classes.input}
+              id="assistantZoomPwd"
+              label="Assistant Zoom Pwd"
+              disabled={disabled}
+              value={liveLesson.assistantZoomPwd ?? ''}
+              onChange={(e) => setSessionProps({ assistantZoomPwd: e.target.value })}
             />
             <div>
               <Button
@@ -426,7 +458,7 @@ export const AddLiveLesson = () => {
               <input
                 type="text"
                 value=""
-                onChange={() => {}}
+                onChange={() => { }}
                 id="copyInput"
                 style={{ width: '1px', position: 'fixed', left: '-100px' }}
               />
@@ -502,7 +534,7 @@ export const AddLiveLesson = () => {
             aria-label="main mailbox folders"
           >
             {
-             renderLessonList(liveLessons)
+              renderLessonList(liveLessons)
             }
           </List>
         </div>

@@ -53,7 +53,7 @@ export const NavPanel = () => {
   const [customerEmail, setCustomerEmail] = useState<string>('');
 
   useEffect(() => {
-    getDocsWithProps<ITeacher[]>(Entity.TEACHERS, {}).then((data) => {
+    getDocsWithProps<ITeacher>(Entity.TEACHERS, {}).then((data) => {
       setTeachers(data);
     });
   }, []);

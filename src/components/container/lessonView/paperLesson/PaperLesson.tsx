@@ -26,7 +26,7 @@ import classes from './PaperLesson.module.scss';
 
 export const PaperLesson = () => {
   const history = useHistory();
-  const { email, showSnackbar, showPaymentPopup, } = useContext(AppContext);
+  const { email, showSnackbar, showPaymentPopup } = useContext(AppContext);
   const timerRef = useRef<any>();
 
   // disble context menu for avoid right click
@@ -89,35 +89,35 @@ export const PaperLesson = () => {
 
         if (paper.price) {
           if (email) {
-            getDocsWithProps<IPayment[]>(Entity.PAYMENTS_STUDENTS,
+            getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS,
               { lessonId, ownerEmail: email }).then((data) => {
-                const status = readyToGo(data, paper);
+              const status = readyToGo(data, paper);
 
-                if (status.payment) {
-                  setAlert(true);
-                  setPayment(status.payment);
-                  setTempLesson(paper);
-                } else if (isLessonOwner(email, paper)) {
-                  setWarn('Watch as owner');
-                  startPaperRendering(paper);
-                } else {
-                  // eslint-disable-next-line max-len
-                  setWarn('මුදල් ගෙවියයුතු ප්‍රශ්න පත්‍රයකි .  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid exam paper. Please try again in 2 miniutes if you have paid already');
-                  if (teacher) {
-                    showPaymentPopup({
-                      email,
-                      paidFor: teacher.ownerEmail,
-                      lesson: paper,
-                      teacher,
-                      onSuccess: () => { },
-                      onCancel: () => { },
-                    });
-                  }
-                  // teacher && promptPayment(email, teacher, paper, PaymentType.VIDEO_LESSON, () => {
-                  // // DO not reload this page since it can cause to reset your watch count
-                  // }, showSnackbar);
+              if (status.payment) {
+                setAlert(true);
+                setPayment(status.payment);
+                setTempLesson(paper);
+              } else if (isLessonOwner(email, paper)) {
+                setWarn('Watch as owner');
+                startPaperRendering(paper);
+              } else {
+                // eslint-disable-next-line max-len
+                setWarn('මුදල් ගෙවියයුතු ප්‍රශ්න පත්‍රයකි .  ඔබ දැනටමත්  මුදල් ගෙවා ඇත්නම්  මිනිත්තු 2 කින් පමණ නැවත උත්සහ කරන්න.\n This is a paid exam paper. Please try again in 2 miniutes if you have paid already');
+                if (teacher) {
+                  showPaymentPopup({
+                    email,
+                    paidFor: teacher.ownerEmail,
+                    lesson: paper,
+                    teacher,
+                    onSuccess: () => { },
+                    onCancel: () => { },
+                  });
                 }
-              });
+                // teacher && promptPayment(email, teacher, paper, PaymentType.VIDEO_LESSON, () => {
+                // // DO not reload this page since it can cause to reset your watch count
+                // }, showSnackbar);
+              }
+            });
           } else {
             // showSnackbar('Please login with your Gmail address');
             Util.invokeLogin();
@@ -169,26 +169,26 @@ export const PaperLesson = () => {
   };
 
   const completePaper = () => {
-    if(!email){
+    if (!email) {
       showSnackbar('Please login to check answers');
       return;
     }
     setValidate(true);
-    getDocsWithProps<IReport[]>(Entity.REPORTS, { ownerEmail: email, ref: paper?.id }).then(data => {
+    getDocsWithProps<IReport>(Entity.REPORTS, { ownerEmail: email, ref: paper?.id }).then((data) => {
       if (data.length === 0) {
         const marks = Math.round(correctCount() * 100 / answers.length);
         const report = {
           name: Util.fullName,
           marks,
           ref: paper?.id,
-          ownerEmail: email
+          ownerEmail: email,
         };
         addDoc(Entity.REPORTS, report).then(() => {
           showSnackbar('Your marks are sent to the teacher');
         });
       }
-    })
-  }
+    });
+  };
 
   return (
     <div>
@@ -250,8 +250,10 @@ export const PaperLesson = () => {
           </div>
           {validated && (
             <h3 style={{ color: 'red', textAlign: 'center' }}>
-              Final Marks:{' '}
-              {Math.round(correctCount() * 100 / answers.length)}%
+              Final Marks:
+              {' '}
+              {Math.round(correctCount() * 100 / answers.length)}
+              %
             </h3>
           )}
           {paper.answers.length > 0 && !validated && paper.answersSheetStatus === AnswerSheetStatus.SHOW && (
