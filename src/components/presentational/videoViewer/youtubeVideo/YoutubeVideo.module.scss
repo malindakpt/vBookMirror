@@ -1,4 +1,4 @@
-@import '../../../../mixins.scss';
+@import "../../../../mixins.scss";
 
 .root {
   display: grid;
@@ -45,21 +45,24 @@
     }
   }
 
-  .buttons{
+  .buttons {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 5px;
     z-index: 1002;
-    position: absolute;
-    background: #FFFFFF;
+    position: block;
+    background: #ffffff;
     // color: black;
 
-    &.full{
+    margin-left: calc(-100% + 112px);
+    margin-top: calc(-100% + 124px);
+
+    &.full {
       position: fixed;
       top: 0px;
       left: 0px;
-      background: #FFFFFF99;
+      background: #ffffff99;
+      margin: 0px;
     }
   }
-
 }
