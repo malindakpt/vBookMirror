@@ -110,8 +110,8 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
           <Typography>Payment Codes and Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <div style={{ width: '100%' }}>
-            <div>
+          <div style={{ width: '100%', display: 'grid' }}>
+            <div style={{ width: '100%' }}>
 
               {/* <TextField
                 fullWidth
@@ -126,6 +126,7 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
               <Button onClick={copyAllCodes}>Copy All Payment Codes</Button>
               { accessCodes?.codes?.length < 1 && <Button onClick={generateAccessCodes}>Generate Payment Codes</Button>}
             </div>
+            <br/>
             {accessCodes.codes.length > 0 && (
             <div className={classes.codes}>
               {accessCodes.codes.split(',').map((code) => (
