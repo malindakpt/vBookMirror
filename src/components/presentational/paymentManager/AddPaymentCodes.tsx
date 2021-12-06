@@ -54,6 +54,7 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
 
   const copyAllCodes = () => {
     navigator.clipboard.writeText(accessCodes.codes);
+    showSnackbar('All codes copied');
   }
 
   const giveAccessCode = (code: string) => {
