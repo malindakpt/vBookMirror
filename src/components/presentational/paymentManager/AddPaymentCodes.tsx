@@ -23,25 +23,69 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
   const { showSnackbar } = useContext(AppContext);
 
   const [accessCodes, setAccessCodes] = useState<IAccessCodes>({ id: '', codes: '' });
+  const [givenAccessCodes, setGivenAccessCodes] = useState<IAccessCodes>({ id: '', codes: '' });
+
   const [payments, setPayments] = useState<IPayment[]>([]);
 
   useEffect(() => {
+    getDocWithId<IAccessCodes>(Entity.GIVEN_ACCESS_CODES, lesson.id).then((data) => data && setGivenAccessCodes(data));
     getDocWithId<IAccessCodes>(Entity.ACCESS_CODES, lesson.id).then((data) => data && setAccessCodes(data));
     getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, { lessonId: lesson.id }).then((data) => data && setPayments(data));
   }, [onUpdate, lesson]);
 
-  const handleChange = (obj: Record<string, any>) => {
-    setAccessCodes((prev) => {
-      const clone = { ...prev, ...obj };
-      return clone;
-    });
-  };
+  // const handleChange = (obj: Record<string, any>) => {
+  //   setAccessCodes((prev) => {
+  //     const clone = { ...prev, ...obj };
+  //     return clone;
+  //   });
+  // };
 
-  const saveAccessCodes = () => {
-    addDocWithId(Entity.ACCESS_CODES, lesson.id, accessCodes).then(() => {
+  const saveAccessCodes = (codes: IAccessCodes) => {
+    addDocWithId(Entity.ACCESS_CODES, lesson.id, codes).then(() => {
       showSnackbar('Added access codes');
     });
   };
+
+  const saveGivenAccessCodes = (codes: IAccessCodes) => {
+    addDocWithId(Entity.GIVEN_ACCESS_CODES, lesson.id, codes).then(() => {
+      showSnackbar('Saved');
+    });
+  };
+
+  const copyAllCodes = () => {
+    navigator.clipboard.writeText(accessCodes.codes);
+  }
+
+  const giveAccessCode = (code: string) => {
+    console.log(code);
+    navigator.clipboard.writeText(code)
+
+    let newCodes;
+    if(givenAccessCodes.codes.includes(code)) {
+      newCodes = `${givenAccessCodes.codes.replace(code, '')}`;
+    } else {
+      newCodes = `${givenAccessCodes.codes.replace(code, '')}${code},`;
+    }
+   
+    setGivenAccessCodes({id: givenAccessCodes.id, codes: newCodes});
+    showSnackbar(`${code} copied`);
+    saveGivenAccessCodes({id: givenAccessCodes.id, codes: newCodes});
+
+  }
+
+  const generateAccessCodes = () => {
+    let next = Math.round(Math.random()*100000);
+    let allCodes = `${next},`;
+
+    for (let t = 0; t< 300 ; t += 1){
+      next += Math.round(Math.random()*10000);
+      allCodes = `${allCodes}${next},`;
+    }
+    console.log(allCodes); 
+    const acc = {id: accessCodes.id, codes: allCodes};
+    setAccessCodes(acc);
+    saveAccessCodes(acc);
+  }
 
   const deletePayment = (id: string) => {
     const res = window.confirm('Are you sure you need to remove this payment');
@@ -52,6 +96,8 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
       });
     }
   };
+
+  const isGiven = (code: string) => givenAccessCodes.codes.includes(code);
 
   return (
     <div className={classes.container}>
@@ -65,25 +111,31 @@ export const AddPayment: React.FC<Props> = ({ lesson }) => {
         </AccordionSummary>
         <AccordionDetails>
           <div style={{ width: '100%' }}>
-            <div className={classes.inputs}>
+            <div>
 
-              <TextField
+              {/* <TextField
                 fullWidth
                 className={classes.input}
                 id="paymentRef"
                 label="Enter Payment Codes(No spaces) Eg. A123,B321,C32"
                 value={accessCodes.codes}
                 onChange={(e) => handleChange({ codes: e.target.value })}
-              />
+              /> */}
 
-              <Button onClick={saveAccessCodes}>Add Payment Codes</Button>
+              {/* <Button onClick={saveAccessCodes}>Save Payment Codes</Button> */}
+              <Button onClick={copyAllCodes}>Copy All Payment Codes</Button>
+              { accessCodes?.codes?.length < 1 && <Button onClick={generateAccessCodes}>Generate Payment Codes</Button>}
             </div>
             {accessCodes.codes.length > 0 && (
             <div className={classes.codes}>
               {accessCodes.codes.split(',').map((code) => (
-                <div
+                code.length > 2 && <div
                   key={code}
-                  className={classes.code}
+                  className={ isGiven(code) ? classes.given : classes.code}
+                  onClick={() => giveAccessCode(code)}
+                  onKeyDown={() => giveAccessCode(code)}
+                  role="button"
+                  tabIndex={0}
                 >
                   {code}
                 </div>
