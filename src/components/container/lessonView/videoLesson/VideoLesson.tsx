@@ -157,9 +157,9 @@ export const VideoLesson: React.FC = () => {
       <div className={classes.desc}>
         {lesson?.description}
       </div>
-      {lesson?.videoURL && (
+      {/* {lesson?.videoURL && (
         <VideoViewer lesson={lesson} />
-      )}
+      )} */}
 
       {lesson?.videoUrls && (
       <VideoViewer lesson={lesson} />

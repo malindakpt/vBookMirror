@@ -8,7 +8,7 @@ import {
 
 import classes from './AddVideoLesson.module.scss';
 import {
-  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc,
+  addDoc, Entity, getDocsWithProps, getDocWithId, updateDoc, updateDocPromise,
 } from '../../../../data/Store';
 import { getObject } from '../../../../data/StoreHelper';
 import { AppContext } from '../../../../App';
@@ -23,6 +23,7 @@ import Config from '../../../../data/Config';
 import { ITeacher } from '../../../../interfaces/ITeacher';
 import { AddVideo } from '../../../presentational/addVideo/AddVideo';
 import { LessonList } from '../../../presentational/lessonList/LessonList';
+import { IPayment } from '../../../../interfaces/IPayment';
 
 export const AddVideoLesson = () => {
   useBreadcrumb();
@@ -102,6 +103,34 @@ export const AddVideoLesson = () => {
     return true;
   };
 
+  const updateWatchCountOfAllPayments = () => {
+    getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, {lessonId: selectedLesson.id}, true).then(payments => {
+      if(payments.length > 0){
+        setBusy(true);
+        showSnackbar('Resetting watch counts of students....');
+        const promises: Promise<any>[] = [];
+        payments.forEach(payment => {
+          promises.push(updateDocPromise(Entity.PAYMENTS_STUDENTS, payment.id, {watchedCount: 0, disabled: false}));
+        });
+        Promise.allSettled(promises).then(allResults => {
+          let allPassed = true;
+          allResults.forEach(result => {
+            if(result.status !== "fulfilled"){
+              allPassed = false;
+            }
+          });
+
+          if(allPassed){
+            showSnackbar('All Payments Updated.');
+          } else {
+            showSnackbar('Error occured while resetting watch counts'); 
+          }
+          setBusy(false);
+        })
+      }
+    })
+  }
+
   const onSave = async () => {
     if (!email) {
       showSnackbar('Error with logged in user');
@@ -118,6 +147,7 @@ export const AddVideoLesson = () => {
         addNew(courseId);
         setLastUpdate(new Date().getTime());
         setBusy(false);
+        updateWatchCountOfAllPayments();
       });
     } else {
       addDoc(Entity.LESSONS_VIDEO, selectedLesson).then(() => {
@@ -227,6 +257,7 @@ export const AddVideoLesson = () => {
               videoUrls={selectedLesson.videoUrls}
               onChange={(e) => handleChange({ videoUrls: e })}
               disabled={disabled}
+              allowAddNew
             />
 
             <TextField
