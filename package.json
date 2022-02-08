@@ -39,7 +39,7 @@
     "react-whatsapp": "^0.2.0",
     "react-youtube": "^7.13.0",
     "rxjs": "^6.6.3",
-    "typescript": "~3.7.2"
+    "typescript": "^3.8.0"
   },
   "eslintConfig": {
     "extends": "react-app"

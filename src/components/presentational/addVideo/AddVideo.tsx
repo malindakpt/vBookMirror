@@ -23,7 +23,11 @@ export const AddVideo: React.FC<Props> = ({
   };
 
   const addNewVideo = () => {
-    videoUrls.push(emptyVideoObj);
+    if(videoUrls){
+      videoUrls.push(emptyVideoObj);
+    }else {
+      videoUrls = [emptyVideoObj];
+    }
     onChange(videoUrls);
   };
 

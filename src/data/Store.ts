@@ -183,6 +183,14 @@ export const updateDoc = (entityName: Entity, id: string, obj: any) => new Promi
     });
 });
 
+export const updateDocPromise = (entityName: Entity, id: string, obj: any): Promise<void> => {
+  const saveObj = { ...obj, updatedAt: new Date().getTime() };
+  // @ts-ignore
+  delete saveObj.id; // Allow id auto generation and remove exsting id params
+
+  return db.collection(entityName).doc(id).update(saveObj);
+};
+
 export const addOrUpdate = <T>(entityName: Entity, id: string, obj: T) => new Promise((resolve, reject) => {
   const saveObj = { ...obj, updatedAt: new Date().getTime() };
 
