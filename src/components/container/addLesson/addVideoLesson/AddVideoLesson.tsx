@@ -107,7 +107,7 @@ export const AddVideoLesson = () => {
     getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, {lessonId: selectedLesson.id}, true).then(payments => {
       if(payments.length > 0){
         setBusy(true);
-        showSnackbar('Resetting watch counts of students....');
+        // showSnackbar('Resetting watch counts of students....');
         const promises: Promise<any>[] = [];
         payments.forEach(payment => {
           promises.push(updateDocPromise(Entity.PAYMENTS_STUDENTS, payment.id, {watchedCount: 0, disabled: false}));
