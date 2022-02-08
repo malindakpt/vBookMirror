@@ -110,7 +110,7 @@ export const AddVideoLesson = () => {
         showSnackbar('Resetting watch counts of students....');
         const promises: Promise<any>[] = [];
         payments.forEach(payment => {
-          promises.push(updateDocPromise(Entity.PAYMENTS_STUDENTS, payment.id, {watchedCount: 0}));
+          promises.push(updateDocPromise(Entity.PAYMENTS_STUDENTS, payment.id, {watchedCount: 0, disabled: false}));
         });
         Promise.allSettled(promises).then(allResults => {
           let allPassed = true;

@@ -41,6 +41,7 @@ export const AddVideo: React.FC<Props> = ({
             // eslint-disable-next-line react/no-array-index-key
             key={index}
           >
+              <br/><br/>
             <FormControl className={classes.input}>
               <InputLabel
                 id="demo-simple-select-label"
@@ -70,7 +71,7 @@ export const AddVideo: React.FC<Props> = ({
                 >
                   Youtube
                 </MenuItem>
-                <MenuItem
+                {/* <MenuItem
                   value={VideoType.GoogleDrive}
                   key={VideoType.GoogleDrive}
                 >
@@ -87,7 +88,7 @@ export const AddVideo: React.FC<Props> = ({
                   key={VideoType.EmbedVideo}
                 >
                   Embed Video
-                </MenuItem>
+                </MenuItem> */}
               </Select>
             </FormControl>
 
