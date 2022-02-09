@@ -23,9 +23,8 @@ export const AlertDialog: React.FC<Props> = ({ onAccept, onCancel, type }) => {
 
   const msgs = [
     {
-      en: 'Per a payment you are allowed to watch this lesson for 2 times. Continue to watch, if you can manage to watch the full video now. Else please try again at any time when you can manage to watch full video.',
-      si: ' එක්  මුදල් ගෙවීමක් සඳහා මෙම පාඩම වාර 2ක්  නැරඹිය හැකිය. ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම් පමණක් ඉදිරියට යන්න. නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම වේලාවක උත්සහ කරන්න.',
-
+      en: 'For your payment you are not allowed to load this page unless new video is added by teacher. Continue to watch, if you can manage to watch the full video now. Else please try again at any time when you can manage to watch full video.',
+      si: 'ඔබ ගෙවූ මුදල සඳහා නැවත ඔබට වීඩියෝ නැරඹුම් පිටුවට පිවිසිය හැක්කේ, ගුරුවරයා විසින් අලුත් වීඩියෝවක් එකතු කළ විට පමණි. ඔබට මෙම අවස්ථාවේ  සම්පුර්ණයෙන් පාඩම නැරඹිය හැකිනම් පමණක් ඉදිරියට යන්න. නැති නම් ඔබට අවශ්‍ය වෙනත් ඕනෑම වේලාවක උත්සහ කරන්න.',
     },
     {
       en: 'Accept the microphone access from here(otherwise you will not here the voice of the teacher) and there after you can mute the microphone',
