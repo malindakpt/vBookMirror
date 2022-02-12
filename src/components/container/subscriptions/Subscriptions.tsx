@@ -10,7 +10,7 @@ import {
   Entity, FileType, getDocsWithProps, getDocWithId, updateDoc,
 } from '../../../data/Store';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
-import { ILesson } from '../../../interfaces/ILesson';
+import { ILesson, LessonType } from '../../../interfaces/ILesson';
 import { ITeacher } from '../../../interfaces/ITeacher';
 import { IPayment, PaymentGateway } from '../../../interfaces/IPayment';
 import { teacherPortion } from '../../../helper/util';
@@ -34,6 +34,7 @@ export const Subscriptions = () => {
   const [videoLessons, setVideoLessons] = useState<LessMap[]>([]);
   const [liveLessons, setLiveLessons] = useState<LessMap[]>([]);
   const [paperLessons, setPaperLessons] = useState<LessMap[]>([]);
+  const [missedLessons, setMissedLessons] = useState<LessMap[]>([]);
 
   const [teacher, setTeacher] = useState<ITeacher>();
 
@@ -105,10 +106,13 @@ export const Subscriptions = () => {
         const vlessonArr: LessMap[] = [];
         const llessonArr: LessMap[] = [];
         const plessonArr: LessMap[] = [];
+        const mlessonArr: LessMap[] = [];
+        let addedPaymentIds: string[] = [];
 
         if (lessonsV && payments) {
           for (const vLes of lessonsV) {
             const payList = payments.filter((p) => p.lessonId === vLes.id);
+            addedPaymentIds = [...addedPaymentIds, ...payList.map(p => p.id)];
             vlessonArr.push({
               lesson: vLes,
               payments: payList,
@@ -119,6 +123,7 @@ export const Subscriptions = () => {
         if (lessonsL && payments) {
           for (const lLes of lessonsL) {
             const payList = payments.filter((p) => p.lessonId === lLes.id);
+            addedPaymentIds = [...addedPaymentIds, ...payList.map(p => p.id)];
             llessonArr.push({
               lesson: lLes,
               payments: payList,
@@ -129,6 +134,7 @@ export const Subscriptions = () => {
         if (lessonsP && payments) {
           for (const pLes of lessonsP) {
             const payList = payments.filter((p) => p.lessonId === pLes.id);
+            addedPaymentIds = [...addedPaymentIds, ...payList.map(p => p.id)];
             plessonArr.push({
               lesson: pLes,
               payments: payList,
@@ -136,11 +142,33 @@ export const Subscriptions = () => {
           }
         }
 
+        const missedPayments = payments.filter(p => !addedPaymentIds.includes(p.id));
+        mlessonArr.push({
+          lesson: {
+            topic: 'Deleted Lessons',
+            attachments: [],
+            courseId: '',
+            description: 'Unknown',
+            duration: 2,
+            id: '1234',
+            price: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            keywords: '',
+            orderIndex: 0,
+            ownerEmail: teacher?.ownerEmail ?? '',
+            type: LessonType.LIVE,
+            videoUrls: []
+          },
+          payments: missedPayments
+        })
+
         if (teacher) {
           setTeacher(teacher);
           setVideoLessons(vlessonArr);
           setLiveLessons(llessonArr);
           setPaperLessons(plessonArr);
+          setMissedLessons(mlessonArr)
         }
       });
     }
@@ -320,6 +348,10 @@ export const Subscriptions = () => {
           <h3>Live lessons income</h3>
           {
             getLessonsTable(liveLessons, teacher)
+          }
+            <h3>Missed lessons income</h3>
+          {
+            getLessonsTable(missedLessons, teacher)
           }
           <br />
           {' '}
