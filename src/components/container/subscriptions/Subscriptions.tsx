@@ -37,26 +37,66 @@ export const Subscriptions = () => {
 
   const [teacher, setTeacher] = useState<ITeacher>();
 
-  const [selectedMonth, setSelectedMonth] = useState<number>(date.getMonth());
 
-  const getPeriodObj = (month: number) => {
-    const fd = new Date(date.getFullYear(), month, 1).getTime();
-    const ld = new Date(date.getFullYear(), month + 1, 0).getTime();
+
+  // const [lessonPaymentMap, setLessonPaymentMap] = useState<new Map<string, IPayment[]>();
+
+  // const [selectedMonth, setSelectedMonth] = useState<number>(date.getMonth());
+  // const [selectedYear, setSelectedYear] = useState<number>(date.getFullYear());
+
+  const [selectedDisplayMonth, setSelectedDisplayMonth] = useState<string>('');
+  const [displayMonths, setDisplayMonths] = useState<any[]>([]);
+
+  const getPeriodObj = (selectedMonth: number, selectedYear: number) => {
+    
+    // eslint-disable-next-line no-restricted-globals
+    if(isNaN(selectedMonth) || isNaN(selectedYear)){
+      return {};
+    }
+    const fd = new Date(selectedYear, selectedMonth, 1);
+    const ld = new Date(selectedYear, selectedMonth+1, 0);
+
+    console.log('start:', fd);
+    console.log('end:', ld);
 
     return {
-      'date>': fd,
-      'date<': ld,
+      'date>': fd.getTime(),
+      'date<': ld.getTime(),
     };
   };
 
+  const calculateDisplayMonths = () => {
+    const date = new Date();
+
+    const monthArr: any[] = [];
+    const month = date.getMonth();
+
+    let monthsInPrevYr = 1;
+
+    for (let m = 0; m < 4; m += 1) {
+      // eslint-disable-next-line no-plusplus
+      const next = (month - m) < 0 ? 12 - monthsInPrevYr++ : (month - m);
+      const year = (month - m) < 0 ?  (date.getFullYear() - 1) : date.getFullYear();
+      monthArr.push([next, months[next], year]);
+    }
+    console.log('Display months', monthArr);
+    setDisplayMonths(monthArr);
+  };
+
+  useEffect(() => {
+    calculateDisplayMonths();
+  }, [])
+
   useEffect(() => {
     if (email) {
+      const [mm, yy] = selectedDisplayMonth.split(':');
+
       // TODO: add live lessons here
       Promise.all([
         getDocWithId<ITeacher>(Entity.TEACHERS, email),
         getDocsWithProps<IPayment>(Entity.PAYMENTS_STUDENTS, {
           paidFor: email,
-          ...getPeriodObj(selectedMonth),
+          ...getPeriodObj(Number(mm), Number(yy)),
         }),
         getDocsWithProps<ILesson>(Entity.LESSONS_VIDEO, { ownerEmail: email }),
         getDocsWithProps<ILesson>(Entity.LESSONS_LIVE, { ownerEmail: email }),
@@ -104,7 +144,7 @@ export const Subscriptions = () => {
         }
       });
     }
-  }, [email, selectedMonth]);
+  }, [email, selectedDisplayMonth]);
 
   const [views, setViews] = useState<{lessonId: string, count: number}>();
 
@@ -222,19 +262,6 @@ export const Subscriptions = () => {
     }
   };
 
-  const getDisplayMonths = () => {
-    const date = new Date();
-
-    const monthArr = [];
-    const month = date.getMonth();
-
-    for (let m = 0; m < 4; m += 1) {
-      const next = (month - m) < 0 ? 12 - m : (month - m);
-      monthArr.push([next, months[next]]);
-    }
-    return monthArr;
-  };
-
   return (
     <>
       {teacher ? (
@@ -262,15 +289,21 @@ export const Subscriptions = () => {
               className={`${classes.input}`}
               labelId="label1"
               id="id1"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value as number)}
+              value={selectedDisplayMonth}
+              onChange={(e) => {
+                const str = e.target.value as string;
+                //  const [mm, yy] = (e.target.value as string).split(':');
+                //  setSelectedMonth(Number(mm)); 
+                //  setSelectedYear(Number(yy));
+                setSelectedDisplayMonth(str);
+              }}
             >
-              {getDisplayMonths().map((month) => (
+              {displayMonths.map((month) => (
                 <MenuItem
-                  value={month[0]}
-                  key={month[0]}
+                  value={`${month[0]}:${month[2]}`}
+                  key={month[0] + month[1] + month[2] }
                 >
-                  {month[1]}
+                  {month[1]}  / {month[2]}
                 </MenuItem>
               ))}
             </Select>
