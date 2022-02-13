@@ -74,7 +74,7 @@ export const Subscriptions = () => {
 
     let monthsInPrevYr = 1;
 
-    for (let m = 0; m < 4; m += 1) {
+    for (let m = 0; m < 11; m += 1) {
       // eslint-disable-next-line no-plusplus
       const next = (month - m) < 0 ? 12 - monthsInPrevYr++ : (month - m);
       const year = (month - m) < 0 ?  (date.getFullYear() - 1) : date.getFullYear();
