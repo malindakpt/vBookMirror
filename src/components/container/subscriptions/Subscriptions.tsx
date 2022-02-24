@@ -17,6 +17,7 @@ import { teacherPortion } from '../../../helper/util';
 import { IStudentInfo } from '../../../interfaces/IStudentInfo';
 import { FileUploader } from '../../presentational/fileUploader/FileUploader';
 import { PaymentStatus } from '../../presentational/paymentOptions/requestPayment/RequestPaymentValidation';
+import { StudentPayments } from '../../presentational/studentPayments/StudentPayments';
 
 interface LessMap {payments: IPayment[], lesson: ILesson}
 
@@ -36,15 +37,9 @@ export const Subscriptions = () => {
   const [paperLessons, setPaperLessons] = useState<LessMap[]>([]);
   const [missedLessons, setMissedLessons] = useState<LessMap[]>([]);
 
+  const [paymentsForMonth, setPaymentsForMonth] = useState<IPayment[]>([]);
+
   const [teacher, setTeacher] = useState<ITeacher>();
-
-
-
-  // const [lessonPaymentMap, setLessonPaymentMap] = useState<new Map<string, IPayment[]>();
-
-  // const [selectedMonth, setSelectedMonth] = useState<number>(date.getMonth());
-  // const [selectedYear, setSelectedYear] = useState<number>(date.getFullYear());
-
   const [selectedDisplayMonth, setSelectedDisplayMonth] = useState<string>('');
   const [displayMonths, setDisplayMonths] = useState<any[]>([]);
 
@@ -103,6 +98,9 @@ export const Subscriptions = () => {
         getDocsWithProps<ILesson>(Entity.LESSONS_LIVE, { ownerEmail: email }),
         getDocsWithProps<ILesson>(Entity.LESSONS_PAPER, { ownerEmail: email }),
       ]).then(([teacher, payments, lessonsV, lessonsL, lessonsP]) => {
+
+        setPaymentsForMonth(payments);
+
         const vlessonArr: LessMap[] = [];
         const llessonArr: LessMap[] = [];
         const plessonArr: LessMap[] = [];
@@ -353,6 +351,8 @@ export const Subscriptions = () => {
           {
             getLessonsTable(missedLessons, teacher)
           }
+           <h3>All Payments for selected month</h3>
+          <StudentPayments paymentList={paymentsForMonth} />
           <br />
           {' '}
           <br />
