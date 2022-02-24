@@ -77,6 +77,9 @@ export const Subscriptions = () => {
     }
     console.log('Display months', monthArr);
     setDisplayMonths(monthArr);
+
+    const firstMonth = monthArr[0];
+    setSelectedDisplayMonth(`${firstMonth[0]}:${firstMonth[2]}`);
   };
 
   useEffect(() => {
@@ -84,7 +87,7 @@ export const Subscriptions = () => {
   }, [])
 
   useEffect(() => {
-    if (email) {
+    if (email && selectedDisplayMonth) {
       const [mm, yy] = selectedDisplayMonth.split(':');
 
       // TODO: add live lessons here
@@ -166,7 +169,7 @@ export const Subscriptions = () => {
           setVideoLessons(vlessonArr);
           setLiveLessons(llessonArr);
           setPaperLessons(plessonArr);
-          setMissedLessons(mlessonArr)
+          setMissedLessons(mlessonArr);
         }
       });
     }
@@ -318,9 +321,6 @@ export const Subscriptions = () => {
               value={selectedDisplayMonth}
               onChange={(e) => {
                 const str = e.target.value as string;
-                //  const [mm, yy] = (e.target.value as string).split(':');
-                //  setSelectedMonth(Number(mm)); 
-                //  setSelectedYear(Number(yy));
                 setSelectedDisplayMonth(str);
               }}
             >
