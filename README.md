@@ -1,8 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
-
-9.09 In the project directory, you can run:
+mirri 9.09 In the project directory, you can run:
 
 ### `yarn start`
 
